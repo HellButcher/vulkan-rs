@@ -4,6 +4,8 @@ version = "0.1.0"
 authors = ["Christoph Hommelsheim <c-hommelsheim@gmx.de>"]
 license = "BSD-2-Clause"
 description = "Vulkan bindings for the rust programming language."
+homepage = "https://github.com/HellButcher/vulkan-rs"
+repository = "https://github.com/HellButcher/vulkan-rs.git"
 build = "build.rs"
 
 [dependencies]
