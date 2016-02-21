@@ -1,0 +1,11 @@
+[package]
+name = "vulkan"
+version = "0.1.0"
+authors = ["Christoph Hommelsheim <c-hommelsheim@gmx.de>"]
+license = "BSD-2-Clause"
+description = "Vulkan bindings for the rust programming language."
+build = "build.rs"
+
+[dependencies]
+
+[build-dependencies]
