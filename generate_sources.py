@@ -17,7 +17,11 @@ if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO, stream=sys.stdout)
 
 
-def get_node_name(node):
+def get_node_name(node, _name_node=None):
+    if _name_node is not None:
+        name = node.find(_name_node)
+        if name is not None:
+            return name.text
     name = node.get('name')
     if name is not None:
         return name
@@ -61,10 +65,10 @@ class Node(object):
 
 class NamedNode(Node):
 
-    def __init__(self, element, name=None, *args, **kwargs):
+    def __init__(self, element, name=None, _name_node=None, *args, **kwargs):
         Node.__init__(self, element, *args, **kwargs)
         if name is None:
-            name = get_node_name(element)
+            name = get_node_name(element, _name_node=_name_node)
             if name is None:
                 raise ValueError('node with tag %s has no name' % element.tag)
         self.name = name
@@ -159,6 +163,7 @@ class TypeMemberNode(NamedNode):
 
     def __init__(self, element, *args, **kwargs):
         NamedNode.__init__(self, element, *args, **kwargs)
+        self.type = None
         type_element = element.find('type')
         if type_element is not None:
             self.type = type_element.text
@@ -216,6 +221,56 @@ class EnumValueNode(NamedNode):
             self.short_name = self.short_name[0:-4]
 
 
+class CommandNode(NamedNode):
+
+    def __init__(self, element, *args, **kwargs):
+        NamedNode.__init__(self, element, _name_node='proto/name', *args, **kwargs)
+        self.param_list = []
+        self.param_dict = {}
+        tmp = element.get('successcodes')
+        self.successcodes = tmp is not None and tmp.split(',') or None
+        tmp = element.get('errorcodes')
+        self.errorcodes = tmp is not None and tmp.split(',') or None
+        self.return_type = None
+        type_element = element.find('proto/type')
+        if type_element is not None:
+            self.return_type = type_element.text
+            if type_element.tail is not None and type_element.tail.startswith('*'):
+                self.return_type = self.return_type + '*'
+
+    def link(self):
+        NamedNode.link(self)
+        for node in self.param_list:
+            node.link()
+
+
+class ParameterNode(TypeMemberNode):
+
+    def __init__(self, element, *args, **kwargs):
+        TypeMemberNode.__init__(self, element, *args, **kwargs)
+        self.length = element.get('len')
+        self.length_param_for = None
+        self.length_param = None
+    def link(self):
+        TypeMemberNode.link(self)
+        if not isinstance(self.parent, CommandNode):
+            logging.warning('Parameter \'%s\' is not a child of a command', self.name)
+            return
+        if self.length is not None:
+            if not self.type.endswith('*'):
+                logging.warning('param \'%s\' of \'%s\' is not a pointer', self.length, self.parent.name)
+            if self.length == 'null-terminated':
+                return
+            if self.length not in self.parent.param_dict:
+                logging.warning('there is no param \'%s\' in \'%s\'', self.length, self.parent.name)
+            else:
+                self.length_param = self.parent.param_dict[self.length]
+                if self.length_param.length_param_for is not None:
+                    logging.warning('param \'%s\' is already used as langth param in \'%s\'', self.length, self.parent.name)
+                else:
+                    self.length_param.length_param_for = self
+
+
 class Registry(object):
 
     def __init__(self, tree_or_filename):
@@ -248,6 +303,11 @@ class Registry(object):
         for element in self.root.findall('enums'):
             self.add_enum_element(element)
 
+        self.all_commands_list = []
+        self.all_commands_dict = {}
+        for element in self.root.findall('commands/command'):
+            self.add_command_element(element)
+
     def add_vendorid_element(self, element):
         node = VendorIdNode(element, parent=self)
         fill_named_node(self.vendorid_list, self.vendorid_dict, node)
@@ -269,6 +329,13 @@ class Registry(object):
                             self.all_enumvalues_dict, node2)
             fill_named_node(node.values_list, node.values_dict, node2)
 
+    def add_command_element(self, element):
+        node = CommandNode(element, parent=self)
+        fill_named_node(self.all_commands_list, self.all_commands_dict, node)
+        for element2 in element.findall('param'):
+            node2 = ParameterNode(element2, parent=node)
+            fill_named_node(node.param_list, node.param_dict, node2)
+
     def link(self):
         for node in self.vendorid_list:
             node.link()
@@ -276,7 +343,8 @@ class Registry(object):
             node.link()
         for node in self.all_enums_list:
             node.link()
-
+        for node in self.all_commands_list:
+            node.link()
 
 def write_go_comment(out, content, doc=False):
     if isinstance(content, str):
@@ -369,9 +437,15 @@ TYPE_MAP = {
 }
 
 
-def map_type(type_name, registry=None):
+def map_type(type_name, registry=None, as_reference=False):
     if type_name in TYPE_MAP:
         return TYPE_MAP[type_name]
+    if as_reference and registry is not None and type_name.endswith('*'):
+        type_name2 = type_name[:-1]
+        if type_name2 in registry.all_types_dict:
+            ref = registry.all_types_dict[type_name2]
+            if ref.category=='struct' or ref.category=='union':
+                return '&'+ref.stripped_name
     if type_name.endswith('*'):
         return '*const ' + strip_api(type_name[:-1])
     elif registry is not None and type_name in registry.all_types_dict:
@@ -424,10 +498,10 @@ def map_keyword(name, type_name=None):
     return name
 
 
-def map_type_with_name(type_name, node):
+def map_type_with_name(type_name, node, as_reference=False):
     name = node.name
     namenode = node.element.find('name')
-    type_name = map_type(type_name, registry=node.registry)
+    type_name = map_type(type_name, registry=node.registry, as_reference=as_reference)
     basetype = type_name
     array_idx = name.find('[')
     array_idx2 = name.find(']')
@@ -444,7 +518,6 @@ def map_type_with_name(type_name, node):
             type_name = '[%s; %d]' % (type_name, array_len)
     name = map_keyword(name, basetype)
     return type_name, name
-
 
 def write_type_basetype(out, options, type_node):
     write_go_comment(out, type_node, doc=True)
@@ -493,8 +566,13 @@ def write_type_funcpointer(out, options, type_node):
         returntype = returntype[0:pos].strip()
     else:
         logging.warning('expected \'(\' in functionpointer %s', type_node.name)
-    argtypes = [map_type(n.tail is not None and n.tail.startswith('*') and n.text + '*' or n.text, type_node.registry) for n in type_node.element.findall('type')]
-    out.write('pub type %s = fn(%s)%s;\n' % (type_node.stripped_name, ', '.join(argtypes), returntype != 'void' and (' -> ' + map_type(returntype, type_node.registry)) or ''))
+    out.write('pub type %s = fn(' % type_node.stripped_name)
+    out.write(', '.join([map_type(n.tail is not None and n.tail.startswith('*') and n.text + '*' or n.text, type_node.registry) for n in type_node.element.findall('type')]))
+    out.write(')')
+    if returntype != 'void':
+        out.write(' -> ')
+        out.write(map_type(returntype, type_node.registry))
+    out.write(';\n')
 
 
 def write_type(out, options, type_node):
@@ -529,6 +607,47 @@ def write_enum(out, options, enum):
         write_go_comment(out, value, doc=True)
         out.write('pub const %s : %s = %s;\n' % (value.stripped_name.upper(), enum.stripped_name, get_enum_value(value)))
 
+#MANUAL_COMMAND_IMPL=set([
+#    'vkCreateGraphicsPipelines',
+#    'vkCreateComputePipelines',
+#    'vkAllocateDescriptorSets',
+#    'vkAllocateCommandBuffers',
+#    'vkCmdBindVertexBuffers',
+#    'vkCmdUpdateBuffer',
+#    'vkCreateSharedSwapchainsKHR',
+#])
+
+def write_command(out, options, command):
+    #if command.name in MANUAL_COMMAND_IMPL:
+    #    return
+    write_go_comment(out, command, doc=True)
+    out.write('pub fn %s (' % command.stripped_name)
+    first=True
+    for param in command.param_list:
+        if param.length_param_for is not None:
+            continue
+        type_name = param.type
+        is_array_type = type_name.endswith('*') and param.length is not None and param.length != 'null-terminated'
+        if is_array_type:
+            type_name = type_name[:-1]
+        type_name, name = map_type_with_name(type_name, param, as_reference=True)
+
+        if first:
+            first = False
+        else:
+            out.write(', ')
+        out.write(name)
+        out.write(': ')
+        if is_array_type:
+            out.write('&[%s]'%type_name)
+        else:
+            out.write(type_name)
+    out.write(')')
+    if command.return_type != 'void':
+        out.write(' -> ')
+        out.write(map_type(command.return_type, command.registry))
+    out.write(' {\n')
+    out.write('}\n')
 
 
 def write(out, options, registry):
@@ -542,6 +661,8 @@ use basic_types;
         write_type(out, options, type_node)
     for enum_node in registry.all_enums_list:
         write_enum(out, options, enum_node)
+    for command_node in registry.all_commands_list:
+        write_command(out, options, command_node)
 
 
 def urlopen(url):
