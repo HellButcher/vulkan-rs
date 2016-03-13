@@ -38,20 +38,13 @@ def fill_named_node(lst, dct, node):
     return node
 
 
-class NamedNode(object):
+class Node(object):
 
-    def __init__(self, element, name=None, parent=None):
-        if name is None:
-            name = get_node_name(element)
-            if name is None:
-                raise ValueError('node with tag %s has no name' % element.tag)
-        self.name = name
+    def __init__(self, element, parent=None):
         self.element = element
         self.tag = element.tag
         self.parent = parent
         self.registry = None
-        self.stripped_name = strip_api(name)
-        self.stripped_vendorid = None
         cur = parent
         while cur is not None and cur is not self:
             if isinstance(cur, Registry):
@@ -61,6 +54,22 @@ class NamedNode(object):
         if self.parent is not None and self.registry is None:
             raise ValueError('node with tag %s and name %s is not connected to a registry' % (
                 element.tag, element.name))
+
+    def link(self):
+        pass
+
+
+class NamedNode(Node):
+
+    def __init__(self, element, name=None, *args, **kwargs):
+        Node.__init__(self, element, *args, **kwargs)
+        if name is None:
+            name = get_node_name(element)
+            if name is None:
+                raise ValueError('node with tag %s has no name' % element.tag)
+        self.name = name
+        self.stripped_name = strip_api(name)
+        self.stripped_vendorid = None
         if self.registry is not None:
             basename = self.stripped_name
             for vendorid in self.registry.vendorids:
@@ -68,7 +77,7 @@ class NamedNode(object):
                     basename = basename[0:-len(vendorid)]
                     self.stripped_vendorid = vendorid
                     if basename.endswith('_'):
-                        basename = basename[0:-1]
+                        self.stripped_name = basename[0:-1]
                         self.stripped_vendorid = '_' + self.stripped_vendorid
                     break
 
@@ -84,8 +93,12 @@ class TypeNode(NamedNode):
     def __init__(self, element, *args, **kwargs):
         NamedNode.__init__(self, element, *args, **kwargs)
         self.category = element.get('category')
-        self.parent_type = element.get('parent')
+        self.parent_types = element.get('parent')
+        self.parent_types_nodes = None
         self.requires = element.get('requires')
+        self.requires_nodes = None
+        self.flags_node = None
+        self.bits_node = None
         type_element = element.find('type')
         if type_element is not None:
             self.type = type_element.text
@@ -93,6 +106,53 @@ class TypeNode(NamedNode):
                 self.type = self.type + '*'
         self.members_list = []
         self.members_dict = {}
+
+    def link(self):
+        NamedNode.link(self)
+        if self.registry is None:
+            return
+        if self.requires is not None:
+            nodes = self.requires_nodes = []
+            for require in self.requires.split(','):
+                require = require.strip()
+                if require in self.registry.all_types_dict:
+                    nodes.append(self.registry.all_types_dict[require])
+                else:
+                    logging.warning('there is no type-definition for the required type \'%s\'', require)
+        if self.parent_types is not None:
+            nodes = self.parent_types_nodes = []
+            for parent_type in self.parent_types.split(','):
+                if parent_type in self.registry.all_types_dict:
+                    nodes.append(self.registry.all_types_dict[parent_type])
+                else:
+                    logging.warning('there is no type-definition for the parent type \'%s\'', parent_type)
+        if self.category == 'bitmask':
+            if self.requires_nodes is not None:
+                if len(self.requires_nodes) != 1:
+                    logging.warning('flags-type \'%s\' defines multiple required types', self.name)
+                elif self.requires_nodes[0].category != 'enum':
+                    logging.warning('flags-type \'%s\' requires a non-enum type', self.name)
+                else:
+                    self.bits_node = self.requires_nodes[0]
+            if self.bits_node is None:
+                bits_name = self.name.replace("Flags", "FlagBits")
+                if bits_name == self.name:
+                    logging.warning('can not detect bits-type for flags \'%s\'', self.name)
+                else:
+                    if bits_name not in self.registry.all_types_dict:
+                        logging.info('there is no type-definition for bits-type \'%s\': automatically derived one.', bits_name)
+                        type_element = ET.SubElement(self.registry.root.find('types'), 'type')
+                        type_element.set('name', bits_name)
+                        type_element.set('category', 'enum')
+                        self.registry.add_type_element(type_element)
+                    self.bits_node = self.registry.all_types_dict[bits_name]
+            if self.bits_node is not None:
+                if self.bits_node.flags_node is not None:
+                    logging.warning('bits-type \'%s\' has already an associated flags-type \'%s\': can not assign \'%s\'', self.bits_node.name, self.bits_node.flags_node.name, self.name)
+                else:
+                    self.bits_node.flags_node = self
+        for node in self.members_list:
+            node.link()
 
 
 class TypeMemberNode(NamedNode):
@@ -113,6 +173,7 @@ class EnumNode(NamedNode):
         self.values_list = []
         self.values_dict = {}
         self.type = element.get('type')
+        self.type_node = None
         self.expand = element.get('expand')
         if self.expand is None and self.type is not None:
             basename = self.name
@@ -122,6 +183,21 @@ class EnumNode(NamedNode):
                 basename = basename[0:-8]
             self.expand = re.sub('([a-z0-9])([A-Z])',
                                  r'\1_\2', basename).upper()
+
+    def link(self):
+        NamedNode.link(self)
+        if self.registry is None or self.type is None:
+            return
+        if self.name not in self.registry.all_types_dict:
+            logging.info('there is no type-definition for the enum \'%s\': automatically derived one.', self.name)
+            type_element = ET.SubElement(self.registry.root.find('types'), 'type')
+            type_element.set('name', self.name)
+            type_element.set('category', 'enum')
+            self.registry.add_type_element(type_element)
+        self.type_node = self.registry.all_types_dict[self.name]
+        self.type_node.enum_node = self
+        for node in self.values_list:
+            node.link()
 
 
 class EnumValueNode(NamedNode):
@@ -158,48 +234,77 @@ class Registry(object):
         self.vendorid_list = []
         self.vendorid_dict = {}
         for element in self.root.findall('vendorids/vendorid'):
-            node = VendorIdNode(element, parent=self)
-            fill_named_node(self.vendorid_list, self.vendorid_dict, node)
-            self.vendorids.add(node.name)
+            self.add_vendorid_element(element)
 
         self.all_types_list = []
         self.all_types_dict = {}
         for element in self.root.findall('types/type'):
-            node = TypeNode(element, parent=self)
-            fill_named_node(self.all_types_list, self.all_types_dict, node)
-            for element2 in element.findall('member'):
-                node2 = TypeMemberNode(element2, parent=node)
-                fill_named_node(node.members_list, node.members_dict, node2)
+            self.add_type_element(element)
 
         self.all_enums_list = []
         self.all_enums_dict = {}
         self.all_enumvalues_list = []
         self.all_enumvalues_dict = {}
         for element in self.root.findall('enums'):
-            node = EnumNode(element, parent=self)
-            fill_named_node(self.all_enums_list, self.all_enums_dict, node)
-            for element2 in element.findall('enum'):
-                node2 = EnumValueNode(element2, parent=node)
-                fill_named_node(self.all_enumvalues_list,
-                                self.all_enumvalues_dict, node2)
-                fill_named_node(node.values_list, node.values_dict, node2)
+            self.add_enum_element(element)
+
+    def add_vendorid_element(self, element):
+        node = VendorIdNode(element, parent=self)
+        fill_named_node(self.vendorid_list, self.vendorid_dict, node)
+        self.vendorids.add(node.name)
+
+    def add_type_element(self, element):
+        node = TypeNode(element, parent=self)
+        fill_named_node(self.all_types_list, self.all_types_dict, node)
+        for element2 in element.findall('member'):
+            node2 = TypeMemberNode(element2, parent=node)
+            fill_named_node(node.members_list, node.members_dict, node2)
+
+    def add_enum_element(self, element):
+        node = EnumNode(element, parent=self)
+        fill_named_node(self.all_enums_list, self.all_enums_dict, node)
+        for element2 in element.findall('enum'):
+            node2 = EnumValueNode(element2, parent=node)
+            fill_named_node(self.all_enumvalues_list,
+                            self.all_enumvalues_dict, node2)
+            fill_named_node(node.values_list, node.values_dict, node2)
+
+    def link(self):
+        for node in self.vendorid_list:
+            node.link()
+        for node in self.all_types_list:
+            node.link()
+        for node in self.all_enums_list:
+            node.link()
 
 
 def write_go_comment(out, content, doc=False):
     if isinstance(content, str):
         content = [content]
+    elif isinstance(content, Node):
+        content = [content.element]
+    elif isinstance(content, ET.Element):
+        content = [content]
     for part in content:
         if isinstance(part, ET.Element):
-            part = part.text
+            if part.tag == 'comment':
+                part = part.text
+            elif part.get('comment') is not None:
+                part = part.get('comment')
+            else:
+                continue
         if len(part) <= 0:
             continue
         lines = part.splitlines()
         if len(lines) == 1:
+            line = lines[0]
+            if line.startswith('//'):
+                line = line[2:].strip()
             if doc:
                 out.write('/// ')
             else:
                 out.write('// ')
-            out.write(lines[0])
+            out.write(line)
             out.write('\n')
         else:
             if not doc:
@@ -227,56 +332,6 @@ def strip_api(name_or_node):
     if name.startswith('_'):
         name = name[1:]
     return name
-
-
-def get_enum_value(enumvalue):
-    value = enumvalue.element.get('value')
-    if value is not None:
-        return value
-    bitpos = enumvalue.element.get('bitpos')
-    if bitpos is not None:
-        return '1<<%s' % bitpos
-    return 'TODO'
-
-
-def write_enum(out, options, enum):
-    basetype = 'Enum'
-    stripped_name = enum.stripped_name
-    if enum.type == 'bitmask':
-        basetype = 'Flags'
-        tmp = stripped_name
-        if enum.stripped_vendorid is not None:
-            tmp = tmp[0:-len(enum.stripped_vendorid)]
-        if tmp.endswith('FlagBits'):
-            stripped_name = tmp[0:-4] + 's' + (enum.stripped_vendorid or '')
-    if enum.type is None:
-        return  # skip "API Constants"-section
-        # for value in enum.values_list:
-        #    comment = value.element.get('comment')
-        #    if comment is not None:
-        #        comment = ' //! ' + comment
-        #    out.write('pub const %s : basic_types::%s = %s;%s\n' % (strip_api(value.name), basetype, get_enum_value(value), comment or ''))
-    elif options.get('enum_modules', False):
-        out.write('#[allow(non_snake_case)]\n')
-        out.write('pub mod %s {\n' % stripped_name)
-        out.write('  use basic_types;\n')
-        out.write('  pub type %s = basic_types::%s;\n' % (basetype, basetype))
-        for value in enum.values_list:
-            comment = value.element.get('comment')
-            if comment is not None:
-                out.write('  /// %s\n' % comment)
-            out.write('  pub const %s_%s : %s = %s;\n' % (
-                basetype[0], value.short_name.upper(), basetype, get_enum_value(value)))
-        out.write('}\n')
-    else:
-        out.write('pub type %s = basic_types::%s;\n' %
-                  (stripped_name, basetype))
-        for value in enum.values_list:
-            comment = value.element.get('comment')
-            if comment is not None:
-                out.write('/// %s\n' % comment)
-            out.write('pub const %s : %s = %s;\n' %
-                      (value.name.upper(), stripped_name, get_enum_value(value)))
 
 TYPE_MAP = {
     'uint8_t':   'u8',
@@ -314,13 +369,16 @@ TYPE_MAP = {
 }
 
 
-def map_type(type_name):
+def map_type(type_name, registry=None):
     if type_name in TYPE_MAP:
         return TYPE_MAP[type_name]
     if type_name.endswith('*'):
         return '*const ' + strip_api(type_name[:-1])
+    elif registry is not None and type_name in registry.all_types_dict:
+        return registry.all_types_dict[type_name].stripped_name
     else:
         return strip_api(type_name)
+
 KEYWORD_MAP = {
     'as': 'as_',
     'break': 'break_',
@@ -369,7 +427,7 @@ def map_keyword(name, type_name=None):
 def map_type_with_name(type_name, node):
     name = node.name
     namenode = node.element.find('name')
-    type_name = map_type(type_name)
+    type_name = map_type(type_name, registry=node.registry)
     basetype = type_name
     array_idx = name.find('[')
     array_idx2 = name.find(']')
@@ -389,18 +447,21 @@ def map_type_with_name(type_name, node):
 
 
 def write_type_basetype(out, options, type_node):
-    comment = type_node.element.get('comment')
-    if comment is not None:
-        out.write('/// %s\n' % comment)
-    out.write('pub type %s = %s;\n' % (strip_api(type_node.name), map_type(type_node.type)))
+    write_go_comment(out, type_node, doc=True)
+    out.write('pub type %s = %s;\n' % (type_node.stripped_name, map_type(type_node.type, type_node.registry)))
 
+def write_type_enum(out, options, type_node):
+    write_go_comment(out, type_node, doc=True)
+    out.write('pub type %s = basic_types::Enum;\n' % (type_node.stripped_name))
+
+def write_type_bitmask(out, options, type_node):
+    write_go_comment(out, type_node, doc=True)
+    out.write('pub type %s = basic_types::Flags;\n' % (type_node.stripped_name))
 
 def write_type_struct(out, options, type_node):
-    comment = type_node.element.get('comment')
-    if comment is not None:
-        out.write('/// %s\n' % comment)
+    write_go_comment(out, type_node, doc=True)
     out.write('#[repr(C)]\n')
-    out.write('pub struct %s {\n' % strip_api(type_node.name))
+    out.write('pub struct %s {\n' % type_node.stripped_name)
     for member in type_node.members_list:
         comment = member.element.get('comment')
         if comment is not None:
@@ -411,10 +472,8 @@ def write_type_struct(out, options, type_node):
 
 
 def write_type_union(out, options, type_node):
-    comment = type_node.element.get('comment')
-    if comment is not None:
-        out.write('/// %s\n' % comment)
-    out.write('pub enum %s {\n' % strip_api(type_node.name))
+    write_go_comment(out, type_node, doc=True)
+    out.write('pub enum %s {\n' % type_node.stripped_name)
     for member in type_node.members_list:
         comment = member.element.get('comment')
         if comment is not None:
@@ -425,9 +484,7 @@ def write_type_union(out, options, type_node):
 
 
 def write_type_funcpointer(out, options, type_node):
-    comment = type_node.element.get('comment')
-    if comment is not None:
-        out.write('/// %s\n' % comment)
+    write_go_comment(out, type_node, doc=True)
     returntype = type_node.element.text
     if returntype.startswith('typedef '):
         returntype = returntype[8:].strip()
@@ -436,13 +493,17 @@ def write_type_funcpointer(out, options, type_node):
         returntype = returntype[0:pos].strip()
     else:
         logging.warning('expected \'(\' in functionpointer %s', type_node.name)
-    argtypes = [map_type(n.tail is not None and n.tail.startswith('*') and n.text + '*' or n.text) for n in type_node.element.findall('type')]
-    out.write('pub type %s = fn(%s)%s;\n' % (strip_api(type_node.name), ', '.join(argtypes), returntype != 'void' and (' -> ' + map_type(returntype)) or ''))
+    argtypes = [map_type(n.tail is not None and n.tail.startswith('*') and n.text + '*' or n.text, type_node.registry) for n in type_node.element.findall('type')]
+    out.write('pub type %s = fn(%s)%s;\n' % (type_node.stripped_name, ', '.join(argtypes), returntype != 'void' and (' -> ' + map_type(returntype, type_node.registry)) or ''))
 
 
 def write_type(out, options, type_node):
     if type_node.category == 'basetype' or type_node.category == 'handle':
         write_type_basetype(out, options, type_node)
+    elif type_node.category == 'enum':
+        write_type_enum(out, options, type_node)
+    elif type_node.category == 'bitmask':
+        write_type_bitmask(out, options, type_node)
     elif type_node.category == 'struct':
         write_type_struct(out, options, type_node)
     elif type_node.category == 'union':
@@ -451,16 +512,36 @@ def write_type(out, options, type_node):
         write_type_funcpointer(out, options, type_node)
 
 
+def get_enum_value(enumvalue):
+    value = enumvalue.element.get('value')
+    if value is not None:
+        return value
+    bitpos = enumvalue.element.get('bitpos')
+    if bitpos is not None:
+        return '1<<%s' % bitpos
+    return 'TODO'
+
+def write_enum(out, options, enum):
+    if len(enum.values_list) <= 0 or enum.type is None:
+        return
+    out.write('\n// enum: %s\n' % enum.name)
+    for value in enum.values_list:
+        write_go_comment(out, value, doc=True)
+        out.write('pub const %s : %s = %s;\n' % (value.stripped_name.upper(), enum.stripped_name, get_enum_value(value)))
+
+
+
 def write(out, options, registry):
     write_go_comment(out, registry.root.find('comment').text)
     out.write("""
 #[allow(unused_imports)]
 use basic_types;
+
 """)
-    for enum_node in registry.all_enums_list:
-        write_enum(out, options, enum_node)
     for type_node in registry.all_types_list:
         write_type(out, options, type_node)
+    for enum_node in registry.all_enums_list:
+        write_enum(out, options, enum_node)
 
 
 def urlopen(url):
@@ -498,6 +579,7 @@ def main():
     if not os.path.isfile(vk_xml_path):
         download_file(vk_xml_url, vk_xml_path)
     registry = Registry(vk_xml_path)
+    registry.link()
     options = {
         #'enum_modules': True
     }
