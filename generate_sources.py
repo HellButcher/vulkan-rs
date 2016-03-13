@@ -33,7 +33,7 @@ def fill_named_node(lst, dct, node):
     logging.debug('adding %s with name %s', node.tag, node.name)
     dct[node.name] = node
     if not hasattr(node, 'index'):
-        node.index = len(list)
+        node.index = len(lst)
     lst.append(node)
     return node
 
@@ -370,7 +370,7 @@ def map_type_with_name(type_name, node):
     name = node.name
     namenode = node.element.find('name')
     type_name = map_type(type_name)
-    basetype = type
+    basetype = type_name
     array_idx = name.find('[')
     array_idx2 = name.find(']')
     if array_idx > 0 and array_idx < array_idx2:
@@ -399,6 +399,7 @@ def write_type_struct(out, options, type_node):
     comment = type_node.element.get('comment')
     if comment is not None:
         out.write('/// %s\n' % comment)
+    out.write('#[repr(C)]\n')
     out.write('pub struct %s {\n' % strip_api(type_node.name))
     for member in type_node.members_list:
         comment = member.element.get('comment')
@@ -413,7 +414,7 @@ def write_type_union(out, options, type_node):
     comment = type_node.element.get('comment')
     if comment is not None:
         out.write('/// %s\n' % comment)
-    out.write('pub enum %s {\n' % strip_api(type.name))
+    out.write('pub enum %s {\n' % strip_api(type_node.name))
     for member in type_node.members_list:
         comment = member.element.get('comment')
         if comment is not None:
