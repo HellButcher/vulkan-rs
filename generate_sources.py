@@ -4,404 +4,508 @@
 import os
 import sys
 import re
-import logging
-import xml.etree.ElementTree as ET
+stdlog = sys.stderr
+try:
+    import lxml.etree as ET
+    stdlog.write("using lxml\n")
+except ImportError:
+    import xml.etree.ElementTree as ET
 
-if __name__ == '__main__':
-    if sys.stdout.isatty():
-        logging.addLevelName(logging.DEBUG, "\033[1;36m%s\033[1;0m" % logging.getLevelName(logging.DEBUG))
-        logging.addLevelName(logging.INFO, "\033[1;34m%s\033[1;0m" % logging.getLevelName(logging.INFO))
-        logging.addLevelName(logging.WARNING, "\033[1;33m%s\033[1;0m" % logging.getLevelName(logging.WARNING))
-        logging.addLevelName(logging.ERROR, "\033[1;31m%s\033[1;0m" % logging.getLevelName(logging.ERROR))
-        logging.addLevelName(logging.CRITICAL, "\033[1;41m%s\033[1;0m" % logging.getLevelName(logging.CRITICAL))
-    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO, stream=sys.stdout)
-
-
-def get_node_name(node, _name_node=None):
+def get_element_name(element, _name_node=None):
     if _name_node is not None:
-        name = node.find(_name_node)
-        if name is not None:
-            return name.text
-    name = node.get('name')
+        namenode = element.find(_name_node)
+        if namenode is not None:
+            return namenode.text, namenode
+    name = element.get('name')
     if name is not None:
-        return name
-    namenode = node.find('name')
+        return name, None
+    namenode = element.find('name')
     if namenode is not None:
-        return namenode.text
+        return namenode.text, namenode
 
+def strip_api_prefix(registry, name):
+    if name.startswith('PFN_'):
+        api, name = strip_api_prefix(registry, name[4:])
+        return (api, 'Pfn' + name)
+    if name.lower().startswith('vk_'):
+        return (name[:2], name[3:])
+    if name.lower().startswith('vk'):
+        return (name[:2], name[2:])
+    return (None, name)
 
-def fill_named_node(lst, dct, node):
-    if node.name in dct:
-        raise KeyError('%s with name %s is already defined' %
-                       (node.tag, node.name))
-    logging.debug('adding %s with name %s', node.tag, node.name)
-    dct[node.name] = node
-    if not hasattr(node, 'index'):
-        node.index = len(lst)
-    lst.append(node)
-    return node
+def strip_vendor_suffix(registry, name):
+    for vendorid in registry.vendorids:
+        if name.endswith(vendorid):
+            name = name[0:-len(vendorid)]
+            if name.endswith('_'):
+                name = name[0:-1]
+            return (name, vendorid)
+    return (name, None)
 
+def strip_name(registry, name):
+    api, name = strip_api_prefix(registry, name)
+    name, vendorid = strip_vendor_suffix(registry, name)
+    return (api, name, vendorid)
+
+first_cap_re = re.compile('(.)([A-Z][a-z]+)')
+all_cap_re = re.compile('([a-z0-9])([A-Z])')
+merge_underscore_re = re.compile('__+')
+def decamelize(name):
+    name = first_cap_re.sub(r'\1_\2', name)
+    name = all_cap_re.sub(r'\1_\2', name).upper()
+    name = merge_underscore_re.sub(r'_', name)
+    return name
+
+def camelize(name):
+    if isinstance(name, str):
+        name=name.split('_')
+    return ''.join([x.capitalize() for x in name])
 
 class Node(object):
 
     def __init__(self, element, parent=None):
+        self.children = []
+        self.named_children = dict()
         self.element = element
-        self.tag = element.tag
+        self.tag = None
+        if hasattr(element, 'tag'):
+            self.tag = element.tag
         self.parent = parent
         self.registry = None
-        cur = parent
-        while cur is not None and cur is not self:
-            if isinstance(cur, Registry):
-                self.registry = cur
-                break
-            cur = cur.parent
-        if self.parent is not None and self.registry is None:
-            raise ValueError('node with tag %s and name %s is not connected to a registry' % (
-                element.tag, element.name))
+        if parent is not None:
+            parent.children.append(self)
 
-    def link(self):
-        pass
+    def resolve(self, registry):
+        self.registry = registry
+        for child in self.children:
+            child.resolve(registry)
 
+    def __getattr__(self, name):
+        return self.element.get(name)
+    def __getitem__(self, key):
+        return self.named_children[key]
+    def __contains__(self, item):
+        return item in self.named_children
+    def __len__(self):
+        return len(self.children)
+    def __iter__(self):
+        return self.children.__iter__()
+
+    def __repr__(self):
+        if hasattr(self.element, 'sourceline'):
+            return '%s[%s](%s)' % (self.element.tag, type(self).__name__, self.element.sourceline)
+        else:
+            return '%s[%s]' % (self.element.tag, type(self).__name__)
+    def __str__(self):
+        return self.__repr__()
 
 class NamedNode(Node):
 
-    def __init__(self, element, name=None, _name_node=None, *args, **kwargs):
-        Node.__init__(self, element, *args, **kwargs)
-        if name is None:
-            name = get_node_name(element, _name_node=_name_node)
-            if name is None:
-                raise ValueError('node with tag %s has no name' % element.tag)
+    def __init__(self, element, name=None, _name_node=None, **kwargs):
+        Node.__init__(self, element, **kwargs)
+        self.name_node = None
         self.name = name
-        self.stripped_name = strip_api(name)
-        self.stripped_vendorid = None
-        if self.registry is not None:
-            basename = self.stripped_name
-            for vendorid in self.registry.vendorids:
-                if basename.endswith(vendorid):
-                    basename = basename[0:-len(vendorid)]
-                    self.stripped_vendorid = vendorid
-                    if basename.endswith('_'):
-                        self.stripped_name = basename[0:-1]
-                        self.stripped_vendorid = '_' + self.stripped_vendorid
-                    break
+        if name is None:
+            name, name_node = get_element_name(element, _name_node=_name_node)
+            self.name = name
+            self.name_node = name_node
+            if name is None:
+                raise ValueError('node %s has no name' % self.__repr__())
+        self.stripped_api = self.stripped_name = self.stripped_vendorid = self.stripped_name_parts = None
+        if self.parent is not None:
+            key = (self.tag, name)
+            if key in self.parent.named_children:
+                raise KeyError('node %s is already defined here %s' % (self.__repr__(), self.parent.named_children[name].__repr__()))
+            self.parent.named_children[key] = self
 
+    def __repr__(self):
+        return '%s@%s' % (self.name, Node.__repr__(self))
+
+    def resolve(self, registry):
+        Node.resolve(self, registry)
+        self.stripped_name_parts = strip_name(registry, self.name)
+        self.stripped_api, self.stripped_name, self.stripped_vendorid = self.stripped_name_parts
 
 class VendorIdNode(NamedNode):
 
-    def __init__(self, element, *args, **kwargs):
-        NamedNode.__init__(self, element, *args, **kwargs)
+    def __init__(self, element, **kwargs):
+        NamedNode.__init__(self, element, **kwargs)
 
+class TypeRefNode(Node):
+    def __init__(self, element, **kwargs):
+        Node.__init__(self, element, **kwargs)
+        self.name = element.text
+        self.is_const = False
+        self.is_pointer = False
+        self.array_size = None
+        self.referenced_type=None
+        if element.tail is not None and element.tail.strip().startswith('*'):
+            self.is_pointer = True
+        parent_element = element.find('..')
+        if parent_element is not None:
+            prev_element=None
+            element_index=None
+            next_element=None
+            i=0
+            for e in parent_element.findall('*'):
+                if e==element:
+                    element_index = i
+                elif element_index is None:
+                    prev_element = e
+                else:
+                    next_element = e
+                    break
+                i=i+1
+            if element_index is not None:
+                if prev_element is not None:
+                    prefix = prev_element.tail
+                else:
+                    prefix = parent_element.text
+                if prefix is not None and prefix.strip()=='const':
+                    self.is_const = True
+                if next_element is not None and next_element.tag=='name' and next_element.tail is not None:
+                    suffix = next_element.tail.strip()
+                    if suffix.startswith('[') and suffix.endswith(']'):
+                        self.array_size=int(suffix[1:-1])
+        if self.is_const and not self.is_pointer and self.array_size is None:
+            stdlog.write('type-ref %s defined const but is not a pointer\n' % self)
+
+    def resolve(self, registry):
+        Node.resolve(self, registry)
+        self.referenced_type = registry[('type', self.name)]
+
+    @staticmethod
+    def of(parent, **kwargs):
+        element = parent.element.find('type')
+        if element is not None:
+            return TypeRefNode(element, parent=parent, **kwargs)
+        else:
+            return None
+
+    def bit_size(self):
+        if self.is_pointer:
+            raise ValueError('can\'t calculate size of pointer %s' % self)
+        if self.name in TYPE_MAP:
+            t = TYPE_MAP[self.name]
+            try:
+                s = int(t[1:])
+            except:
+                raise ValueError('can\'t calculate size of %s with basic type %s' % (self, t))
+        else:
+            s = self.referenced_type.bit_size()
+        if self.array_size is not None:
+            s *= self.array_size
+        return s
+
+    def is_void(self):
+        return self.name=='void' and not self.is_pointer and not self.is_const and self.array_size is None
 
 class TypeNode(NamedNode):
 
-    def __init__(self, element, *args, **kwargs):
-        NamedNode.__init__(self, element, *args, **kwargs)
-        self.category = element.get('category')
-        self.parent_types = element.get('parent')
-        self.parent_types_nodes = None
-        self.requires = element.get('requires')
-        self.requires_nodes = None
-        self.flags_node = None
-        self.bits_node = None
-        type_element = element.find('type')
-        if type_element is not None:
-            self.type = type_element.text
-            if type_element.tail is not None and type_element.tail.startswith('*'):
-                self.type = self.type + '*'
-        self.members_list = []
-        self.members_dict = {}
+    def __init__(self, element, **kwargs):
+        NamedNode.__init__(self, element, **kwargs)
+        self.required_types=set()
+        self.required=[]
+        self.members = []
+        self.types = []
+        self.type=None
+        self.returns = None
+        self.params = []
+        self._bit_size=None
+        if element.get('category')=='funcpointer':
+            self.restructure_funcpointer()
+        self.add_elements()
 
-    def link(self):
-        NamedNode.link(self)
-        if self.registry is None:
+    def add_elements(self):
+        for element in self.element.findall('type'):
+            self.types.append(TypeRefNode(element, parent=self))
+        if len(self.types)>0:
+            self.type = self.types[0]
+        for element in self.element.findall('member'):
+            self.members.append(TypeMemberNode(element, parent=self))
+        if self.element.get('category')=='funcpointer':
+            return_type_element = self.element.find('proto')
+            self.returns = ParameterNode(return_type_element, parent=self)
+            for element in self.element.findall('param'):
+                self.params.append(ParameterNode(element, parent=self))
+
+    def restructure_funcpointer(self):
+        t = self.element.text
+        if t is None:
             return
-        if self.requires is not None:
-            nodes = self.requires_nodes = []
-            for require in self.requires.split(','):
-                require = require.strip()
-                if require in self.registry.all_types_dict:
-                    nodes.append(self.registry.all_types_dict[require])
-                else:
-                    logging.warning('there is no type-definition for the required type \'%s\'', require)
-        if self.parent_types is not None:
-            nodes = self.parent_types_nodes = []
-            for parent_type in self.parent_types.split(','):
-                if parent_type in self.registry.all_types_dict:
-                    nodes.append(self.registry.all_types_dict[parent_type])
-                else:
-                    logging.warning('there is no type-definition for the parent type \'%s\'', parent_type)
-        if self.category == 'bitmask':
-            if self.requires_nodes is not None:
-                if len(self.requires_nodes) != 1:
-                    logging.warning('flags-type \'%s\' defines multiple required types', self.name)
-                elif self.requires_nodes[0].category != 'enum':
-                    logging.warning('flags-type \'%s\' requires a non-enum type', self.name)
-                else:
-                    self.bits_node = self.requires_nodes[0]
-            if self.bits_node is None:
-                bits_name = self.name.replace("Flags", "FlagBits")
-                if bits_name == self.name:
-                    logging.warning('can not detect bits-type for flags \'%s\'', self.name)
-                else:
-                    if bits_name not in self.registry.all_types_dict:
-                        logging.info('there is no type-definition for bits-type \'%s\': automatically derived one.', bits_name)
-                        type_element = ET.SubElement(self.registry.root.find('types'), 'type')
-                        type_element.set('name', bits_name)
-                        type_element.set('category', 'enum')
-                        self.registry.add_type_element(type_element)
-                    self.bits_node = self.registry.all_types_dict[bits_name]
-            if self.bits_node is not None:
-                if self.bits_node.flags_node is not None:
-                    logging.warning('bits-type \'%s\' has already an associated flags-type \'%s\': can not assign \'%s\'', self.bits_node.name, self.bits_node.flags_node.name, self.name)
-                else:
-                    self.bits_node.flags_node = self
-        for node in self.members_list:
-            node.link()
+        t = t.strip()
+        if not t.startswith('typedef '):
+            return
+        t = t[8:]
+        # handle return type
+        pos = t.find('(')
+        if pos < 0:
+            return
+        t_prefix = None
+        t_type = t[:pos].strip()
+        t_suffix = ' '
+        if t_type.startswith('const '):
+            t_prefix = 'const '
+            t_type = t_type[6:].strip()
+        if t_type.endswith('*'):
+            t_suffix = '* '
+            t_type = t_type[:-1].strip()
+        e_proto = ET.SubElement(self.element, 'proto')
+        e_proto.text = t_prefix
+        e_type = ET.SubElement(e_proto, 'type')
+        e_type.text = t_type
+        e_type.tail = t_suffix
+        e_name = ET.SubElement(e_proto, 'name')
+        e_name.text = self.name
 
+        #handle params
+        t = self.element.find('name').tail.strip()
+        pos = t.find('(')
+        if pos < 0:
+            raise ValueError('expected parameter signature in %s' % self)
+        t_prefix = t[pos+1:].strip()
+        if len(t_prefix)>0:
+            t_prefix = t_prefix+'_'
+        else:
+            t_prefix = None
+        for e in self.element.findall('type'):
+            e_param = ET.SubElement(self.element, 'param')
+            e_param.text = t_prefix
+
+            t_prefix = ''
+            t_suffix = ' '
+            t_name = None
+            t_name_suffix = None
+            t = e.tail
+            if t is not None:
+                t = t.strip()
+                pos = t.find(')')
+                if pos>0:
+                    t = t[:pos].strip()
+                pos = t.find(',')
+                if pos>0:
+                    t_prefix = t[pos+1:].lstrip()
+                    t = t[:pos].strip()
+                if t.startswith('*'):
+                    t_suffix = '* '
+                    t = t[1:].strip()
+                pos = t.find('[')
+                if pos>0:
+                    t_name_suffix = t[pos:]
+                    t = t[:pos].strip()
+                t_name = t
+            e_type = ET.SubElement(e_param, 'type')
+            e_type.text = e.text
+            e_type.tail = t_suffix
+            if t_name is not None:
+                e_name = ET.SubElement(e_param, 'name')
+                e_name.text = t_name
+                e_name.tail = t_name_suffix
+
+    def resolve(self, registry):
+        NamedNode.resolve(self, registry)
+        requires = self.element.get('requires')
+        if requires is not None:
+            for req in requires.split(','):
+                t = registry[('type', req)]
+                self.required_types.add(t)
+                self.required.append(t)
+        elif self.category=='bitmask':
+            name,vendor = strip_vendor_suffix(registry, self.name)
+            if not name.endswith('Flags'):
+                raise ValueError('bitmask %s expacted name ending with Flags' % self)
+            requires = name[:-5] + 'FlagBits'
+            if vendor is not None:
+                self.requires = requires = requires + vendor
+            try:
+                n = registry[('type', requires)]
+                self.required_types.add(n)
+                self.required.append(n)
+            except KeyError:
+                stdlog.write('there is no FlagBits-definition for %s: automatically derived one.\n' % self)
+                e = ET.SubElement(registry.root.find('types'), 'type')
+                e.set('name', requires)
+                e.set('category', 'enum')
+                n = registry.add_type_element(e)
+                self.required_types.add(n)
+                self.required.append(n)
+        elif self.category=='funcpointer':
+            for t in self.returns.required_types:
+                self.required_types.add(t)
+            for p in self.params:
+                for t in p.required_types:
+                    self.required_types.add(t)
+        for t in self.types:
+            self.required_types.add(t.referenced_type)
+        for m in self.members:
+            for t in m.required_types:
+                self.required_types.add(t)
+
+    def bit_size(self):
+        s = self._bit_size
+        if s is not None:
+            return s
+        self._bit_size = 0
+        c = self.category
+        if c == 'basetype':
+            s = self.types[0].bit_size()
+        elif c == 'enum' or c == 'bitmask':
+            s = 32
+        elif c == 'struct':
+            s = 0
+            for m in self.members:
+                s += m.type.bit_size()
+        elif c == 'union':
+            s = 0
+            for m in self.members:
+                tmp = m.type.bit_size()
+                if tmp>s:
+                    s = tmp
+        else:
+            raise ValueError('unable to calculate size for %s' % self)
+        self._bit_size = s
+        if s == 0:
+            raise ValueError('calculated empty size for %s' % self)
+        if s % 32:
+            raise ValueError('calculated size for %s is not a multiple of 32-bit' % self)
+        return s
 
 class TypeMemberNode(NamedNode):
 
-    def __init__(self, element, *args, **kwargs):
-        NamedNode.__init__(self, element, *args, **kwargs)
-        self.type = None
-        type_element = element.find('type')
-        if type_element is not None:
-            self.type = type_element.text
-            if type_element.tail is not None and type_element.tail.startswith('*'):
-                self.type = self.type + '*'
+    def __init__(self, element, **kwargs):
+        NamedNode.__init__(self, element, **kwargs)
+        self.required_types=set()
+        self.type = TypeRefNode.of(self)
 
+    def resolve(self, registry):
+        NamedNode.resolve(self, registry)
+        if self.type is not None:
+            self.required_types.add(self.type.referenced_type)
 
 class EnumNode(NamedNode):
 
-    def __init__(self, element, *args, **kwargs):
-        NamedNode.__init__(self, element, *args, **kwargs)
-        self.values_list = []
-        self.values_dict = {}
-        self.type = element.get('type')
-        self.type_node = None
-        self.expand = element.get('expand')
-        if self.expand is None and self.type is not None:
-            basename = self.name
-            if self.stripped_vendorid is not None:
-                basename = basename[0:-len(self.stripped_vendorid)]
-            if self.type == 'bitmask' and basename.endswith('FlagBits'):
-                basename = basename[0:-8]
-            self.expand = re.sub('([a-z0-9])([A-Z])',
-                                 r'\1_\2', basename).upper()
+    def __init__(self, element, **kwargs):
+        NamedNode.__init__(self, element, **kwargs)
+        self.name_parts=decamelize(self.name).split('_')
+        self.add_elements()
 
-    def link(self):
-        NamedNode.link(self)
-        if self.registry is None or self.type is None:
-            return
-        if self.name not in self.registry.all_types_dict:
-            logging.info('there is no type-definition for the enum \'%s\': automatically derived one.', self.name)
-            type_element = ET.SubElement(self.registry.root.find('types'), 'type')
-            type_element.set('name', self.name)
-            type_element.set('category', 'enum')
-            self.registry.add_type_element(type_element)
-        self.type_node = self.registry.all_types_dict[self.name]
-        self.type_node.enum_node = self
-        for node in self.values_list:
-            node.link()
+    def add_elements(self):
+        for element in self.element.findall('enum'):
+            EnumItemNode(element, parent=self)
 
-
-class EnumValueNode(NamedNode):
+class EnumItemNode(NamedNode):
 
     def __init__(self, element, extension=None, *args, **kwargs):
-        NamedNode.__init__(self, element, *args, **kwargs)
-        self.extension = extension
-        if self.parent is not None and self.parent.expand is not None and self.name.startswith(self.parent.expand + '_'):
-            self.short_name = self.name[len(self.parent.expand) + 1:]
-            if self.parent.stripped_vendorid is not None and self.short_name.endswith('_' + self.parent.stripped_vendorid):
-                self.short_name = self.short_name[
-                    :-len(self.parent.stripped_vendorid) - 1]
-        else:
-            self.short_name = strip_api(self)
-        if self.parent is not None and self.parent.type == 'bitmask' and self.short_name.endswith('_BIT'):
-            self.short_name = self.short_name[0:-4]
-
+        NamedNode.__init__(self, element, **kwargs)
+        self.name_parts=self.name.split('_')
+        parent_parts = self.parent.name_parts
+        if self.parent.stripped_vendorid is not None and self.name_parts[len(self.name_parts)-1].upper()==self.parent.stripped_vendorid.upper():
+            self.name_parts = self.name_parts[:-1]
+        prefixlen=min(len(parent_parts), len(self.name_parts)-1)
+        i=0
+        while i<prefixlen:
+            if self.name_parts[i].upper() != parent_parts[i].upper():
+                break
+            i=i+1
+        while i>0 and self.name_parts[i][0].isnumeric():
+            i=i-1
+        self.short_name_parts = self.name_parts[i:]
+        self.short_name='_'.join(self.short_name_parts)
 
 class CommandNode(NamedNode):
 
-    def __init__(self, element, *args, **kwargs):
-        NamedNode.__init__(self, element, _name_node='proto/name', *args, **kwargs)
-        self.param_list = []
-        self.param_dict = {}
-        tmp = element.get('successcodes')
-        self.successcodes = tmp is not None and tmp.split(',') or None
-        tmp = element.get('errorcodes')
-        self.errorcodes = tmp is not None and tmp.split(',') or None
-        self.return_type = None
-        type_element = element.find('proto/type')
-        if type_element is not None:
-            self.return_type = type_element.text
-            if type_element.tail is not None and type_element.tail.startswith('*'):
-                self.return_type = self.return_type + '*'
+    def __init__(self, element, **kwargs):
+        NamedNode.__init__(self, element, _name_node='proto/name', **kwargs)
+        self.returns = None
+        self.params = []
+        self.required_types=set()
+        self.errorcodes=element.get('errorcodes')
+        self.successcodes=element.get('successcodes')
+        if self.errorcodes is not None:
+            self.errorcodes = self.errorcodes.split(',')
+        if self.successcodes is not None:
+            self.successcodes = self.successcodes.split(',')
+        self.add_elements()
 
-    def link(self):
-        NamedNode.link(self)
-        for node in self.param_list:
-            node.link()
+    def add_elements(self):
+        return_type_element = self.element.find('proto')
+        self.returns = ParameterNode(return_type_element, parent=self)
+        for element in self.element.findall('param'):
+            self.params.append(ParameterNode(element, parent=self))
 
+    def resolve(self, registry):
+        NamedNode.resolve(self, registry)
+        for t in self.returns.required_types:
+            self.required_types.add(t)
+        for p in self.params:
+            for t in p.required_types:
+                self.required_types.add(t)
 
 class ParameterNode(TypeMemberNode):
 
-    def __init__(self, element, *args, **kwargs):
-        TypeMemberNode.__init__(self, element, *args, **kwargs)
-        self.length = element.get('len')
-        self.length_param_for = None
-        self.length_param = None
-    def link(self):
-        TypeMemberNode.link(self)
-        if not isinstance(self.parent, CommandNode):
-            logging.warning('Parameter \'%s\' is not a child of a command', self.name)
-            return
-        if self.length is not None:
-            if not self.type.endswith('*'):
-                logging.warning('param \'%s\' of \'%s\' is not a pointer', self.length, self.parent.name)
-            if self.length == 'null-terminated':
-                return
-            if self.length not in self.parent.param_dict:
-                logging.warning('there is no param \'%s\' in \'%s\'', self.length, self.parent.name)
-            else:
-                self.length_param = self.parent.param_dict[self.length]
-                if self.length_param.length_param_for is not None:
-                    logging.warning('param \'%s\' is already used as langth param in \'%s\'', self.length, self.parent.name)
-                else:
-                    self.length_param.length_param_for = self
+    def __init__(self, element, **kwargs):
+        TypeMemberNode.__init__(self, element, **kwargs)
 
+def load_tree(tree_or_filename):
+    if hasattr(tree_or_filename, 'getroot'):
+        stdlog.write('loaded registry from in-memory tree\n')
+        return tree_or_filename
+    else:
+        stdlog.write('loading registry from file %s...\n' % tree_or_filename)
+        with open(tree_or_filename, "r") as regfile:
+            tree_or_filename = ET.parse(regfile)
+        stdlog.write('loaded registry\n')
+        return tree_or_filename
 
-class Registry(object):
+class Registry(Node):
 
     def __init__(self, tree_or_filename):
-        if isinstance(tree_or_filename, ET.ElementTree):
-            self.tree = tree_or_filename
-            logging.info('loaded registry from in-memory tree')
-        else:
-            logging.info('loading registry from file %s...', tree_or_filename)
-            with open(tree_or_filename, "r") as regfile:
-                self.tree = ET.parse(regfile)
-            logging.debug('loaded registry')
-        self.root = self.tree.getroot()
-        self.element = self.root
+        Node.__init__(self, load_tree(tree_or_filename))
+        self.root = self.element
+        self.vendorids = set(['EXT', 'KHR', 'ARB', 'NV', 'AMD'])
+        self.types=[]
+        self.enums=[]
+        self.commands=[]
+        self.add_elements()
 
-        self.vendorids = set(['EXT', 'KHR', 'ARB'])
-        self.vendorid_list = []
-        self.vendorid_dict = {}
+    def add_elements(self):
         for element in self.root.findall('vendorids/vendorid'):
             self.add_vendorid_element(element)
-
-        self.all_types_list = []
-        self.all_types_dict = {}
         for element in self.root.findall('types/type'):
             self.add_type_element(element)
-
-        self.all_enums_list = []
-        self.all_enums_dict = {}
-        self.all_enumvalues_list = []
-        self.all_enumvalues_dict = {}
         for element in self.root.findall('enums'):
             self.add_enum_element(element)
-
-        self.all_commands_list = []
-        self.all_commands_dict = {}
         for element in self.root.findall('commands/command'):
             self.add_command_element(element)
 
     def add_vendorid_element(self, element):
         node = VendorIdNode(element, parent=self)
-        fill_named_node(self.vendorid_list, self.vendorid_dict, node)
         self.vendorids.add(node.name)
+        return node
 
     def add_type_element(self, element):
         node = TypeNode(element, parent=self)
-        fill_named_node(self.all_types_list, self.all_types_dict, node)
-        for element2 in element.findall('member'):
-            node2 = TypeMemberNode(element2, parent=node)
-            fill_named_node(node.members_list, node.members_dict, node2)
+        self.types.append(node)
+        return node
 
     def add_enum_element(self, element):
         node = EnumNode(element, parent=self)
-        fill_named_node(self.all_enums_list, self.all_enums_dict, node)
-        for element2 in element.findall('enum'):
-            node2 = EnumValueNode(element2, parent=node)
-            fill_named_node(self.all_enumvalues_list,
-                            self.all_enumvalues_dict, node2)
-            fill_named_node(node.values_list, node.values_dict, node2)
+        self.enums.append(node)
+        return node
 
     def add_command_element(self, element):
         node = CommandNode(element, parent=self)
-        fill_named_node(self.all_commands_list, self.all_commands_dict, node)
-        for element2 in element.findall('param'):
-            node2 = ParameterNode(element2, parent=node)
-            fill_named_node(node.param_list, node.param_dict, node2)
+        self.commands.append(node)
+        return node
 
-    def link(self):
-        for node in self.vendorid_list:
-            node.link()
-        for node in self.all_types_list:
-            node.link()
-        for node in self.all_enums_list:
-            node.link()
-        for node in self.all_commands_list:
-            node.link()
-
-def write_go_comment(out, content, doc=False):
-    if isinstance(content, str):
-        content = [content]
-    elif isinstance(content, Node):
-        content = [content.element]
-    elif isinstance(content, ET.Element):
-        content = [content]
-    for part in content:
-        if isinstance(part, ET.Element):
-            if part.tag == 'comment':
-                part = part.text
-            elif part.get('comment') is not None:
-                part = part.get('comment')
-            else:
-                continue
-        if len(part) <= 0:
-            continue
-        lines = part.splitlines()
-        if len(lines) == 1:
-            line = lines[0]
-            if line.startswith('//'):
-                line = line[2:].strip()
-            if doc:
-                out.write('/// ')
-            else:
-                out.write('// ')
-            out.write(line)
-            out.write('\n')
-        else:
-            if not doc:
-                out.write('/*\n')
-            for line in lines:
-                if doc:
-                    out.write('/// ')
-                else:
-                    out.write(' * ')
-                out.write(line)
-                out.write('\n')
-            if not doc:
-                out.write(' */\n')
-
-
-def strip_api(name_or_node):
-    if isinstance(name_or_node, NamedNode):
-        name = name_or_node.name
-    else:
-        name = name_or_node
-    if name.startswith('PFN_'):
-        return 'PFN_' + strip_api(name[4:])
-    if name.lower().startswith('vk'):
-        name = name[2:]
-    if name.startswith('_'):
-        name = name[1:]
-    return name
+    def resolve(self, registry=None):
+        if registry is None:
+            registry = self
+        Node.resolve(self, registry)
 
 TYPE_MAP = {
+    'void':      'c_void', #std::os::raw::c_void
+    'char':      'c_char', #std::os::raw::c_char
     'uint8_t':   'u8',
     'uint16_t':  'u16',
     'uint32_t':  'u32',
@@ -416,42 +520,33 @@ TYPE_MAP = {
     'uintptr_t': 'usize',
     'float':     'f32',
     'double':    'f64',
+    'VkEnum':    'basic_types::EnumRepr',
+    'VkFlags':   'basic_types::FlagRepr',
     'VK_DEFINE_HANDLE': 'basic_types::Handle',
     'VK_DEFINE_NON_DISPATCHABLE_HANDLE': 'basic_types::DispatchableHandle',
-    'void*': '*const u32',
-    'char*': '*const u8',
-    'uint8_t*':   '*const u8',
-    'uint16_t*':  '*const u16',
-    'uint32_t*':  '*const u32',
-    'uint64_t*':  '*const u64',
-    'int8_t*':    '*const i8',
-    'int16_t*':   '*const i16',
-    'int32_t*':   '*const i32',
-    'int64_t*':   '*const i64',
-    'ssize_t*':   '*const isize',
-    'size_t*':    '*const usize',
-    'intptr_t*':  '*const isize',
-    'uintptr_t*': '*const usize',
-    'float*':     '*const f32',
-    'double*':    '*const f64',
 }
 
 
-def map_type(type_name, registry=None, as_reference=False):
-    if type_name in TYPE_MAP:
-        return TYPE_MAP[type_name]
-    if as_reference and registry is not None and type_name.endswith('*'):
-        type_name2 = type_name[:-1]
-        if type_name2 in registry.all_types_dict:
-            ref = registry.all_types_dict[type_name2]
-            if ref.category=='struct' or ref.category=='union':
-                return '&'+ref.stripped_name
-    if type_name.endswith('*'):
-        return '*const ' + strip_api(type_name[:-1])
-    elif registry is not None and type_name in registry.all_types_dict:
-        return registry.all_types_dict[type_name].stripped_name
+def map_type(type_ref):
+    if type_ref.name in TYPE_MAP:
+        type_name = TYPE_MAP[type_ref.name]
     else:
-        return strip_api(type_name)
+        ref = type_ref.referenced_type
+        type_name = ref.stripped_name
+        if ref.category is None and ref.requires is not None and ref.requires.endswith('.h'):
+            if type_ref.is_pointer:
+                type_name = TYPE_MAP['void']
+            else:
+                type_name = TYPE_MAP['uintptr_t']
+
+    if type_ref.is_pointer:
+        if type_ref.is_const:
+            type_name = '*const '+type_name
+        else:
+            type_name = '*mut '+type_name
+    if type_ref.array_size is not None:
+        type_name = '[%s; %d]' % (type_name, type_ref.array_size)
+    return type_name
 
 KEYWORD_MAP = {
     'as': 'as_',
@@ -497,85 +592,127 @@ def map_keyword(name, type_name=None):
         return KEYWORD_MAP[name]
     return name
 
-
-def map_type_with_name(type_name, node, as_reference=False):
-    name = node.name
-    namenode = node.element.find('name')
-    type_name = map_type(type_name, registry=node.registry, as_reference=as_reference)
-    basetype = type_name
-    array_idx = name.find('[')
-    array_idx2 = name.find(']')
-    if array_idx > 0 and array_idx < array_idx2:
-        array_len = int(name[array_idx + 1:array_idx2])
-        name = name[0:array_idx]
-        type_name = '[%s; %d]' % (type_name, array_len)
-    elif namenode is not None and namenode.tail is not None:
-        tail = namenode.tail
-        array_idx = tail.find('[')
-        array_idx2 = tail.find(']')
-        if array_idx >= 0 and array_idx < array_idx2:
-            array_len = int(tail[array_idx + 1:array_idx2])
-            type_name = '[%s; %d]' % (type_name, array_len)
-    name = map_keyword(name, basetype)
-    return type_name, name
+def write_go_comment(out, content, doc=False, indent=''):
+    if content is None:
+        return
+    lines = content.splitlines()
+    if len(lines) == 1:
+        line = lines[0]
+        if line.startswith('//'):
+            line = line[2:].strip()
+        out.write(indent)
+        if doc:
+            out.write('/// ')
+        else:
+            out.write('// ')
+        out.write(line)
+        out.write('\n')
+    else:
+        if not doc:
+            out.write(indent)
+            out.write('/*\n')
+        for line in lines:
+            out.write(indent)
+            if doc:
+                out.write('/// ')
+            else:
+                out.write(' * ')
+            out.write(line)
+            out.write('\n')
+        if not doc:
+            out.write(indent)
+            out.write(' */\n')
 
 def write_type_basetype(out, options, type_node):
-    write_go_comment(out, type_node, doc=True)
-    out.write('pub type %s = %s;\n' % (type_node.stripped_name, map_type(type_node.type, type_node.registry)))
+    write_go_comment(out, type_node.comment, doc=True)
+    out.write('pub type %s = %s;\n' % (type_node.stripped_name, map_type(type_node.type)))
+
+def write_type_enum_simple(out, options, type_node):
+    write_go_comment(out, type_node.comment, doc=True)
+    out.write('pub type %s = basic_types::EnumRepr;\n' % (type_node.stripped_name))
+
+def write_type_enum_complex(out, options, type_node):
+    write_go_comment(out, type_node.comment, doc=True)
+    out.write('#[derive(Copy,Clone)]\n')
+    out.write('#[repr(u32)]\n')
+    out.write('pub enum %s {\n' % (type_node.stripped_name))
+    enum_node = None
+    try:
+        enum_node = type_node.registry[('enums', type_node.name)]
+    except KeyError:
+        pass
+    if enum_node is not None:
+        write_enum_complex(out, options, enum_node)
+    else:
+        out.write('  MaxEnum = 0x7FFFFFFF,\n')
+    out.write('}\n')
+    out.write('vk_enum_impl!(%s);\n' % (type_node.stripped_name))
 
 def write_type_enum(out, options, type_node):
-    write_go_comment(out, type_node, doc=True)
-    out.write('pub type %s = basic_types::Enum;\n' % (type_node.stripped_name))
+    if options.get('simple_enums') is True:
+        write_type_enum_simple(out, options, type_node)
+    else:
+        write_type_enum_complex(out, options, type_node)
 
 def write_type_bitmask(out, options, type_node):
-    write_go_comment(out, type_node, doc=True)
-    out.write('pub type %s = basic_types::Flags;\n' % (type_node.stripped_name))
+    bits_type = type_node.required[0]
+    write_go_comment(out, type_node.comment, doc=True)
+    out.write('vk_bitmask!(pub %s for %s);\n' % (type_node.stripped_name, bits_type.stripped_name))
 
 def write_type_struct(out, options, type_node):
-    write_go_comment(out, type_node, doc=True)
+    write_go_comment(out, type_node.comment, doc=True)
     out.write('#[repr(C)]\n')
     out.write('pub struct %s {\n' % type_node.stripped_name)
-    for member in type_node.members_list:
-        comment = member.element.get('comment')
-        if comment is not None:
-            out.write('  /// %s\n' % comment)
-        type_name, name = map_type_with_name(member.type, member)
-        out.write('  %s: %s,\n' % (map_keyword(name), type_name))
+    for member in type_node.members:
+        write_go_comment(out, member.comment, doc=True, indent='  ')
+        out.write('  pub %s: %s,\n' % (map_keyword(decamelize(member.name).lower()), map_type(member.type)))
     out.write('}\n')
 
 
 def write_type_union(out, options, type_node):
-    write_go_comment(out, type_node, doc=True)
-    out.write('pub enum %s {\n' % type_node.stripped_name)
-    for member in type_node.members_list:
-        comment = member.element.get('comment')
-        if comment is not None:
-            out.write('  /// %s\n' % comment)
-        type_name, name = map_type_with_name(member.type, member)
-        out.write('  %s(%s),\n' % (name, type_name))
+    size = type_node.bit_size()
+    write_go_comment(out, type_node.comment, doc=True)
+    out.write('#[repr(C)]\n')
+    out.write('pub struct %s {\n' % type_node.stripped_name)
+    out.write('  data: [u32; %d],\n' % (size/32))
+    out.write('}\n')
+    out.write('impl %s {\n' % type_node.stripped_name)
+    for member in type_node.members:
+        mem_size = member.type.bit_size()
+        out.write('  #[inline] pub fn as_%s(&self) -> &%s {\n' % (decamelize(member.name).lower(), map_type(member.type)))
+        out.write('    unsafe { mem::transmute(&self.data) }\n')
+        out.write('  }\n')
+    for member in type_node.members:
+        mem_size = member.type.bit_size()
+        out.write('  #[inline] pub fn from_%s(value: %s) -> %s {\n' % (decamelize(member.name).lower(), map_type(member.type), type_node.stripped_name))
+        if mem_size<size:
+            out.write('    let value = (value, [%s0u32]);\n' % (int((size-mem_size)/32-1) * '0u32, '))
+        out.write('    %s {\n' % (type_node.stripped_name))
+        out.write('      data: unsafe { mem::transmute(value) }\n')
+        out.write('    }\n')
+        out.write('  }\n')
     out.write('}\n')
 
-
 def write_type_funcpointer(out, options, type_node):
-    write_go_comment(out, type_node, doc=True)
-    returntype = type_node.element.text
-    if returntype.startswith('typedef '):
-        returntype = returntype[8:].strip()
-    pos = returntype.find('(')
-    if pos > 0:
-        returntype = returntype[0:pos].strip()
-    else:
-        logging.warning('expected \'(\' in functionpointer %s', type_node.name)
-    out.write('pub type %s = fn(' % type_node.stripped_name)
-    out.write(', '.join([map_type(n.tail is not None and n.tail.startswith('*') and n.text + '*' or n.text, type_node.registry) for n in type_node.element.findall('type')]))
+    write_go_comment(out, type_node.comment, doc=True)
+    out.write('pub type %s = extern fn(' % type_node.stripped_name)
+    first = True
+    for param in type_node.params:
+        if first:
+            first = False
+        else:
+            out.write(', ')
+        out.write('%s: %s' % (map_keyword(decamelize(param.name).lower()), map_type(param.type)))
     out.write(')')
-    if returntype != 'void':
-        out.write(' -> ')
-        out.write(map_type(returntype, type_node.registry))
+    if not type_node.returns.type.is_void():
+        out.write(' -> %s' % (map_type(type_node.returns.type)))
     out.write(';\n')
 
 
+
 def write_type(out, options, type_node):
+    if type_node.name in TYPE_MAP:
+        return
     if type_node.category == 'basetype' or type_node.category == 'handle':
         write_type_basetype(out, options, type_node)
     elif type_node.category == 'enum':
@@ -593,19 +730,30 @@ def write_type(out, options, type_node):
 def get_enum_value(enumvalue):
     value = enumvalue.element.get('value')
     if value is not None:
+        value = value.strip()
+        if value.startswith('-'):
+            value = value + "i32 as u32"
         return value
     bitpos = enumvalue.element.get('bitpos')
     if bitpos is not None:
         return '1<<%s' % bitpos
     return 'TODO'
 
-def write_enum(out, options, enum):
-    if len(enum.values_list) <= 0 or enum.type is None:
+def write_enum_simple(out, options, enum):
+    if len(enum.children) <= 0 or enum.type is None:
         return
     out.write('\n// enum: %s\n' % enum.name)
-    for value in enum.values_list:
-        write_go_comment(out, value, doc=True)
+    for value in enum.children:
+        write_go_comment(out, value.comment, doc=True)
         out.write('pub const %s : %s = %s;\n' % (value.stripped_name.upper(), enum.stripped_name, get_enum_value(value)))
+    out.write('pub const %s_MAX_ENUM : %s = 0x7FFFFFFF;\n' % (decamelize(enum.stripped_name).upper(), enum.stripped_name))
+
+def write_enum_complex(out, options, enum):
+    if len(enum.children) <= 0 or enum.type is None:
+        return
+    for value in enum.children:
+        write_go_comment(out, value.comment, doc=True, indent='  ')
+        out.write('  %s = %s,\n' % (camelize(value.short_name_parts), get_enum_value(value)))
 
 #MANUAL_COMMAND_IMPL=set([
 #    'vkCreateGraphicsPipelines',
@@ -620,50 +768,48 @@ def write_enum(out, options, enum):
 def write_command(out, options, command):
     #if command.name in MANUAL_COMMAND_IMPL:
     #    return
-    write_go_comment(out, command, doc=True)
-    out.write('pub fn %s (' % command.stripped_name)
-    first=True
-    for param in command.param_list:
-        if param.length_param_for is not None:
-            continue
-        type_name = param.type
-        is_array_type = type_name.endswith('*') and param.length is not None and param.length != 'null-terminated'
-        if is_array_type:
-            type_name = type_name[:-1]
-        type_name, name = map_type_with_name(type_name, param, as_reference=True)
-
+    write_go_comment(out, command.comment, doc=True)
+    out.write('#[link_name="%s"]\n' % command.name)
+    out.write('pub fn %s (' % decamelize(command.stripped_name).lower())
+    first = True
+    for param in command.params:
         if first:
             first = False
         else:
             out.write(', ')
-        out.write(name)
-        out.write(': ')
-        if is_array_type:
-            out.write('&[%s]'%type_name)
-        else:
-            out.write(type_name)
+        out.write('%s: %s' % (map_keyword(decamelize(param.name).lower()), map_type(param.type)))
     out.write(')')
-    if command.return_type != 'void':
-        out.write(' -> ')
-        out.write(map_type(command.return_type, command.registry))
-    out.write(' {\n')
-    out.write('}\n')
-
+    if not command.returns.type.is_void():
+        out.write(' -> %s' % (map_type(command.returns.type)))
+    out.write(';\n')
 
 def write(out, options, registry):
     write_go_comment(out, registry.root.find('comment').text)
     out.write("""
 #[allow(unused_imports)]
 use basic_types;
+use std::os::raw::{c_void,c_char};
+use std::mem;
 
 """)
-    for type_node in registry.all_types_list:
-        write_type(out, options, type_node)
-    for enum_node in registry.all_enums_list:
-        write_enum(out, options, enum_node)
-    for command_node in registry.all_commands_list:
+    for type_node in registry.types:
+        if type_node.category!='enum' and type_node.category!='bitmask':
+            write_type(out, options, type_node)
+    for type_node in registry.types:
+        if type_node.category=='enum':
+            write_type(out, options, type_node)
+    for type_node in registry.types:
+        if type_node.category=='bitmask':
+            write_type(out, options, type_node)
+    if options.get('simple_enums') is True:
+        for enum_node in registry.enums:
+            write_enum_simple(out, options, enum_node)
+    out.write('\n')
+    out.write('#[link(name="vulkan")]\n')
+    out.write('extern "C" {\n')
+    for command_node in registry.commands:
         write_command(out, options, command_node)
-
+    out.write('}\n')
 
 def urlopen(url):
     # pylint: disable=E0611,W0702,F0401,E1101
@@ -678,7 +824,7 @@ def urlopen(url):
 def download_file(url, dest):
     file_name = url.split('/')[-1]
     with urlopen(url) as response:
-        logging.info("Downloading: %s", file_name)
+        stdlog.write("Downloading: %s\n" % file_name)
         file_size_dl = 0
         block_sz = 8192
         with open(dest, 'wb') as out:
@@ -690,7 +836,7 @@ def download_file(url, dest):
                 out.write(buf)
                 status = r"%10d" % file_size_dl
                 status = status + chr(8) * (len(status) + 1)
-                logging.info(status)
+                stdlog.write(status)
 
 def main():
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -700,9 +846,9 @@ def main():
     if not os.path.isfile(vk_xml_path):
         download_file(vk_xml_url, vk_xml_path)
     registry = Registry(vk_xml_path)
-    registry.link()
+    registry.resolve()
     options = {
-        #'enum_modules': True
+        #'simple_enums': True
     }
     with open(vk_out_rs, 'w') as out:
         write(out, options, registry)
