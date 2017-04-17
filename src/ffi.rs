@@ -24,8 +24,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-use std::os::raw::{c_void, c_char};
-use wsi::_all::*;
+use std::os::raw;
+use platform::_all::*;
 use types::*;
 
 include!(concat!(env!("OUT_DIR"), "/vulkan_ffi.rs"));

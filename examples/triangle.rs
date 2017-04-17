@@ -26,8 +26,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern crate vulkan_rs;
 extern crate winit;
-extern crate utils;
-
+mod utils;
 use utils::{SampleInfo, init, destroy};
 
 fn main() {

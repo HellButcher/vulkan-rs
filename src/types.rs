@@ -24,7 +24,9 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-use std::os::raw::{c_void, c_char};
+use std::os::raw;
+use platform::_all::*;
+
 pub type VkEnum = u32;
 
 pub type VkVersionInfo = u32;
@@ -68,7 +70,5 @@ impl Default for VkDispatchableHandle {
     }
 }
 
-
-use wsi::_all::*;
 
 include!(concat!(env!("OUT_DIR"), "/vulkan_types.rs"));

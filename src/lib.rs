@@ -28,7 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
-pub mod wsi;
+pub mod platform;
 
 macro_rules! vk_make_version {
     ( $major:expr, $minor:expr, $patch:expr ) => {
@@ -70,7 +70,7 @@ pub mod vk {
     pub use types::VkDispatchableHandle as DispatchableHandle;
     pub use util::vk_null as null;
     pub use util::vk_null_handle as null_handle;
-    pub use wsi;
+    pub use platform;
 
     include!(concat!(env!("OUT_DIR"), "/vulkan_alias.rs"));
 
@@ -81,7 +81,7 @@ pub mod safe;
 pub mod prelude {
     pub use types::*;
     pub use ffi::*;
-    pub use wsi as vk_wsi;
+    pub use platform as vk_platform;
     pub use util::{vk_null, vk_null_handle};
     pub use util::VkResultObj;
 }

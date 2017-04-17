@@ -20,14 +20,16 @@ from generator import *
 
 TYPE_MAP = {
     # types defined in vk_platform.h
-    'void':     'c_void',
-    'char':     'c_char',
-    'float':    'f32',
-    'uint8_t':  'u8',
-    'uint32_t': 'u32',
-    'uint64_t': 'u64',
-    'int32_t':  'i32',
-    'size_t':   'usize',
+    'void':         'raw::c_void',
+    'char':         'raw::c_char',
+    'int':          'raw::c_int',
+    'unsigned int': 'raw::c_uint',
+    'float':        'f32',
+    'uint8_t':      'u8',
+    'uint32_t':     'u32',
+    'uint64_t':     'u64',
+    'int32_t':      'i32',
+    'size_t':       'usize',
 
     'VK_DEFINE_HANDLE': 'VkHandle',
     'VK_DEFINE_NON_DISPATCHABLE_HANDLE': 'VkDispatchableHandle',
@@ -333,10 +335,17 @@ class RustOutputGenerator(OutputGenerator):
         (numVal,strVal) = self.enumToValue(elem, needsNum)
         strType = None
         if strVal is not None:
+            str1 = ''
+            str2 = ''
             if strVal.startswith('('):
                 strVal = strVal[1:-1]
             if strVal.startswith('~'):
-                strVal = '!'+strVal[1:]
+                strVal = strVal[1:]
+                str1 = '!'
+            pos = strVal.rfind('-')
+            if pos>1:
+                str2 = strVal[pos:]
+                strVal = strVal[:pos]
             lStrVal = strVal.lower()
             if lStrVal.endswith('f') and '0x' not in lStrVal:
                 strVal = strVal[:-1]
@@ -367,7 +376,7 @@ class RustOutputGenerator(OutputGenerator):
                 strType = '&\'static str'
             else:
                 strType = 'VkEnum'
-        return (numVal,strVal,strType)
+        return (numVal,str1+strVal+str2,strType)
     #
     def getTypeSize(self, typename, _visited=None):
         if typename in TYPE_SIZE_MAP:

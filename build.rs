@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #[cfg(all(feature = "VK_USE_PLATFORM_DEFAULT", target_os = "windows"))]
 fn enable_default_platform() {
     println!("cargo:rustc-cfg=feature=\"VK_USE_PLATFORM_WIN32_KHR\"");
+    println!("cargo:rustc-cfg=feature=\"VK_USE_PLATFORM_WIN32_KHX\"");
 }
 
 #[cfg(all(feature = "VK_USE_PLATFORM_DEFAULT", target_os = "linux"))]
@@ -41,6 +42,16 @@ fn enable_default_platform() {
 #[cfg(all(feature = "VK_USE_PLATFORM_DEFAULT", target_os = "android"))]
 fn enable_default_platform() {
     println!("cargo:rustc-cfg=feature=\"VK_USE_PLATFORM_ANDROID_KHR\"");
+}
+
+#[cfg(all(feature = "VK_USE_PLATFORM_DEFAULT", target_os = "ios"))]
+fn enable_default_platform() {
+    println!("cargo:rustc-cfg=feature=\"VK_USE_PLATFORM_IOS_MVK\"");
+}
+
+#[cfg(all(feature = "VK_USE_PLATFORM_DEFAULT", target_os = "macos"))]
+fn enable_default_platform() {
+    println!("cargo:rustc-cfg=feature=\"VK_USE_PLATFORM_MACOS_MVK\"");
 }
 
 #[cfg(not(feature = "VK_USE_PLATFORM_DEFAULT"))]

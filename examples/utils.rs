@@ -140,9 +140,9 @@ fn init_surface_wsi(info: &mut SampleInfo, w: &winit::Window) -> VkResultObj<()>
             sType: VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
             pNext: vk_null(),
             flags: 0,
-            display: display as *mut vk_wsi::wayland::wl_display,
+            display: display as *mut vk_platform::wayland::wl_display,
             surface: (w as &WindowExt).get_wayland_surface().unwrap() as
-                     *mut vk_wsi::wayland::wl_surface,
+                     *mut vk_platform::wayland::wl_surface,
         };
         vk_unsafe!(vkCreateWaylandSurfaceKHR(info.inst,
                                              &create_info,
@@ -154,8 +154,8 @@ fn init_surface_wsi(info: &mut SampleInfo, w: &winit::Window) -> VkResultObj<()>
             sType: VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
             pNext: vk_null(),
             flags: 0,
-            connection: connection as *mut vk_wsi::xcb::xcb_connection_t,
-            window: (w as &WindowExt).get_xlib_window().unwrap() as vk_wsi::xcb::xcb_window_t,
+            connection: connection as *mut vk_platform::xcb::xcb_connection_t,
+            window: (w as &WindowExt).get_xlib_window().unwrap() as vk_platform::xcb::xcb_window_t,
         };
         vk_unsafe!(vkCreateXcbSurfaceKHR(info.inst, &create_info, vk_null(), &mut info.surface));
         return Ok(());
@@ -172,7 +172,7 @@ fn init_surface_wsi(info: &mutSampleInfo, w: &winit::Window) -> VkResultObj<()> 
         sType: VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
         pNext: vk_null(),
         flags: 0,
-        window: (w as &WindowExt).get_native_window() as *mut vk_wsi::android::ANativeWindow,
+        window: (w as &WindowExt).get_native_window() as *mut vk_platform::android::ANativeWindow,
     };
     vk_unsafe!(vkCreateAndroidSurfaceKHR(info.inst, create_info, vk_null(), &mut info.surface));
     return Ok(());

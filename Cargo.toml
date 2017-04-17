@@ -13,9 +13,15 @@ build = "build.rs"
 
 [dev-dependencies]
 winit = "0.6"
-utils = { path = "examples/utils" }
 
 [build-dependencies]
+
+[[example]]
+name = "utils"
+crate-type = ["lib"]
+
+[[example]]
+name = "triangle"
 
 [features]
 default = [ "VK_USE_PLATFORM_DEFAULT" ]
@@ -26,6 +32,9 @@ VK_USE_PLATFORM_WAYLAND_KHR = []
 VK_USE_PLATFORM_MIR_KHR = []
 VK_USE_PLATFORM_ANDROID_KHR = []
 VK_USE_PLATFORM_WIN32_KHR = []
+VK_USE_PLATFORM_WIN32_KHX = [ "VK_USE_PLATFORM_WIN32_KHR" ]
+VK_USE_PLATFORM_IOS_MVK = []
+VK_USE_PLATFORM_MACOS_MVK = []
 VK_USE_PLATFORM_VI_NN = []
 # When enabeling VK_USE_PLATFORM_DEFAULT, the default plaftorm features for the
 # current target (see abobe) will be automatically enabled.

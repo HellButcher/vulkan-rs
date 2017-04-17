@@ -73,15 +73,15 @@ pub mod win32 {
 }
 pub mod _all {
     #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-    pub use wsi::xlib::*;
+    pub use platform::xlib::*;
     #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-    pub use wsi::xcb::*;
+    pub use platform::xcb::*;
     #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-    pub use wsi::android::*;
+    pub use platform::android::*;
     #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-    pub use wsi::mir::*;
+    pub use platform::mir::*;
     #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-    pub use wsi::wayland::*;
+    pub use platform::wayland::*;
     #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-    pub use wsi::win32::*;
+    pub use platform::win32::*;
 }
