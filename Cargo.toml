@@ -6,8 +6,29 @@ license = "BSD-2-Clause"
 description = "Vulkan bindings for the rust programming language."
 homepage = "https://github.com/HellButcher/vulkan-rs"
 repository = "https://github.com/HellButcher/vulkan-rs.git"
+readme = "README.md"
 build = "build.rs"
 
 [dependencies]
 
+[dev-dependencies]
+winit = "0.6"
+utils = { path = "examples/utils" }
+
 [build-dependencies]
+
+[features]
+default = [ "VK_USE_PLATFORM_DEFAULT" ]
+VK_USE_PLATFORM_XLIB_KHR = []
+VK_USE_PLATFORM_XLIB_XRANDR_EXT = [ "VK_USE_PLATFORM_XLIB_KHR" ]
+VK_USE_PLATFORM_XCB_KHR = []
+VK_USE_PLATFORM_WAYLAND_KHR = []
+VK_USE_PLATFORM_MIR_KHR = []
+VK_USE_PLATFORM_ANDROID_KHR = []
+VK_USE_PLATFORM_WIN32_KHR = []
+VK_USE_PLATFORM_VI_NN = []
+# When enabeling VK_USE_PLATFORM_DEFAULT, the default plaftorm features for the
+# current target (see abobe) will be automatically enabled.
+# For example, when target_os="android" the VK_USE_PLATFORM_ANDROID_KHR feature
+# will be enabled. (see build.rs)
+VK_USE_PLATFORM_DEFAULT = []

@@ -24,64 +24,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#[allow(const_err)]
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-pub mod wsi;
+use std::os::raw::{c_void, c_char};
+use wsi::_all::*;
+use types::*;
 
-macro_rules! vk_make_version {
-    ( $major:expr, $minor:expr, $patch:expr ) => {
-        (($major << 22) | ($minor << 12) | $patch)
-     };
-}
-
-// utilities
-pub mod util {
-    pub type VkResultObj<T> = Result<T, ::types::VkResult>;
-
-    pub use std::ptr::null_mut as vk_null;
-
-    pub trait VkNullHandle: Sized {
-        fn null() -> Self;
-    }
-
-    #[inline]
-    pub fn vk_null_handle<T: VkNullHandle>() -> T {
-        T::null()
-    }
-}
-
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-mod types;
-
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-pub mod ffi;
-
-pub use types::*;
-
-pub mod vk {
-    pub use types::VkEnum as Enum;
-    pub use types::VkHandle as Handle;
-    pub use types::VkDispatchableHandle as DispatchableHandle;
-    pub use util::vk_null as null;
-    pub use util::vk_null_handle as null_handle;
-    pub use wsi;
-
-    include!(concat!(env!("OUT_DIR"), "/vulkan_alias.rs"));
-
-}
-
-pub mod safe;
-
-pub mod prelude {
-    pub use types::*;
-    pub use ffi::*;
-    pub use wsi as vk_wsi;
-    pub use util::{vk_null, vk_null_handle};
-    pub use util::VkResultObj;
-}
+include!(concat!(env!("OUT_DIR"), "/vulkan_ffi.rs"));

@@ -24,64 +24,36 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#[allow(const_err)]
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-pub mod wsi;
+extern crate vulkan_rs;
+extern crate winit;
+extern crate utils;
 
-macro_rules! vk_make_version {
-    ( $major:expr, $minor:expr, $patch:expr ) => {
-        (($major << 22) | ($minor << 12) | $patch)
-     };
-}
+use utils::{SampleInfo, init, destroy};
 
-// utilities
-pub mod util {
-    pub type VkResultObj<T> = Result<T, ::types::VkResult>;
+fn main() {
+    let events_loop = winit::EventsLoop::new();
 
-    pub use std::ptr::null_mut as vk_null;
+    let window = winit::WindowBuilder::new()
+        .with_title("A fantastic window!")
+        .build(&events_loop)
+        .unwrap();
 
-    pub trait VkNullHandle: Sized {
-        fn null() -> Self;
-    }
+    let mut sample_info = SampleInfo::default();
+    let res = init(&mut sample_info, &window);
+    println!("init returned {:?}", res);
 
-    #[inline]
-    pub fn vk_null_handle<T: VkNullHandle>() -> T {
-        T::null()
-    }
-}
+    // TODO: implement example
 
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-mod types;
+    events_loop.run_forever(|event| {
+        println!("{:?}", event);
 
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-pub mod ffi;
+        match event {
+            winit::Event::WindowEvent { event: winit::WindowEvent::Closed, .. } => {
+                events_loop.interrupt()
+            }
+            _ => (),
+        }
+    });
 
-pub use types::*;
-
-pub mod vk {
-    pub use types::VkEnum as Enum;
-    pub use types::VkHandle as Handle;
-    pub use types::VkDispatchableHandle as DispatchableHandle;
-    pub use util::vk_null as null;
-    pub use util::vk_null_handle as null_handle;
-    pub use wsi;
-
-    include!(concat!(env!("OUT_DIR"), "/vulkan_alias.rs"));
-
-}
-
-pub mod safe;
-
-pub mod prelude {
-    pub use types::*;
-    pub use ffi::*;
-    pub use wsi as vk_wsi;
-    pub use util::{vk_null, vk_null_handle};
-    pub use util::VkResultObj;
+    destroy(&mut sample_info);
 }

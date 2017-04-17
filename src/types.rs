@@ -24,64 +24,51 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#[allow(const_err)]
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-pub mod wsi;
+use std::os::raw::{c_void, c_char};
+pub type VkEnum = u32;
 
-macro_rules! vk_make_version {
-    ( $major:expr, $minor:expr, $patch:expr ) => {
-        (($major << 22) | ($minor << 12) | $patch)
-     };
+pub type VkVersionInfo = u32;
+
+#[repr(C)]
+#[derive(Clone,Copy)]
+pub struct VkHandle {
+    value: usize,
+}
+#[repr(C)]
+#[derive(Clone,Copy)]
+pub struct VkDispatchableHandle {
+    value: u32,
 }
 
-// utilities
-pub mod util {
-    pub type VkResultObj<T> = Result<T, ::types::VkResult>;
-
-    pub use std::ptr::null_mut as vk_null;
-
-    pub trait VkNullHandle: Sized {
-        fn null() -> Self;
-    }
-
+impl ::util::VkNullHandle for VkHandle {
     #[inline]
-    pub fn vk_null_handle<T: VkNullHandle>() -> T {
-        T::null()
+    fn null() -> VkHandle {
+        return VkHandle { value: 0 };
     }
 }
 
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-mod types;
-
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-pub mod ffi;
-
-pub use types::*;
-
-pub mod vk {
-    pub use types::VkEnum as Enum;
-    pub use types::VkHandle as Handle;
-    pub use types::VkDispatchableHandle as DispatchableHandle;
-    pub use util::vk_null as null;
-    pub use util::vk_null_handle as null_handle;
-    pub use wsi;
-
-    include!(concat!(env!("OUT_DIR"), "/vulkan_alias.rs"));
-
+impl ::util::VkNullHandle for VkDispatchableHandle {
+    #[inline]
+    fn null() -> VkDispatchableHandle {
+        return VkDispatchableHandle { value: 0 };
+    }
 }
 
-pub mod safe;
-
-pub mod prelude {
-    pub use types::*;
-    pub use ffi::*;
-    pub use wsi as vk_wsi;
-    pub use util::{vk_null, vk_null_handle};
-    pub use util::VkResultObj;
+impl Default for VkHandle {
+    #[inline]
+    fn default() -> VkHandle {
+        return VkHandle { value: 0 };
+    }
 }
+
+impl Default for VkDispatchableHandle {
+    #[inline]
+    fn default() -> VkDispatchableHandle {
+        return VkDispatchableHandle { value: 0 };
+    }
+}
+
+
+use wsi::_all::*;
+
+include!(concat!(env!("OUT_DIR"), "/vulkan_types.rs"));
