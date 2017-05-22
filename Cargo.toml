@@ -46,6 +46,7 @@ VK_USE_PLATFORM_DEFAULT = []
 
 [package.metadata.release]
 no-dev-version = true
+pre-release-commit-message = "release {{version}}"
 pre-release-replacements = [
   {file="README.md", search="(?m)^vulkan_rs = \"[a-z0-9\\.-]+\"$", replace="vulkan_rs = \"{{version}}\""}
 ]
