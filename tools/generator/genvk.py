@@ -111,7 +111,13 @@ def makeGenOpts(extensions = [], removeExtensions = [], protect = True, director
           RustGeneratorOptions(
             filename          = 'vulkan_types.rs',
             ffiFilename       = 'vulkan_ffi.rs',
+            #safeFfiFilename   = 'vulkan_safe.rs',
             aliasFilename     = 'vulkan_alias.rs',
+            utilsFilename     = 'vulkan_utils.rs',
+            utilsProperties   = dict(
+                toName        = ['VkResult'],
+                toDescription = ['VkResult'],
+            ),
             directory         = directory,
             apiname           = 'vulkan',
             profile           = None,

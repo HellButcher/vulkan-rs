@@ -67,7 +67,7 @@ pub use types::*;
 pub mod vk {
     pub use types::VkEnum as Enum;
     pub use types::VkHandle as Handle;
-    pub use types::VkDispatchableHandle as DispatchableHandle;
+    pub use types::VkNonDispatchableHandle as NonDispatchableHandle;
     pub use util::vk_null as null;
     pub use util::vk_null_handle as null_handle;
     pub use platform;

@@ -32,14 +32,14 @@ pub type VkEnum = u32;
 pub type VkVersionInfo = u32;
 
 #[repr(C)]
-#[derive(Clone,Copy)]
+#[derive(Clone,Copy,Debug,PartialEq,Eq)]
 pub struct VkHandle {
     value: usize,
 }
 #[repr(C)]
-#[derive(Clone,Copy)]
-pub struct VkDispatchableHandle {
-    value: u32,
+#[derive(Clone,Copy,Debug,PartialEq,Eq)]
+pub struct VkNonDispatchableHandle {
+    value: u64,
 }
 
 impl ::util::VkNullHandle for VkHandle {
@@ -49,10 +49,10 @@ impl ::util::VkNullHandle for VkHandle {
     }
 }
 
-impl ::util::VkNullHandle for VkDispatchableHandle {
+impl ::util::VkNullHandle for VkNonDispatchableHandle {
     #[inline]
-    fn null() -> VkDispatchableHandle {
-        return VkDispatchableHandle { value: 0 };
+    fn null() -> VkNonDispatchableHandle {
+        return VkNonDispatchableHandle { value: 0 };
     }
 }
 
@@ -63,10 +63,10 @@ impl Default for VkHandle {
     }
 }
 
-impl Default for VkDispatchableHandle {
+impl Default for VkNonDispatchableHandle {
     #[inline]
-    fn default() -> VkDispatchableHandle {
-        return VkDispatchableHandle { value: 0 };
+    fn default() -> VkNonDispatchableHandle {
+        return VkNonDispatchableHandle { value: 0 };
     }
 }
 

@@ -32,7 +32,7 @@ TYPE_MAP = {
     'size_t':       'usize',
 
     'VK_DEFINE_HANDLE': 'VkHandle',
-    'VK_DEFINE_NON_DISPATCHABLE_HANDLE': 'VkDispatchableHandle',
+    'VK_DEFINE_NON_DISPATCHABLE_HANDLE': 'VkNonDispatchableHandle',
 }
 
 TYPE_SIZE_MAP = {
@@ -69,6 +69,9 @@ class RustGeneratorOptions(GeneratorOptions):
                  filename = None,
                  aliasFilename = None,
                  ffiFilename = None,
+                 safeFfiFilename = None,
+                 utilsFilename = None,
+                 utilsProperties = None,
                  directory = '.',
                  apiname = None,
                  profile = None,
@@ -87,6 +90,9 @@ class RustGeneratorOptions(GeneratorOptions):
         self.alignFuncParam  = alignFuncParam
         self.aliasFilename   = aliasFilename
         self.ffiFilename     = ffiFilename
+        self.safeFfiFilename = safeFfiFilename
+        self.utilsFilename   = utilsFilename
+        self.utilsProperties = utilsProperties
 
 # RustOutputGenerator - subclass of OutputGenerator.
 # Generates Rust-language API interfaces.
@@ -107,9 +113,15 @@ class RustGeneratorOptions(GeneratorOptions):
 class RustOutputGenerator(OutputGenerator):
     """Generate specified API interfaces in a specific style, such as rust code"""
     # This is an ordered list of sections in the header file.
-    SECTIONS = ['include', 'define', 'basetype', 'handle', 'enum', 'group',
-                'bitmask', 'funcpointer', 'struct', 'command']
-    ALIAS_SECTIONS = [ 'alias' ]
+    BASE_SECTIONS = ['include', 'define', 'basetype', 'handle', 'enum', \
+        'group', 'bitmask', 'funcpointer', 'struct', 'command']
+    FFI_SECTIONS = ['command:extern']
+    SAFE_FFI_SECTIONS = ['command:safe']
+    ALIAS_SECTIONS = ['define:alias', 'basetype:alias', 'handle:alias', \
+        'enum:alias', 'group:alias', 'bitmask:alias', 'funcpointer:alias', \
+        'struct:alias', 'command:alias']
+    UTILS_SECTIONS = ['group:toname', 'group:todescription']
+    ALL_SECTIONS = BASE_SECTIONS + FFI_SECTIONS + SAFE_FFI_SECTIONS + ALIAS_SECTIONS + UTILS_SECTIONS
     #
     def __init__(self,
                  errFile = sys.stderr,
@@ -117,25 +129,26 @@ class RustOutputGenerator(OutputGenerator):
                  diagFile = sys.stdout):
         OutputGenerator.__init__(self, errFile, warnFile, diagFile)
         # Internal state - accumulators for different inner block text
-        self.sections = dict([(section, []) for section in self.SECTIONS+self.ALIAS_SECTIONS])
+        self.sections = dict([(section, []) for section in self.ALL_SECTIONS])
         self.aliasOutFile = None
         self.ffiOutFile = None
+        self.safeFfiOutFile = None
+        self.utilsOutFile = None
     #
+    def openFile(self, filename):
+        if filename != None:
+            filename = self.genOpts.directory + '/' + filename
+            return io.open(filename, 'w', encoding='utf-8')
+        else:
+            return None
+
     def beginFile(self, genOpts):
         OutputGenerator.beginFile(self, genOpts)
         #
-        if self.genOpts.aliasFilename != None:
-            filename = self.genOpts.directory + '/' + self.genOpts.aliasFilename
-            self.aliasOutFile = io.open(filename, 'w', encoding='utf-8')
-        else:
-            self.aliasOutFile = None
-
-        if self.genOpts.ffiFilename != None:
-            filename = self.genOpts.directory + '/' + self.genOpts.ffiFilename
-            self.ffiOutFile = io.open(filename, 'w', encoding='utf-8')
-        else:
-            self.ffiOutFile = None
-
+        self.aliasOutFile = self.openFile(self.genOpts.aliasFilename)
+        self.ffiOutFile = self.openFile(self.genOpts.ffiFilename)
+        self.safeFfiOutFile = self.openFile(self.genOpts.safeFfiFilename)
+        self.utilsOutFile = self.openFile(self.genOpts.utilsFilename)
 
         # User-supplied prefix text, if any (list of strings)
         if genOpts.prefixText:
@@ -146,8 +159,23 @@ class RustOutputGenerator(OutputGenerator):
             self.aliasOutFile.close()
         if self.ffiOutFile is not None:
             self.ffiOutFile.close()
+        if self.safeFfiOutFile is not None:
+            self.safeFfiOutFile.close()
+        if self.utilsOutFile is not None:
+            self.utilsOutFile.close()
         # Finish processing in superclass
         OutputGenerator.endFile(self)
+    #
+    def writeSections(self, sections, outFile):
+        if outFile is None:
+            return
+        write('', file=outFile)
+        write('// feature ', self.featureName, file=outFile)
+        for section in sections:
+            contents = self.sections[section]
+            if contents:
+                write('\n'.join(contents), file=outFile)
+                write('', file=outFile)
     #
     def beginFeature(self, interface, emit):
         # Start processing in superclass
@@ -156,32 +184,18 @@ class RustOutputGenerator(OutputGenerator):
         # Accumulate includes, defines, types, enums, function pointer typedefs,
         # end function prototypes separately for this feature. They're only
         # printed in endFeature().
-        self.sections = dict([(section, []) for section in self.SECTIONS+self.ALIAS_SECTIONS])
+        self.sections = dict([(section, []) for section in self.ALL_SECTIONS])
     def endFeature(self):
         # Rust-specific
         # Actually write the interface to the output file.
-        if len(self.sections['command'])>0:
-            self.appendSection('command', '}\n')
+        if len(self.sections['command:extern'])>0:
+            self.appendSection('command:extern', '}\n')
         if self.emit:
-            write('', file=self.outFile)
-            write('// feature ', self.featureName, file=self.outFile)
-            for section in self.SECTIONS:
-                contents = self.sections[section]
-                if contents:
-                    if self.ffiOutFile is not None and section == 'command':
-                        write('\n'.join(contents), file=self.ffiOutFile)
-                        write('', file=self.ffiOutFile)
-                    else:
-                        write('\n'.join(contents), file=self.outFile)
-                        write('', file=self.outFile)
-            if self.aliasOutFile is not None:
-                write('', file=self.aliasOutFile)
-                write('// feature ', self.featureName, file=self.aliasOutFile)
-                for section in self.ALIAS_SECTIONS:
-                    contents = self.sections[section]
-                    if contents:
-                        write('\n'.join(contents), file=self.aliasOutFile)
-                        write('', file=self.aliasOutFile)
+            self.writeSections(self.BASE_SECTIONS, self.outFile)
+            self.writeSections(self.FFI_SECTIONS, self.ffiOutFile)
+            self.writeSections(self.SAFE_FFI_SECTIONS, self.safeFfiOutFile)
+            self.writeSections(self.ALIAS_SECTIONS, self.aliasOutFile)
+            self.writeSections(self.UTILS_SECTIONS, self.utilsOutFile)
 
         # Finish processing in superclass
         OutputGenerator.endFeature(self)
@@ -293,43 +307,6 @@ class RustOutputGenerator(OutputGenerator):
     # param - Element (<param> or <member>) to identify
     def getRustParamNameLength(self, param):
         return len(param.find('name').text)+2
-    #
-    # makeRustDecls - return Rust prototype and function pointer typedef for a
-    #   command, as a two-element list of strings.
-    # cmd - Element containing a <command> tag
-    def makeRustDecl(self, cmd):
-        """Generate Rust function signature for <command> Element"""
-        proto = cmd.find('proto')
-        params = cmd.findall('param')
-        #
-        # Insert the function return type/name.
-        # Done by walking the tree for <proto> element by element.
-        # etree has elem.text followed by (elem[i], elem[i].tail)
-        #   for each child element and any following text.
-        # The contents of the <name> tag is ignored and prepended later.
-        cmdname, rettype = self.splitRustTypeAndName(proto, in_function_params=False)
-        # Now add the parameter declaration list. Concatenate all the text from
-        # a <param> node without the tags. No tree walking required since all
-        # tags are ignored.
-        # The contents of the <name> tags are ignored and prepended to the types.
-        if len(params) > 0:
-            targetLen = 0
-            for param in params:
-                targetLen = max(targetLen, self.getRustParamNameLength(param))
-            argsdecl = '(\n'
-            first = True
-            for param in params:
-                if not first:
-                    argsdecl += ',\n'
-                argsdecl += '    ' + self.makeRustParamDecl(param, int((targetLen+3)/4)*4, in_function_params=True)[0]
-                first = False
-            argsdecl += ')'
-        else:
-            argsdecl = '()'
-        cmddecl = 'pub fn ' + cmdname + argsdecl
-        if rettype is not None:
-            cmddecl += '\n    -> ' + rettype
-        return cmddecl
     #
     def enumToRustValue(self, elem, needsNum):
         (numVal,strVal) = self.enumToValue(elem, needsNum)
@@ -492,7 +469,7 @@ class RustOutputGenerator(OutputGenerator):
         self.appendSection('struct', body)
         #
         alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('alias', alias)
+        self.appendSection('struct:alias', alias)
     #
     # Struct (e.g. C "struct" type) generation.
     # This is a special case of the <type> tag where the contents are
@@ -533,7 +510,7 @@ class RustOutputGenerator(OutputGenerator):
         self.appendSection('struct', body)
         #
         alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('alias', alias)
+        self.appendSection('struct:alias', alias)
     #
     # Callback (e.g. Rust function pointer type) generation.
     def genFuncPointer(self, typeinfo, typeName):
@@ -545,7 +522,7 @@ class RustOutputGenerator(OutputGenerator):
         self.appendSection('funcpointer', body)
         #
         alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('alias', alias)
+        self.appendSection('funcpointer:alias', alias)
     #
     # Handle (e.g. Rust type definition) generation.
     def genHandle(self, typeinfo, typeName):
@@ -556,7 +533,7 @@ class RustOutputGenerator(OutputGenerator):
         body = guard
         handleType = TYPE_MAP[typeref]
         body += '#[repr(C)]\n'
-        body += '#[derive(Clone,Copy)]\n'
+        body += '#[derive(Clone,Copy,Debug,PartialEq,Eq)]\n'
         body += 'pub struct %s (%s);\n'%(typeName, handleType)
         body += 'impl ::util::VkNullHandle for %s {\n' % (typeName)
         body += '    fn null() -> %s { return %s(%s{value:0}); }\n' % (typeName,typeName,handleType)
@@ -567,7 +544,7 @@ class RustOutputGenerator(OutputGenerator):
         self.appendSection('handle', body)
         #
         alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('alias', alias)
+        self.appendSection('handle:alias', alias)
     #
     # Basetype (e.g. Rust type definition) generation.
     def genBasetype(self, typeinfo, typeName):
@@ -580,7 +557,7 @@ class RustOutputGenerator(OutputGenerator):
         self.appendSection('basetype', body)
         #
         alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('alias', alias)
+        self.appendSection('basetype:alias', alias)
     #
     # Bitmask generation
     def genBitmask(self, typeinfo, typeName):
@@ -595,7 +572,7 @@ class RustOutputGenerator(OutputGenerator):
         self.appendSection('bitmask', body)
         #
         alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('alias', alias)
+        self.appendSection('bitmask:alias', alias)
     #
     # Group (e.g. C "enum" type) generation.
     # These are concatenated together with other types.
@@ -603,8 +580,13 @@ class RustOutputGenerator(OutputGenerator):
         OutputGenerator.genGroup(self, groupinfo, groupName)
         if groupName in IGNORED:
             return
+        genToNameFunc = self.genOpts.utilsProperties and 'toName' in self.genOpts.utilsProperties and groupName in self.genOpts.utilsProperties['toName']
+        genToDescriptionFunc = self.genOpts.utilsProperties and 'toDescription' in self.genOpts.utilsProperties and groupName in self.genOpts.utilsProperties['toDescription']
         groupElem = groupinfo.elem
-
+        if groupElem.get('type') == 'bitmask':
+            section = 'bitmask'
+        else:
+            section = 'group'
         expandName = re.sub(r'([0-9a-z_])([A-Z0-9][^A-Z0-9]?)',r'\1_\2',groupName).upper()
 
         expandPrefix = expandName
@@ -614,7 +596,12 @@ class RustOutputGenerator(OutputGenerator):
             expandSuffix = '_' + expandSuffixMatch.group()
             # Strip off the suffix from the prefix
             expandPrefix = expandName.rsplit(expandSuffix, 1)[0]
-
+        #
+        if genToNameFunc:
+            self.appendSection(section+':toname', 'pub fn %s_to_name(value: ::types::%s) -> &\'static str {' % (groupName,groupName))
+        if genToDescriptionFunc:
+            self.appendSection(section+':todescription', 'pub fn %s_to_description(value: ::types::%s) -> &\'static str {' % (groupName,groupName))
+        #
         # Prefix
         body = '\npub type ' + groupName + ' = VkEnum;\n'
         alias = '\npub use types::%s as %s;\n'%(groupName,self.stripPrefixFromName(groupName))
@@ -653,7 +640,14 @@ class RustOutputGenerator(OutputGenerator):
             if self.isEnumRequired(elem):
                 body += guard + prefix + name + ' : ' + groupName + ' = ' + strVal + ";\n"
                 alias += guard + 'pub use types::%s as %s;\n'%(name, self.stripPrefixFromName(name))
-
+            if genToNameFunc:
+                self.appendSection(section+':toname', '  if value == %s { return "%s"; }' % (strVal, name))
+            if genToDescriptionFunc:
+                descr = elem.get('comment')
+                if descr is not None:
+                    self.appendSection(section+':todescription', '  if value == %s { return "%s"; }' % (strVal, descr))
+                else:
+                    self.appendSection(section+':todescription', '  if value == %s { return "%s"; }' % (strVal, name))
 
             if (isEnum and elem.get('extends') is None):
                 if (minName == None):
@@ -677,13 +671,15 @@ class RustOutputGenerator(OutputGenerator):
 
         body += prefix + expandPrefix + "_MAX_ENUM" + expandSuffix + ' : ' + groupName + ' = 0x7FFFFFFF;\n'
 
-        if groupElem.get('type') == 'bitmask':
-            section = 'bitmask'
-        else:
-            section = 'group'
         self.appendSection(section, body)
         #
-        self.appendSection('alias', alias)
+        #
+        if genToNameFunc:
+            self.appendSection(section+':toname', '  return "";\n}')
+        if genToDescriptionFunc:
+            self.appendSection(section+':todescription', '  return "";\n}')
+        #
+        self.appendSection(section+':alias', alias)
     #
     # Enumerant generation
     # <enum> tags may specify their values in several ways, but are usually
@@ -699,6 +695,10 @@ class RustOutputGenerator(OutputGenerator):
         body = guard
         body += 'pub const ' + name.ljust(33) + ': ' + strType.ljust(6) + ' = ' + strVal + ';'
         self.appendSection('enum', body)
+        #
+        alias = guard
+        alias += 'pub use types::%s as %s;'%(name, self.stripPrefixFromName(name))
+        self.appendSection('enum:alias', alias)
     #
     def genDefine(self, typeinfo, typeName):
         guard = ''
@@ -723,7 +723,7 @@ class RustOutputGenerator(OutputGenerator):
         self.appendSection('define', body)
         #
         alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('alias', alias)
+        self.appendSection('define:alias', alias)
     #
     # Command generation
     def genCmd(self, cmdinfo, name):
@@ -732,13 +732,89 @@ class RustOutputGenerator(OutputGenerator):
         guard = ''
         if self.featureExtraProtect is not None:
             guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
-        if len(self.sections['command'])==0:
+        if len(self.sections['command:extern'])==0:
             body = guard + '#[link(name = "vulkan")]\nextern "C" {\n'
-            self.appendSection('command', body)
+            self.appendSection('command:extern', body)
         OutputGenerator.genCmd(self, cmdinfo, name)
         #
-        body = self.makeRustDecl(cmdinfo.elem)
-        self.appendSection('command', body + ';\n')
+        proto = cmdinfo.elem.find('proto')
+        params = cmdinfo.elem.findall('param')
+        #
+        # Insert the function return type/name.
+        # Done by walking the tree for <proto> element by element.
+        # etree has elem.text followed by (elem[i], elem[i].tail)
+        #   for each child element and any following text.
+        # The contents of the <name> tag is ignored and prepended later.
+        cmdname, rettype = self.splitRustTypeAndName(proto, in_function_params=False)
+        # Now add the parameter declaration list. Concatenate all the text from
+        # a <param> node without the tags. No tree walking required since all
+        # tags are ignored.
+        # The contents of the <name> tags are ignored and prepended to the types.
+        if len(params) > 0:
+            targetLen = 0
+            for param in params:
+                targetLen = max(targetLen, self.getRustParamNameLength(param))
+            argsdecl = safeargsdecl = safeargs = '(\n'
+            first = True
+            for param in params:
+                if not first:
+                    argsdecl += ',\n'
+                    safeargsdecl += ',\n'
+                    safeargs += ',\n'
+                paramdecl, paramname, paramtype = self.makeRustParamDecl(param, int((targetLen+3)/4)*4, in_function_params=True)
+                argsdecl += '    ' + paramdecl
+                safearg = paramname
+                if paramtype == '*const '+TYPE_MAP['char'] and param.get('len') == 'null-terminated':
+                    if param.get('optional') == 'true':
+                        safetype = 'Option<&CStr>'
+                        safearg = '%s.map_or(util::vk_null(), |v| v.as_ptr())'%paramname
+                    else:
+                        safetype = '&CStr'
+                        safearg = '%s.as_ptr()'%paramname
+                elif paramtype.startswith('*') and param.get('len') is None:
+                    safetype = paramtype.replace('*mut ', '&mut ').replace('*const ', '&')
+                    safearg = paramname
+                    if param.get('optional') == 'true':
+                        safetype = 'Option<%s>'%safetype
+                        safearg = '%s.unwrap_or(util::vk_null())'%safearg
+                else:
+                    safetype = paramtype
+                    safearg = paramname
+                safeargsdecl += '        %s: %s' % (paramname, safetype)
+                safeargs += '        ' + safearg
+                first = False
+            argsdecl += ')'
+            safeargsdecl += ')'
+            safeargs += ')'
+        else:
+            argsdecl = safeargsdecl = safeargs = '()'
+        body = 'pub fn ' + cmdname + argsdecl
+        safe = 'pub fn ' + cmdname + safeargsdecl
+        successcodes = cmdinfo.elem.get('successcodes')
+        if successcodes is not None:
+            successcodes = successcodes.split(",")
+        if rettype is not None:
+            body += '\n    -> ' + rettype
+            if rettype == 'VkResult' and successcodes is not None:
+                safe += ' -> VkResultObj'
+            else:
+                safe += ' -> ' + rettype
+        self.appendSection('command:extern', body + ';\n')
+        safe += ' {\n'
+        safe_call = 'unsafe { ffi::%s%s }'%(cmdname, safeargs)
+        if successcodes is not None:
+            safe += '    let res = %s;\n' % safe_call
+            safe += '    if %s {\n' % (' or '.join(['res == %s'%v for v in successcodes]))
+            safe += '        return Ok(res);\n'
+            safe += '    } else {\n'
+            safe += '        return Err(res);\n'
+            safe += '    }\n'
+        elif rettype is not None:
+            safe += '    return %s\n;' % safe_call
+        else:
+            safe += '    %s;\n' % safe_call
+        safe += '}\n'
+        self.appendSection('command:safe', safe)
         #
         alias = guard + 'pub use ffi::%s as %s;'%(name,self.stripPrefixFromName(name))
-        self.appendSection('alias', alias)
+        self.appendSection('command:alias', alias)
