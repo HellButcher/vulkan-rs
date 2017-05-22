@@ -7,7 +7,7 @@ Vulkan bindings for the rust programming language.
 
 ```toml
 [dependencies]
-vulkan_rs = "0.1.0"
+vulkan_rs = "0.1.1"
 ```
 
 ```rust
