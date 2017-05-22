@@ -37,8 +37,70 @@ macro_rules! vk_make_version {
 }
 
 // utilities
+#[allow(non_snake_case)]
 pub mod util {
-    pub type VkResultObj<T> = Result<T, ::types::VkResult>;
+    use std::fmt;
+    use std::error;
+
+    #[derive(Copy,Clone,PartialEq,Eq)]
+    pub struct VkError (::types::VkResult);
+
+    impl VkError {
+        #[inline]
+        pub fn is_success(self) -> bool{
+            return (self.0 as i32) >= 0;
+        }
+        #[inline]
+        pub fn is_error(self) -> bool {
+            return (self.0 as i32) < 0;
+        }
+        #[inline]
+        pub fn name(self) -> &'static str {
+            return VkResult_to_name(self.0);
+        }
+        #[inline]
+        pub fn description(self) -> &'static str {
+            return VkResult_to_description(self.0);
+        }
+    }
+
+    impl From<::types::VkResult> for VkError {
+        #[inline]
+        fn from(value: ::types::VkResult) -> VkError {
+            return VkError(value);
+        }
+    }
+
+    impl fmt::Debug for VkError {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            let name = self.name();
+            if name.len() > 0 {
+                write!(f, "{}", name)
+            } else {
+                write!(f, "VkResult({})", self.0)
+            }
+        }
+    }
+
+    impl fmt::Display for VkError {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            let name = self.name();
+            if name.len() > 0 {
+                write!(f, "{}", name)
+            } else {
+                write!(f, "VkResult({})", self.0)
+            }
+        }
+    }
+
+    impl error::Error for VkError {
+        #[inline]
+        fn description(&self) -> &str {
+            return VkResult_to_description(self.0);
+        }
+    }
+
+    pub type VkResultObj<T=::types::VkResult> = Result<T, VkError>;
 
     pub use std::ptr::null_mut as vk_null;
 
@@ -50,6 +112,8 @@ pub mod util {
     pub fn vk_null_handle<T: VkNullHandle>() -> T {
         T::null()
     }
+
+    include!(concat!(env!("OUT_DIR"), "/vulkan_utils.rs"));
 }
 
 #[allow(non_upper_case_globals)]
@@ -70,13 +134,13 @@ pub mod vk {
     pub use types::VkNonDispatchableHandle as NonDispatchableHandle;
     pub use util::vk_null as null;
     pub use util::vk_null_handle as null_handle;
+    pub use util::VkResultObj as ResultObj;
+    pub use util::VkError as Error;
     pub use platform;
 
     include!(concat!(env!("OUT_DIR"), "/vulkan_alias.rs"));
 
 }
-
-pub mod safe;
 
 pub mod prelude {
     pub use types::*;
@@ -84,4 +148,5 @@ pub mod prelude {
     pub use platform as vk_platform;
     pub use util::{vk_null, vk_null_handle};
     pub use util::VkResultObj;
+    pub use util::VkError;
 }

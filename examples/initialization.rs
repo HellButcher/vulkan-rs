@@ -26,10 +26,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern crate vulkan_rs;
 extern crate winit;
+#[macro_use]
+extern crate log;
+extern crate env_logger;
 mod utils;
-use utils::{SampleInfo, init, destroy};
+use utils::Application;
 
 fn main() {
+    env_logger::init().unwrap();
     let events_loop = winit::EventsLoop::new();
 
     let window = winit::WindowBuilder::new()
@@ -37,14 +41,12 @@ fn main() {
         .build(&events_loop)
         .unwrap();
 
-    let mut sample_info = SampleInfo::default();
-    let res = init(&mut sample_info, &window);
-    println!("init returned {:?}", res);
+    let mut app = Application::new("triangle", &window).unwrap();
 
     // TODO: implement example
 
     events_loop.run_forever(|event| {
-        println!("{:?}", event);
+        info!("{:?}", event);
 
         match event {
             winit::Event::WindowEvent { event: winit::WindowEvent::Closed, .. } => {
@@ -54,5 +56,6 @@ fn main() {
         }
     });
 
-    destroy(&mut sample_info);
+    app.dispose();
+
 }

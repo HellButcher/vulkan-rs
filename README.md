@@ -11,5 +11,37 @@ vulkan_rs = "0.1.0"
 ```
 
 ```rust
-extern crate vulkan_rs as vk;
+extern crate vulkan_rs;
+[...]
+use vulkan_rs::prelude::*;
+[...]
+fn main() {
+  [...]
+  let app_aame = CString::new("Application name").unwrap();
+  let app_info = VkApplicationInfo {
+      sType: VK_STRUCTURE_TYPE_APPLICATION_INFO,
+      pNext: vk_null(),
+      pApplicationName: app_aame.as_ptr(),
+      applicationVersion: 1,
+      pEngineName: app_aame.as_ptr(),
+      engineVersion: 1,
+      apiVersion: VK_API_VERSION_1_0,
+  };
+  let create_info = VkInstanceCreateInfo {
+      sType: VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+      pNext: vk_null(),
+      flags: 0,
+      pApplicationInfo: &app_info,
+      enabledLayerCount: 0,
+      ppEnabledLayerNames: vk_null(),
+      enabledExtensionCount: 0,
+      ppEnabledExtensionNames: vk_null(),
+  };
+  let mut instance: VkInstance = vk_null_handle();
+  let res = unsafe { vkCreateInstance(&create_info, vk_null(), &mut instance)};
+  if res != VK_SUCCESS {
+    return Err(res);
+  }
+  [...]
+}
 ```

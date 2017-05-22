@@ -13,15 +13,17 @@ build = "build.rs"
 
 [dev-dependencies]
 winit = "0.6"
+log = "0.3"
+env_logger = "0.4"
 
 [build-dependencies]
 
-[[example]]
-name = "utils"
-crate-type = ["lib"]
+#[[example]]
+#name = "utils"
+#crate-type = ["lib"]
 
 [[example]]
-name = "triangle"
+name = "initialization"
 
 [features]
 default = [ "VK_USE_PLATFORM_DEFAULT" ]
@@ -41,3 +43,9 @@ VK_USE_PLATFORM_VI_NN = []
 # For example, when target_os="android" the VK_USE_PLATFORM_ANDROID_KHR feature
 # will be enabled. (see build.rs)
 VK_USE_PLATFORM_DEFAULT = []
+
+[package.metadata.release]
+no-dev-version = true
+pre-release-replacements = [
+  {file="README.md", search="(?m)^vulkan_rs = \"[a-z0-9\\.-]+\"$", replace="vulkan_rs = \"{{version}}\""}
+]
