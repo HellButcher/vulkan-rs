@@ -56,11 +56,11 @@ pub mod util {
         }
         #[inline]
         pub fn name(self) -> &'static str {
-            return VkResult_to_name(self.0);
+            return get_VkResult_name(self.0);
         }
         #[inline]
         pub fn description(self) -> &'static str {
-            return VkResult_to_description(self.0);
+            return get_VkResult_description(self.0);
         }
     }
 
@@ -96,7 +96,7 @@ pub mod util {
     impl error::Error for VkError {
         #[inline]
         fn description(&self) -> &str {
-            return VkResult_to_description(self.0);
+            return get_VkResult_description(self.0);
         }
     }
 
@@ -126,9 +126,16 @@ mod types;
 #[allow(non_snake_case)]
 pub mod ffi;
 
+#[allow(non_upper_case_globals)]
+#[allow(non_camel_case_types)]
+#[allow(non_snake_case)]
+pub mod safe;
+
 pub use types::*;
 
 pub mod vk {
+    use ffi as cmds;
+    use types;
     pub use types::VkEnum as Enum;
     pub use types::VkHandle as Handle;
     pub use types::VkNonDispatchableHandle as NonDispatchableHandle;

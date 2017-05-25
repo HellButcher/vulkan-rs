@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pylint: disable=I0011,C0103,C0301,C0326,R0201,W0613
+
 import io,os,re,sys
 from generator import *
 
@@ -35,22 +37,30 @@ TYPE_MAP = {
     'VK_DEFINE_NON_DISPATCHABLE_HANDLE': 'VkNonDispatchableHandle',
 }
 
-TYPE_SIZE_MAP = {
-    'float':    4,
-    'double':   8,
-    'uint8_t':  1,
-    'uint16_t': 2,
-    'uint32_t': 4,
-    'uint64_t': 8,
-    'int8_t':  1,
-    'int16_t': 2,
-    'int32_t': 4,
-    'int64_t': 8,
+TYPE_PROPERTY_MAP = {
+    'float':    (4, True),
+    'double':   (8, True),
+    'uint8_t':  (1, True),
+    'uint16_t': (2, True),
+    'uint32_t': (4, True),
+    'uint64_t': (8, True),
+    'int8_t':   (1, True),
+    'int16_t':  (2, True),
+    'int32_t':  (4, True),
+    'int64_t':  (8, True),
+
+    'void':         (None, False),
+    'char':         (None, True),
+    'int':          (None, True),
+    'unsigned int': (None, True),
+    'size_t':       (None, True),
+    'VK_DEFINE_HANDLE': (None, True),
+    'VK_DEFINE_NON_DISPATCHABLE_HANDLE': (None, True),
 }
 
-KEYWORDS = set(['as', 'break', 'const', 'continue', 'crate', 'else', 'enum',
-    'extern', 'false', 'fn', 'for', 'if', 'impl', 'in', 'let', 'loop', 'match',
-    'mod', 'move', 'mut', 'pub', 'ref', 'return', 'self', 'static', 'struct',
+KEYWORDS = set(['as', 'break', 'const', 'continue', 'crate', 'else', 'enum', \
+    'extern', 'false', 'fn', 'for', 'if', 'impl', 'in', 'let', 'loop', 'match', \
+    'mod', 'move', 'mut', 'pub', 'ref', 'return', 'self', 'static', 'struct', \
     'type', 'trait', 'true', 'unsafe', 'use', 'where', 'while'])
 
 IGNORED = set(['VK_NULL_HANDLE'])
@@ -64,76 +74,24 @@ IGNORED = set(['VK_NULL_HANDLE'])
 #   prefixText - list of strings to prefix generated header with
 #     (usually a copyright statement + calling convention macros).
 class RustGeneratorOptions(GeneratorOptions):
-    """Represents options during rust interface generation"""
     def __init__(self,
-                 filename = None,
-                 aliasFilename = None,
-                 ffiFilename = None,
-                 safeFfiFilename = None,
-                 utilsFilename = None,
-                 utilsProperties = None,
-                 directory = '.',
-                 apiname = None,
-                 profile = None,
-                 versions = '.*',
-                 emitversions = '.*',
-                 defaultExtensions = None,
-                 addExtensions = None,
-                 removeExtensions = None,
-                 sortProcedure = regSortFeatures,
                  prefixText = "",
-                 alignFuncParam = 0):
-        GeneratorOptions.__init__(self, filename, directory, apiname, profile,
-                                  versions, emitversions, defaultExtensions,
-                                  addExtensions, removeExtensions, sortProcedure)
+                 *args, **kwargs):
+        GeneratorOptions.__init__(self, *args, **kwargs)
         self.prefixText      = prefixText
-        self.alignFuncParam  = alignFuncParam
-        self.aliasFilename   = aliasFilename
-        self.ffiFilename     = ffiFilename
-        self.safeFfiFilename = safeFfiFilename
-        self.utilsFilename   = utilsFilename
-        self.utilsProperties = utilsProperties
-
-# RustOutputGenerator - subclass of OutputGenerator.
-# Generates Rust-language API interfaces.
 #
-# ---- methods ----
-# RustOutputGenerator(errFile, warnFile, diagFile) - args as for
-#   OutputGenerator. Defines additional internal state.
-# ---- methods overriding base class ----
-# beginFile(genOpts)
-# endFile()
-# beginFeature(interface, emit)
-# endFeature()
-# genType(typeinfo,name)
-# genStruct(typeinfo,name)
-# genGroup(groupinfo,name)
-# genEnum(enuminfo, name)
-# genCmd(cmdinfo)
-class RustOutputGenerator(OutputGenerator):
-    """Generate specified API interfaces in a specific style, such as rust code"""
-    # This is an ordered list of sections in the header file.
-    BASE_SECTIONS = ['include', 'define', 'basetype', 'handle', 'enum', \
-        'group', 'bitmask', 'funcpointer', 'struct', 'command']
-    FFI_SECTIONS = ['command:extern']
-    SAFE_FFI_SECTIONS = ['command:safe']
-    ALIAS_SECTIONS = ['define:alias', 'basetype:alias', 'handle:alias', \
-        'enum:alias', 'group:alias', 'bitmask:alias', 'funcpointer:alias', \
-        'struct:alias', 'command:alias']
-    UTILS_SECTIONS = ['group:toname', 'group:todescription']
-    ALL_SECTIONS = BASE_SECTIONS + FFI_SECTIONS + SAFE_FFI_SECTIONS + ALIAS_SECTIONS + UTILS_SECTIONS
+# RustBaseOutputGenerator - subclass of OutputGenerator.
+# Basic class for Rust OutputGenerators
+class RustBaseOutputGenerator(OutputGenerator):
+    BASE_SECTIONS = ['include', 'define', 'basetype', 'handle', 'enum',  'group', 'bitmask', 'funcpointer', 'struct', 'command']
+    # sub-classes of this generator should adjust this variable
+    ALL_SECTIONS = BASE_SECTIONS
     #
-    def __init__(self,
-                 errFile = sys.stderr,
-                 warnFile = sys.stderr,
-                 diagFile = sys.stdout):
-        OutputGenerator.__init__(self, errFile, warnFile, diagFile)
+    def __init__(self, *args, **kwargs):
+        OutputGenerator.__init__(self, *args, **kwargs)
         # Internal state - accumulators for different inner block text
         self.sections = dict([(section, []) for section in self.ALL_SECTIONS])
-        self.aliasOutFile = None
-        self.ffiOutFile = None
-        self.safeFfiOutFile = None
-        self.utilsOutFile = None
+        self.featureGuard = ''
     #
     def openFile(self, filename):
         if filename != None:
@@ -141,36 +99,29 @@ class RustOutputGenerator(OutputGenerator):
             return io.open(filename, 'w', encoding='utf-8')
         else:
             return None
-
+    #
     def beginFile(self, genOpts):
         OutputGenerator.beginFile(self, genOpts)
         #
-        self.aliasOutFile = self.openFile(self.genOpts.aliasFilename)
-        self.ffiOutFile = self.openFile(self.genOpts.ffiFilename)
-        self.safeFfiOutFile = self.openFile(self.genOpts.safeFfiFilename)
-        self.utilsOutFile = self.openFile(self.genOpts.utilsFilename)
-
         # User-supplied prefix text, if any (list of strings)
-        if genOpts.prefixText:
+        if hasattr(genOpts, 'prefixText') and genOpts.prefixText:
             for s in genOpts.prefixText:
                 write(s, file=self.outFile)
+    #
     def endFile(self):
-        if self.aliasOutFile is not None:
-            self.aliasOutFile.close()
-        if self.ffiOutFile is not None:
-            self.ffiOutFile.close()
-        if self.safeFfiOutFile is not None:
-            self.safeFfiOutFile.close()
-        if self.utilsOutFile is not None:
-            self.utilsOutFile.close()
-        # Finish processing in superclass
         OutputGenerator.endFile(self)
     #
     def writeSections(self, sections, outFile):
         if outFile is None:
             return
-        write('', file=outFile)
-        write('// feature ', self.featureName, file=outFile)
+        for section in sections:
+            contents = self.sections[section]
+            if contents:
+                write('', file=outFile)
+                write('// feature %s' % self.featureName, file=outFile)
+                write('// --------%s' % ('-'*len(self.featureName)), file=outFile)
+                write('', file=outFile)
+                break
         for section in sections:
             contents = self.sections[section]
             if contents:
@@ -180,27 +131,15 @@ class RustOutputGenerator(OutputGenerator):
     def beginFeature(self, interface, emit):
         # Start processing in superclass
         OutputGenerator.beginFeature(self, interface, emit)
-        # Rust-specific
-        # Accumulate includes, defines, types, enums, function pointer typedefs,
-        # end function prototypes separately for this feature. They're only
-        # printed in endFeature().
         self.sections = dict([(section, []) for section in self.ALL_SECTIONS])
+        if self.featureExtraProtect is not None:
+            self.featureGuard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
+        else:
+            self.featureGuard = ''
+    #
     def endFeature(self):
-        # Rust-specific
-        # Actually write the interface to the output file.
-        if len(self.sections['command:extern'])>0:
-            self.appendSection('command:extern', '}\n')
-        if self.emit:
-            self.writeSections(self.BASE_SECTIONS, self.outFile)
-            self.writeSections(self.FFI_SECTIONS, self.ffiOutFile)
-            self.writeSections(self.SAFE_FFI_SECTIONS, self.safeFfiOutFile)
-            self.writeSections(self.ALIAS_SECTIONS, self.aliasOutFile)
-            self.writeSections(self.UTILS_SECTIONS, self.utilsOutFile)
-
-        # Finish processing in superclass
         OutputGenerator.endFeature(self)
     #
-    # Append a definition to the specified section
     def appendSection(self, section, text):
         # self.sections[section].append('SECTION: ' + section + '\n')
         self.sections[section].append(text)
@@ -208,10 +147,11 @@ class RustOutputGenerator(OutputGenerator):
     def stripPrefixFromName(self, name):
         if name.lower().startswith('vk_'):
             return name[3:]
-        if name.startswith('vk'):
-            return name[2].lower()+name[3:]
-        if name.startswith('Vk'):
-            return name[2:]
+        if len(name) > 2 and name[2].isupper():
+            if name.startswith('vk'):
+                return name[2].lower()+name[3:]
+            if name.startswith('Vk'):
+                return name[2:]
         return name
     #
     def splitModifierTypeAndName(self, param):
@@ -234,8 +174,6 @@ class RustOutputGenerator(OutputGenerator):
         typemodf = typemodf.strip()
         return typemodf, typedecl, namedecl
     #
-    # splitRustTypeAndName  - return the rust-type and the name for an element
-    # containing c-types and a name
     def splitRustTypeAndName(self, param, in_function_params=False):
         typemodf, typedecl, namedecl = self.splitModifierTypeAndName(param)
         #
@@ -243,7 +181,7 @@ class RustOutputGenerator(OutputGenerator):
             namedecl = 'p'+namedecl
         #
         # construct equivalent rust type
-        if typemodf=='' and typedecl == 'void':
+        if typemodf == '' and typedecl == 'void':
             rusttype = None
         else:
             if typedecl in TYPE_MAP:
@@ -251,23 +189,23 @@ class RustOutputGenerator(OutputGenerator):
             else:
                 rusttype = typedecl
             # convert c-modifiers to rust modifiers
-            const=False
-            while len(typemodf)>0:
+            const = False
+            while len(typemodf) > 0:
                 if typemodf.startswith('const'):
-                    const=True
-                    typemodf=typemodf[5:].lstrip()
+                    const = True
+                    typemodf = typemodf[5:].lstrip()
                 elif typemodf.startswith('*'):
                     if const:
-                        const=False
+                        const = False
                         rusttype = '*const %s'%rusttype
                     else:
                         rusttype = '*mut %s'%rusttype
-                    typemodf=typemodf[1:].lstrip()
+                    typemodf = typemodf[1:].lstrip()
                 elif typemodf.startswith('['):
                     lpos = typemodf.index(']')
-                    if lpos<2:
+                    if lpos < 2:
                         if const:
-                            const=False
+                            const = False
                             rusttype = '&[%s]'%rusttype
                         else:
                             rusttype = '&mut [%s]'%rusttype
@@ -276,10 +214,10 @@ class RustOutputGenerator(OutputGenerator):
                         if self.registry.lookupElementInfo(arraysize, self.registry.enumdict) is not None:
                             arraysize = '%s as usize' % arraysize
                         rusttype = '[%s;%s]' % (rusttype, arraysize)
-                    typemodf=typemodf[lpos+1:].lstrip()
+                    typemodf = typemodf[lpos+1:].lstrip()
                 elif typemodf.startswith('struct'):
                     # ignore struct
-                    typemodf=typemodf[6:].lstrip()
+                    typemodf = typemodf[6:].lstrip()
                 else:
                     raise Exception("unable to convert c-modifier to rust: "+typemodf)
             if in_function_params and rusttype.startswith('['):
@@ -291,25 +229,9 @@ class RustOutputGenerator(OutputGenerator):
                 raise Exception("unable to apply the last const-modifier for %s (%s: %s)" % (param, namedecl, rusttype))
         return namedecl, rusttype
     #
-    # makeRustParamDecl - return a string which is an indented, formatted
-    # declaration for a <param> or <member> block (e.g. function parameter
-    # or structure/union member).
-    # param - Element (<param> or <member>) to format
-    # aligncol - if non-zero, attempt to align the nested <name> element
-    #   at this column
-    def makeRustParamDecl(self, param, aligncol, in_function_params=False):
-        namedecl, paramdecl = self.splitRustTypeAndName(param, in_function_params=in_function_params)
-        return (namedecl+':').ljust(aligncol-1) + ' ' + paramdecl, namedecl, paramdecl
-    #
-    # getRustParamNameLength - return the length of the type field is an indented, formatted
-    # declaration for a <param> or <member> block (e.g. function parameter
-    # or structure/union member).
-    # param - Element (<param> or <member>) to identify
-    def getRustParamNameLength(self, param):
-        return len(param.find('name').text)+2
-    #
+    # get the numerical value, teh string representation and the type of an enum
     def enumToRustValue(self, elem, needsNum):
-        (numVal,strVal) = self.enumToValue(elem, needsNum)
+        (numVal, strVal) = self.enumToValue(elem, needsNum)
         strType = None
         if strVal is not None:
             str1 = ''
@@ -320,7 +242,7 @@ class RustOutputGenerator(OutputGenerator):
                 strVal = strVal[1:]
                 str1 = '!'
             pos = strVal.rfind('-')
-            if pos>1:
+            if pos > 1:
                 str2 = strVal[pos:]
                 strVal = strVal[:pos]
             lStrVal = strVal.lower()
@@ -355,48 +277,90 @@ class RustOutputGenerator(OutputGenerator):
                 strType = 'VkEnum'
         return (numVal,str1+strVal+str2,strType)
     #
-    def getTypeSize(self, typename, _visited=None):
-        if typename in TYPE_SIZE_MAP:
-            return TYPE_SIZE_MAP[typename]
+    # get properties of the given type
+    def getTypeProperties(self, typename, _visited=None):
+        if typename in TYPE_PROPERTY_MAP:
+            return TYPE_PROPERTY_MAP[typename]
         if _visited is None:
-            _visited = set()
+            _visited = dict()
         elif typename in _visited:
-            raise Exception("loop detected with type " + typename)
-        _visited.add(typename)
+            result = _visited[typename]
+            if result is None:
+                raise Exception("loop detected with type " + typename)
+            else:
+                return result
+        _visited[typename] = None
         typeinfo = self.registry.lookupElementInfo(typename, self.registry.typedict)
         typeElem = typeinfo.elem
         category = typeElem.get('category')
+        size = 0
+        cloneable = True
         if category == 'struct':
-            size = 0
             for member in typeElem.findall('member'):
-                size += self.getParamTypeSize(member, _visited)
-            return size
+                (member_size, member_cloneable) = self.getParamTypeProperties(member, _visited)
+                if member_size is None:
+                    size = None
+                elif size is not None:
+                    size += member_size
+                cloneable = cloneable and member_cloneable
         elif category == 'union':
-            size = 0
+            cloneable = False
             for member in typeElem.findall('member'):
-                size = max(size, self.getParamTypeSize(member, _visited))
-            return size
+                (member_size, _) = self.getParamTypeProperties(member, _visited)
+                if member_size is None:
+                    size = None
+                elif size is not None:
+                    size = max(size, member_size)
         elif category == 'bitmask' or category == 'enum':
-            return 32
-        elif category == 'basetype':
-            return self.getParamTypeSize(typeElem, _visited)
+            size = 32
+            cloneable = True
+        elif category == 'funcpointer' or category == 'include' or category is None:
+            size = None
+            cloneable = False
+        elif category == 'basetype' or category == 'handle':
+            elem = typeElem.find('type')
+            if elem is None or elem.text is None:
+                raise Exception("unable to calculate size of type " + typename)
+            (size, cloneable) = self.getTypeProperties(elem.text, _visited)
         else:
             raise Exception("unable to calculate size of type " + typename)
+        result = (size, cloneable)
+        _visited[typename] = result
+        return result
     #
-    def getParamTypeSize(self, param, _visited=None):
-        typemodf, typedecl, namedecl = self.splitModifierTypeAndName(param)
-        size = self.getTypeSize(typedecl, _visited)
+    # get properties of the type of the given parameter or field
+    def getParamTypeProperties(self, param, _visited=None):
+        typemodf, typedecl, _ = self.splitModifierTypeAndName(param)
+        (size, cloneable) = self.getTypeProperties(typedecl, _visited)
         while len(typemodf)>0:
-            if typemodf.startswith('['):
+            if typemodf.startswith('*'):
+                cloneable = False
+                size = None
+                typemodf=typemodf[1:].lstrip()
+            elif typemodf.startswith('const*'):
+                cloneable = False
+                size = None
+                typemodf=typemodf[6:].lstrip()
+            elif typemodf.startswith('const '):
+                typemodf=typemodf[6:].lstrip()
+            elif typemodf.startswith('struct '):
+                cloneable = False
+                size = None
+                typemodf=typemodf[7:].lstrip()
+            elif typemodf.startswith('['):
+                cloneable = False
                 lpos = typemodf.index(']')
                 if lpos<2:
-                    raise Exception("unable to calculate size with unspecified array length " + typemodf)
-                else:
-                    size *= int(typemodf[1:lpos])
+                    size = None
+                elif size is not None:
+                    try:
+                        size *= int(typemodf[1:lpos])
+                    except:
+                        size = None
                 typemodf=typemodf[lpos+1:].lstrip()
             else:
                 raise Exception("unable to calculate size of type with modifier " + typemodf)
-        return size
+        return size, cloneable
     #
     # Type generation
     def genType(self, typeinfo, name):
@@ -426,71 +390,185 @@ class RustOutputGenerator(OutputGenerator):
         else:
             raise Exception("unknown type " + name + " with category " + category)
     #
-    # Struct (e.g. C "struct" type) generation.
-    # This is a special case of the <type> tag where the contents are
-    # interpreted as a set of <member> tags instead of freeform C
-    # C type declarations. The <member> tags are just like <param>
-    # tags - they are a declaration of a struct or union member.
-    # Only simple member declarations are supported (no nested
-    # structs etc.)
+    # generate types with category "struct".
     def genStruct(self, typeinfo, typeName):
-        OutputGenerator.genStruct(self, typeinfo, typeName)
-        guard  = ''
-        if self.featureExtraProtect is not None:
-            guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
-        body = guard
+        self.validateFeature('struct', typeName)
+    #
+    # generate types with category "union".
+    def genUnion(self, typeinfo, typeName):
+        self.validateFeature('union', typeName)
+    #
+    # generate types with category "funcpointer".
+    def genFuncPointer(self, typeinfo, typeName):
+        self.validateFeature('funcpointer', typeName)
+    #
+    # generate types with category "handle".
+    def genHandle(self, typeinfo, typeName):
+        self.validateFeature('handle', typeName)
+    #
+    # generate types with category "basetype".
+    def genBasetype(self, typeinfo, typeName):
+        self.validateFeature('basetype', typeName)
+    #
+    # generate types with category "bitmask".
+    def genBitmask(self, typeinfo, typeName):
+        self.validateFeature('bitmask', typeName)
+    #
+    # generate types with category "define".
+    def genDefine(self, typeinfo, name):
+        self.validateFeature('define', name)
+        if name in IGNORED:
+            return
+        nameElem = typeinfo.elem.find('name')
+        if nameElem is None:
+            return
+        typeElem = typeinfo.elem.find('type')
+        if typeElem is not None:
+            if typeElem.text == 'VK_MAKE_VERSION':
+                self.genDefineConstant(typeinfo, name, 'VkVersionInfo', 'vk_make_version!%s'%typeElem.tail.strip())
+        else:
+            try:
+                value = int(nameElem.tail)
+            except:
+                return  # do not generate this define
+            self.genDefineConstant(typeinfo, name, 'u32', '%d'%value)
+    #
+    # generate constants for types with category "define".
+    def genDefineConstant(self, typeinfo, constName, constType, constValue):
+        pass
+    #
+    # generate enum groups
+    def genGroup(self, groupinfo, groupName):
+        OutputGenerator.genGroup(self, groupinfo, groupName)
+        if groupName in IGNORED:
+            return
+        #
+        expandName = re.sub(r'([0-9a-z_])([A-Z0-9][^A-Z0-9]?)', r'\1_\2', groupName).upper()
+        expandPrefix = expandName
+        expandSuffix = ''
+        expandSuffixMatch = re.search(r'[A-Z][A-Z]+$', groupName)
+        if expandSuffixMatch:
+            # Strip off the suffix (like KHR) from the prefix
+            expandSuffix = '_' + expandSuffixMatch.group()
+            expandPrefix = expandName.rsplit(expandSuffix, 1)[0]
+        #
+        isEnum = ('FLAG_BITS' not in expandPrefix)
+        #
+        # Loop over the nested 'enum' tags. Keep track of the minimum and
+        # maximum numeric values, if they can be determined; but only for
+        # core API enumerants, not extension enumerants. This is inferred
+        # by looking for 'extends' attributes.
+        minName = None
+        entries = []
+        for elem in groupinfo.elem.findall('enum'):
+            # find the coresponding feature
+            featureInfo = None
+            featureGuard = ''
+            if 'extname' in elem.attrib:
+                featureName = elem.attrib['extname']
+                featureInfo = self.registry.lookupElementInfo(featureName, self.registry.apidict)
+                if featureInfo is None:
+                    featureInfo = self.registry.lookupElementInfo(featureName, self.registry.extdict)
+                if 'protect' in featureInfo.elem.attrib:
+                    featureExtraProtect = featureInfo.elem.attrib['protect']
+                    featureGuard = '#[cfg(feature = "%s")]\n' % featureExtraProtect
+            #
+            # Convert the value to an integer and use that to track min/max.
+            # Values of form -(number) are accepted but nothing more complex.
+            # Should catch exceptions here for more complex constructs. Not yet.
+            (numVal, strVal, strType) = self.enumToRustValue(elem, True)
+            name = elem.get('name')
+            if name in IGNORED:
+                continue
+            if strVal.startswith('-'):
+                strVal = '(%s) as u32' % strVal
+            # Extension enumerants are only included if they are required
+            if self.isEnumRequired(elem):
+                entries.append((name, numVal, strVal, featureGuard, elem))
+            #
+            if isEnum and elem.get('extends') is None:
+                if minName == None:
+                    minName = maxName = name
+                    minValue = maxValue = numVal
+                elif numVal < minValue:
+                    minName = name
+                    minValue = numVal
+                elif numVal > maxValue:
+                    maxName = name
+                    maxValue = numVal
+        # Generate min/max value tokens and a range-padding enum. Need some
+        # additional padding to generate correct names...
+        if isEnum:
+            entries.append((expandPrefix+"_BEGIN_RANGE"+expandSuffix, minValue, minName, '', None))
+            entries.append((expandPrefix+"_END_RANGE"+expandSuffix, maxValue, maxName, '', None))
+            rangeValue = minValue is not None and maxValue is not None and maxValue - minValue  + 1 or None
+            rangeStr = '(' + maxName + ' as i32 - ' + minName + ' as i32 + 1i32) as u32'
+            entries.append((expandPrefix+"_RANGE_SIZE"+expandSuffix, rangeValue, rangeStr, '', None))
+        entries.append((expandPrefix+"_MAX_ENUM"+expandSuffix, 0x7FFFFFFF, '0x7FFFFFFF', '', None))
+        #
+        self.genGroupEnums(groupinfo, groupName, isEnum, entries)
+    #
+    # generate the enums of a group
+    def genGroupEnums(self, groupinfo, groupName, isEnum, entries):
+        pass
+#
+# RustOutputGenerator - subclass of RustBaseOutputGenerator.
+# Generates Rust-language API interfaces.
+class RustTypesOutputGenerator(RustBaseOutputGenerator):
+    #
+    def endFeature(self):
+        if self.emit:
+            self.writeSections(self.BASE_SECTIONS, self.outFile)
+        # Finish processing in superclass
+        RustBaseOutputGenerator.endFeature(self)
+    #
+    def genStruct(self, typeinfo, typeName):
+        RustBaseOutputGenerator.genStruct(self, typeinfo, typeName)
+        size, cloneable = self.getTypeProperties(typeName)
+        body  = self.featureGuard
+        if cloneable:
+            body += '#[derive(Copy,Clone)]\n'
         body += '#[repr(C)]\n'
         body += 'pub struct %s {\n' % typeName
-        targetLen = 0
-        for member in typeinfo.elem.findall('.//member'):
-            targetLen = max(targetLen, self.getRustParamNameLength(member))
         initial_values=[]
         for member in typeinfo.elem.findall('.//member'):
-            decl, namedecl, paramdecl = self.makeRustParamDecl(member, int((targetLen+3)/4)*4, in_function_params=False)
+            namedecl, paramdecl = self.splitRustTypeAndName(member, in_function_params=False)
             init_value = member.get('values')
             if init_value is not None and not ',' in init_value:
                 initial_values.append((namedecl, init_value))
-            body += '    pub ' + decl
-            body += ',\n'
+            body += '    pub %s: %s,\n' % (namedecl, paramdecl)
         body += '}\n\n'
-        body += guard
+        body += self.featureGuard
         body += 'impl Default for %s {\n' % typeName
         body += '    fn default () -> %s {\n' % typeName
         if len(initial_values)<=0:
             body += '        return unsafe { ::std::mem::zeroed() };\n'
         else:
-            body += '        return unsafe { %s {\n' % typeName
+            body += '        return unsafe {\n'
+            body += '            %s {\n' % typeName
             for name, value in initial_values:
-                body += '            %s: %s,\n' % (name, value)
-            body += '            ..::std::mem::zeroed()\n'
-            body += '        }};\n'
+                body += '                %s: %s,\n' % (name, value)
+            body += '                ..::std::mem::zeroed()\n'
+            body += '            }\n'
+            body += '        };\n'
         body += '    }\n'
         body += '}\n'
         self.appendSection('struct', body)
-        #
-        alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('struct:alias', alias)
     #
-    # Struct (e.g. C "struct" type) generation.
-    # This is a special case of the <type> tag where the contents are
-    # interpreted as a set of <member> tags instead of freeform C
-    # C type declarations. The <member> tags are just like <param>
-    # tags - they are a declaration of a struct or union member.
-    # Only simple member declarations are supported (no nested
-    # structs etc.)
     def genUnion(self, typeinfo, typeName):
-        OutputGenerator.genStruct(self, typeinfo, typeName)
-        size = self.getTypeSize(typeName)
-        guard = ''
-        if self.featureExtraProtect is not None:
-            guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
+        RustBaseOutputGenerator.genUnion(self, typeinfo, typeName)
+        size, cloneable = self.getTypeProperties(typeName)
+        if size is None:
+            raise Exception("Unable to determine size of union " + typeName)
         body  = '// union %s\n' % typeName
-        body += guard
+        body += self.featureGuard
+        if cloneable:
+            body += '#[derive(Copy,Clone)]\n'
         body += '#[repr(C)]\n'
         body += 'pub struct %s {\n' % typeName
         body += '    data: [u8;%d]\n' % size
         body += '}\n'
-        body += guard
+        body += self.featureGuard
         body += 'impl %s {\n' % typeName
         for member in typeinfo.elem.findall('.//member'):
             namedecl, typedecl = self.splitRustTypeAndName(member, in_function_params=False)
@@ -501,320 +579,513 @@ class RustOutputGenerator(OutputGenerator):
             body += '    unsafe { ::std::mem::transmute(&self.data) }\n'
             body += '  }\n'
         body += '}\n\n'
-        body += guard
+        body += self.featureGuard
         body += 'impl Default for %s {\n' % typeName
         body += '    fn default () -> %s {\n' % typeName
         body += '        return unsafe { ::std::mem::zeroed() };\n'
         body += '    }\n'
         body += '}\n'
         self.appendSection('struct', body)
-        #
-        alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('struct:alias', alias)
     #
-    # Callback (e.g. Rust function pointer type) generation.
     def genFuncPointer(self, typeinfo, typeName):
-        guard = ''
-        if self.featureExtraProtect is not None:
-            guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
-        body = guard
+        RustBaseOutputGenerator.genFuncPointer(self, typeinfo, typeName)
+        body  = self.featureGuard
         body += 'pub type ' + typeName + ' = extern fn ();\n'
         self.appendSection('funcpointer', body)
-        #
-        alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('funcpointer:alias', alias)
     #
-    # Handle (e.g. Rust type definition) generation.
     def genHandle(self, typeinfo, typeName):
-        guard = ''
-        if self.featureExtraProtect is not None:
-            guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
+        RustBaseOutputGenerator.genHandle(self, typeinfo, typeName)
         typeref = typeinfo.elem.find('type').text
-        body = guard
         handleType = TYPE_MAP[typeref]
+        body  = self.featureGuard
         body += '#[repr(C)]\n'
         body += '#[derive(Clone,Copy,Debug,PartialEq,Eq)]\n'
         body += 'pub struct %s (%s);\n'%(typeName, handleType)
         body += 'impl ::util::VkNullHandle for %s {\n' % (typeName)
-        body += '    fn null() -> %s { return %s(%s{value:0}); }\n' % (typeName,typeName,handleType)
+        body += '    fn null() -> %s {\n' % typeName
+        body += '        return %s(%s{value:0});' % (typeName,handleType)
+        body += '    }\n'
         body += '}\n'
         body += 'impl Default for %s {\n' % (typeName)
-        body += '    fn default() -> %s { return %s(%s{value:0}); }\n' % (typeName,typeName,handleType)
+        body += '    fn default() -> %s {\n' % typeName
+        body += '        return %s(%s{value:0});\n' % (typeName,handleType)
+        body += '    }\n'
         body += '}\n'
         self.appendSection('handle', body)
-        #
-        alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('handle:alias', alias)
     #
-    # Basetype (e.g. Rust type definition) generation.
     def genBasetype(self, typeinfo, typeName):
-        guard = ''
-        if self.featureExtraProtect is not None:
-            guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
+        RustBaseOutputGenerator.genBasetype(self, typeinfo, typeName)
         typeref = typeinfo.elem.find('type').text
-        body = guard
+        body  = self.featureGuard
         body += 'pub type ' + typeName + ' = ' + TYPE_MAP[typeref] + ';'
         self.appendSection('basetype', body)
-        #
-        alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('basetype:alias', alias)
     #
-    # Bitmask generation
     def genBitmask(self, typeinfo, typeName):
-        guard = ''
-        if self.featureExtraProtect is not None:
-            guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
+        RustBaseOutputGenerator.genBitmask(self, typeinfo, typeName)
         enumflags = typeinfo.elem.get('requires')
         if enumflags is None:
             enumflags = 'VkEnum'
-        body = guard
+        body  = self.featureGuard
         body += 'pub use self::' + enumflags + ' as ' + typeName + ';'
         self.appendSection('bitmask', body)
-        #
-        alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('bitmask:alias', alias)
     #
-    # Group (e.g. C "enum" type) generation.
-    # These are concatenated together with other types.
-    def genGroup(self, groupinfo, groupName):
-        OutputGenerator.genGroup(self, groupinfo, groupName)
-        if groupName in IGNORED:
-            return
-        genToNameFunc = self.genOpts.utilsProperties and 'toName' in self.genOpts.utilsProperties and groupName in self.genOpts.utilsProperties['toName']
-        genToDescriptionFunc = self.genOpts.utilsProperties and 'toDescription' in self.genOpts.utilsProperties and groupName in self.genOpts.utilsProperties['toDescription']
-        groupElem = groupinfo.elem
-        if groupElem.get('type') == 'bitmask':
+    def genDefineConstant(self, typeinfo, constName, constType, constValue):
+        RustBaseOutputGenerator.genDefineConstant(self, typeinfo, constName, constType, constValue)
+        body  = self.featureGuard
+        body += 'pub const %s : %s = %s;' % (constName, constType, constValue)
+        self.appendSection('define', body)
+    #
+    def genGroupEnums(self, groupinfo, groupName, isEnum, entries):
+        RustBaseOutputGenerator.genGroupEnums(self, groupinfo, groupName, isEnum, entries)
+        #
+        if groupinfo.elem.get('type') == 'bitmask':
             section = 'bitmask'
         else:
             section = 'group'
-        expandName = re.sub(r'([0-9a-z_])([A-Z0-9][^A-Z0-9]?)',r'\1_\2',groupName).upper()
-
-        expandPrefix = expandName
-        expandSuffix = ''
-        expandSuffixMatch = re.search(r'[A-Z][A-Z]+$',groupName)
-        if expandSuffixMatch:
-            expandSuffix = '_' + expandSuffixMatch.group()
-            # Strip off the suffix from the prefix
-            expandPrefix = expandName.rsplit(expandSuffix, 1)[0]
         #
-        if genToNameFunc:
-            self.appendSection(section+':toname', 'pub fn %s_to_name(value: ::types::%s) -> &\'static str {' % (groupName,groupName))
-        if genToDescriptionFunc:
-            self.appendSection(section+':todescription', 'pub fn %s_to_description(value: ::types::%s) -> &\'static str {' % (groupName,groupName))
-        #
-        # Prefix
-        body = '\npub type ' + groupName + ' = VkEnum;\n'
-        alias = '\npub use types::%s as %s;\n'%(groupName,self.stripPrefixFromName(groupName))
-        prefix = 'pub const '
-        # @@ Should use the type="bitmask" attribute instead
-        isEnum = ('FLAG_BITS' not in expandPrefix)
-
-        # Loop over the nested 'enum' tags. Keep track of the minimum and
-        # maximum numeric values, if they can be determined; but only for
-        # core API enumerants, not extension enumerants. This is inferred
-        # by looking for 'extends' attributes.
-        minName = None
-        for elem in groupElem.findall('enum'):
-            # find the coresponding feature
-            featureInfo = None
-            featureName = None
-            guard = ''
-            if 'extname' in elem.attrib:
-                featureName = elem.attrib['extname']
-                featureInfo = self.registry.lookupElementInfo(featureName, self.registry.apidict)
-                if featureInfo is None:
-                    featureInfo = self.registry.lookupElementInfo(featureName, self.registry.extdict)
-                if 'protect' in featureInfo.elem.attrib:
-                    guard= '#[cfg(feature = "%s")]\n' % featureInfo.elem.attrib['protect']
-            #
-            # Convert the value to an integer and use that to track min/max.
-            # Values of form -(number) are accepted but nothing more complex.
-            # Should catch exceptions here for more complex constructs. Not yet.
-            (numVal,strVal,strType) = self.enumToRustValue(elem, True)
-            name = elem.get('name')
-            if name in IGNORED:
-                continue
-            if strVal.startswith('-'):
-                strVal = '(%s) as u32' % strVal
-            # Extension enumerants are only included if they are required
-            if self.isEnumRequired(elem):
-                body += guard + prefix + name + ' : ' + groupName + ' = ' + strVal + ";\n"
-                alias += guard + 'pub use types::%s as %s;\n'%(name, self.stripPrefixFromName(name))
-            if genToNameFunc:
-                self.appendSection(section+':toname', '  if value == %s { return "%s"; }' % (strVal, name))
-            if genToDescriptionFunc:
-                descr = elem.get('comment')
-                if descr is not None:
-                    self.appendSection(section+':todescription', '  if value == %s { return "%s"; }' % (strVal, descr))
-                else:
-                    self.appendSection(section+':todescription', '  if value == %s { return "%s"; }' % (strVal, name))
-
-            if (isEnum and elem.get('extends') is None):
-                if (minName == None):
-                    minName = maxName = name
-                    minValue = maxValue = numVal
-                elif (numVal < minValue):
-                    minName = name
-                    minValue = numVal
-                elif (numVal > maxValue):
-                    maxName = name
-                    maxValue = numVal
-        # Generate min/max value tokens and a range-padding enum. Need some
-        # additional padding to generate correct names...
-        if isEnum:
-            body += prefix + expandPrefix + "_BEGIN_RANGE" + expandSuffix + ' : ' + groupName + ' = ' + minName + ';\n'
-            body += prefix + expandPrefix + "_END_RANGE" + expandSuffix + ' : ' + groupName + ' = ' + maxName + ';\n'
-            body += prefix + expandPrefix + "_RANGE_SIZE" + expandSuffix + ' : ' + groupName + ' = (' + maxName + ' as i32 - ' + minName + ' as i32 + 1i32) as u32;\n'
-            alias += 'pub use types::%s_BEGIN_RANGE%s as %s_BEGIN_RANGE%s;\n'%(expandPrefix,expandSuffix,self.stripPrefixFromName(expandPrefix),expandSuffix)
-            alias += 'pub use types::%s_END_RANGE%s as %s_END_RANGE%s;\n'%(expandPrefix,expandSuffix,self.stripPrefixFromName(expandPrefix),expandSuffix)
-            alias += 'pub use types::%s_RANGE_SIZE%s as %s_RANGE_SIZE%s;\n'%(expandPrefix,expandSuffix,self.stripPrefixFromName(expandPrefix),expandSuffix)
-
-        body += prefix + expandPrefix + "_MAX_ENUM" + expandSuffix + ' : ' + groupName + ' = 0x7FFFFFFF;\n'
-
+        body = '\npub type ' + groupName + ' = VkEnum;'
         self.appendSection(section, body)
         #
-        #
-        if genToNameFunc:
-            self.appendSection(section+':toname', '  return "";\n}')
-        if genToDescriptionFunc:
-            self.appendSection(section+':todescription', '  return "";\n}')
-        #
-        self.appendSection(section+':alias', alias)
+        for name, _, strVal, featureGuard, elem in entries:
+            body =  featureGuard
+            if elem is not None and elem.get('comment') is not None:
+                body += '/// %s\n' % elem.get('comment')
+            body += 'pub const %s : %s = %s;' % (name, groupName, strVal)
+            self.appendSection(section, body)
     #
-    # Enumerant generation
-    # <enum> tags may specify their values in several ways, but are usually
-    # just integers.
     def genEnum(self, enuminfo, name):
-        OutputGenerator.genEnum(self, enuminfo, name)
+        RustBaseOutputGenerator.genEnum(self, enuminfo, name)
         if name in IGNORED:
             return
-        guard = ''
-        if self.featureExtraProtect is not None:
-            guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
-        (numVal,strVal,strType) = self.enumToRustValue(enuminfo.elem, False)
-        body = guard
-        body += 'pub const ' + name.ljust(33) + ': ' + strType.ljust(6) + ' = ' + strVal + ';'
+        (_, strVal, strType) = self.enumToRustValue(enuminfo.elem, False)
+        body  = self.featureGuard
+        body += 'pub const %s: %s = %s;' % (name, strType, strVal)
         self.appendSection('enum', body)
-        #
-        alias = guard
-        alias += 'pub use types::%s as %s;'%(name, self.stripPrefixFromName(name))
-        self.appendSection('enum:alias', alias)
+#
+# RustFfiOutputGenerator - subclass of RustBaseOutputGenerator.
+# Generates the Rust Foreign Function Interface.
+class RustFfiOutputGenerator(RustBaseOutputGenerator):
     #
-    def genDefine(self, typeinfo, typeName):
-        guard = ''
-        if self.featureExtraProtect is not None:
-            guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
-        body = guard
-        nameElem = typeinfo.elem.find('name')
-        if nameElem is None:
-            return
-        typeElem = typeinfo.elem.find('type')
-        if typeElem is not None:
-            if typeElem.text == 'VK_MAKE_VERSION':
-                body += 'pub const %s : VkVersionInfo = vk_make_version!%s;'%(typeName, typeElem.tail.strip())
-            else:
-                return
-        else:
-            try:
-                value = int(nameElem.tail)
-            except:
-                return
-            body += 'pub const %s : u32 = %d;'%(typeName, value)
-        self.appendSection('define', body)
-        #
-        alias = guard + 'pub use types::%s as %s;'%(typeName,self.stripPrefixFromName(typeName))
-        self.appendSection('define:alias', alias)
+    BASE_SECTIONS = [ 'command' ]
+    ALL_SECTIONS = BASE_SECTIONS
     #
-    # Command generation
+    def endFeature(self):
+        if len(self.sections['command'])>0:
+            self.appendSection('command', '}\n')
+        if self.emit:
+            self.writeSections(self.BASE_SECTIONS, self.outFile)
+        # Finish processing in superclass
+        RustBaseOutputGenerator.endFeature(self)
+    #
     def genCmd(self, cmdinfo, name):
+        RustBaseOutputGenerator.genCmd(self, cmdinfo, name)
         if name in IGNORED:
             return
-        guard = ''
-        if self.featureExtraProtect is not None:
-            guard = '#[cfg(feature = "%s")]\n' % self.featureExtraProtect
-        if len(self.sections['command:extern'])==0:
-            body = guard + '#[link(name = "vulkan")]\nextern "C" {\n'
-            self.appendSection('command:extern', body)
-        OutputGenerator.genCmd(self, cmdinfo, name)
+        if len(self.sections['command']) == 0:
+            body  = self.featureGuard
+            body += '#[link(name = "vulkan")]\n'
+            body += 'extern "C" {\n'
+            self.appendSection('command', body)
+        RustBaseOutputGenerator.genCmd(self, cmdinfo, name)
         #
         proto = cmdinfo.elem.find('proto')
         params = cmdinfo.elem.findall('param')
         #
-        # Insert the function return type/name.
-        # Done by walking the tree for <proto> element by element.
-        # etree has elem.text followed by (elem[i], elem[i].tail)
-        #   for each child element and any following text.
-        # The contents of the <name> tag is ignored and prepended later.
+        # find the command name and the return type
         cmdname, rettype = self.splitRustTypeAndName(proto, in_function_params=False)
-        # Now add the parameter declaration list. Concatenate all the text from
-        # a <param> node without the tags. No tree walking required since all
-        # tags are ignored.
-        # The contents of the <name> tags are ignored and prepended to the types.
-        if len(params) > 0:
-            targetLen = 0
-            for param in params:
-                targetLen = max(targetLen, self.getRustParamNameLength(param))
-            argsdecl = safeargsdecl = safeargs = '(\n'
-            first = True
-            for param in params:
-                if not first:
-                    argsdecl += ',\n'
-                    safeargsdecl += ',\n'
-                    safeargs += ',\n'
-                paramdecl, paramname, paramtype = self.makeRustParamDecl(param, int((targetLen+3)/4)*4, in_function_params=True)
-                argsdecl += '    ' + paramdecl
-                safearg = paramname
-                if paramtype == '*const '+TYPE_MAP['char'] and param.get('len') == 'null-terminated':
-                    if param.get('optional') == 'true':
-                        safetype = 'Option<&CStr>'
-                        safearg = '%s.map_or(util::vk_null(), |v| v.as_ptr())'%paramname
-                    else:
-                        safetype = '&CStr'
-                        safearg = '%s.as_ptr()'%paramname
-                elif paramtype.startswith('*') and param.get('len') is None:
-                    safetype = paramtype.replace('*mut ', '&mut ').replace('*const ', '&')
-                    safearg = paramname
-                    if param.get('optional') == 'true':
-                        safetype = 'Option<%s>'%safetype
-                        safearg = '%s.unwrap_or(util::vk_null())'%safearg
-                else:
-                    safetype = paramtype
-                    safearg = paramname
-                safeargsdecl += '        %s: %s' % (paramname, safetype)
-                safeargs += '        ' + safearg
-                first = False
-            argsdecl += ')'
-            safeargsdecl += ')'
-            safeargs += ')'
-        else:
-            argsdecl = safeargsdecl = safeargs = '()'
-        body = 'pub fn ' + cmdname + argsdecl
-        safe = 'pub fn ' + cmdname + safeargsdecl
-        successcodes = cmdinfo.elem.get('successcodes')
-        if successcodes is not None:
-            successcodes = successcodes.split(",")
-        if rettype is not None:
-            body += '\n    -> ' + rettype
-            if rettype == 'VkResult' and successcodes is not None:
-                safe += ' -> VkResultObj'
-            else:
-                safe += ' -> ' + rettype
-        self.appendSection('command:extern', body + ';\n')
-        safe += ' {\n'
-        safe_call = 'unsafe { ffi::%s%s }'%(cmdname, safeargs)
-        if successcodes is not None:
-            safe += '    let res = %s;\n' % safe_call
-            safe += '    if %s {\n' % (' or '.join(['res == %s'%v for v in successcodes]))
-            safe += '        return Ok(res);\n'
-            safe += '    } else {\n'
-            safe += '        return Err(res);\n'
-            safe += '    }\n'
-        elif rettype is not None:
-            safe += '    return %s\n;' % safe_call
-        else:
-            safe += '    %s;\n' % safe_call
-        safe += '}\n'
-        self.appendSection('command:safe', safe)
+        body = 'pub fn %s(' % cmdname
         #
-        alias = guard + 'pub use ffi::%s as %s;'%(name,self.stripPrefixFromName(name))
-        self.appendSection('command:alias', alias)
+        # now build the argument list
+        prefix = ' '*len(body)
+        first = True
+        for param in params:
+            if not first:
+                body += ',\n'
+                body += prefix
+            paramname, paramtype = self.splitRustTypeAndName(param, in_function_params=True)
+            body += '%s: %s' % (paramname, paramtype)
+            first = False
+        body += ')'
+        #
+        # append the return type
+        if rettype is not None:
+            if len(params) > 0:
+                body += '\n'
+                body += prefix
+            else:
+                body += ' '
+            body += '-> ' + rettype
+        #
+        self.appendSection('command', body + ';\n')
+
+#
+# RustSafeOutputGenerator - subclass of RustBaseOutputGenerator.
+# Generates the safe Rust Function Interface.
+class RustSafeOutputGenerator(RustBaseOutputGenerator):
+    #
+    BASE_SECTIONS = [ 'command' ]
+    ALL_SECTIONS = BASE_SECTIONS
+    #
+    def endFeature(self):
+        if self.emit:
+            self.writeSections(self.BASE_SECTIONS, self.outFile)
+        # Finish processing in superclass
+        RustBaseOutputGenerator.endFeature(self)
+    #
+    def genCmd(self, cmdinfo, name):
+        RustBaseOutputGenerator.genCmd(self, cmdinfo, name)
+        if name in IGNORED:
+            return
+        RustBaseOutputGenerator.genCmd(self, cmdinfo, name)
+        #
+        proto = cmdinfo.elem.find('proto')
+        params = cmdinfo.elem.findall('param')
+        #
+        # find the command name and the return type
+        cmdname, rettype = self.splitRustTypeAndName(proto, in_function_params=False)
+        #
+        # build a information structure for arguments
+        numparams = len(params)
+        paramlist = []
+        param_by_name = dict()
+        length_arg_for_input = dict()
+        length_arg_for_result = dict()
+        for i, param in enumerate(params):
+            paramname, paramtype = self.splitRustTypeAndName(param, in_function_params=True)
+            paramlen = param.get('len')
+            resulttype = None
+            #
+            if (rettype is None or rettype == 'VkResult') and i == numparams-1 and paramtype.startswith('*mut '):
+                resulttype = paramtype[5:]
+                if paramlen is not None:
+                    resulttype = 'Vec<%s>' % resulttype
+                    if paramlen in length_arg_for_result:
+                        length_arg_for_result[paramlen].append(i)
+                    else:
+                        length_arg_for_result[paramlen] = [i]
+            elif paramlen is not None:
+                if paramlen in length_arg_for_input:
+                    length_arg_for_input[paramlen].append(i)
+                else:
+                    length_arg_for_input[paramlen] = [i]
+            param_by_name[paramname] = i
+            paramlist.append((param, paramname, paramtype, resulttype))
+        #
+        arglist = [] # the actual argument list
+        prepare = [] # task to do before calling the function
+        handover = [] # pass argument to the function
+        vectoradjust = None # (lengthVariable, resizeStatement) when returning a vector, and a second invocation is required
+        complete = [] # things to do after calling the function
+        returns = None
+        for param, paramname, paramtype, resulttype in paramlist:
+            paramlen = param.get('len')
+            if paramlen is not None:
+                paramlen = paramlen.replace('::','.')
+            paramoptional = param.get('optional') == 'true'
+            if paramname in length_arg_for_input:
+                if paramtype.startswith('*'):
+                    raise Exception("inconsistency: don't know how to handle param %s in %s"(paramname, cmdname))
+                sliceargs = length_arg_for_input[paramname]
+                _, sliceargname, _, _ = paramlist[sliceargs[0]]
+                prepare.append('let %s = %s.len();' % (paramname, sliceargname))
+                for moreslicearg in sliceargs[1:]:
+                    _, sliceargname, _, _ = paramlist[moreslicearg]
+                    prepare.append('assert!(%s == %s.len());' % (paramname, sliceargname))
+                handover.append('%s as %s' % (paramname, paramtype))
+            elif paramname in length_arg_for_result:
+                if paramtype.startswith('*mut '):
+                    prepare.append('let mut %s : %s = 0;' % (paramname, paramtype[5:]))
+                    handover.append('&mut %s' % paramname)
+                elif not paramtype.startswith('*'):
+                    arglist.append((paramname, paramtype))
+                    handover.append(paramname)
+                else:
+                    raise Exception("inconsistency: don't know how to handle param %s in %s"(paramname, cmdname))
+            elif resulttype is not None:
+                returns = (paramname, resulttype)
+                if paramlen is None:
+                    if resulttype.startswith('*'):
+                        prepare.append('let mut %s : %s = util::vk_null();' % (paramname, resulttype))
+                    else:
+                        prepare.append('let mut %s : %s = Default::default();' % (paramname, resulttype))
+                    handover.append('&mut %s' % paramname)
+                elif paramlen == 'null-terminated' or ',' in paramlen:
+                    raise Exception("unable to return param " + paramname + " in command " + cmdname)
+                elif '.' in paramlen:
+                    prepare.append('let mut %s : %s = Vec::with_capacity(%s as usize);' % (paramname, resulttype, paramlen))
+                    handover.append('%s.as_mut_ptr()' % paramname)
+                    complete.append('unsafe { %s.set_len(%s as usize) };' % (paramname, paramlen))
+                elif paramlen in param_by_name:
+                    _, _, lenparamtype, _ = paramlist[param_by_name[paramlen]]
+                    if lenparamtype.startswith('*mut '):
+                        prepare.append('let mut %s : %s = Vec::new();' % (paramname, resulttype))
+                        vectoradjust = (paramlen, '%s = Vec::with_capacity(%s as usize);' % (paramname, paramlen))
+                        handover.append('%s.as_mut_ptr()' % paramname)
+                        complete.append('unsafe { %s.set_len(%s as usize) };' % (paramname, paramlen))
+                    else:
+                        prepare.append('let mut %s : %s = Vec::with_capacity(%s as usize);' % (paramname, resulttype, paramlen))
+                        handover.append('%s.as_mut_ptr()' % paramname)
+                        complete.append('unsafe { %s.set_len(%s as usize) };' % (paramname, paramlen))
+                else:
+                    raise Exception("unable to return param " + paramname + " in command " + cmdname)
+            elif paramtype == '*const '+TYPE_MAP['char'] and paramlen == 'null-terminated':
+                if paramoptional:
+                    arglist.append((paramname, 'Option<&str>'))
+                    prepare.append('let %s = %s.map(|s| CString::new(s).unwrap());' % (paramname, paramname))
+                    prepare.append('let %s = %s.map_or(util::vk_null() as %s, |s| s.as_ptr());' % (paramname, paramname, paramtype))
+                    handover.append(paramname)
+                else:
+                    arglist.append((paramname, '&str'))
+                    prepare.append('let %s = CString::new(%s).unwrap();' % (paramname, paramname))
+                    handover.append('%s.as_ptr()' % paramname)
+            elif paramtype.startswith('*') and paramlen is None:
+                safetype = paramtype.replace('*mut ', '&mut ').replace('*const ', '&')
+                if paramoptional:
+                    arglist.append((paramname, 'Option<%s>' % safetype))
+                    prepare.append('let %s = %s.map_or(util::vk_null() as %s, |s| s as %s);' % (paramname, paramname, paramtype, paramtype))
+                    handover.append(paramname)
+                else:
+                    arglist.append((paramname, safetype))
+                    handover.append(paramname)
+            elif paramtype.startswith('*'):
+                if paramtype.startswith('*mut '):
+                    safetype = paramtype[5:]
+                    argcastptr = '*mut '
+                elif paramtype.startswith('*const '):
+                    safetype = paramtype[7:]
+                    argcastptr = '*const '
+                else:
+                    raise Exception("unexpected state")
+                argcast = ''
+                if safetype.endswith('c_void'):
+                    argcast = ' as %s' % (argcastptr+safetype)
+                    safetype = 'u8'
+                safetype = '&[%s]' % safetype
+                if '.' in paramlen:
+                    if paramoptional:
+                        arglist.append((paramname, 'Option<%s>' % safetype))
+                        handover.append('%s.map_or(util::vk_null(), |s| s.as_ptr()%s)' % (paramname,argcast))
+                        prepare.append('assert!(%s.map_or(0 as usize, |s| s.len()) == %s as usize);' % (paramname, paramlen))
+                    else:
+                        arglist.append((paramname, safetype))
+                        handover.append('%s.as_ptr()%s' % (paramname,argcast))
+                        prepare.append('assert!(%s.len() == %s as usize);' % (paramname, paramlen))
+                elif paramlen in param_by_name:
+                    _, _, lenparamtype, _ = paramlist[param_by_name[paramlen]]
+                    if paramoptional:
+                        arglist.append((paramname, 'Option<%s>' % safetype))
+                        handover.append('%s.map_or(util::vk_null(), |s| s.as_ptr()%s)' % (paramname,argcast))
+                    else:
+                        arglist.append((paramname, safetype))
+                        handover.append('%s.as_ptr()%s' % (paramname,argcast))
+                else:
+                    raise Exception("unable to return param " + paramname + " in command " + cmdname)
+            else:
+                arglist.append((paramname, paramtype))
+                handover.append(paramname)
+        #
+        #now build the functions
+        functionHeader = 'pub fn %s(' % cmdname
+        body  = self.featureGuard
+        body += functionHeader
+        prefix = ' '*len(functionHeader)
+        #
+        # now build the argument list
+        first = True
+        for argname, argtype in arglist:
+            if not first:
+                body += ',\n'
+                body += prefix
+            body += '%s: %s' % (argname, argtype)
+            first = False
+        body += ')'
+        if returns is not None:
+            (_, returntype) = returns
+            if len(arglist) > 0:
+                body += '\n'
+                body += prefix + '-> ' + returntype
+            else:
+                body += ' -> ' + returntype
+        body += '\n'
+        #
+        body += '{\n'
+        for statement in prepare:
+            body += '    %s\n' % statement
+        #
+        # successcodes = cmdinfo.elem.get('successcodes')
+        # if successcodes is not None:
+        #     successcodes = successcodes.split(",")
+        # if rettype is not None:
+        #     if rettype == 'VkResult' and successcodes is not None:
+        #         safe += ' -> VkResultObj'
+        #     else:
+        #         safe += ' -> ' + rettype
+        handover1 = vectoradjust is None and handover or handover[:-1]+['util::vk_null()']
+        body += '    unsafe { ffi::%s(%s) };\n' % (cmdname, ', '.join(handover1)) # TODO: successcodes
+        # if successcodes is not None:
+        #     safe += '    let res = %s;\n' % safe_call
+        #     safe += '    if %s {\n' % (' or '.join(['res == %s'%v for v in successcodes]))
+        #     safe += '        return Ok(res);\n'
+        #     safe += '    } else {\n'
+        #     safe += '        return Err(res);\n'
+        #     safe += '    }\n'
+        # elif rettype is not None:
+        #     safe += '    return %s\n;' % safe_call
+        # else:
+        #     safe += '    %s;\n' % safe_call
+        #
+        if vectoradjust is not None:
+            (vectorcount, vectorStatement) = vectoradjust
+            body += '    if %s > 0 {\n' % vectorcount
+            body += '        %s\n' % vectorStatement
+            body += '        unsafe { ffi::%s(%s) };\n' % (cmdname, ', '.join(handover)) # TODO: successcodes
+            body += '    }\n'
+        #
+        for statement in complete:
+            body += '    %s\n' % statement
+        #
+        if returns is not None:
+            (returnarg, _) = returns
+            body += '    return %s;\n' % returnarg #TODO: Result-Object
+        body += '}\n'
+        self.appendSection('command', body)
+#
+# RustAliasOutputGenerator - subclass of RustBaseOutputGenerator.
+# generates aliases for types, constants and functions
+# the aliase-names are the original names without the 'Vk' prefix
+class RustAliasOutputGenerator(RustBaseOutputGenerator):
+    #
+    def endFeature(self):
+        if self.emit:
+            self.writeSections(self.BASE_SECTIONS, self.outFile)
+        # Finish processing in superclass
+        RustBaseOutputGenerator.endFeature(self)
+    #
+    def genStruct(self, typeinfo, typeName):
+        RustBaseOutputGenerator.genStruct(self, typeinfo, typeName)
+        alias  = self.featureGuard
+        alias += 'pub use types::%s as %s;'%(typeName, self.stripPrefixFromName(typeName))
+        self.appendSection('struct', alias)
+    #
+    def genUnion(self, typeinfo, typeName):
+        RustBaseOutputGenerator.genUnion(self, typeinfo, typeName)
+        alias  = self.featureGuard
+        alias += 'pub use types::%s as %s;'%(typeName, self.stripPrefixFromName(typeName))
+        self.appendSection('struct', alias)
+    #
+    def genFuncPointer(self, typeinfo, typeName):
+        RustBaseOutputGenerator.genFuncPointer(self, typeinfo, typeName)
+        alias  = self.featureGuard
+        alias += 'pub use types::%s as %s;'%(typeName, self.stripPrefixFromName(typeName))
+        self.appendSection('funcpointer', alias)
+    #
+    def genHandle(self, typeinfo, typeName):
+        RustBaseOutputGenerator.genHandle(self, typeinfo, typeName)
+        alias  = self.featureGuard
+        alias += 'pub use types::%s as %s;'%(typeName, self.stripPrefixFromName(typeName))
+        self.appendSection('handle', alias)
+    #
+    def genBasetype(self, typeinfo, typeName):
+        RustBaseOutputGenerator.genBasetype(self, typeinfo, typeName)
+        alias  = self.featureGuard
+        alias += 'pub use types::%s as %s;'%(typeName, self.stripPrefixFromName(typeName))
+        self.appendSection('basetype', alias)
+    #
+    def genBitmask(self, typeinfo, typeName):
+        RustBaseOutputGenerator.genBitmask(self, typeinfo, typeName)
+        alias  = self.featureGuard
+        alias += 'pub use types::%s as %s;'%(typeName, self.stripPrefixFromName(typeName))
+        self.appendSection('bitmask', alias)
+    #
+    def genDefineConstant(self, typeinfo, constName, constType, constValue):
+        RustBaseOutputGenerator.genDefineConstant(self, typeinfo, constName, constType, constValue)
+        alias  = self.featureGuard
+        alias += 'pub use types::%s as %s;'%(constName, self.stripPrefixFromName(constName))
+        self.appendSection('define', alias)
+    #
+    def genGroupEnums(self, groupinfo, groupName, isEnum, entries):
+        RustBaseOutputGenerator.genGroupEnums(self, groupinfo, groupName, isEnum, entries)
+        #
+        if groupinfo.elem.get('type') == 'bitmask':
+            section = 'bitmask'
+        else:
+            section = 'group'
+        #
+        alias = '\npub use types::%s as %s;'%(groupName, self.stripPrefixFromName(groupName))
+        self.appendSection(section, alias)
+        #
+        for name, numVal, strVal, featureGuard, elem in entries:
+            alias  = featureGuard
+            alias += 'pub use types::%s as %s;\n'%(name, self.stripPrefixFromName(name))
+            self.appendSection(section, alias)
+    #
+    def genEnum(self, enuminfo, name):
+        RustBaseOutputGenerator.genEnum(self, enuminfo, name)
+        if name in IGNORED:
+            return
+        alias  = self.featureGuard
+        alias += 'pub use self::types::%s as %s;'%(name, self.stripPrefixFromName(name))
+        self.appendSection('enum', alias)
+    #
+    def genCmd(self, cmdinfo, name):
+        RustBaseOutputGenerator.genCmd(self, cmdinfo, name)
+        if name in IGNORED:
+            return
+        alias  = self.featureGuard
+        alias += 'pub use self::cmds::%s as %s;' % (name, self.stripPrefixFromName(name))
+        self.appendSection('command', alias)
+#
+# RustUtilsGeneratorOptions - subclass of RustGeneratorOptions.
+#
+# Adds options used by RustUtilsOutputGenerator
+#
+# Additional members
+#   generateGetName - list of group names to generate
+#      `get_${GROUPNAME}_name(value: ${GROUPNAME}) -> &'static str`
+#   generateGetDescription - list of group names to generate
+#      `get_${GROUPNAME}_description(value: ${GROUPNAME}) -> &'static str`
+class RustUtilsGeneratorOptions(RustGeneratorOptions):
+    def __init__(self,
+            generateGetName = [],
+            generateGetDescription = [],
+            *args, **kwargs):
+        RustGeneratorOptions.__init__(self, *args, **kwargs)
+        self.generateGetName = set(generateGetName)
+        self.generateGetDescription = set(generateGetDescription)
+#
+# RustUtilsOutputGenerator - subclass of RustBaseOutputGenerator.
+# generates utility functions for converting Enum-Group Values to strings.
+class RustUtilsOutputGenerator(RustBaseOutputGenerator):
+    #
+    ALL_SECTIONS = [ 'group' ]
+    #
+    def endFeature(self):
+        if self.emit:
+            self.writeSections(self.ALL_SECTIONS, self.outFile)
+        # Finish processing in superclass
+        RustBaseOutputGenerator.endFeature(self)
+    #
+    def genGroupEnums(self, groupinfo, groupName, isEnum, entries):
+        RustBaseOutputGenerator.genGroupEnums(self, groupinfo, groupName, isEnum, entries)
+        #
+        if groupName in self.genOpts.generateGetName:
+            body  = 'pub fn get_%s_name(value: ::types::%s) -> &\'static str {\n' % (groupName, groupName)
+            for name, numVal, strVal, featureGuard, elem in entries:
+                if elem is None:
+                    continue
+                body += '  if value == %s { return "%s"; }\n' % (strVal, name)
+            body += '  return "";\n'
+            body += '}\n'
+            self.appendSection('group', body)
+        #
+        if groupName in self.genOpts.generateGetName:
+            body  = 'pub fn get_%s_description(value: ::types::%s) -> &\'static str {\n' % (groupName, groupName)
+            for name, numVal, strVal, featureGuard, elem in entries:
+                if elem is None:
+                    continue
+                description = elem.get('comment') or name
+                body += '  if value == %s { return "%s"; }\n' % (strVal, description)
+            body += '  return "";\n'
+            body += '}\n'
+            self.appendSection('group', body)
+#

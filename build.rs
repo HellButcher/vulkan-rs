@@ -92,7 +92,11 @@ fn main() {
         .arg(genvk_py_path)
         .arg("-o")
         .arg(out_dir)
-        .arg("vulkan.rs")
+        .arg("vulkan_types.rs")
+        .arg("vulkan_ffi.rs")
+        .arg("vulkan_safe.rs")
+        .arg("vulkan_alias.rs")
+        .arg("vulkan_utils.rs")
         .status()
         .unwrap();
     if !status.success() {

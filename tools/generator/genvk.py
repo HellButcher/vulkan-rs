@@ -30,7 +30,9 @@ sys.path = [__vkspec_dir__] + sys.path
 
 from reg import *
 from generator import write
-from rustgenerator import RustGeneratorOptions, RustOutputGenerator
+from rustgenerator import RustGeneratorOptions, RustTypesOutputGenerator, \
+    RustFfiOutputGenerator, RustSafeOutputGenerator, RustAliasOutputGenerator, \
+    RustUtilsGeneratorOptions, RustUtilsOutputGenerator
 
 # Simple timer functions
 startTime = None
@@ -98,37 +100,54 @@ def makeGenOpts(extensions = [], removeExtensions = [], protect = True, director
         ''
     ]
 
-    # Defaults for generating re-inclusion protection wrappers (or not)
-    protectFile = protect
-    protectFeature = protect
-    protectProto = protect
-
     # Vulkan 1.0 - source for core API + extensions.
     # To generate just the core API,
     # change to 'defaultExtensions = None' below.
-    genOpts['vulkan.rs'] = [
-          RustOutputGenerator,
+    commonOptions = dict(
+        directory         = directory,
+        apiname           = 'vulkan',
+        profile           = None,
+        versions          = allVersions,
+        emitversions      = allVersions,
+        defaultExtensions = 'vulkan',
+        addExtensions     = None,
+        removeExtensions  = None,
+        prefixText        = prefixStrings + vkPrefixStrings,
+    )
+    #
+    genOpts['vulkan_types.rs'] = [
+          RustTypesOutputGenerator,
           RustGeneratorOptions(
             filename          = 'vulkan_types.rs',
-            ffiFilename       = 'vulkan_ffi.rs',
-            #safeFfiFilename   = 'vulkan_safe.rs',
-            aliasFilename     = 'vulkan_alias.rs',
-            utilsFilename     = 'vulkan_utils.rs',
-            utilsProperties   = dict(
-                toName        = ['VkResult'],
-                toDescription = ['VkResult'],
-            ),
-            directory         = directory,
-            apiname           = 'vulkan',
-            profile           = None,
-            versions          = allVersions,
-            emitversions      = allVersions,
-            defaultExtensions = 'vulkan',
-            addExtensions     = None,
-            removeExtensions  = None,
-            prefixText        = prefixStrings + vkPrefixStrings,
-            alignFuncParam    = 48)
+            **commonOptions)
         ]
+    genOpts['vulkan_ffi.rs'] = [
+          RustFfiOutputGenerator,
+          RustGeneratorOptions(
+            filename          = 'vulkan_ffi.rs',
+            **commonOptions)
+        ]
+    genOpts['vulkan_safe.rs'] = [
+          RustSafeOutputGenerator,
+          RustGeneratorOptions(
+            filename          = 'vulkan_safe.rs',
+            **commonOptions)
+        ]
+    genOpts['vulkan_alias.rs'] = [
+          RustAliasOutputGenerator,
+          RustGeneratorOptions(
+            filename          = 'vulkan_alias.rs',
+            **commonOptions)
+        ]
+    genOpts['vulkan_utils.rs'] = [
+          RustUtilsOutputGenerator,
+          RustUtilsGeneratorOptions(
+            filename               = 'vulkan_utils.rs',
+            generateGetName        = [ 'VkResult' ],
+            generateGetDescription = [ 'VkResult' ],
+            **commonOptions)
+        ]
+#
 # Generate a target based on the options in the matching genOpts{} object.
 # This is encapsulated in a function so it can be profiled and/or timed.
 # The args parameter is an parsed argument object containing the following
@@ -146,10 +165,13 @@ def genTarget(args):
                 removeExtensions = args.removeExtension,
                 protect = args.protect,
                 directory = args.directory)
-
-    if (args.target in genOpts.keys()):
-        createGenerator = genOpts[args.target][0]
-        options = genOpts[args.target][1]
+    for target in args.target:
+        if target not in genOpts.keys():
+            write('No generator options for unknown target:', target, file=sys.stderr)
+            return
+    for target in args.target:
+        createGenerator = genOpts[target][0]
+        options = genOpts[target][1]
 
         if not args.quiet:
             write('* Building', options.filename, file=sys.stderr)
@@ -158,15 +180,13 @@ def genTarget(args):
         gen = createGenerator(errFile=errWarn,
                               warnFile=errWarn,
                               diagFile=diag)
+        reg.apiReset()
         reg.setGenerator(gen)
         reg.apiGen(options)
 
         if not args.quiet:
             write('* Generated', options.filename, file=sys.stderr)
         endTimer(args.time, '* Time to generate ' + options.filename + ' =')
-    else:
-        write('No generator options for unknown target:',
-              args.target, file=sys.stderr)
 
 
 # -extension name - may be a single extension name, a a space-separated list
@@ -204,7 +224,7 @@ if __name__ == '__main__':
     parser.add_argument('-o', action='store', dest='directory',
                         default='.',
                         help='Create target and related files in specified directory')
-    parser.add_argument('target', metavar='target', nargs='?',
+    parser.add_argument('target', metavar='target', nargs='+',
                         help='Specify target')
     parser.add_argument('-quiet', action='store_true', default=False,
                         help='Suppress script output during normal execution.')
