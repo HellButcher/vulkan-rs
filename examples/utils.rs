@@ -26,7 +26,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 use winit;
 use std::os::raw::c_char;
-use std::ffi::CString;
+use std::ffi::{CStr,CString};
 use vulkan_rs::prelude::*;
 
 macro_rules! vk_try {
@@ -127,6 +127,9 @@ pub struct Application {
     physical_device: VkPhysicalDevice,
     queues: [VkQueue; QUEUE_COUNT],
     device: VkDevice,
+    swapchain: VkSwapchainKHR,
+    swapchain_images: Vec<VkImage>,
+    swapchain_image_views: Vec<VkImageView>,
 }
 
 #[cfg(target_os = "windows")]
@@ -312,16 +315,127 @@ fn create_instance(app_aame: &str, exts: &[&str]) -> VkResultObj<VkInstance> {
     return Ok(instance);
 }
 
-fn choose_physical_device(instance: VkInstance) -> VkResultObj<VkPhysicalDevice> {
+#[derive(Default)]
+struct DeviceInitializationDetails {
+    queue_family_indices: [u32; QUEUE_COUNT],
+    surface_format: VkSurfaceFormatKHR,
+    surface_present_mode: VkPresentModeKHR,
+    surface_capabilities: VkSurfaceCapabilitiesKHR,
+}
+
+fn choose_physical_device(instance: VkInstance, exts: &[&str], surface: VkSurfaceKHR) -> VkResultObj<(VkPhysicalDevice,DeviceInitializationDetails)> {
     let devices = vk_vec_try!(vkEnumeratePhysicalDevices; instance; VkPhysicalDevice);
     if devices.len() <= 0 {
+        warn!("there are no physical devices!");
         return Err(VK_ERROR_INITIALIZATION_FAILED.into());
     }
-    let device = devices[0]; // return first:
-    // TODO: choose via scoring
-    // https://vulkan-tutorial.com/Drawing_a_triangle/Setup/Physical_devices_and_queue_families
-    debug!("choosed physical device {:?}", device);
-    return Ok(device);
+    for (i, physical_device) in devices.into_iter().enumerate() {
+        debug!("check physical device {:?} with index {}", physical_device, i);
+        match check_device(physical_device, exts, surface) {
+            Ok(details) => {
+                debug!("choosed physical device {:?} with index {}", physical_device, i);
+                return Ok((physical_device, details));
+            },
+            Err(e) => {
+                debug!("physical device {:?} with index {} not choosed: {}", physical_device, i, e);
+            },
+        }
+    }
+    warn!("no suitable physical device found!");
+    return Err(VK_ERROR_INITIALIZATION_FAILED.into());
+}
+
+fn check_device(physical_device: VkPhysicalDevice, exts: &[&str], surface: VkSurfaceKHR) -> VkResultObj<DeviceInitializationDetails> {
+    let indices = choose_queue_family_indices(physical_device, surface);
+    if indices[0] == INVALID_INDEX || (surface != vk_null_handle() && indices[1] == INVALID_INDEX) {
+        debug!("device {:?} has no suitable queue family", physical_device);
+        return Err(VK_ERROR_INITIALIZATION_FAILED.into());
+    }
+    let mut details : DeviceInitializationDetails = Default::default();
+    details.queue_family_indices = indices;
+    if ! try!(check_device_extension_support(physical_device, exts)) {
+        debug!("device {:?} doesn't support all required extensions", physical_device);
+        return Err(VK_ERROR_INITIALIZATION_FAILED.into());
+    }
+    if surface != vk_null_handle() {
+        vk_try!(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface, &mut details.surface_capabilities));
+        details.surface_format = try!(choose_surface_format(physical_device, surface));
+        details.surface_present_mode = try!(choose_surface_present_mode(physical_device, surface));
+    }
+    return Ok(details);
+}
+
+fn check_device_extension_support(physical_device: VkPhysicalDevice, exts: &[&str]) -> VkResultObj<bool> {
+    let mut exts : ::std::collections::HashSet<&str> = exts.iter().cloned().collect();
+    let extension_props = vk_vec_try!(vkEnumerateDeviceExtensionProperties; physical_device, vk_null(); VkExtensionProperties);
+    for extension in extension_props.into_iter() {
+        let ext_name = unsafe{ CStr::from_ptr(extension.extensionName.as_ptr()) };
+        match ext_name.to_str() {
+            Ok(ext_name) => { exts.remove(ext_name); },
+            Err(_) => {},
+        };
+    }
+    debug!("checked physical device {:?}. missing extensions: {:?}", physical_device, exts);
+    return Ok(exts.is_empty());
+}
+
+fn choose_surface_format(physical_device: VkPhysicalDevice, surface: VkSurfaceKHR) -> VkResultObj<VkSurfaceFormatKHR> {
+    if surface == vk_null_handle() {
+        return Err(VK_ERROR_EXTENSION_NOT_PRESENT.into());
+    }
+    let available_formats = vk_vec_try!(vkGetPhysicalDeviceSurfaceFormatsKHR; physical_device, surface; VkSurfaceFormatKHR);
+    if available_formats.len() <= 0 {
+        return Err(VK_ERROR_EXTENSION_NOT_PRESENT.into());
+    }
+    let first_format = VkSurfaceFormatKHR{ format: available_formats[0].format, colorSpace: available_formats[0].colorSpace };
+    if available_formats.len() == 1 && first_format.format == VK_FORMAT_UNDEFINED {
+        return Ok(VkSurfaceFormatKHR{
+            format: VK_FORMAT_B8G8R8A8_UNORM,
+            colorSpace: VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
+        });
+    }
+
+    for available_format in available_formats {
+        if available_format.format == VK_FORMAT_B8G8R8A8_UNORM && available_format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR {
+            return Ok(available_format);
+        }
+    }
+
+    return Ok(first_format);
+}
+
+fn choose_surface_present_mode(physical_device: VkPhysicalDevice, surface: VkSurfaceKHR) -> VkResultObj<VkPresentModeKHR> {
+    if surface == vk_null_handle() {
+        return Err(VK_ERROR_EXTENSION_NOT_PRESENT.into());
+    }
+    let available_modes = vk_vec_try!(vkGetPhysicalDeviceSurfacePresentModesKHR; physical_device, surface; VkPresentModeKHR);
+    let mut best_mode = VK_PRESENT_MODE_FIFO_KHR;
+    for available_mode in available_modes {
+        if available_mode == VK_PRESENT_MODE_MAILBOX_KHR {
+            return Ok(available_mode);
+        } else if available_mode == VK_PRESENT_MODE_IMMEDIATE_KHR {
+            best_mode = available_mode;
+        }
+    }
+    return Ok(best_mode);
+}
+
+fn choose_swap_extend_from_capabilities(capabilities: &VkSurfaceCapabilitiesKHR, window_size: VkExtent2D) -> VkExtent2D {
+    if capabilities.currentExtent.width != (-1i32) as u32 {
+        return VkExtent2D{ width: capabilities.currentExtent.width, height: capabilities.currentExtent.height };
+    }
+    let mut actual_extent = window_size;
+    if actual_extent.width > capabilities.maxImageExtent.width {
+        actual_extent.width = capabilities.maxImageExtent.width;
+    } else if actual_extent.width < capabilities.minImageExtent.width {
+        actual_extent.width = capabilities.minImageExtent.width;
+    }
+    if actual_extent.height > capabilities.maxImageExtent.height {
+        actual_extent.height = capabilities.maxImageExtent.height;
+    } else if actual_extent.height < capabilities.minImageExtent.height {
+        actual_extent.height = capabilities.minImageExtent.height;
+    }
+    return actual_extent;
 }
 
 fn create_logical_device(physical_device: VkPhysicalDevice, queue_family_indices: &[u32], exts: &[&str]) -> VkResultObj<VkDevice> {
@@ -356,6 +470,70 @@ fn create_logical_device(physical_device: VkPhysicalDevice, queue_family_indices
     return Ok(device);
 }
 
+fn create_swapchain(device: VkDevice, surface: VkSurfaceKHR, details: &DeviceInitializationDetails, extent: VkExtent2D, old_swapchain: VkSwapchainKHR) -> VkResultObj<VkSwapchainKHR> {
+    let mut image_count = details.surface_capabilities.minImageCount + 1;
+    if details.surface_capabilities.maxImageCount > 0 && image_count > details.surface_capabilities.maxImageCount {
+        image_count = details.surface_capabilities.maxImageCount;
+    }
+    let mut create_info = VkSwapchainCreateInfoKHR{
+        sType: VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+        pNext: vk_null(),
+        flags: 0,
+        surface: surface,
+        minImageCount: image_count,
+        imageFormat: details.surface_format.format,
+        imageColorSpace: details.surface_format.colorSpace,
+        imageExtent: extent,
+        imageArrayLayers: 1,
+        imageUsage: VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+        imageSharingMode: VK_SHARING_MODE_EXCLUSIVE,
+        queueFamilyIndexCount: 0,
+        pQueueFamilyIndices: vk_null(),
+        preTransform: details.surface_capabilities.currentTransform,
+        compositeAlpha: VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+        presentMode: details.surface_present_mode,
+        clipped: VK_TRUE,
+        oldSwapchain: old_swapchain,
+    };
+    if details.queue_family_indices[0] != details.queue_family_indices[1] {
+        create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+        create_info.queueFamilyIndexCount = 2;
+        create_info.pQueueFamilyIndices = details.queue_family_indices.as_ptr();
+    }
+    let swapchain = vk_get_try!(vkCreateSwapchainKHR; device, &create_info, vk_null() ; VkSwapchainKHR);
+    debug!("created swapchain {:?}", swapchain);
+    return Ok(swapchain);
+}
+
+fn create_swapchain_image_views(device: VkDevice, details: &DeviceInitializationDetails, images: &[VkImage]) -> VkResultObj<Vec<VkImageView>> {
+    let mut image_views : Vec<VkImageView> = Vec::with_capacity(images.len());
+    for image in images {
+        let create_info = VkImageViewCreateInfo{
+            sType: VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+            pNext: vk_null(),
+            flags: 0,
+            image: *image,
+            viewType: VK_IMAGE_VIEW_TYPE_2D,
+            format: details.surface_format.format,
+            components: VkComponentMapping{
+                r: VK_COMPONENT_SWIZZLE_IDENTITY,
+                g: VK_COMPONENT_SWIZZLE_IDENTITY,
+                b: VK_COMPONENT_SWIZZLE_IDENTITY,
+                a: VK_COMPONENT_SWIZZLE_IDENTITY,
+            },
+            subresourceRange: VkImageSubresourceRange{
+                aspectMask: VK_IMAGE_ASPECT_COLOR_BIT,
+                baseMipLevel: 0,
+                levelCount: 1,
+                baseArrayLayer: 0,
+                layerCount: 1,
+            },
+        };
+        image_views.push(vk_get_try!(vkCreateImageView; device, &create_info, vk_null(); VkImageView));
+    }
+    return Ok(image_views);
+}
+
 impl Application {
     pub fn new(app_name: &str, window: &winit::Window) -> VkResultObj<Application> {
         let mut app : Application = Default::default();
@@ -363,20 +541,35 @@ impl Application {
         let device_exts = get_required_device_extensions();
         app.instance = try!(create_instance(app_name, instance_exts.as_slice()));
         app.surface = try!(create_surface(app.instance, window));
-        app.physical_device = try!(choose_physical_device(app.instance));
-        let mem_props = vk_get!(vkGetPhysicalDeviceMemoryProperties; app.physical_device; VkPhysicalDeviceMemoryProperties);
-        let dev_props = vk_get!(vkGetPhysicalDeviceProperties; app.physical_device; VkPhysicalDeviceProperties);
-        debug!("props: memoryTypeCount: {}, memoryHeapCount: {}, apiVersion: {}, driverVersion: {}, vendorID: {}, deviceID: {}", mem_props.memoryTypeCount, mem_props.memoryHeapCount, dev_props.apiVersion, dev_props.driverVersion, dev_props.vendorID, dev_props.deviceID);
-        let queue_family_indices = choose_queue_family_indices(app.physical_device, app.surface);
-        app.device = try!(create_logical_device(app.physical_device, &queue_family_indices, device_exts.as_slice()));
-        app.queues = get_device_queues(app.device, &queue_family_indices);
+        let (physical_device, details) = try!(choose_physical_device(app.instance, device_exts.as_slice(), app.surface));
+        app.physical_device = physical_device;
+        //let mem_props = vk_get!(vkGetPhysicalDeviceMemoryProperties; app.physical_device; VkPhysicalDeviceMemoryProperties);
+        //let dev_props = vk_get!(vkGetPhysicalDeviceProperties; app.physical_device; VkPhysicalDeviceProperties);
+        //debug!("props: memoryTypeCount: {}, memoryHeapCount: {}, apiVersion: {}, driverVersion: {}, vendorID: {}, deviceID: {}", mem_props.memoryTypeCount, mem_props.memoryHeapCount, dev_props.apiVersion, dev_props.driverVersion, dev_props.vendorID, dev_props.deviceID);
+
+        app.device = try!(create_logical_device(app.physical_device, &details.queue_family_indices, device_exts.as_slice()));
+        app.queues = get_device_queues(app.device, &details.queue_family_indices);
+        let window_size = match window.get_inner_size_pixels() {
+            Some((width, height)) => VkExtent2D{width: width, height: height},
+            None => VkExtent2D{width: 800, height: 600},
+        };
+        let extent = choose_swap_extend_from_capabilities(&details.surface_capabilities, window_size);
+        app.swapchain = try!(create_swapchain(app.device, app.surface, &details, extent, vk_null_handle()));
+        app.swapchain_images = vk_vec_try!(vkGetSwapchainImagesKHR; app.device, app.swapchain; VkImage);
+        app.swapchain_image_views =
         return Ok(app);
     }
 
     pub fn dispose(&mut self) {
+        for image_view in self.swapchain_image_views.iter_mut() {
+            vk_drop!(vkDestroyImageView; [self.device] *image_view, vk_null());
+        }
+        self.swapchain_image_views.clear();
+        vk_drop!(vkDestroySwapchainKHR; [self.device] self.swapchain, vk_null());
         vk_drop!(vkDestroyDevice; [] self.device, vk_null());
         vk_drop!(vkDestroySurfaceKHR; [self.instance] self.surface, vk_null());
         vk_drop!(vkDestroyInstance; [] self.instance, vk_null());
+        self.swapchain_images.clear();
         self.queues = [vk_null_handle(), vk_null_handle()];
         self.physical_device = vk_null_handle();
     }
