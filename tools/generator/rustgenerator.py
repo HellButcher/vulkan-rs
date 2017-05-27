@@ -742,7 +742,7 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
         params = cmdinfo.elem.findall('param')
         #
         # find the command name and the return type
-        cmdname, rettype = self.splitRustTypeAndName(proto, in_function_params=False)
+        cmdname, ffirettype = self.splitRustTypeAndName(proto, in_function_params=False)
         #
         # build a information structure for arguments
         numparams = len(params)
@@ -755,7 +755,7 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
             paramlen = param.get('len')
             resulttype = None
             #
-            if (rettype is None or rettype == 'VkResult') and i == numparams-1 and paramtype.startswith('*mut '):
+            if (ffirettype is None or ffirettype == 'VkResult') and i == numparams-1 and paramtype.startswith('*mut '):
                 resulttype = paramtype[5:]
                 if paramlen is not None:
                     resulttype = 'Vec<%s>' % resulttype
@@ -774,7 +774,7 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
         arglist = [] # the actual argument list
         prepare = [] # task to do before calling the function
         handover = [] # pass argument to the function
-        vectoradjust = None # (lengthVariable, resizeStatement) when returning a vector, and a second invocation is required
+        vectoradjust = None # (lengthVariable, reserveStatement) when returning a vector, and a second invocation is required
         complete = [] # things to do after calling the function
         returns = None
         for param, paramname, paramtype, resulttype in paramlist:
@@ -819,7 +819,7 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
                     _, _, lenparamtype, _ = paramlist[param_by_name[paramlen]]
                     if lenparamtype.startswith('*mut '):
                         prepare.append('let mut %s : %s = Vec::new();' % (paramname, resulttype))
-                        vectoradjust = (paramlen, '%s = Vec::with_capacity(%s as usize);' % (paramname, paramlen))
+                        vectoradjust = (paramlen, '%s.reserve_exact(%s as usize);' % (paramname, paramlen))
                         handover.append('%s.as_mut_ptr()' % paramname)
                         complete.append('unsafe { %s.set_len(%s as usize) };' % (paramname, paramlen))
                     else:
@@ -884,6 +884,35 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
                 arglist.append((paramname, paramtype))
                 handover.append(paramname)
         #
+        successcodes = cmdinfo.elem.get('successcodes')
+        if successcodes is not None:
+            successcodes = successcodes.split(",")
+        else:
+            successcodes = []
+        #
+        # maybe a loop for handling 'VK_INCOMPLETE' is required
+        repeat_VK_INCOMPLETE = vectoradjust is not None and ffirettype == 'VkResult' and 'VK_INCOMPLETE' in successcodes
+        if repeat_VK_INCOMPLETE:
+            successcodes.remove('VK_INCOMPLETE')
+        #
+        # handle return type and return values
+        if returns is not None:
+            (returnvalue, returntype) = returns
+            if ffirettype is not None:
+                if ffirettype == 'VkResult' and len(successcodes) > 1:
+                    returns = ('Ok((%s, _result))' % returnvalue, 'util::VkResultObj<(%s, VkResult)>' % returntype)
+                elif ffirettype == 'VkResult':
+                    returns = ('Ok(%s)' % returnvalue, 'util::VkResultObj<%s>' % returntype)
+                else:
+                    returns = ('(%s, _result)' % returnvalue, '(%s, %s)' % (returntype, ffirettype))
+        elif ffirettype is not None:
+            if ffirettype == 'VkResult':
+                returns = ('Ok(_result)', 'util::VkResultObj')
+            else:
+                returns = ('_result', ffirettype)
+        #
+        #
+        #
         #now build the functions
         functionHeader = 'pub fn %s(' % cmdname
         body  = self.featureGuard
@@ -899,6 +928,8 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
             body += '%s: %s' % (argname, argtype)
             first = False
         body += ')'
+        #
+        # append the return type
         if returns is not None:
             (_, returntype) = returns
             if len(arglist) > 0:
@@ -912,41 +943,51 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
         for statement in prepare:
             body += '    %s\n' % statement
         #
-        # successcodes = cmdinfo.elem.get('successcodes')
-        # if successcodes is not None:
-        #     successcodes = successcodes.split(",")
-        # if rettype is not None:
-        #     if rettype == 'VkResult' and successcodes is not None:
-        #         safe += ' -> VkResultObj'
-        #     else:
-        #         safe += ' -> ' + rettype
+        if repeat_VK_INCOMPLETE:
+            body += '    loop {\n'
+            indent = '    '
+        else:
+            indent = ''
+        #
         handover1 = vectoradjust is None and handover or handover[:-1]+['util::vk_null()']
-        body += '    unsafe { ffi::%s(%s) };\n' % (cmdname, ', '.join(handover1)) # TODO: successcodes
-        # if successcodes is not None:
-        #     safe += '    let res = %s;\n' % safe_call
-        #     safe += '    if %s {\n' % (' or '.join(['res == %s'%v for v in successcodes]))
-        #     safe += '        return Ok(res);\n'
-        #     safe += '    } else {\n'
-        #     safe += '        return Err(res);\n'
-        #     safe += '    }\n'
-        # elif rettype is not None:
-        #     safe += '    return %s\n;' % safe_call
-        # else:
-        #     safe += '    %s;\n' % safe_call
+        fncall = 'unsafe { ffi::%s(%s) }' % (cmdname, ', '.join(handover1))
+        if ffirettype is not None:
+            if vectoradjust is not None:
+                body += indent+'    let mut _result = %s;\n' % fncall
+            else:
+                body += indent+'    let _result = %s;\n' % fncall
+            if ffirettype == 'VkResult':
+                body += indent+'    if (_result as i32) < 0 { return Err(_result.into()); }\n'
+        else:
+            body += indent
+            body += '    %s;\n' % fncall
         #
         if vectoradjust is not None:
-            (vectorcount, vectorStatement) = vectoradjust
-            body += '    if %s > 0 {\n' % vectorcount
-            body += '        %s\n' % vectorStatement
-            body += '        unsafe { ffi::%s(%s) };\n' % (cmdname, ', '.join(handover)) # TODO: successcodes
-            body += '    }\n'
+            (vectorcount, reserveStatement) = vectoradjust
+            body += indent+'    if %s > 0 {\n' % vectorcount
+            body += indent+'        %s\n' % reserveStatement
+            fncall = 'unsafe { ffi::%s(%s) };' % (cmdname, ', '.join(handover))
+            if ffirettype is not None:
+                body += indent+'        _result = %s;\n' % fncall
+                if ffirettype == 'VkResult':
+                    body += indent+'        if (_result as i32) < 0 { return Err(_result.into()); }\n'
+            else:
+                body += indent+'        %s;\n' % fncall
+            body += indent+'    }\n'
+        #
+        if repeat_VK_INCOMPLETE:
+            body += indent+'    if _result == VK_INCOMPLETE { continue; }\n'
         #
         for statement in complete:
-            body += '    %s\n' % statement
+            body += indent+'    %s\n' % statement
         #
         if returns is not None:
-            (returnarg, _) = returns
-            body += '    return %s;\n' % returnarg #TODO: Result-Object
+            (returnvalue, _) = returns
+            body += indent+'    return %s;\n' % returnvalue
+        #
+        if repeat_VK_INCOMPLETE:
+            body += '    }\n'
+        #
         body += '}\n'
         self.appendSection('command', body)
 #
