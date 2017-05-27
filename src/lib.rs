@@ -112,7 +112,7 @@ pub mod util {
     pub fn vk_null_handle<T: VkNullHandle>() -> T {
         T::null()
     }
-    
+
     include!(concat!(env!("OUT_DIR"), "/vulkan_utils.rs"));
 }
 
@@ -134,7 +134,7 @@ pub mod safe;
 pub use types::*;
 
 pub mod vk {
-    use ffi as cmds;
+    use safe as cmds;
     use types;
     pub use types::VkEnum as Enum;
     pub use types::VkHandle as Handle;
@@ -151,7 +151,7 @@ pub mod vk {
 
 pub mod prelude {
     pub use types::*;
-    pub use ffi::*;
+    pub use safe::*;
     pub use platform as vk_platform;
     pub use util::{vk_null, vk_null_handle};
     pub use util::VkResultObj;

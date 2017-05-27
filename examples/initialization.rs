@@ -56,6 +56,4 @@ fn main() {
         }
     });
 
-    app.dispose();
-
 }

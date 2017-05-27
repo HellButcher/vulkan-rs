@@ -29,88 +29,12 @@ use std::os::raw::c_char;
 use std::ffi::{CStr,CString};
 use vulkan_rs::prelude::*;
 
-macro_rules! vk_try {
-    ( $($e:expr );+ ) => {
-        $(
-            trace!("start: vk_try: {} @ line {}", stringify!($e), line!());
-            let res = unsafe { $e };
-            trace!("end: vk_try: {} @ line {}", stringify!($e), line!());
-            if res != VK_SUCCESS {
-                let e : VkError = res.into();
-                error!("{} @ line {}\n\t{}", e, line!(), stringify!($e));
-                return Err(e);
-            }
-        )+
-    };
-}
-
-macro_rules! vk_get_try {
-    ( $f:path ; $($e:expr),* ; $t:ty ) => {
-        {
-          let mut handle : $t = Default::default();
-          vk_try!( $f ( $($e ,)* &mut handle) );
-          handle
-        }
-    };
-}
-
-macro_rules! vk_get {
-    ( $f:path ; $($e:expr),* ; $t:ty ) => {
-        {
-          let mut handle : $t = Default::default();
-          trace!("start: vk_get: {} @ line {}", stringify!($f ( $($e ,)* &mut handle)), line!());
-          unsafe {
-            $f ( $($e ,)* &mut handle);
-          }
-          trace!("end: vk_get: {} @ line {}", stringify!($f ( $($e ,)* &mut handle)), line!());
-          handle
-        }
-    };
-}
-
 macro_rules! vk_drop {
     ( $f:path ; [ $($p:expr),* ] $e:expr $(, $r:expr)* ) => {
         if $e != vk_null_handle() {
-            trace!("start: vk_drop: {} @ line {}", stringify!($f ( $($p,)* $e $(, $r)* )), line!());
-            unsafe {
-                $f ( $($p,)* $e $(, $r)* );
-            }
-            trace!("end: vk_drop: {} @ line {}", stringify!($f ( $($p,)* $e $(, $r)* )), line!());
+            debug!("dropping: {} @ line {}", stringify!($f), line!());
+            $f ( $($p,)* $e $(, $r)* );
             $e = vk_null_handle();
-        }
-    };
-}
-
-macro_rules! vk_vec_try {
-    ( $f:path ; $($e:expr),* ; $t:ty ) => {
-        {
-          let mut count : u32 = 0;
-          vk_try!( $f ( $($e ,)* &mut count, vk_null()) );
-          let mut data: Vec<$t> = Vec::with_capacity(count as usize);
-          if count > 0 {
-              vk_try!( $f ( $($e ,)* &mut count, data.as_mut_ptr()) );
-              unsafe { data.set_len(count as usize) };
-          }
-          data
-        }
-    };
-}
-
-macro_rules! vk_vec {
-    ( $f:path ; $($e:expr),* ; $t:ty ) => {
-        {
-          let mut count : u32 = 0;
-          unsafe {
-              $f ( $($e ,)* &mut count, vk_null());
-          }
-          let mut data: Vec<$t> = Vec::with_capacity(count as usize);
-          if count > 0 {
-            unsafe {
-              $f ( $($e ,)* &mut count, data.as_mut_ptr() );
-              data.set_len(count as usize);
-            }
-          }
-          data
         }
     };
 }
@@ -175,7 +99,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
         hinstance: kernel32::GetModuleHandleW(ptr::null()),
         hwnd: w.get_hwnd(),
     };
-    let surface = vk_get_try!(vkCreateWin32SurfaceKHR; instance, &create_info, vk_null(); VkSurfaceKHR);
+    let surface = try!(vkCreateWin32SurfaceKHR(instance, &create_info, None));
     debug!("created windows surface {:?}", surface);
     return Ok(surface);
 }
@@ -193,7 +117,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
             display: wayland_display as *mut vk_platform::wayland::wl_display,
             surface: wayland_surface as *mut vk_platform::wayland::wl_surface,
         };
-        let surface = vk_get_try!(vkCreateWaylandSurfaceKHR; instance, &create_info, vk_null(); VkSurfaceKHR);
+        let surface = try!(vkCreateWaylandSurfaceKHR(instance, &create_info, None));
         debug!("created wayland surface {:?}", surface);
         return Ok(surface);
     } else if let Some(xlib_display) = w.get_xlib_display() {
@@ -206,7 +130,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
             dpy: xlib_display as *mut vk_platform::xlib::Display,
             window: xlib_window as vk_platform::xlib::Window,
         };
-        let surface = vk_get_try!(vkCreateXlibSurfaceKHR; instance, &create_info, vk_null(); VkSurfaceKHR);
+        let surface = try!(vkCreateXlibSurfaceKHR(instance, &create_info, None));
         debug!("created xlib surface {:?}", surface);
         return Ok(surface);
     } /* else if let Some(xcb_connection) = w.get_xcb_connection() {
@@ -219,7 +143,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
             connection: xcb_connection as *mut vk_platform::xcb::xcb_connection_t,
             window: xcb_window as vk_platform::xcb::xcb_window_t,
         };
-        let surface = vk_get_try!(vkCreateXcbSurfaceKHR; instance, &create_info, vk_null(); VkSurfaceKHR);
+        let surface = try!(vkCreateXcbSurfaceKHR(instance, &create_info, None));
         debug!("created xcb surface {:?}", surface);
         return Ok(surface);
     } */ else {
@@ -237,21 +161,21 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
         flags: 0,
         window: w.get_native_window() as *mut vk_platform::android::ANativeWindow,
     };
-    let surface = vk_get_try!(vkCreateAndroidSurfaceKHR; instance, &create_info, vk_null(); VkSurfaceKHR);
+    let surface = try!(vkCreateAndroidSurfaceKHR(instance, &create_info, None));
     debug!("created android surface {:?}", surface);
     return Ok(surface);
 }
 
-fn choose_queue_family_indices(physical_device: VkPhysicalDevice, surface: VkSurfaceKHR) -> [u32;2] {
+fn choose_queue_family_indices(physical_device: VkPhysicalDevice, surface: VkSurfaceKHR) -> VkResultObj<[u32;2]> {
     let mut result : [u32;QUEUE_COUNT] = [INVALID_INDEX, INVALID_INDEX];
-    let queue_family_props = vk_vec!(vkGetPhysicalDeviceQueueFamilyProperties; physical_device; VkQueueFamilyProperties);
+    let queue_family_props = vkGetPhysicalDeviceQueueFamilyProperties(physical_device);
     debug!("got {} queue family properties", queue_family_props.len());
 
     for (i, props) in queue_family_props.iter().enumerate() {
         debug!("querying queue family {}: queues={}, flags={}", i, props.queueCount, props.queueFlags);
         if props.queueCount > 0 {
             let has_surface_support = if surface != vk_null_handle() {
-                vk_get!(vkGetPhysicalDeviceSurfaceSupportKHR; physical_device, i as u32, surface  ; VkBool32)
+                try!(vkGetPhysicalDeviceSurfaceSupportKHR(physical_device, i as u32, surface))
             } else {
                 VK_FALSE
             };
@@ -273,14 +197,14 @@ fn choose_queue_family_indices(physical_device: VkPhysicalDevice, surface: VkSur
             }
         }
     }
-    return result;
+    return Ok(result);
 }
 
 fn get_device_queues(device: VkDevice, queue_family_indices: &[u32; QUEUE_COUNT]) -> [VkQueue; QUEUE_COUNT] {
     let mut result : [VkQueue; QUEUE_COUNT] = [vk_null_handle(), vk_null_handle()];
     for i in 0..QUEUE_COUNT {
         if queue_family_indices[i] != INVALID_INDEX {
-            result[i] = vk_get!(vkGetDeviceQueue; device, queue_family_indices[i], 0; VkQueue);
+            result[i] = vkGetDeviceQueue(device, queue_family_indices[i], 0);
             debug!("created device queue {:?} for index {}", result[i], i);
         }
     }
@@ -310,7 +234,7 @@ fn create_instance(app_aame: &str, exts: &[&str]) -> VkResultObj<VkInstance> {
         enabledExtensionCount: exts_p.len() as u32,
         ppEnabledExtensionNames: exts_p.as_ptr(),
     };
-    let instance = vk_get_try!(vkCreateInstance; &create_info, vk_null(); VkInstance);
+    let instance = try!(vkCreateInstance(&create_info, None));
     debug!("created instalce {:?}", instance);
     return Ok(instance);
 }
@@ -324,7 +248,7 @@ struct DeviceInitializationDetails {
 }
 
 fn choose_physical_device(instance: VkInstance, exts: &[&str], surface: VkSurfaceKHR) -> VkResultObj<(VkPhysicalDevice,DeviceInitializationDetails)> {
-    let devices = vk_vec_try!(vkEnumeratePhysicalDevices; instance; VkPhysicalDevice);
+    let devices = try!(vkEnumeratePhysicalDevices(instance));
     if devices.len() <= 0 {
         warn!("there are no physical devices!");
         return Err(VK_ERROR_INITIALIZATION_FAILED.into());
@@ -346,7 +270,7 @@ fn choose_physical_device(instance: VkInstance, exts: &[&str], surface: VkSurfac
 }
 
 fn check_device(physical_device: VkPhysicalDevice, exts: &[&str], surface: VkSurfaceKHR) -> VkResultObj<DeviceInitializationDetails> {
-    let indices = choose_queue_family_indices(physical_device, surface);
+    let indices = try!(choose_queue_family_indices(physical_device, surface));
     if indices[0] == INVALID_INDEX || (surface != vk_null_handle() && indices[1] == INVALID_INDEX) {
         debug!("device {:?} has no suitable queue family", physical_device);
         return Err(VK_ERROR_INITIALIZATION_FAILED.into());
@@ -358,7 +282,7 @@ fn check_device(physical_device: VkPhysicalDevice, exts: &[&str], surface: VkSur
         return Err(VK_ERROR_INITIALIZATION_FAILED.into());
     }
     if surface != vk_null_handle() {
-        vk_try!(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface, &mut details.surface_capabilities));
+        details.surface_capabilities = try!(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface));
         details.surface_format = try!(choose_surface_format(physical_device, surface));
         details.surface_present_mode = try!(choose_surface_present_mode(physical_device, surface));
     }
@@ -367,7 +291,7 @@ fn check_device(physical_device: VkPhysicalDevice, exts: &[&str], surface: VkSur
 
 fn check_device_extension_support(physical_device: VkPhysicalDevice, exts: &[&str]) -> VkResultObj<bool> {
     let mut exts : ::std::collections::HashSet<&str> = exts.iter().cloned().collect();
-    let extension_props = vk_vec_try!(vkEnumerateDeviceExtensionProperties; physical_device, vk_null(); VkExtensionProperties);
+    let extension_props = try!(vkEnumerateDeviceExtensionProperties(physical_device, None));
     for extension in extension_props.into_iter() {
         let ext_name = unsafe{ CStr::from_ptr(extension.extensionName.as_ptr()) };
         match ext_name.to_str() {
@@ -383,7 +307,7 @@ fn choose_surface_format(physical_device: VkPhysicalDevice, surface: VkSurfaceKH
     if surface == vk_null_handle() {
         return Err(VK_ERROR_EXTENSION_NOT_PRESENT.into());
     }
-    let available_formats = vk_vec_try!(vkGetPhysicalDeviceSurfaceFormatsKHR; physical_device, surface; VkSurfaceFormatKHR);
+    let available_formats = try!(vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface));
     if available_formats.len() <= 0 {
         return Err(VK_ERROR_EXTENSION_NOT_PRESENT.into());
     }
@@ -408,7 +332,7 @@ fn choose_surface_present_mode(physical_device: VkPhysicalDevice, surface: VkSur
     if surface == vk_null_handle() {
         return Err(VK_ERROR_EXTENSION_NOT_PRESENT.into());
     }
-    let available_modes = vk_vec_try!(vkGetPhysicalDeviceSurfacePresentModesKHR; physical_device, surface; VkPresentModeKHR);
+    let available_modes = try!(vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device, surface));
     let mut best_mode = VK_PRESENT_MODE_FIFO_KHR;
     for available_mode in available_modes {
         if available_mode == VK_PRESENT_MODE_MAILBOX_KHR {
@@ -465,7 +389,7 @@ fn create_logical_device(physical_device: VkPhysicalDevice, queue_family_indices
         ppEnabledExtensionNames: exts_p.as_ptr(),
         pEnabledFeatures: vk_null(),
     };
-    let device = vk_get_try!(vkCreateDevice; physical_device, &device_create_info, vk_null() ; VkDevice);
+    let device = try!(vkCreateDevice(physical_device, &device_create_info, None));
     debug!("created device {:?}", device);
     return Ok(device);
 }
@@ -500,7 +424,7 @@ fn create_swapchain(device: VkDevice, surface: VkSurfaceKHR, details: &DeviceIni
         create_info.queueFamilyIndexCount = 2;
         create_info.pQueueFamilyIndices = details.queue_family_indices.as_ptr();
     }
-    let swapchain = vk_get_try!(vkCreateSwapchainKHR; device, &create_info, vk_null() ; VkSwapchainKHR);
+    let swapchain = try!(vkCreateSwapchainKHR(device, &create_info, None));
     debug!("created swapchain {:?}", swapchain);
     return Ok(swapchain);
 }
@@ -529,13 +453,14 @@ fn create_swapchain_image_views(device: VkDevice, details: &DeviceInitialization
                 layerCount: 1,
             },
         };
-        image_views.push(vk_get_try!(vkCreateImageView; device, &create_info, vk_null(); VkImageView));
+        image_views.push(try!(vkCreateImageView(device, &create_info, None)));
     }
     return Ok(image_views);
 }
 
 impl Application {
     pub fn new(app_name: &str, window: &winit::Window) -> VkResultObj<Application> {
+        debug!("initializingApplication...");
         let mut app : Application = Default::default();
         let instance_exts = get_required_instance_extensions(window);
         let device_exts = get_required_device_extensions();
@@ -555,23 +480,26 @@ impl Application {
         };
         let extent = choose_swap_extend_from_capabilities(&details.surface_capabilities, window_size);
         app.swapchain = try!(create_swapchain(app.device, app.surface, &details, extent, vk_null_handle()));
-        app.swapchain_images = vk_vec_try!(vkGetSwapchainImagesKHR; app.device, app.swapchain; VkImage);
-        app.swapchain_image_views =
+        app.swapchain_images = try!(vkGetSwapchainImagesKHR(app.device, app.swapchain));
+        //app.swapchain_image_views =
+        debug!("Application initialized");
         return Ok(app);
     }
 
     pub fn dispose(&mut self) {
+        debug!("Cleaning up Application...");
         for image_view in self.swapchain_image_views.iter_mut() {
-            vk_drop!(vkDestroyImageView; [self.device] *image_view, vk_null());
+            vk_drop!(vkDestroyImageView; [self.device] *image_view, None);
         }
         self.swapchain_image_views.clear();
-        vk_drop!(vkDestroySwapchainKHR; [self.device] self.swapchain, vk_null());
-        vk_drop!(vkDestroyDevice; [] self.device, vk_null());
-        vk_drop!(vkDestroySurfaceKHR; [self.instance] self.surface, vk_null());
-        vk_drop!(vkDestroyInstance; [] self.instance, vk_null());
+        vk_drop!(vkDestroySwapchainKHR; [self.device] self.swapchain, None);
+        vk_drop!(vkDestroyDevice; [] self.device, None);
+        vk_drop!(vkDestroySurfaceKHR; [self.instance] self.surface, None);
+        vk_drop!(vkDestroyInstance; [] self.instance, None);
         self.swapchain_images.clear();
         self.queues = [vk_null_handle(), vk_null_handle()];
         self.physical_device = vk_null_handle();
+        debug!("Application cleaned up");
     }
 }
 

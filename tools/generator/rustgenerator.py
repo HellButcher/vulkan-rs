@@ -916,6 +916,8 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
         #now build the functions
         functionHeader = 'pub fn %s(' % cmdname
         body  = self.featureGuard
+        if not repeat_VK_INCOMPLETE:
+            body += '#[inline]'
         body += functionHeader
         prefix = ' '*len(functionHeader)
         #
