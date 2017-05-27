@@ -60,12 +60,11 @@ fn enable_default_platform() {}
 fn main() {
     let generator_path = ::std::path::Path::new("tools").join("generator");
     let genvk_py_path = generator_path.join("genvk.py");
-    let vkdoc_path = generator_path.join("Vulkan-Docs");
+    let vkdoc_path = ::std::path::Path::new("tools").join("data").join("Vulkan-Docs");
 
     let out_dir = ::std::env::var("OUT_DIR").unwrap();
 
-    for path in generator_path
-            .read_dir()
+    for path in generator_path.read_dir()
             .unwrap()
             .map(|p| p.unwrap().path())
             .filter(|p| p.is_file() && p.extension().unwrap() == "py") {
@@ -76,14 +75,14 @@ fn main() {
 
     if !vkdoc_path.exists() {
         let status = ::std::process::Command::new("git")
-            .arg("clone")
-            .arg("https://github.com/KhronosGroup/Vulkan-Docs")
-            .arg("Vulkan-Docs")
-            .current_dir(generator_path)
+            .arg("submodule")
+            .arg("update")
+            .arg("--init")
+            .arg(vkdoc_path)
             .status()
             .unwrap();
         if !status.success() {
-            panic!("`git clone [...]/Vulkan-Docs` exited with status code {}",
+            panic!("`git submodule update init [...]` exited with status code {}",
                    status)
         }
     }

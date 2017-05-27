@@ -15,7 +15,6 @@ __pycache__/
 Cargo.lock
 
 # generator
-/tools/generator/Vulkan-Docs/
 
 *~
 *.tmp

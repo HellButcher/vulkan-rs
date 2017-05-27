@@ -8,6 +8,19 @@ homepage = "https://github.com/HellButcher/vulkan-rs"
 repository = "https://github.com/HellButcher/vulkan-rs.git"
 readme = "README.md"
 build = "build.rs"
+include = [
+  "Cargo.toml",
+  "LICENSE",
+  "README.md",
+  "build.rs",
+  "src/**",
+  "tools/generator/*.py",
+  "tools/data/Vulkan-Docs/src/spec/*.py",
+  "tools/data/Vulkan-Docs/src/spec/*.xml",
+  "examples/**",
+  "tests/**",
+  "benches/**",
+]
 
 [dependencies]
 
