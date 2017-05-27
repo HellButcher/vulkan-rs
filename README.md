@@ -7,7 +7,7 @@ Vulkan bindings for the rust programming language.
 
 ```toml
 [dependencies]
-vulkan_rs = "0.1.1"
+vulkan_rs = "0.2.0"
 ```
 
 ```rust
@@ -37,11 +37,7 @@ fn main() {
       enabledExtensionCount: 0,
       ppEnabledExtensionNames: vk_null(),
   };
-  let mut instance: VkInstance = vk_null_handle();
-  let res = unsafe { vkCreateInstance(&create_info, vk_null(), &mut instance)};
-  if res != VK_SUCCESS {
-    return Err(res);
-  }
+  let instance = vkCreateInstance(&create_info, None).unwrap();
   [...]
 }
 ```
