@@ -1048,10 +1048,12 @@ class RustUtilsGeneratorOptions(RustGeneratorOptions):
     def __init__(self,
             generateGetName = [],
             generateGetDescription = [],
+            generateGetFromStr = [],
             *args, **kwargs):
         RustGeneratorOptions.__init__(self, *args, **kwargs)
         self.generateGetName = set(generateGetName)
         self.generateGetDescription = set(generateGetDescription)
+        self.generateGetFromStr = set(generateGetFromStr)
 #
 # RustUtilsOutputGenerator - subclass of RustBaseOutputGenerator.
 # generates utility functions for converting Enum-Group Values to strings.
@@ -1065,27 +1067,107 @@ class RustUtilsOutputGenerator(RustBaseOutputGenerator):
         # Finish processing in superclass
         RustBaseOutputGenerator.endFeature(self)
     #
+    def genLookupStructure(self, entries):
+        sorted_entries = sorted(entries, key=(lambda item: item[1]))
+        lookup = []
+        last = None
+        for e in sorted_entries:
+            _, numVal, _, _, elem = e
+            if elem is None: # elem
+                continue
+            if last is None or last + 1 < numVal:
+                lookup.append(dict(min=numVal, max=numVal, entries=[e]))
+            else:
+                l = lookup[-1]
+                l['max'] = numVal     # max
+                l['entries'].append(e) # lookupEntries
+            last = numVal
+        return lookup
+    #
+    def genLookupFunction(self, lookup, displayFunc):
+        body = ''
+        for l in lookup:
+            lookupEntries = l['entries']
+            body += '    if value < %s { return ""; }\n' % l['min']
+            if len(lookupEntries) < 3:
+                for name, numVal, strVal, featureGuard, elem in lookupEntries:
+                    display = displayFunc(name, numVal, strVal, featureGuard, elem)
+                    body += '    if value == %s { return "%s"; }\n' % (numVal, display)
+            else:
+                body += '    if value <= %s {\n' % l['max']
+                if len(lookupEntries) < 6:
+                    for name, numVal, strVal, featureGuard, elem in lookupEntries:
+                        display = displayFunc(name, numVal, strVal, featureGuard, elem)
+                        body += '        if value == %s { return "%s"; }\n' % (numVal, display)
+                else:
+                    body += '        static _DISPLAY : [&\'static str; %d] = [\n' % len(lookupEntries)
+                    for name, numVal, strVal, featureGuard, elem in lookupEntries:
+                        display = displayFunc(name, numVal, strVal, featureGuard, elem)
+                        body += '            "%s",\n' % display
+                    body += '        ];\n'
+                    if l['min'] == 0:
+                        body += '        return _DISPLAY[value as usize];\n'
+                    elif l['min'] > 0:
+                        body += '        return _DISPLAY[value as usize - %d];\n' % l['min']
+                    else:
+                        body += '        return _DISPLAY[(value + %d) as usize];\n' % -l['min']
+                body += '    }\n'
+        body += '    return "";\n'
+        return body
+    #
     def genGroupEnums(self, groupinfo, groupName, isEnum, entries):
         RustBaseOutputGenerator.genGroupEnums(self, groupinfo, groupName, isEnum, entries)
         #
+        lookup = None
+        #
         if groupName in self.genOpts.generateGetName:
+            if lookup is None:
+                lookup = self.genLookupStructure(entries)
             body  = 'pub fn get_%s_name(value: ::types::%s) -> &\'static str {\n' % (groupName, groupName)
-            for name, numVal, strVal, featureGuard, elem in entries:
-                if elem is None:
-                    continue
-                body += '  if value == %s { return "%s"; }\n' % (strVal, name)
-            body += '  return "";\n'
+            body += '    let value = value as i32;\n'
+            body += self.genLookupFunction(lookup, (lambda name, numVal, strVal, featureGuard, elem: name))
             body += '}\n'
             self.appendSection('group', body)
         #
-        if groupName in self.genOpts.generateGetName:
+        if groupName in self.genOpts.generateGetDescription:
+            if lookup is None:
+                lookup = self.genLookupStructure(entries)
             body  = 'pub fn get_%s_description(value: ::types::%s) -> &\'static str {\n' % (groupName, groupName)
+            body += '    let value = value as i32;\n'
+            body += self.genLookupFunction(lookup, (lambda name, numVal, strVal, featureGuard, elem: elem.get('comment') or name))
+            body += '}\n'
+            self.appendSection('group', body)
+        #
+        if groupName in self.genOpts.generateGetFromStr:
+            from perfect_hash import CreateMinimalPerfectHash, PerfectHashLookup
+            hash_data = dict()
             for name, numVal, strVal, featureGuard, elem in entries:
                 if elem is None:
                     continue
-                description = elem.get('comment') or name
-                body += '  if value == %s { return "%s"; }\n' % (strVal, description)
-            body += '  return "";\n'
+                hash_data[name] = (name,numVal)
+            G, V = CreateMinimalPerfectHash(hash_data)
+            body  = 'pub fn get_%s_from_str(s: &str) -> Option<::types::%s> {\n' % (groupName, groupName)
+            body += '    static G : [i32; %d] = [%s];\n' % (len(G), ', '.join([str(g) for g in G]))
+            body += '    static V : [(i32,&\'static str); %d] = [' % len(V)
+            for i, (name, value) in enumerate(V):
+                if i > 0:
+                    body += ','
+                if i % 5 == 0:
+                    body += '\n        '
+                else:
+                    body += ' '
+                body += '(%d, "%s")' % (value, name)
+            body += '\n'
+            body += '    ];\n'
+            body += '    let d = G[hash(0,s) %% %d];\n' % len(G)
+            body += '    let (v, n) = if d < 0 {\n'
+            body += '        V[(-d-1) as usize]\n'
+            body += '    } else {\n'
+            body += '        V[hash(d as usize, s) %% %d]\n' % len(V)
+            body += '    };\n'
+            body += '    return if n == s { Some(v as ::types::%s) } else { None };\n' % groupName
             body += '}\n'
             self.appendSection('group', body)
+
+
 #

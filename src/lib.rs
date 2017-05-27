@@ -113,6 +113,15 @@ pub mod util {
         T::null()
     }
 
+    fn hash(d: usize, s: &str) -> usize {
+        let mut d = if d == 0 { 0x01000193 } else { d };
+        // Use the FNV algorithm from http://isthe.com/chongo/tech/comp/fnv/
+        for c in s.chars() {
+            d = ( (d * 0x01000193) ^ (c as usize) ) & 0xffffffff;
+        }
+        return d;
+    }
+
     include!(concat!(env!("OUT_DIR"), "/vulkan_utils.rs"));
 }
 

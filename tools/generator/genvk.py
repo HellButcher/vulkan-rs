@@ -145,6 +145,7 @@ def makeGenOpts(extensions = [], removeExtensions = [], protect = True, director
             filename               = 'vulkan_utils.rs',
             generateGetName        = [ 'VkResult' ],
             generateGetDescription = [ 'VkResult' ],
+            generateGetFromStr     = [ 'VkPrimitiveTopology', 'VkPolygonMode', 'VkFrontFace'],
             **commonOptions)
         ]
 #
