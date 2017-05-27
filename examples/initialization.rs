@@ -41,7 +41,7 @@ fn main() {
         .build(&events_loop)
         .unwrap();
 
-    let mut app = Application::new("triangle", &window).unwrap();
+    let app = Application::new("initialization", &window).unwrap();
 
     // TODO: implement example
 
@@ -55,5 +55,7 @@ fn main() {
             _ => (),
         }
     });
+
+    drop(app);
 
 }

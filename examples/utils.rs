@@ -481,12 +481,14 @@ impl Application {
         let extent = choose_swap_extend_from_capabilities(&details.surface_capabilities, window_size);
         app.swapchain = try!(create_swapchain(app.device, app.surface, &details, extent, vk_null_handle()));
         app.swapchain_images = try!(vkGetSwapchainImagesKHR(app.device, app.swapchain));
-        //app.swapchain_image_views =
+        app.swapchain_image_views = try!(create_swapchain_image_views(app.device, &details, &app.swapchain_images));
         debug!("Application initialized");
         return Ok(app);
     }
+}
 
-    pub fn dispose(&mut self) {
+impl Drop for Application {
+    fn drop(&mut self) {
         debug!("Cleaning up Application...");
         for image_view in self.swapchain_image_views.iter_mut() {
             vk_drop!(vkDestroyImageView; [self.device] *image_view, None);
@@ -500,11 +502,5 @@ impl Application {
         self.queues = [vk_null_handle(), vk_null_handle()];
         self.physical_device = vk_null_handle();
         debug!("Application cleaned up");
-    }
-}
-
-impl Drop for Application {
-    fn drop(&mut self) {
-        self.dispose()
     }
 }
