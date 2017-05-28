@@ -24,18 +24,33 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+//! Types and constants used by the vulkan api.
+
 use std::os::raw;
 use platform::_all::*;
 
+/// Base type for enumerants.
 pub type VkEnum = u32;
 
+/// Holds a compressed version triple.
+///
+/// - Bits 0 (LSB) to 11: patch version
+/// - Bits 12 to 21: minor version
+/// - Bits 22 to 31: major version
 pub type VkVersionInfo = u32;
 
+/// Base-type for a dispatchable object handle.
+///
+/// The only dispatchable handle types are those related to device and instance management.
 #[repr(C)]
 #[derive(Clone,Copy,Debug,PartialEq,Eq)]
 pub struct VkHandle {
     value: usize,
 }
+
+/// Base-type for a non-dispatchable object handle.
+///
+/// Most Vulkan handle types, are non-dispatchable.
 #[repr(C)]
 #[derive(Clone,Copy,Debug,PartialEq,Eq)]
 pub struct VkNonDispatchableHandle {

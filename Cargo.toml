@@ -17,6 +17,7 @@ include = [
   "tools/generator/*.py",
   "tools/vulkan_spec/Vulkan-Docs/src/spec/*.py",
   "tools/vulkan_spec/Vulkan-Docs/src/spec/*.xml",
+  "tools/vulkan_spec/Vulkan-Docs/doc/specs/vulkan/**/*.txt",
   "examples/**",
   "tests/**",
   "benches/**",

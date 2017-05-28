@@ -65,6 +65,9 @@ KEYWORDS = set(['as', 'break', 'const', 'continue', 'crate', 'else', 'enum', \
 
 IGNORED = set(['VK_NULL_HANDLE'])
 
+RE_LINK = re.compile(r'\b[a-z](?:link|name):([^\s]+)')
+RE_CODE = re.compile(r'\bcode:([^\s]+)')
+
 # RustGeneratorOptions - subclass of GeneratorOptions.
 #
 # Adds options used by RustOutputGenerator objects during Rust language source
@@ -153,6 +156,17 @@ class RustBaseOutputGenerator(OutputGenerator):
             if name.startswith('Vk'):
                 return name[2:]
         return name
+    #
+    def getCName(self, elem):
+        if elem is None:
+            return None
+        n = elem.get('name')
+        if n is not None:
+            return n
+        n = elem.find('name')
+        if n is not None and n.text is not None:
+            return n.text
+        return None
     #
     def splitModifierTypeAndName(self, param):
         namedecl = ''
@@ -362,6 +376,22 @@ class RustBaseOutputGenerator(OutputGenerator):
                 raise Exception("unable to calculate size of type with modifier " + typemodf)
         return size, cloneable
     #
+    def replaceDocTags(self, doc):
+        doc = RE_LINK.sub(r'`\1`', doc)
+        doc = RE_CODE.sub(r'`\1`', doc)
+        return doc
+    #
+    def getDocumentation(self, name, elem=None, indent=''):
+        if name is not None and hasattr(self.registry, 'doc_descriptions') and name in self.registry.doc_descriptions:
+            d = self.registry.doc_descriptions[name]
+            if d:
+                return '%s/// %s\n' % (indent, self.replaceDocTags(d))
+        if elem is not None:
+            d = elem.get('comment')
+            if d is not None:
+                return '%s/// %s\n' % (indent, self.replaceDocTags(d))
+        return ''
+    #
     # Type generation
     def genType(self, typeinfo, name):
         OutputGenerator.genType(self, typeinfo, name)
@@ -525,7 +555,9 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
     def genStruct(self, typeinfo, typeName):
         RustBaseOutputGenerator.genStruct(self, typeinfo, typeName)
         size, cloneable = self.getTypeProperties(typeName)
-        body  = self.featureGuard
+        body = ''
+        body += self.getDocumentation(typeName, typeinfo.elem)
+        body += self.featureGuard
         if cloneable:
             body += '#[derive(Copy,Clone)]\n'
         body += '#[repr(C)]\n'
@@ -536,6 +568,7 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
             init_value = member.get('values')
             if init_value is not None and not ',' in init_value:
                 initial_values.append((namedecl, init_value))
+            body += self.getDocumentation('%s::%s' % (typeName, self.getCName(member)), member, indent='    ')
             body += '    pub %s: %s,\n' % (namedecl, paramdecl)
         body += '}\n\n'
         body += self.featureGuard
@@ -560,7 +593,8 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
         size, cloneable = self.getTypeProperties(typeName)
         if size is None:
             raise Exception("Unable to determine size of union " + typeName)
-        body  = '// union %s\n' % typeName
+        body  = ''
+        body += self.getDocumentation(typeName, typeinfo.elem)
         body += self.featureGuard
         if cloneable:
             body += '#[derive(Copy,Clone)]\n'
@@ -572,9 +606,11 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
         body += 'impl %s {\n' % typeName
         for member in typeinfo.elem.findall('.//member'):
             namedecl, typedecl = self.splitRustTypeAndName(member, in_function_params=False)
+            body += self.getDocumentation('%s::%s' % (typeName, self.getCName(member)), member, indent='    ')
             body += '  #[inline] pub fn as_%s(&self) -> *const %s {\n' % (namedecl, typedecl)
             body += '    unsafe { ::std::mem::transmute(&self.data) }\n'
             body += '  }\n'
+            body += self.getDocumentation('%s::%s' % (typeName, self.getCName(member)), member, indent='    ')
             body += '  #[inline] pub fn as_%s_mut(&mut self) -> *mut %s {\n' % (namedecl, typedecl)
             body += '    unsafe { ::std::mem::transmute(&self.data) }\n'
             body += '  }\n'
@@ -589,7 +625,9 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
     #
     def genFuncPointer(self, typeinfo, typeName):
         RustBaseOutputGenerator.genFuncPointer(self, typeinfo, typeName)
-        body  = self.featureGuard
+        body  = ''
+        body += self.getDocumentation(typeName, typeinfo.elem)
+        body += self.featureGuard
         body += 'pub type ' + typeName + ' = extern fn ();\n'
         self.appendSection('funcpointer', body)
     #
@@ -597,7 +635,9 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
         RustBaseOutputGenerator.genHandle(self, typeinfo, typeName)
         typeref = typeinfo.elem.find('type').text
         handleType = TYPE_MAP[typeref]
-        body  = self.featureGuard
+        body  = ''
+        body += self.getDocumentation(typeName, typeinfo.elem)
+        body += self.featureGuard
         body += '#[repr(C)]\n'
         body += '#[derive(Clone,Copy,Debug,PartialEq,Eq)]\n'
         body += 'pub struct %s (%s);\n'%(typeName, handleType)
@@ -616,7 +656,9 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
     def genBasetype(self, typeinfo, typeName):
         RustBaseOutputGenerator.genBasetype(self, typeinfo, typeName)
         typeref = typeinfo.elem.find('type').text
-        body  = self.featureGuard
+        body  = ''
+        body += self.getDocumentation(typeName, typeinfo.elem)
+        body += self.featureGuard
         body += 'pub type ' + typeName + ' = ' + TYPE_MAP[typeref] + ';'
         self.appendSection('basetype', body)
     #
@@ -625,13 +667,17 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
         enumflags = typeinfo.elem.get('requires')
         if enumflags is None:
             enumflags = 'VkEnum'
-        body  = self.featureGuard
+        body = ''
+        body += self.getDocumentation(typeName, typeinfo.elem)
+        body += self.featureGuard
         body += 'pub use self::' + enumflags + ' as ' + typeName + ';'
         self.appendSection('bitmask', body)
     #
     def genDefineConstant(self, typeinfo, constName, constType, constValue):
         RustBaseOutputGenerator.genDefineConstant(self, typeinfo, constName, constType, constValue)
-        body  = self.featureGuard
+        body = ''
+        body += self.getDocumentation(constName, typeinfo.elem)
+        body += self.featureGuard
         body += 'pub const %s : %s = %s;' % (constName, constType, constValue)
         self.appendSection('define', body)
     #
@@ -643,13 +689,15 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
         else:
             section = 'group'
         #
-        body = '\npub type ' + groupName + ' = VkEnum;'
+        body = '\n'
+        body += self.getDocumentation(groupName, groupinfo.elem)
+        body += 'pub type ' + groupName + ' = VkEnum;'
         self.appendSection(section, body)
         #
         for name, _, strVal, featureGuard, elem in entries:
-            body =  featureGuard
-            if elem is not None and elem.get('comment') is not None:
-                body += '/// %s\n' % elem.get('comment')
+            body = ''
+            body += self.getDocumentation('%s::%s' % (groupName, name), elem)
+            body += featureGuard
             body += 'pub const %s : %s = %s;' % (name, groupName, strVal)
             self.appendSection(section, body)
     #
@@ -658,7 +706,10 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
         if name in IGNORED:
             return
         (_, strVal, strType) = self.enumToRustValue(enuminfo.elem, False)
-        body  = self.featureGuard
+        #
+        body = ''
+        body += self.getDocumentation(name, enuminfo.elem)
+        body += self.featureGuard
         body += 'pub const %s: %s = %s;' % (name, strType, strVal)
         self.appendSection('enum', body)
 #
@@ -693,7 +744,10 @@ class RustFfiOutputGenerator(RustBaseOutputGenerator):
         #
         # find the command name and the return type
         cmdname, rettype = self.splitRustTypeAndName(proto, in_function_params=False)
-        body = 'pub fn %s(' % cmdname
+        #
+        body = ''
+        body += self.getDocumentation(name, cmdinfo.elem)
+        body += 'pub fn %s(' % cmdname
         #
         # now build the argument list
         prefix = ' '*len(body)
@@ -736,7 +790,6 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
         RustBaseOutputGenerator.genCmd(self, cmdinfo, name)
         if name in IGNORED:
             return
-        RustBaseOutputGenerator.genCmd(self, cmdinfo, name)
         #
         proto = cmdinfo.elem.find('proto')
         params = cmdinfo.elem.findall('param')
@@ -915,7 +968,9 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
         #
         #now build the functions
         functionHeader = 'pub fn %s(' % cmdname
-        body  = self.featureGuard
+        body  = ''
+        body += self.getDocumentation(name, cmdinfo.elem)
+        body += self.featureGuard
         if not repeat_VK_INCOMPLETE:
             body += '#[inline]'
         body += functionHeader
@@ -1115,7 +1170,8 @@ class RustUtilsOutputGenerator(RustBaseOutputGenerator):
         #
         if groupName in self.genOpts.generateGetName:
             sorted_entries = sorted(filter(lambda item: item[4] is not None, entries), key=(lambda item: item[1]))
-            body  = 'pub fn get_%s_name(v: ::types::%s) -> &\'static str {\n' % (groupName, groupName)
+            body  = '/// get the name of a given %s.\n' % groupName
+            body += 'pub fn get_%s_name(v: ::types::%s) -> &\'static str {\n' % (groupName, groupName)
             body += '    let v = v as i32;\n'
             body += '    static LOOKUP : [(i32, &\'static str); %d] = [\n' % len(sorted_entries)
             for name, numVal, strVal, featureGuard, elem in sorted_entries:
@@ -1130,7 +1186,8 @@ class RustUtilsOutputGenerator(RustBaseOutputGenerator):
         #
         if groupName in self.genOpts.generateGetDescription:
             sorted_entries = sorted(filter(lambda item: item[4] is not None, entries), key=(lambda item: item[1]))
-            body  = 'pub fn get_%s_description(v: ::types::%s) -> &\'static str {\n' % (groupName, groupName)
+            body  = '/// get the description of a given %s. If no descriptionis known, the name is returned.\n' % groupName
+            body += 'pub fn get_%s_description(v: ::types::%s) -> &\'static str {\n' % (groupName, groupName)
             body += '    let v = v as i32;\n'
             body += '    static LOOKUP : [(i32, &\'static str); %d] = [\n' % len(sorted_entries)
             for name, numVal, strVal, featureGuard, elem in sorted_entries:
@@ -1145,7 +1202,8 @@ class RustUtilsOutputGenerator(RustBaseOutputGenerator):
         #
         if groupName in self.genOpts.generateGetFromStr:
             sorted_entries = sorted(filter(lambda item: item[4] is not None, entries), key=(lambda item: item[0]))
-            body  = 'pub fn get_%s_from_str(s: &str) -> Option<::types::%s> {\n' % (groupName, groupName)
+            body  = '/// get the value of a %s from the name.\n' % groupName
+            body += 'pub fn get_%s_from_str(s: &str) -> Option<::types::%s> {\n' % (groupName, groupName)
             body += '    static LOOKUP : [(&\'static str, ::types::%s); %d] = [\n' % (groupName, len(sorted_entries))
             for name, numVal, strVal, featureGuard, elem in sorted_entries:
                 body += '        ("%s", %s),\n' % (name, strVal)

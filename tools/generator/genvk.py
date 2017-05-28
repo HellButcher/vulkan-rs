@@ -15,9 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import argparse, cProfile, pdb, string, sys, time, os
+import argparse, cProfile, pdb, string, sys, time, os, re
 __file_dir__ = os.path.dirname(os.path.abspath(__file__))
-__vkspec_dir__ = os.path.join(os.path.dirname(__file_dir__), 'vulkan_spec', 'Vulkan-Docs', 'src', 'spec')
+__vkdoc_root_dir__ = os.path.join(os.path.dirname(__file_dir__), 'vulkan_spec', 'Vulkan-Docs')
+__vkspec_dir__ = os.path.join(__vkdoc_root_dir__, 'src', 'spec')
+__vkdocspec_dir__ = os.path.join(__vkdoc_root_dir__, 'doc', 'specs', 'vulkan')
 __vkreg_file__ = os.path.join(__vkspec_dir__, 'vk.xml')
 
 if not os.path.isdir(__vkspec_dir__):
@@ -51,6 +53,65 @@ def endTimer(timeit, msg):
 # Turn a list of strings into a regexp string matching exactly those strings
 def makeREstring(list):
     return '^(' + '|'.join(list) + ')$'
+
+# get descriptions for each element from the documentation
+def read_documentation(chapters_dir):
+    descriptions = dict()
+    see_also = dict()
+    re_refBegin = re.compile(r'^// refBegin ([a-zA-Z0-9_]+)\s+(?:\-\s*)?([^\s][^\n\r]*)\s*$')
+    re_refEnd = re.compile(r'^// refEnd ([a-zA-Z0-9_]+)(?:\s+(?:\-\s*)?([^\n\r]+)\s*)?$')
+    re_member = re.compile(r'^  \* [ep]name:([a-zA-Z0-9_]+)(?: is| \-|:)\s+([^\n\r]+)\s*$')
+    re_member_cont = re.compile(r'^    ((?:[\w]|`[^`\r\n]+`)(?:[^\.`\r\n]+|`[^`\r\n]+`)*)(?:\.|\s*$)')
+    def read_chapter(filename):
+        with open(filename) as f:
+            inside = None
+            member = None
+            memberdescription = None
+            for line in f:
+                m = re_refBegin.match(line)
+                if m is not None:
+                    inside = m.group(1)
+                    member = None
+                    descriptions[inside] = m.group(2)
+                    continue
+                m = re_refEnd.match(line)
+                if m is not None:
+                    inside = None
+                    member = None
+                    sa = m.group(2)
+                    if sa is not None:
+                        see_also[m.group(1)] = sa.split()
+                    continue
+                if inside is None:
+                    continue
+                m = re_member.match(line)
+                if m is not None:
+                    if member is not None and len(memberdescription)>0:
+                        descriptions['%s::%s'%(inside,member)] = memberdescription
+                    member = m.group(1)
+                    memberdescription = ''
+                    memberline = '    '+m.group(2)
+                else:
+                    memberline = line
+                if member is not None:
+                    m = re_member_cont.match(memberline)
+                    if m is not None:
+                        if len(memberdescription)>0:
+                            memberdescription += ' '
+                        memberdescription += m.group(1).strip()
+                        if not m.group(0).endswith('.'):
+                            continue
+                    descriptions['%s::%s'%(inside,member)] = memberdescription
+                    print('MEMBER: %s::%s = %s'%(inside,member,memberdescription))
+                    memberdescription = None
+                    member = None
+                    continue
+
+    for dir_name, subdir_list, file_list in os.walk(chapters_dir):
+        for filename in file_list:
+            if filename.endswith('.txt'):
+                read_chapter(os.path.join(dir_name,filename))
+    return (descriptions, see_also)
 
 # Returns a directory of [ generator function, generator options ] indexed
 # by specified short names. The generator options incorporate the following
@@ -221,6 +282,9 @@ if __name__ == '__main__':
     parser.add_argument('-registry', action='store',
                         default=__vkreg_file__,
                         help='Use specified registry file instead of vk.xml')
+    parser.add_argument('-docspecdir', action='store',
+                        default=__vkdocspec_dir__,
+                        help='path to the the doc/specs/vulkan directory')
     parser.add_argument('-time', action='store_true',
                         help='Enable timing')
     parser.add_argument('-validate', action='store_true',
@@ -248,6 +312,12 @@ if __name__ == '__main__':
     startTimer(args.time)
     reg.loadElementTree(tree)
     endTimer(args.time, '* Time to parse ElementTree =')
+
+    startTimer(args.time)
+    doc_descriptions, doc_seealso = read_documentation(args.docspecdir)
+    reg.doc_descriptions = doc_descriptions
+    reg.doc_seealso = doc_seealso
+    endTimer(args.time, '* Time to read chapters from documentation =')
 
     if (args.validate):
         reg.validateGroups()

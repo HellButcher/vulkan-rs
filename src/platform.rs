@@ -24,6 +24,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+//! Types used by the window-system-interface.
+
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
 pub mod xlib {
     use std::os::raw::c_void;
@@ -70,6 +72,7 @@ pub mod win32 {
     pub type HWND = HANDLE;
     pub type SECURITY_ATTRIBUTES = c_void;
     pub type DWORD = u32;
+    pub type LPCWSTR = *const u16;
 }
 pub mod _all {
     #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]

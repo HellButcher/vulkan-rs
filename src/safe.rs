@@ -24,6 +24,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+//! Safe vulkan command function wrappers with a rust-friendly interface.
+
 use std::ffi::CString;
 use std::os::raw;
 use platform::_all::*;
