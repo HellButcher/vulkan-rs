@@ -60,7 +60,7 @@ fn enable_default_platform() {}
 fn main() {
     let generator_path = ::std::path::Path::new("tools").join("generator");
     let genvk_py_path = generator_path.join("genvk.py");
-    let vkdoc_path = ::std::path::Path::new("tools").join("data").join("Vulkan-Docs");
+    let vkdoc_path = ::std::path::Path::new("tools").join("vulkan_spec").join("Vulkan-Docs");
 
     let out_dir = ::std::env::var("OUT_DIR").unwrap();
 

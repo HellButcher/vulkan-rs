@@ -17,7 +17,7 @@
 
 import argparse, cProfile, pdb, string, sys, time, os
 __file_dir__ = os.path.dirname(os.path.abspath(__file__))
-__vkspec_dir__ = os.path.join(os.path.dirname(__file_dir__), 'data', 'Vulkan-Docs', 'src', 'spec')
+__vkspec_dir__ = os.path.join(os.path.dirname(__file_dir__), 'vulkan_spec', 'Vulkan-Docs', 'src', 'spec')
 __vkreg_file__ = os.path.join(__vkspec_dir__, 'vk.xml')
 
 if not os.path.isdir(__vkspec_dir__):
