@@ -54,6 +54,16 @@ pub struct Application {
     swapchain: VkSwapchainKHR,
     swapchain_images: Vec<VkImage>,
     swapchain_image_views: Vec<VkImageView>,
+    render_pass: VkRenderPass,
+    pipeline_layout: VkPipelineLayout,
+    pipeline: VkPipeline,
+    swapchain_framebuffers: Vec<VkFramebuffer>,
+    command_pool: VkCommandPool,
+    command_buffer: VkCommandBuffer,
+    semaphore_image_available: VkSemaphore,
+    semaphore_render_finished: VkSemaphore,
+    extent: VkExtent2D,
+    image_index: ::std::cell::Cell<u32>,
 }
 
 #[cfg(target_os = "windows")]
@@ -455,7 +465,318 @@ fn create_swapchain_image_views(device: VkDevice, details: &DeviceInitialization
         };
         image_views.push(try!(vkCreateImageView(device, &create_info, None)));
     }
+    debug!("created {} image views", image_views.len());
     return Ok(image_views);
+}
+
+fn create_shader_module(device: VkDevice, data: &[u8]) -> VkResultObj<VkShaderModule> {
+    let create_info = VkShaderModuleCreateInfo{
+        sType: VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        codeSize: data.len(),
+        pCode: data.as_ptr() as *const u32,
+    };
+    let shader_module = try!(vkCreateShaderModule(device, &create_info, None));
+    debug!("created shader module {:?}", shader_module);
+    return Ok(shader_module);
+}
+
+fn create_render_pass(device: VkDevice, format: VkFormat) -> VkResultObj<VkRenderPass> {
+    let color_attachments = [
+        VkAttachmentDescription{
+            flags: 0,
+            format: format,
+            samples: VK_SAMPLE_COUNT_1_BIT,
+            loadOp: VK_ATTACHMENT_LOAD_OP_CLEAR,
+            storeOp: VK_ATTACHMENT_STORE_OP_STORE,
+            stencilLoadOp: VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+            stencilStoreOp: VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+            initialLayout: VK_IMAGE_LAYOUT_UNDEFINED,
+            finalLayout: VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+        },
+    ];
+    let color_attachment_refs1 = [
+        VkAttachmentReference{
+            attachment: 0,
+            layout: VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+        },
+    ];
+    let subpasses = [
+        VkSubpassDescription{
+            flags: 0,
+            pipelineBindPoint: VK_PIPELINE_BIND_POINT_GRAPHICS,
+            inputAttachmentCount: 0,
+            pInputAttachments: vk_null(),
+            colorAttachmentCount: color_attachment_refs1.len() as u32,
+            pColorAttachments: color_attachment_refs1.as_ptr(),
+            pResolveAttachments: vk_null(),
+            pDepthStencilAttachment: vk_null(),
+            preserveAttachmentCount: 0,
+            pPreserveAttachments: vk_null(),
+        },
+    ];
+    let create_info = VkRenderPassCreateInfo{
+        sType: VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        attachmentCount: color_attachments.len() as u32,
+        pAttachments: color_attachments.as_ptr(),
+        subpassCount: subpasses.len() as u32,
+        pSubpasses: subpasses.as_ptr(),
+        dependencyCount: 0,
+        pDependencies: vk_null(),
+    };
+    let render_pass = try!(vkCreateRenderPass(device, &create_info, None));
+    debug!("created render pass {:?}", render_pass);
+    return Ok(render_pass);
+}
+
+fn create_pipeline_layout(device: VkDevice) -> VkResultObj<VkPipelineLayout> {
+    let create_info = VkPipelineLayoutCreateInfo{
+        sType: VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        setLayoutCount: 0,
+        pSetLayouts: vk_null(),
+        pushConstantRangeCount: 0,
+        pPushConstantRanges: vk_null(),
+    };
+    let pipeline_layout = try!(vkCreatePipelineLayout(device, &create_info, None));
+    debug!("created pipeline layout {:?}", pipeline_layout);
+    return Ok(pipeline_layout);
+}
+
+fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_pass: VkRenderPass, extent: VkExtent2D) -> VkResultObj<VkPipeline> {
+    let vert_shader_module = try!(create_shader_module(device,
+        include_bytes!(concat!(env!("OUT_DIR"), "/examples/shader.vert.spv"))
+    ));
+    let frag_shader_module = try!(create_shader_module(device,
+        include_bytes!(concat!(env!("OUT_DIR"), "/examples/shader.frag.spv"))
+    ));
+    let shader_stage_create_infos = [
+        VkPipelineShaderStageCreateInfo{
+            sType: VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+            pNext: vk_null(),
+            flags: 0,
+            stage: VK_SHADER_STAGE_VERTEX_BIT,
+            module: vert_shader_module,
+            pName: "main\0".as_ptr() as *const c_char,
+            pSpecializationInfo: vk_null(),
+        },
+        VkPipelineShaderStageCreateInfo{
+            sType: VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+            pNext: vk_null(),
+            flags: 0,
+            stage: VK_SHADER_STAGE_FRAGMENT_BIT,
+            module: frag_shader_module,
+            pName: "main\0".as_ptr() as *const c_char,
+            pSpecializationInfo: vk_null(),
+        },
+    ];
+    let vertex_input_create_info = VkPipelineVertexInputStateCreateInfo{
+        sType: VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        vertexBindingDescriptionCount: 0,
+        pVertexBindingDescriptions: vk_null(),
+        vertexAttributeDescriptionCount: 0,
+        pVertexAttributeDescriptions: vk_null(),
+    };
+    let input_asselbly_create_info = VkPipelineInputAssemblyStateCreateInfo{
+        sType: VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        topology: VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+        primitiveRestartEnable: VK_FALSE,
+    };
+    let viewport_state_create_info = VkPipelineViewportStateCreateInfo{
+        sType: VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        viewportCount: 1,
+        pViewports: &VkViewport{
+            x: 0.0, y: 0.0,
+            width: extent.width as f32, height: extent.height as f32,
+            minDepth: 0.0, maxDepth: 1.0,
+        },
+        scissorCount: 1,
+        pScissors: &VkRect2D{
+            offset: VkOffset2D{x: 0, y: 0},
+            extent: extent,
+        },
+    };
+    let rasterizer_create_info = VkPipelineRasterizationStateCreateInfo{
+        sType: VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        depthClampEnable: VK_FALSE,
+        rasterizerDiscardEnable: VK_FALSE,
+        polygonMode: VK_POLYGON_MODE_FILL,
+        cullMode: VK_CULL_MODE_BACK_BIT,
+        frontFace: VK_FRONT_FACE_CLOCKWISE,
+        depthBiasEnable: VK_FALSE,
+        depthBiasConstantFactor: 0.0,
+        depthBiasClamp: 0.0,
+        depthBiasSlopeFactor: 0.0,
+        lineWidth: 1.0,
+    };
+    let multisample_create_info = VkPipelineMultisampleStateCreateInfo{
+        sType: VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        rasterizationSamples: VK_SAMPLE_COUNT_1_BIT,
+        sampleShadingEnable: VK_FALSE,
+        minSampleShading: 0.0,
+        pSampleMask: vk_null(),
+        alphaToCoverageEnable: VK_FALSE,
+        alphaToOneEnable: VK_FALSE,
+    };
+    let color_blend_attachements = [
+        VkPipelineColorBlendAttachmentState{
+            blendEnable: VK_FALSE,
+            srcColorBlendFactor: VK_BLEND_FACTOR_ONE,
+            dstColorBlendFactor: VK_BLEND_FACTOR_ZERO,
+            colorBlendOp: VK_BLEND_OP_ADD,
+            srcAlphaBlendFactor: VK_BLEND_FACTOR_ONE,
+            dstAlphaBlendFactor: VK_BLEND_FACTOR_ZERO,
+            alphaBlendOp: VK_BLEND_OP_ADD,
+            colorWriteMask: VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT,
+        },
+    ];
+    let color_blending_create_info = VkPipelineColorBlendStateCreateInfo{
+        sType: VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        logicOpEnable: VK_FALSE,
+        logicOp: VK_LOGIC_OP_COPY,
+        attachmentCount: color_blend_attachements.len() as u32,
+        pAttachments: color_blend_attachements.as_ptr(),
+        blendConstants: [0.0, 0.0, 0.0, 0.0],
+    };
+    let depth_stencli_create_info = VkPipelineDepthStencilStateCreateInfo{
+        sType: VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+        depthTestEnable: VK_FALSE,
+        depthWriteEnable: VK_FALSE,
+        depthCompareOp: VK_COMPARE_OP_LESS_OR_EQUAL,
+        depthBoundsTestEnable: VK_FALSE,
+        stencilTestEnable: VK_FALSE,
+        front: VkStencilOpState{
+            failOp: VK_STENCIL_OP_KEEP,
+            passOp: VK_STENCIL_OP_KEEP,
+            depthFailOp: VK_STENCIL_OP_KEEP,
+            compareOp: VK_COMPARE_OP_ALWAYS,
+            compareMask: 0,
+            writeMask: 0,
+            reference: 0,
+        },
+        back: VkStencilOpState{
+            failOp: VK_STENCIL_OP_KEEP,
+            passOp: VK_STENCIL_OP_KEEP,
+            depthFailOp: VK_STENCIL_OP_KEEP,
+            compareOp: VK_COMPARE_OP_ALWAYS,
+            compareMask: 0,
+            writeMask: 0,
+            reference: 0,
+        },
+        minDepthBounds: 0.0,
+        maxDepthBounds: 0.0,
+    };
+    let create_infos = [
+        VkGraphicsPipelineCreateInfo{
+            sType: VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+            pNext: vk_null(),
+            flags: 0,
+            stageCount: shader_stage_create_infos.len() as u32,
+            pStages: shader_stage_create_infos.as_ptr(),
+            pVertexInputState: &vertex_input_create_info,
+            pInputAssemblyState: &input_asselbly_create_info,
+            pTessellationState: vk_null(),
+            pViewportState: &viewport_state_create_info,
+            pRasterizationState: &rasterizer_create_info,
+            pMultisampleState: &multisample_create_info,
+            pDepthStencilState: &depth_stencli_create_info,
+            pColorBlendState: &color_blending_create_info,
+            pDynamicState: vk_null(),
+            layout: layout,
+            renderPass: render_pass,
+            subpass: 0,
+            basePipelineHandle: vk_null_handle(),
+            basePipelineIndex: -1,
+        },
+    ];
+    debug!("create graphics pipeline...");
+    let res = vkCreateGraphicsPipelines(device, vk_null_handle(), &create_infos, None);
+    debug!("destroy shader modules...");
+    vkDestroyShaderModule(device, frag_shader_module, None);
+    vkDestroyShaderModule(device, vert_shader_module, None);
+    match res {
+        Ok(p) => {
+            let pipeline = p[0];
+            debug!("created graphics pipeline {:?}", pipeline);
+            Ok(pipeline)
+        },
+        Err(e) => Err(e),
+    }
+}
+
+fn create_swapchain_framebuffers(device: VkDevice, render_pass: VkRenderPass, extent: VkExtent2D, image_views: &[VkImageView]) -> VkResultObj<Vec<VkFramebuffer>> {
+    let mut framebuffers : Vec<VkFramebuffer> = Vec::with_capacity(image_views.len());
+    for image_view in image_views {
+        let attachments = [*image_view];
+        let create_info = VkFramebufferCreateInfo{
+            sType: VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+            pNext: vk_null(),
+            flags: 0,
+            renderPass: render_pass,
+            attachmentCount: attachments.len() as u32,
+            pAttachments: attachments.as_ptr(),
+            width: extent.width,
+            height: extent.height,
+            layers: 1,
+        };
+        framebuffers.push(try!(vkCreateFramebuffer(device, &create_info, None)));
+    }
+    debug!("created {} framebuffers", framebuffers.len());
+    return Ok(framebuffers);
+}
+
+fn create_command_pool(device: VkDevice, graphics_family: u32) -> VkResultObj<VkCommandPool> {
+    let create_info = VkCommandPoolCreateInfo{
+        sType: VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+        pNext: vk_null(),
+        flags: VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+        queueFamilyIndex: graphics_family,
+    };
+    let command_pool = try!(vkCreateCommandPool(device, &create_info, None));
+    debug!("created command pool {:?}", command_pool);
+    return Ok(command_pool);
+}
+
+fn init_command_buffer(device: VkDevice, command_pool: VkCommandPool) -> VkResultObj<VkCommandBuffer> {
+    let create_info = VkCommandBufferAllocateInfo{
+        sType: VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+        pNext: vk_null(),
+        commandPool: command_pool,
+        level: VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+        commandBufferCount: 1,
+    };
+    let commabd_buffer = try!(vkAllocateCommandBuffers(device, &create_info));
+    debug!("created command buffer {:?}", commabd_buffer);
+    return Ok(commabd_buffer[0]);
+}
+
+fn create_semaphore(device: VkDevice) -> VkResultObj<VkSemaphore> {
+    let create_info = VkSemaphoreCreateInfo{
+        sType: VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+        pNext: vk_null(),
+        flags: 0,
+    };
+    let semaphore = try!(vkCreateSemaphore(device, &create_info, None));
+    debug!("created semaphore {:?}", semaphore);
+    return Ok(semaphore);
 }
 
 impl Application {
@@ -478,18 +799,123 @@ impl Application {
             Some((width, height)) => VkExtent2D{width: width, height: height},
             None => VkExtent2D{width: 800, height: 600},
         };
-        let extent = choose_swap_extend_from_capabilities(&details.surface_capabilities, window_size);
-        app.swapchain = try!(create_swapchain(app.device, app.surface, &details, extent, vk_null_handle()));
+        app.extent = choose_swap_extend_from_capabilities(&details.surface_capabilities, window_size);
+        app.swapchain = try!(create_swapchain(app.device, app.surface, &details, app.extent, vk_null_handle()));
         app.swapchain_images = try!(vkGetSwapchainImagesKHR(app.device, app.swapchain));
         app.swapchain_image_views = try!(create_swapchain_image_views(app.device, &details, &app.swapchain_images));
+
+        app.render_pass = try!(create_render_pass(app.device, details.surface_format.format));
+        app.pipeline_layout = try!(create_pipeline_layout(app.device));
+        app.pipeline = try!(create_graphics_pipeline(app.device, app.pipeline_layout, app.render_pass, app.extent));
+
+        app.swapchain_framebuffers = try!(create_swapchain_framebuffers(app.device, app.render_pass, app.extent, &app.swapchain_image_views));
+
+        app.command_pool = try!(create_command_pool(app.device, details.queue_family_indices[GRAPHIC_QUEUE]));
+        app.command_buffer = try!(init_command_buffer(app.device, app.command_pool));
+
+        app.semaphore_image_available = try!(create_semaphore(app.device));
+        app.semaphore_render_finished = try!(create_semaphore(app.device));
+
         debug!("Application initialized");
         return Ok(app);
+    }
+
+    pub fn begin(&self) -> VkResultObj<()> {
+
+        let (image_index, _) = try!(vkAcquireNextImageKHR(self.device, self.swapchain, u64::max_value(), self.semaphore_image_available, vk_null_handle()));
+        self.image_index.set(image_index);
+
+        try!(vkBeginCommandBuffer(self.command_buffer, &VkCommandBufferBeginInfo{
+            sType: VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+            pNext: vk_null(),
+            flags: 0,
+            pInheritanceInfo: vk_null(),
+        }));
+
+        let mut clear_color = VkClearValue::default();
+        *clear_color.as_color_mut().as_float32_mut() = [0.0, 0.0, 0.0, 1.0];
+        vkCmdBeginRenderPass(self.command_buffer, &VkRenderPassBeginInfo{
+            sType: VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+            pNext: vk_null(),
+            renderPass: self.render_pass,
+            framebuffer: self.swapchain_framebuffers[image_index as usize],
+            renderArea: VkRect2D{
+                offset: VkOffset2D{x: 0, y: 0},
+                extent: self.extent,
+            },
+            clearValueCount: 1,
+            pClearValues: &clear_color,
+        }, VK_SUBPASS_CONTENTS_INLINE);
+
+        vkCmdBindPipeline(self.command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, self.pipeline);
+
+        Ok(())
+    }
+
+    #[inline]
+    pub fn get_command_buffer(&self) -> VkCommandBuffer {
+        self.command_buffer
+    }
+
+    pub fn end(&self) -> VkResultObj<()> {
+        vkCmdEndRenderPass(self.command_buffer);
+        try!(vkEndCommandBuffer(self.command_buffer));
+
+        let wait_semaphores = [self.semaphore_image_available];
+        let wait_stages = [VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT];
+        let signal_semaphores = [self.semaphore_render_finished];
+
+        let submit_info = [
+            VkSubmitInfo{
+                sType: VK_STRUCTURE_TYPE_SUBMIT_INFO,
+                pNext: vk_null(),
+                waitSemaphoreCount: wait_semaphores.len() as u32,
+                pWaitSemaphores: wait_semaphores.as_ptr(),
+                pWaitDstStageMask: wait_stages.as_ptr(),
+                commandBufferCount: 1,
+                pCommandBuffers: &self.command_buffer,
+                signalSemaphoreCount: signal_semaphores.len() as u32,
+                pSignalSemaphores: signal_semaphores.as_ptr(),
+            }
+        ];
+        try!(vkQueueSubmit(self.queues[GRAPHIC_QUEUE], &submit_info, vk_null_handle()));
+
+        let image_index = self.image_index.get();
+
+        let present_info = VkPresentInfoKHR {
+            sType: VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+            pNext: vk_null(),
+            waitSemaphoreCount: signal_semaphores.len() as u32,
+            pWaitSemaphores: signal_semaphores.as_ptr(),
+            swapchainCount: 1,
+            pSwapchains: &self.swapchain,
+            pImageIndices: &image_index,
+            pResults: vk_null(),
+        };
+        try!(vkQueuePresentKHR(self.queues[PRESENT_QUEUE], &present_info));
+
+        try!(vkQueueWaitIdle(self.queues[PRESENT_QUEUE]));
+
+        Ok(())
+    }
+
+    pub fn wait_idle(&self) -> VkResultObj {
+        vkDeviceWaitIdle(self.device)
     }
 }
 
 impl Drop for Application {
     fn drop(&mut self) {
         debug!("Cleaning up Application...");
+        vk_drop!(vkDestroySemaphore; [self.device] self.semaphore_render_finished, None);
+        vk_drop!(vkDestroySemaphore; [self.device] self.semaphore_image_available, None);
+        vk_drop!(vkDestroyCommandPool; [self.device] self.command_pool, None);
+        for framebuffer in self.swapchain_framebuffers.iter_mut() {
+            vk_drop!(vkDestroyFramebuffer; [self.device] *framebuffer, None);
+        }
+        vk_drop!(vkDestroyPipeline; [self.device] self.pipeline, None);
+        vk_drop!(vkDestroyPipelineLayout; [self.device] self.pipeline_layout, None);
+        vk_drop!(vkDestroyRenderPass; [self.device] self.render_pass, None);
         for image_view in self.swapchain_image_views.iter_mut() {
             vk_drop!(vkDestroyImageView; [self.device] *image_view, None);
         }

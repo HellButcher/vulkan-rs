@@ -102,7 +102,6 @@ def read_documentation(chapters_dir):
                         if not m.group(0).endswith('.'):
                             continue
                     descriptions['%s::%s'%(inside,member)] = memberdescription
-                    print('MEMBER: %s::%s = %s'%(inside,member,memberdescription))
                     memberdescription = None
                     member = None
                     continue

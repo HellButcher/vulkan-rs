@@ -32,6 +32,8 @@ extern crate env_logger;
 mod utils;
 use utils::Application;
 
+use vulkan_rs::prelude::*;
+
 fn main() {
     env_logger::init().unwrap();
     let events_loop = winit::EventsLoop::new();
@@ -43,7 +45,9 @@ fn main() {
 
     let app = Application::new("initialization", &window).unwrap();
 
-    // TODO: implement example
+    app.begin().unwrap();
+    vkCmdDraw(app.get_command_buffer(), 3, 1, 0, 0);
+    app.end().unwrap();
 
     events_loop.run_forever(|event| {
         info!("{:?}", event);
@@ -53,8 +57,15 @@ fn main() {
                 events_loop.interrupt()
             }
             _ => (),
-        }
+        };
+
+        app.begin().unwrap();
+        vkCmdDraw(app.get_command_buffer(), 3, 1, 0, 0);
+        app.end().unwrap();
+
     });
+
+    app.wait_idle();
 
     drop(app);
 

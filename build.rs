@@ -23,6 +23,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+use std::env;
+use std::path::Path;
+use ::std::process::Command;
 
 #[cfg(all(feature = "VK_USE_PLATFORM_DEFAULT", target_os = "windows"))]
 fn enable_default_platform() {
@@ -57,12 +60,12 @@ fn enable_default_platform() {
 #[cfg(not(feature = "VK_USE_PLATFORM_DEFAULT"))]
 fn enable_default_platform() {}
 
-fn main() {
-    let generator_path = ::std::path::Path::new("tools").join("generator");
+fn generate_vulkan_bindings() {
+    let generator_path = Path::new("tools").join("generator");
     let genvk_py_path = generator_path.join("genvk.py");
-    let vkdoc_path = ::std::path::Path::new("tools").join("vulkan_spec").join("Vulkan-Docs");
+    let vkdoc_path = Path::new("tools").join("vulkan_spec").join("Vulkan-Docs");
 
-    let out_dir = ::std::env::var("OUT_DIR").unwrap();
+    let out_dir = env::var("OUT_DIR").unwrap();
 
     for path in generator_path.read_dir()
             .unwrap()
@@ -74,7 +77,7 @@ fn main() {
     enable_default_platform();
 
     if !vkdoc_path.exists() {
-        let status = ::std::process::Command::new("git")
+        let status = Command::new("git")
             .arg("submodule")
             .arg("update")
             .arg("--init")
@@ -87,7 +90,7 @@ fn main() {
         }
     }
 
-    let status = ::std::process::Command::new("python3")
+    let status = Command::new("python3")
         .arg(genvk_py_path)
         .arg("-o")
         .arg(out_dir)
@@ -101,4 +104,36 @@ fn main() {
     if !status.success() {
         panic!("`genvk.py vulkan.rs` exited with status code {}", status)
     }
+}
+
+const SHADER_EXTS : [&'static str;6] = ["vert", "tesc", "tese", "geom", "frag", "comp"];
+
+fn compile_sharers() {
+    let out_dir = env::var("OUT_DIR").unwrap();
+    let out_dir = Path::new(&out_dir);
+    let example_path = Path::new("examples");
+    for path in example_path.read_dir()
+            .unwrap()
+            .map(|p| p.unwrap().path())
+            .filter(|p| p.is_file() && SHADER_EXTS.contains(&p.extension().unwrap().to_str().unwrap())) {
+        println!("cargo:rerun-if-changed={}", path.to_str().unwrap());
+        let ext = path.extension().unwrap();
+        let out_path = out_dir.join(&path).with_extension(format!("{}.spv", ext.to_str().unwrap()));
+        ::std::fs::create_dir_all(out_path.parent().unwrap()).unwrap();
+        let status = Command::new("glslangValidator")
+            .arg("-V")
+            .arg("-o")
+            .arg(out_path)
+            .arg(&path)
+            .status()
+            .unwrap();
+        if !status.success() {
+            panic!("`genvk.py vulkan.rs` exited with status code {}", status)
+        }
+    }
+}
+
+fn main() {
+    generate_vulkan_bindings();
+    compile_sharers();
 }

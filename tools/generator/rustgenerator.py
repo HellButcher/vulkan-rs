@@ -607,12 +607,12 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
         for member in typeinfo.elem.findall('.//member'):
             namedecl, typedecl = self.splitRustTypeAndName(member, in_function_params=False)
             body += self.getDocumentation('%s::%s' % (typeName, self.getCName(member)), member, indent='    ')
-            body += '  #[inline] pub fn as_%s(&self) -> *const %s {\n' % (namedecl, typedecl)
+            body += '  #[inline] pub fn as_%s(&self) -> & %s {\n' % (namedecl, typedecl)
             body += '    unsafe { ::std::mem::transmute(&self.data) }\n'
             body += '  }\n'
             body += self.getDocumentation('%s::%s' % (typeName, self.getCName(member)), member, indent='    ')
-            body += '  #[inline] pub fn as_%s_mut(&mut self) -> *mut %s {\n' % (namedecl, typedecl)
-            body += '    unsafe { ::std::mem::transmute(&self.data) }\n'
+            body += '  #[inline] pub fn as_%s_mut(&mut self) -> &mut %s {\n' % (namedecl, typedecl)
+            body += '    unsafe { ::std::mem::transmute(&mut self.data) }\n'
             body += '  }\n'
         body += '}\n\n'
         body += self.featureGuard
