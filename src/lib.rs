@@ -142,6 +142,28 @@ pub mod util {
         }
     }
 
+    impl Into<VkResultObj> for VkError {
+        #[inline]
+        fn into(self) -> VkResultObj {
+            if self.is_error() {
+                Err(self)
+            } else {
+                Ok(self.0)
+            }
+        }
+    }
+    
+    impl Into<Result<::types::VkResult,::types::VkResult>> for VkError {
+        #[inline]
+        fn into(self) -> Result<::types::VkResult,::types::VkResult> {
+            if self.is_error() {
+                Err(self.0)
+            } else {
+                Ok(self.0)
+            }
+        }
+    }
+
     /// A `std::result::Result` wrapper for `VkResult`.
     pub type VkResultObj<T=::types::VkResult> = Result<T, VkError>;
 

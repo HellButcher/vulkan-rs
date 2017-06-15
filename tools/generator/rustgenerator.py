@@ -607,11 +607,11 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
         for member in typeinfo.elem.findall('.//member'):
             namedecl, typedecl = self.splitRustTypeAndName(member, in_function_params=False)
             body += self.getDocumentation('%s::%s' % (typeName, self.getCName(member)), member, indent='    ')
-            body += '  #[inline] pub fn as_%s(&self) -> & %s {\n' % (namedecl, typedecl)
+            body += '  #[inline]\npub fn as_%s(&self) -> & %s {\n' % (namedecl, typedecl)
             body += '    unsafe { ::std::mem::transmute(&self.data) }\n'
             body += '  }\n'
             body += self.getDocumentation('%s::%s' % (typeName, self.getCName(member)), member, indent='    ')
-            body += '  #[inline] pub fn as_%s_mut(&mut self) -> &mut %s {\n' % (namedecl, typedecl)
+            body += '  #[inline]\npub fn as_%s_mut(&mut self) -> &mut %s {\n' % (namedecl, typedecl)
             body += '    unsafe { ::std::mem::transmute(&mut self.data) }\n'
             body += '  }\n'
         body += '}\n\n'
@@ -972,7 +972,7 @@ class RustSafeOutputGenerator(RustBaseOutputGenerator):
         body += self.getDocumentation(name, cmdinfo.elem)
         body += self.featureGuard
         if not repeat_VK_INCOMPLETE:
-            body += '#[inline]'
+            body += '#[inline]\n'
         body += functionHeader
         prefix = ' '*len(functionHeader)
         #

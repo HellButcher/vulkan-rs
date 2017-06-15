@@ -747,7 +747,7 @@ fn create_command_pool(device: VkDevice, graphics_family: u32) -> VkResultObj<Vk
     let create_info = VkCommandPoolCreateInfo{
         sType: VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
         pNext: vk_null(),
-        flags: VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+        flags: VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT|VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
         queueFamilyIndex: graphics_family,
     };
     let command_pool = try!(vkCreateCommandPool(device, &create_info, None));
@@ -913,6 +913,7 @@ impl Drop for Application {
         for framebuffer in self.swapchain_framebuffers.iter_mut() {
             vk_drop!(vkDestroyFramebuffer; [self.device] *framebuffer, None);
         }
+        self.swapchain_framebuffers.clear();
         vk_drop!(vkDestroyPipeline; [self.device] self.pipeline, None);
         vk_drop!(vkDestroyPipelineLayout; [self.device] self.pipeline_layout, None);
         vk_drop!(vkDestroyRenderPass; [self.device] self.render_pass, None);
