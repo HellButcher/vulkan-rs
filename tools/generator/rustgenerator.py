@@ -190,7 +190,9 @@ class RustBaseOutputGenerator(OutputGenerator):
     #
     def splitRustTypeAndName(self, param, in_function_params=False):
         typemodf, typedecl, namedecl = self.splitModifierTypeAndName(param)
-        #
+        return self.getRustTypeAndName(typemodf, typedecl, namedecl, in_function_params)
+    #
+    def getRustTypeAndName(self, typemodf, typedecl, namedecl, in_function_params=False):
         if namedecl in KEYWORDS:
             namedecl = 'p'+namedecl
         #
@@ -625,10 +627,74 @@ class RustTypesOutputGenerator(RustBaseOutputGenerator):
     #
     def genFuncPointer(self, typeinfo, typeName):
         RustBaseOutputGenerator.genFuncPointer(self, typeinfo, typeName)
+        #
+        # parse return type
+        elem = typeinfo.elem
+        ctypemodf = ''
+        ctype = elem.text
+        ctype = ctype[:ctype.rfind('(')].strip()
+        if ctype.startswith('typedef '):
+            ctype = ctype[8:].strip()
+        if ctype.startswith('const ') or ctype.startswith('const*'):
+            ctypemodf = ctype[:6].strip()
+            ctype = ctype[6:].strip()
+        if ctype.endswith('*'):
+            ctypemodf += '*'
+            ctype = ctype[:-1].strip()
+        _, rettype = self.getRustTypeAndName(ctypemodf, ctype, typeName)
+        #
+        # parse parameters
+
+        elem = typeinfo.elem.find('name')
+        ctypemodf = elem.tail  # the tail after the </name> element
+        ctypemodf = ctypemodf[ctypemodf.find('(')+1:].strip()
+        params = []
+        for elem in typeinfo.elem.findall('type'):
+            ctype = elem.text.strip()
+            tmp = elem.tail.strip()
+            p = tmp.find(',')
+            if p<0:
+                p = tmp.find(')')
+            tmpP = tmp[:p].strip() # get tail until the next ',' or ')'
+            tmp = tmp[p+1:].strip()
+            while True:
+                if tmpP.startswith('*'):
+                    ctypemodf += '*'
+                    tmpP = tmpP[1:].strip()
+                elif tmpP.startswith('const ') or tmpP.startswith('const*'):
+                    ctypemodf += ctype[:6].strip()
+                    tmpP = tmpP[6:].strip()
+                else:
+                    break
+            if tmpP.endswith(']'):
+                p = tmpP.find('[')
+                ctypemodf += tmpP[p:].strip()
+                tmpP = tmpP[:p].strip()
+            params.append(self.getRustTypeAndName(ctypemodf, ctype, tmpP, in_function_params=True))
+            ctypemodf = tmp
+        #
         body  = ''
         body += self.getDocumentation(typeName, typeinfo.elem)
         body += self.featureGuard
-        body += 'pub type ' + typeName + ' = extern fn ();\n'
+        tdef = 'pub type %s = extern fn (' % typeName
+        prefix = ' '*len(tdef)
+        body += tdef
+        first = True
+        for param in params:
+            if first:
+                first = False
+            else:
+                body += ',\n%s' % prefix
+            body += '%s: %s' % param
+        body += ')'
+        if rettype is not None:
+            if first:
+                body += ' '
+            else:
+                body += '\n%s' % prefix
+            body += '-> %s' % rettype
+        body += ';\n'
+
         self.appendSection('funcpointer', body)
     #
     def genHandle(self, typeinfo, typeName):
