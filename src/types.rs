@@ -43,7 +43,7 @@ pub type VkVersionInfo = u32;
 ///
 /// The only dispatchable handle types are those related to device and instance management.
 #[repr(C)]
-#[derive(Clone,Copy,Debug,PartialEq,Eq)]
+#[derive(Clone,Copy,PartialEq,Eq)]
 pub struct VkHandle {
     value: usize,
 }
@@ -52,9 +52,22 @@ pub struct VkHandle {
 ///
 /// Most Vulkan handle types, are non-dispatchable.
 #[repr(C)]
-#[derive(Clone,Copy,Debug,PartialEq,Eq)]
+#[derive(Clone,Copy,PartialEq,Eq)]
 pub struct VkNonDispatchableHandle {
     value: u64,
+}
+
+
+impl ::std::fmt::Debug for VkHandle {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        write!(f, "`H:{:x}`", self.value)
+    }
+}
+
+impl ::std::fmt::Debug for VkNonDispatchableHandle {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        write!(f, "`N:{:x}`", self.value)
+    }
 }
 
 impl ::util::VkNullHandle for VkHandle {
