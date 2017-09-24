@@ -1,27 +1,28 @@
 /*
-Copyright (c) 2016, Christoph Hommelsheim
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+**  Copyright (c) 2016, Christoph Hommelsheim
+**  All rights reserved.
+**
+**  Redistribution and use in source and binary forms, with or without
+**  modification, are permitted provided that the following conditions are met:
+**
+**  * Redistributions of source code must retain the above copyright notice, this
+**    list of conditions and the following disclaimer.
+**
+**  * Redistributions in binary form must reproduce the above copyright notice,
+**    this list of conditions and the following disclaimer in the documentation
+**    and/or other materials provided with the distribution.
+**
+**  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+**  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+**  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+**  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+**  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+**  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+**  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+**  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+**  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+**  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+**
 */
 
 //! Vulkan bindings for the rust programming language.
@@ -61,11 +62,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //! }
 //! ```
 
-#[allow(const_err)]
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-pub mod platform;
+
+
+#[macro_use]
+extern crate log;
+
+#[macro_use]
+extern crate lazy_static;
+
+#[cfg(unix)]
+extern crate libc;
+
+#[cfg(windows)]
+extern crate winapi;
+#[cfg(windows)]
+extern crate kernel32;
 
 /// Construct an API version number.
 ///
@@ -73,159 +84,136 @@ pub mod platform;
 macro_rules! vk_make_version {
     ( $major:expr, $minor:expr, $patch:expr ) => {
         (($major << 22) | ($minor << 12) | $patch)
-     };
+    };
 }
 
-// utilities
-#[allow(non_snake_case)]
-pub mod util {
-    //! Utilities and helpers.
-    use std::fmt;
-    use std::error;
-
-    /// A `VkResult` wrapper, that implements `std::error::Error`.
-    #[derive(Copy,Clone,PartialEq,Eq)]
-    pub struct VkError (::types::VkResult);
-
-    impl VkError {
-        #[inline]
-        pub fn is_success(self) -> bool{
-            return (self.0 as i32) >= 0;
-        }
-        #[inline]
-        pub fn is_error(self) -> bool {
-            return (self.0 as i32) < 0;
-        }
-        #[inline]
-        pub fn name(self) -> &'static str {
-            return get_VkResult_name(self.0);
-        }
-        #[inline]
-        pub fn description(self) -> &'static str {
-            return get_VkResult_description(self.0);
-        }
-    }
-
-    impl From<::types::VkResult> for VkError {
-        #[inline]
-        fn from(value: ::types::VkResult) -> VkError {
-            return VkError(value);
-        }
-    }
-
-    impl fmt::Debug for VkError {
-        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-            let name = self.name();
-            if name.len() > 0 {
-                write!(f, "{}", name)
-            } else {
-                write!(f, "VkResult({})", self.0)
+/// Define a bitmask-type for a coresponding bit-enumeration.
+macro_rules! vk_define_bitmask {
+    ( $bitmask_ty:ident, $enum_type:ty ) => {
+        pub type $bitmask_ty = VkFlags;
+        impl $enum_type {
+            #[inline]
+            pub fn flags(self) -> $bitmask_ty {
+                self as VkFlags
             }
         }
-    }
-
-    impl fmt::Display for VkError {
-        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-            let name = self.name();
-            if name.len() > 0 {
-                write!(f, "{}", name)
-            } else {
-                write!(f, "VkResult({})", self.0)
+        impl Into<$bitmask_ty> for $enum_type {
+            #[inline]
+            fn into(self) -> $bitmask_ty {
+                self.flags()
             }
         }
-    }
-
-    impl error::Error for VkError {
-        #[inline]
-        fn description(&self) -> &str {
-            return get_VkResult_description(self.0);
-        }
-    }
-
-    impl Into<VkResultObj> for VkError {
-        #[inline]
-        fn into(self) -> VkResultObj {
-            if self.is_error() {
-                Err(self)
-            } else {
-                Ok(self.0)
+        impl ::std::ops::BitAnd<$enum_type> for $enum_type {
+            type Output = $bitmask_ty;
+            #[inline]
+            fn bitand(self, rhs: $enum_type) -> $bitmask_ty {
+                self as u32 & rhs as u32
             }
         }
-    }
-    
-    impl Into<Result<::types::VkResult,::types::VkResult>> for VkError {
-        #[inline]
-        fn into(self) -> Result<::types::VkResult,::types::VkResult> {
-            if self.is_error() {
-                Err(self.0)
-            } else {
-                Ok(self.0)
+        impl ::std::ops::BitOr<$enum_type> for $enum_type {
+            type Output = $bitmask_ty;
+            #[inline]
+            fn bitor(self, rhs: $enum_type) -> $bitmask_ty {
+                self as u32 | rhs as u32
             }
         }
-    }
-
-    /// A `std::result::Result` wrapper for `VkResult`.
-    pub type VkResultObj<T=::types::VkResult> = Result<T, VkError>;
-
-    pub use std::ptr::null_mut as vk_null;
-
-    /// Support trait for the `vk_null_handle()` function
-    pub trait VkNullHandle: Sized {
-        /// Returns a reserved non-valid object handle.
-        fn null() -> Self;
-    }
-
-    /// Returns a reserved non-valid object handle.
-    #[inline]
-    pub fn vk_null_handle<T: VkNullHandle>() -> T {
-        T::null()
-    }
-
-    include!(concat!(env!("OUT_DIR"), "/vulkan_utils.rs"));
+        impl ::std::ops::BitAnd<$bitmask_ty> for $enum_type {
+            type Output = $bitmask_ty;
+            #[inline]
+            fn bitand(self, rhs: $bitmask_ty) -> $bitmask_ty {
+                self as u32 & rhs as u32
+            }
+        }
+        impl ::std::ops::BitOr<$bitmask_ty> for $enum_type {
+            type Output = $bitmask_ty;
+            #[inline]
+            fn bitor(self, rhs: $bitmask_ty) -> $bitmask_ty {
+                self as u32 | rhs as u32
+            }
+        }
+        impl ::std::ops::BitAnd<$enum_type> for $bitmask_ty {
+            type Output = $bitmask_ty;
+            #[inline]
+            fn bitand(self, rhs: $enum_type) -> $bitmask_ty {
+                self as u32 & rhs as u32
+            }
+        }
+        impl ::std::ops::BitOr<$enum_type> for $bitmask_ty {
+            type Output = $bitmask_ty;
+            #[inline]
+            fn bitor(self, rhs: $enum_type) -> $bitmask_ty {
+                self as u32 | rhs as u32
+            }
+        }
+    };
+    ( $bitmask_ty:ident ) => {
+        pub type $bitmask_ty = VkFlags;
+    };
 }
 
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-mod types;
-
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-pub mod ffi;
-
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-pub mod safe;
-
-pub use types::*;
-
-pub mod vk {
-    //! Aliases for each type, constant and command with a stipped `VK`-prefix.
-
-    use safe as cmds;
-    use types;
-    pub use types::VkEnum as Enum;
-    pub use types::VkHandle as Handle;
-    pub use types::VkNonDispatchableHandle as NonDispatchableHandle;
-    pub use util::vk_null as null;
-    pub use util::vk_null_handle as null_handle;
-    pub use util::VkResultObj as ResultObj;
-    pub use util::VkError as Error;
-    pub use platform;
-
-    include!(concat!(env!("OUT_DIR"), "/vulkan_alias.rs"));
-
+/// Define a dispatchable handle.
+macro_rules! vk_define_handle {
+    ( $name:ident ) => {
+        #[repr(C)]
+        #[derive(Copy,Clone,PartialEq,Eq,Default,Debug)]
+        pub struct $name (::util::VkDispatchableHandle);
+        impl ::util::VkNullHandle for $name  {
+            #[inline]
+            fn null() -> $name {
+                $name(::util::vk_null_handle())
+            }
+        }
+    };
 }
 
-pub mod prelude {
-    //! Get everything you need with `use vulkan_rs::prelude::*;`.
+/// Define a non-dispatchable handle.
+macro_rules! vk_define_non_dispatchable_handle {
+    ( $name:ident ) => {
+        #[repr(C)]
+        #[derive(Copy,Clone,PartialEq,Eq,Default,Debug)]
+        pub struct $name (util::VkNonDispatchableHandle);
+        impl util::VkNullHandle for $name {
+            #[inline]
+            fn null() -> $name {
+                $name(util::vk_null_handle())
+            }
+        }
+    };
+}
 
-    pub use types::*;
-    pub use safe::*;
-    pub use platform as vk_platform;
-    pub use util::{vk_null, vk_null_handle};
-    pub use util::VkResultObj;
-    pub use util::VkError;
+pub mod platform;
+pub mod util;
+pub mod cmds;
+
+mod types; // generated!
+
+// pub mod vk {
+//     //! Aliases for each type, constant and command with a stipped `VK`-prefix.
+//
+//     pub use util::VkHandle as Handle;
+//     pub use util::VkDispatchableHandle as DispatchableHandle;
+//     pub use util::VkNonDispatchableHandle as NonDispatchableHandle;
+//     pub use util::vk_null as null;
+//     pub use util::vk_null_handle as null_handle;
+//     pub use util::VkResultObj as ResultObj;
+//     pub use util::VkError as Error;
+//     pub use platform;
+//
+//     include!(concat!(env!("OUT_DIR"), "/vulkan_alias.rs"));
+//
+// }
+
+pub mod prelude;
+
+
+
+#[test]
+fn test_type_sizes() {
+    let ptr_size = ::std::mem::size_of::<extern "system" fn()>();
+    let fnptr_size = ::std::mem::size_of::<extern "system" fn()>();
+
+    assert_eq!(4, ::std::mem::size_of::<types::VkResult>(), "check enum size");
+    assert_eq!(ptr_size, ::std::mem::size_of::<types::VkDevice>(), "check dispatchable handle size");
+    assert_eq!(8, ::std::mem::size_of::<types::VkImage>(), "check non-dispatchable handle size");
+    assert_eq!(fnptr_size, ::std::mem::size_of::<types::PFN_vkVoidFunction>(), "check function pointer size");
 }

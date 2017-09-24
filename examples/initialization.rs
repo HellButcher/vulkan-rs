@@ -32,7 +32,7 @@ extern crate env_logger;
 mod utils;
 use utils::Application;
 
-use vulkan_rs::prelude::*;
+use vulkan_rs::prelude::vk_version_1_0::*;
 
 fn main() {
     env_logger::init().unwrap();
@@ -65,7 +65,7 @@ fn main() {
 
     });
 
-    app.wait_idle();
+    app.wait_idle().unwrap();
 
     drop(app);
 

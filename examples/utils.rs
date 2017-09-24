@@ -27,17 +27,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 use winit;
 use std::os::raw::c_char;
 use std::ffi::{CStr,CString};
-use vulkan_rs::prelude::*;
+use vulkan_rs::prelude::vk_version_1_0::*;
+use vulkan_rs::prelude::vk_khr_surface::*;
+use vulkan_rs::prelude::vk_khr_swapchain::*;
 
-macro_rules! vk_drop {
-    ( $f:path ; [ $($p:expr),* ] $e:expr $(, $r:expr)* ) => {
-        if $e != vk_null_handle() {
-            debug!("dropping: {} @ line {}", stringify!($f), line!());
-            $f ( $($p,)* $e $(, $r)* );
-            $e = vk_null_handle();
-        }
-    };
-}
+#[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
+pub use vulkan_rs::prelude::vk_khr_xlib_surface::*;
+
+#[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
+pub use vulkan_rs::prelude::vk_khr_xcb_surface::*;
+
+#[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
+pub use vulkan_rs::prelude::vk_khr_wayland_surface::*;
+
+#[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
+pub use vulkan_rs::prelude::vk_khr_mir_surface::*;
+
+#[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
+pub use vulkan_rs::prelude::vk_khr_android_surface::*;
+
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+pub use vulkan_rs::prelude::vk_khr_win32_surface::*;
 
 const QUEUE_COUNT : usize = 2;
 const GRAPHIC_QUEUE: usize = 0;
@@ -109,7 +119,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
         hinstance: kernel32::GetModuleHandleW(ptr::null()),
         hwnd: w.get_hwnd(),
     };
-    let surface = try!(vkCreateWin32SurfaceKHR(instance, &create_info, None));
+    let surface = vkCreateWin32SurfaceKHR(instance, &create_info, None)?;
     debug!("created windows surface {:?}", surface);
     return Ok(surface);
 }
@@ -127,7 +137,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
             display: wayland_display as *mut vk_platform::wayland::wl_display,
             surface: wayland_surface as *mut vk_platform::wayland::wl_surface,
         };
-        let surface = try!(vkCreateWaylandSurfaceKHR(instance, &create_info, None));
+        let surface = vkCreateWaylandSurfaceKHR(instance, &create_info, None)?;
         debug!("created wayland surface {:?}", surface);
         return Ok(surface);
     } else if let Some(xlib_display) = w.get_xlib_display() {
@@ -140,7 +150,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
             dpy: xlib_display as *mut vk_platform::xlib::Display,
             window: xlib_window as vk_platform::xlib::Window,
         };
-        let surface = try!(vkCreateXlibSurfaceKHR(instance, &create_info, None));
+        let surface = vkCreateXlibSurfaceKHR(instance, &create_info, None)?;
         debug!("created xlib surface {:?}", surface);
         return Ok(surface);
     } /* else if let Some(xcb_connection) = w.get_xcb_connection() {
@@ -153,7 +163,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
             connection: xcb_connection as *mut vk_platform::xcb::xcb_connection_t,
             window: xcb_window as vk_platform::xcb::xcb_window_t,
         };
-        let surface = try!(vkCreateXcbSurfaceKHR(instance, &create_info, None));
+        let surface = vkCreateXcbSurfaceKHR(instance, &create_info, None)?;
         debug!("created xcb surface {:?}", surface);
         return Ok(surface);
     } */ else {
@@ -171,7 +181,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
         flags: 0,
         window: w.get_native_window() as *mut vk_platform::android::ANativeWindow,
     };
-    let surface = try!(vkCreateAndroidSurfaceKHR(instance, &create_info, None));
+    let surface = vkCreateAndroidSurfaceKHR(instance, &create_info, None)?;
     debug!("created android surface {:?}", surface);
     return Ok(surface);
 }
@@ -185,7 +195,7 @@ fn choose_queue_family_indices(physical_device: VkPhysicalDevice, surface: VkSur
         debug!("querying queue family {}: queues={}, flags={}", i, props.queueCount, props.queueFlags);
         if props.queueCount > 0 {
             let has_surface_support = if surface != vk_null_handle() {
-                try!(vkGetPhysicalDeviceSurfaceSupportKHR(physical_device, i as u32, surface))
+                vkGetPhysicalDeviceSurfaceSupportKHR(physical_device, i as u32, surface)?
             } else {
                 VK_FALSE
             };
@@ -244,7 +254,7 @@ fn create_instance(app_aame: &str, exts: &[&str]) -> VkResultObj<VkInstance> {
         enabledExtensionCount: exts_p.len() as u32,
         ppEnabledExtensionNames: exts_p.as_ptr(),
     };
-    let instance = try!(vkCreateInstance(&create_info, None));
+    let instance = vkCreateInstance(&create_info, None)?;
     debug!("created instalce {:?}", instance);
     return Ok(instance);
 }
@@ -258,7 +268,7 @@ struct DeviceInitializationDetails {
 }
 
 fn choose_physical_device(instance: VkInstance, exts: &[&str], surface: VkSurfaceKHR) -> VkResultObj<(VkPhysicalDevice,DeviceInitializationDetails)> {
-    let devices = try!(vkEnumeratePhysicalDevices(instance));
+    let devices = vkEnumeratePhysicalDevices(instance)?;
     if devices.len() <= 0 {
         warn!("there are no physical devices!");
         return Err(VK_ERROR_INITIALIZATION_FAILED.into());
@@ -280,28 +290,28 @@ fn choose_physical_device(instance: VkInstance, exts: &[&str], surface: VkSurfac
 }
 
 fn check_device(physical_device: VkPhysicalDevice, exts: &[&str], surface: VkSurfaceKHR) -> VkResultObj<DeviceInitializationDetails> {
-    let indices = try!(choose_queue_family_indices(physical_device, surface));
+    let indices = choose_queue_family_indices(physical_device, surface)?;
     if indices[0] == INVALID_INDEX || (surface != vk_null_handle() && indices[1] == INVALID_INDEX) {
         debug!("device {:?} has no suitable queue family", physical_device);
         return Err(VK_ERROR_INITIALIZATION_FAILED.into());
     }
     let mut details : DeviceInitializationDetails = Default::default();
     details.queue_family_indices = indices;
-    if ! try!(check_device_extension_support(physical_device, exts)) {
+    if ! check_device_extension_support(physical_device, exts)? {
         debug!("device {:?} doesn't support all required extensions", physical_device);
         return Err(VK_ERROR_INITIALIZATION_FAILED.into());
     }
     if surface != vk_null_handle() {
-        details.surface_capabilities = try!(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface));
-        details.surface_format = try!(choose_surface_format(physical_device, surface));
-        details.surface_present_mode = try!(choose_surface_present_mode(physical_device, surface));
+        details.surface_capabilities = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface)?;
+        details.surface_format = choose_surface_format(physical_device, surface)?;
+        details.surface_present_mode = choose_surface_present_mode(physical_device, surface)?;
     }
     return Ok(details);
 }
 
 fn check_device_extension_support(physical_device: VkPhysicalDevice, exts: &[&str]) -> VkResultObj<bool> {
     let mut exts : ::std::collections::HashSet<&str> = exts.iter().cloned().collect();
-    let extension_props = try!(vkEnumerateDeviceExtensionProperties(physical_device, None));
+    let extension_props = vkEnumerateDeviceExtensionProperties(physical_device, None)?;
     for extension in extension_props.into_iter() {
         let ext_name = unsafe{ CStr::from_ptr(extension.extensionName.as_ptr()) };
         match ext_name.to_str() {
@@ -317,7 +327,7 @@ fn choose_surface_format(physical_device: VkPhysicalDevice, surface: VkSurfaceKH
     if surface == vk_null_handle() {
         return Err(VK_ERROR_EXTENSION_NOT_PRESENT.into());
     }
-    let available_formats = try!(vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface));
+    let available_formats = vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface)?;
     if available_formats.len() <= 0 {
         return Err(VK_ERROR_EXTENSION_NOT_PRESENT.into());
     }
@@ -342,7 +352,7 @@ fn choose_surface_present_mode(physical_device: VkPhysicalDevice, surface: VkSur
     if surface == vk_null_handle() {
         return Err(VK_ERROR_EXTENSION_NOT_PRESENT.into());
     }
-    let available_modes = try!(vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device, surface));
+    let available_modes = vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device, surface)?;
     let mut best_mode = VK_PRESENT_MODE_FIFO_KHR;
     for available_mode in available_modes {
         if available_mode == VK_PRESENT_MODE_MAILBOX_KHR {
@@ -399,7 +409,7 @@ fn create_logical_device(physical_device: VkPhysicalDevice, queue_family_indices
         ppEnabledExtensionNames: exts_p.as_ptr(),
         pEnabledFeatures: vk_null(),
     };
-    let device = try!(vkCreateDevice(physical_device, &device_create_info, None));
+    let device = vkCreateDevice(physical_device, &device_create_info, None)?;
     debug!("created device {:?}", device);
     return Ok(device);
 }
@@ -419,7 +429,7 @@ fn create_swapchain(device: VkDevice, surface: VkSurfaceKHR, details: &DeviceIni
         imageColorSpace: details.surface_format.colorSpace,
         imageExtent: extent,
         imageArrayLayers: 1,
-        imageUsage: VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+        imageUsage: VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT.flags(),
         imageSharingMode: VK_SHARING_MODE_EXCLUSIVE,
         queueFamilyIndexCount: 0,
         pQueueFamilyIndices: vk_null(),
@@ -434,7 +444,7 @@ fn create_swapchain(device: VkDevice, surface: VkSurfaceKHR, details: &DeviceIni
         create_info.queueFamilyIndexCount = 2;
         create_info.pQueueFamilyIndices = details.queue_family_indices.as_ptr();
     }
-    let swapchain = try!(vkCreateSwapchainKHR(device, &create_info, None));
+    let swapchain = vkCreateSwapchainKHR(device, &create_info, None)?;
     debug!("created swapchain {:?}", swapchain);
     return Ok(swapchain);
 }
@@ -456,14 +466,14 @@ fn create_swapchain_image_views(device: VkDevice, details: &DeviceInitialization
                 a: VK_COMPONENT_SWIZZLE_IDENTITY,
             },
             subresourceRange: VkImageSubresourceRange{
-                aspectMask: VK_IMAGE_ASPECT_COLOR_BIT,
+                aspectMask: VK_IMAGE_ASPECT_COLOR_BIT.flags(),
                 baseMipLevel: 0,
                 levelCount: 1,
                 baseArrayLayer: 0,
                 layerCount: 1,
             },
         };
-        image_views.push(try!(vkCreateImageView(device, &create_info, None)));
+        image_views.push(vkCreateImageView(device, &create_info, None)?);
     }
     debug!("created {} image views", image_views.len());
     return Ok(image_views);
@@ -477,7 +487,7 @@ fn create_shader_module(device: VkDevice, data: &[u8]) -> VkResultObj<VkShaderMo
         codeSize: data.len(),
         pCode: data.as_ptr() as *const u32,
     };
-    let shader_module = try!(vkCreateShaderModule(device, &create_info, None));
+    let shader_module = vkCreateShaderModule(device, &create_info, None)?;
     debug!("created shader module {:?}", shader_module);
     return Ok(shader_module);
 }
@@ -491,7 +501,7 @@ fn create_render_pass(device: VkDevice, format: VkFormat) -> VkResultObj<VkRende
             loadOp: VK_ATTACHMENT_LOAD_OP_CLEAR,
             storeOp: VK_ATTACHMENT_STORE_OP_STORE,
             stencilLoadOp: VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-            stencilStoreOp: VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+            stencilStoreOp: VK_ATTACHMENT_STORE_OP_DONT_CARE,
             initialLayout: VK_IMAGE_LAYOUT_UNDEFINED,
             finalLayout: VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
         },
@@ -527,7 +537,7 @@ fn create_render_pass(device: VkDevice, format: VkFormat) -> VkResultObj<VkRende
         dependencyCount: 0,
         pDependencies: vk_null(),
     };
-    let render_pass = try!(vkCreateRenderPass(device, &create_info, None));
+    let render_pass = vkCreateRenderPass(device, &create_info, None)?;
     debug!("created render pass {:?}", render_pass);
     return Ok(render_pass);
 }
@@ -542,17 +552,17 @@ fn create_pipeline_layout(device: VkDevice) -> VkResultObj<VkPipelineLayout> {
         pushConstantRangeCount: 0,
         pPushConstantRanges: vk_null(),
     };
-    let pipeline_layout = try!(vkCreatePipelineLayout(device, &create_info, None));
+    let pipeline_layout = vkCreatePipelineLayout(device, &create_info, None)?;
     debug!("created pipeline layout {:?}", pipeline_layout);
     return Ok(pipeline_layout);
 }
 
 fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_pass: VkRenderPass, extent: VkExtent2D) -> VkResultObj<VkPipeline> {
     let vert_shader_module = try!(create_shader_module(device,
-        include_bytes!(concat!(env!("OUT_DIR"), "/examples/shader.vert.spv"))
+        include_bytes!(concat!(env!("OUT_DIR"), "/shader.vert.spv"))
     ));
     let frag_shader_module = try!(create_shader_module(device,
-        include_bytes!(concat!(env!("OUT_DIR"), "/examples/shader.frag.spv"))
+        include_bytes!(concat!(env!("OUT_DIR"), "/shader.frag.spv"))
     ));
     let shader_stage_create_infos = [
         VkPipelineShaderStageCreateInfo{
@@ -613,7 +623,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
         depthClampEnable: VK_FALSE,
         rasterizerDiscardEnable: VK_FALSE,
         polygonMode: VK_POLYGON_MODE_FILL,
-        cullMode: VK_CULL_MODE_BACK_BIT,
+        cullMode: VK_CULL_MODE_BACK_BIT.flags(),
         frontFace: VK_FRONT_FACE_CLOCKWISE,
         depthBiasEnable: VK_FALSE,
         depthBiasConstantFactor: 0.0,
@@ -737,7 +747,7 @@ fn create_swapchain_framebuffers(device: VkDevice, render_pass: VkRenderPass, ex
             height: extent.height,
             layers: 1,
         };
-        framebuffers.push(try!(vkCreateFramebuffer(device, &create_info, None)));
+        framebuffers.push(vkCreateFramebuffer(device, &create_info, None)?);
     }
     debug!("created {} framebuffers", framebuffers.len());
     return Ok(framebuffers);
@@ -750,7 +760,7 @@ fn create_command_pool(device: VkDevice, graphics_family: u32) -> VkResultObj<Vk
         flags: VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT|VK_COMMAND_POOL_CREATE_TRANSIENT_BIT,
         queueFamilyIndex: graphics_family,
     };
-    let command_pool = try!(vkCreateCommandPool(device, &create_info, None));
+    let command_pool = vkCreateCommandPool(device, &create_info, None)?;
     debug!("created command pool {:?}", command_pool);
     return Ok(command_pool);
 }
@@ -763,7 +773,7 @@ fn init_command_buffer(device: VkDevice, command_pool: VkCommandPool) -> VkResul
         level: VK_COMMAND_BUFFER_LEVEL_PRIMARY,
         commandBufferCount: 1,
     };
-    let commabd_buffer = try!(vkAllocateCommandBuffers(device, &create_info));
+    let commabd_buffer = vkAllocateCommandBuffers(device, &create_info)?;
     debug!("created command buffer {:?}", commabd_buffer);
     return Ok(commabd_buffer[0]);
 }
@@ -774,7 +784,7 @@ fn create_semaphore(device: VkDevice) -> VkResultObj<VkSemaphore> {
         pNext: vk_null(),
         flags: 0,
     };
-    let semaphore = try!(vkCreateSemaphore(device, &create_info, None));
+    let semaphore = vkCreateSemaphore(device, &create_info, None)?;
     debug!("created semaphore {:?}", semaphore);
     return Ok(semaphore);
 }
@@ -785,36 +795,36 @@ impl Application {
         let mut app : Application = Default::default();
         let instance_exts = get_required_instance_extensions(window);
         let device_exts = get_required_device_extensions();
-        app.instance = try!(create_instance(app_name, instance_exts.as_slice()));
-        app.surface = try!(create_surface(app.instance, window));
-        let (physical_device, details) = try!(choose_physical_device(app.instance, device_exts.as_slice(), app.surface));
+        app.instance = create_instance(app_name, instance_exts.as_slice())?;
+        app.surface = create_surface(app.instance, window)?;
+        let (physical_device, details) = choose_physical_device(app.instance, device_exts.as_slice(), app.surface)?;
         app.physical_device = physical_device;
         //let mem_props = vk_get!(vkGetPhysicalDeviceMemoryProperties; app.physical_device; VkPhysicalDeviceMemoryProperties);
         //let dev_props = vk_get!(vkGetPhysicalDeviceProperties; app.physical_device; VkPhysicalDeviceProperties);
         //debug!("props: memoryTypeCount: {}, memoryHeapCount: {}, apiVersion: {}, driverVersion: {}, vendorID: {}, deviceID: {}", mem_props.memoryTypeCount, mem_props.memoryHeapCount, dev_props.apiVersion, dev_props.driverVersion, dev_props.vendorID, dev_props.deviceID);
 
-        app.device = try!(create_logical_device(app.physical_device, &details.queue_family_indices, device_exts.as_slice()));
+        app.device = create_logical_device(app.physical_device, &details.queue_family_indices, device_exts.as_slice())?;
         app.queues = get_device_queues(app.device, &details.queue_family_indices);
         let window_size = match window.get_inner_size_pixels() {
             Some((width, height)) => VkExtent2D{width: width, height: height},
             None => VkExtent2D{width: 800, height: 600},
         };
         app.extent = choose_swap_extend_from_capabilities(&details.surface_capabilities, window_size);
-        app.swapchain = try!(create_swapchain(app.device, app.surface, &details, app.extent, vk_null_handle()));
-        app.swapchain_images = try!(vkGetSwapchainImagesKHR(app.device, app.swapchain));
-        app.swapchain_image_views = try!(create_swapchain_image_views(app.device, &details, &app.swapchain_images));
+        app.swapchain = create_swapchain(app.device, app.surface, &details, app.extent, vk_null_handle())?;
+        app.swapchain_images = vkGetSwapchainImagesKHR(app.device, app.swapchain)?;
+        app.swapchain_image_views = create_swapchain_image_views(app.device, &details, &app.swapchain_images)?;
 
-        app.render_pass = try!(create_render_pass(app.device, details.surface_format.format));
-        app.pipeline_layout = try!(create_pipeline_layout(app.device));
-        app.pipeline = try!(create_graphics_pipeline(app.device, app.pipeline_layout, app.render_pass, app.extent));
+        app.render_pass = create_render_pass(app.device, details.surface_format.format)?;
+        app.pipeline_layout = create_pipeline_layout(app.device)?;
+        app.pipeline = create_graphics_pipeline(app.device, app.pipeline_layout, app.render_pass, app.extent)?;
 
-        app.swapchain_framebuffers = try!(create_swapchain_framebuffers(app.device, app.render_pass, app.extent, &app.swapchain_image_views));
+        app.swapchain_framebuffers = create_swapchain_framebuffers(app.device, app.render_pass, app.extent, &app.swapchain_image_views)?;
 
-        app.command_pool = try!(create_command_pool(app.device, details.queue_family_indices[GRAPHIC_QUEUE]));
-        app.command_buffer = try!(init_command_buffer(app.device, app.command_pool));
+        app.command_pool = create_command_pool(app.device, details.queue_family_indices[GRAPHIC_QUEUE])?;
+        app.command_buffer = init_command_buffer(app.device, app.command_pool)?;
 
-        app.semaphore_image_available = try!(create_semaphore(app.device));
-        app.semaphore_render_finished = try!(create_semaphore(app.device));
+        app.semaphore_image_available = create_semaphore(app.device)?;
+        app.semaphore_render_finished = create_semaphore(app.device)?;
 
         debug!("Application initialized");
         return Ok(app);
@@ -822,18 +832,16 @@ impl Application {
 
     pub fn begin(&self) -> VkResultObj<()> {
 
-        let (image_index, _) = try!(vkAcquireNextImageKHR(self.device, self.swapchain, u64::max_value(), self.semaphore_image_available, vk_null_handle()));
+        let (image_index, _) = vkAcquireNextImageKHR(self.device, self.swapchain, u64::max_value(), self.semaphore_image_available, vk_null_handle())?;
         self.image_index.set(image_index);
 
-        try!(vkBeginCommandBuffer(self.command_buffer, &VkCommandBufferBeginInfo{
+        vkBeginCommandBuffer(self.command_buffer, &VkCommandBufferBeginInfo{
             sType: VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
             pNext: vk_null(),
             flags: 0,
             pInheritanceInfo: vk_null(),
-        }));
+        })?;
 
-        let mut clear_color = VkClearValue::default();
-        *clear_color.as_color_mut().as_float32_mut() = [0.0, 0.0, 0.0, 1.0];
         vkCmdBeginRenderPass(self.command_buffer, &VkRenderPassBeginInfo{
             sType: VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
             pNext: vk_null(),
@@ -844,7 +852,7 @@ impl Application {
                 extent: self.extent,
             },
             clearValueCount: 1,
-            pClearValues: &clear_color,
+            pClearValues: &VkClearValue::from_color(VkClearColorValue::from_float32([0.0, 0.0, 0.0, 1.0])),
         }, VK_SUBPASS_CONTENTS_INLINE);
 
         vkCmdBindPipeline(self.command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, self.pipeline);
@@ -859,10 +867,10 @@ impl Application {
 
     pub fn end(&self) -> VkResultObj<()> {
         vkCmdEndRenderPass(self.command_buffer);
-        try!(vkEndCommandBuffer(self.command_buffer));
+        vkEndCommandBuffer(self.command_buffer)?;
 
         let wait_semaphores = [self.semaphore_image_available];
-        let wait_stages = [VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT];
+        let wait_stages = [VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT.flags()];
         let signal_semaphores = [self.semaphore_render_finished];
 
         let submit_info = [
@@ -878,7 +886,7 @@ impl Application {
                 pSignalSemaphores: signal_semaphores.as_ptr(),
             }
         ];
-        try!(vkQueueSubmit(self.queues[GRAPHIC_QUEUE], &submit_info, vk_null_handle()));
+        vkQueueSubmit(self.queues[GRAPHIC_QUEUE], &submit_info, vk_null_handle())?;
 
         let image_index = self.image_index.get();
 
@@ -892,14 +900,14 @@ impl Application {
             pImageIndices: &image_index,
             pResults: vk_null(),
         };
-        try!(vkQueuePresentKHR(self.queues[PRESENT_QUEUE], &present_info));
+        let _ = vkQueuePresentKHR(self.queues[PRESENT_QUEUE], &present_info)?; // ignore VK_SUBOPTIMAL_KHR
 
-        try!(vkQueueWaitIdle(self.queues[PRESENT_QUEUE]));
+        vkQueueWaitIdle(self.queues[PRESENT_QUEUE])?;
 
         Ok(())
     }
 
-    pub fn wait_idle(&self) -> VkResultObj {
+    pub fn wait_idle(&self) -> VkResultObj<()> {
         vkDeviceWaitIdle(self.device)
     }
 }
@@ -907,24 +915,56 @@ impl Application {
 impl Drop for Application {
     fn drop(&mut self) {
         debug!("Cleaning up Application...");
-        vk_drop!(vkDestroySemaphore; [self.device] self.semaphore_render_finished, None);
-        vk_drop!(vkDestroySemaphore; [self.device] self.semaphore_image_available, None);
-        vk_drop!(vkDestroyCommandPool; [self.device] self.command_pool, None);
-        for framebuffer in self.swapchain_framebuffers.iter_mut() {
-            vk_drop!(vkDestroyFramebuffer; [self.device] *framebuffer, None);
+        if !self.semaphore_render_finished.is_null() {
+            vkDestroySemaphore(self.device, self.semaphore_render_finished, None);
+            self.semaphore_render_finished = vk_null_handle();
         }
-        self.swapchain_framebuffers.clear();
-        vk_drop!(vkDestroyPipeline; [self.device] self.pipeline, None);
-        vk_drop!(vkDestroyPipelineLayout; [self.device] self.pipeline_layout, None);
-        vk_drop!(vkDestroyRenderPass; [self.device] self.render_pass, None);
-        for image_view in self.swapchain_image_views.iter_mut() {
-            vk_drop!(vkDestroyImageView; [self.device] *image_view, None);
+        if !self.semaphore_image_available.is_null() {
+            vkDestroySemaphore(self.device, self.semaphore_image_available, None);
+            self.semaphore_image_available = vk_null_handle();
         }
-        self.swapchain_image_views.clear();
-        vk_drop!(vkDestroySwapchainKHR; [self.device] self.swapchain, None);
-        vk_drop!(vkDestroyDevice; [] self.device, None);
-        vk_drop!(vkDestroySurfaceKHR; [self.instance] self.surface, None);
-        vk_drop!(vkDestroyInstance; [] self.instance, None);
+        if !self.command_pool.is_null() {
+            vkDestroyCommandPool(self.device, self.command_pool, None);
+            self.command_pool = vk_null_handle();
+        }
+        while let Some(framebuffer) = self.swapchain_framebuffers.pop() {
+            if !framebuffer.is_null() {
+                vkDestroyFramebuffer(self.device, framebuffer, None);
+            }
+        }
+        if !self.pipeline.is_null() {
+            vkDestroyPipeline(self.device, self.pipeline, None);
+            self.pipeline = vk_null_handle();
+        }
+        if !self.pipeline_layout.is_null() {
+            vkDestroyPipelineLayout(self.device, self.pipeline_layout, None);
+            self.pipeline_layout = vk_null_handle();
+        }
+        if !self.render_pass.is_null() {
+            vkDestroyRenderPass(self.device, self.render_pass, None);
+            self.render_pass = vk_null_handle();
+        }
+        while let Some(image_view) = self.swapchain_image_views.pop() {
+            if !image_view.is_null() {
+                vkDestroyImageView(self.device, image_view, None);
+            }
+        }
+        if !self.swapchain.is_null() {
+            vkDestroySwapchainKHR(self.device, self.swapchain, None);
+            self.swapchain = vk_null_handle();
+        }
+        if !self.device.is_null() {
+            vkDestroyDevice(self.device, None);
+            self.device = vk_null_handle();
+        }
+        if !self.surface.is_null() {
+            vkDestroySurfaceKHR(self.instance, self.surface, None);
+            self.surface = vk_null_handle();
+        }
+        if !self.instance.is_null() {
+            vkDestroyInstance(self.instance, None);
+            self.instance = vk_null_handle();
+        }
         self.swapchain_images.clear();
         self.queues = [vk_null_handle(), vk_null_handle()];
         self.physical_device = vk_null_handle();

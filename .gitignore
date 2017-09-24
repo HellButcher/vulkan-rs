@@ -15,6 +15,11 @@ __pycache__/
 Cargo.lock
 
 # generator
+/src/types.rs
+/src/cmds/table.rs
+/src/cmds/dispatch.rs
+/src/cmds/safe.rs
+/src/prelude.rs
 
 *~
 *.tmp
