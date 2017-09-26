@@ -68,7 +68,7 @@ fn enable_default_platform() {}
 fn generate_vulkan_bindings() {
     use vulkan_rs_generator::{registry,generator};
 
-    let vkdoc_path = Path::new("tools").join("vulkan_spec/Vulkan-Docs");
+    let vkdoc_path = Path::new("vulkan_spec").join("Vulkan-Docs");
     let registry_path = vkdoc_path.join("src/spec/vk.xml");
 
     //let out_dir = env::var("OUT_DIR").unwrap();

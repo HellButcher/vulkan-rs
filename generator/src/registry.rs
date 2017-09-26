@@ -218,7 +218,6 @@ impl VariantValue {
                 let (rhs, rhs_end) = VariantValue::parse_expression(&s[1..]);
                 if rhs_end != 0 {
                     let v = &lhs - &rhs;
-                    println!(" result={:?}", v);
                     if v != VariantValue::None {
                         return (v, lhs_end+1+rhs_end);
                     }
@@ -232,7 +231,6 @@ impl VariantValue {
         if s.starts_with('(') {
             match VariantValue::parse_expression(&s[1..]) {
                 (VariantValue::None, _) => {
-                    println!("got none");
                     (VariantValue::None, 0)
                 },
                 (v, end) => {
@@ -1243,7 +1241,7 @@ impl CommandDefinition {
                                 Ok(l) | Err(l) => &c[l..]
                             };
                             let param_name;
-                            if let Some(name_end) = c.find(|c| !(c=='=' || 'a'<=c && c<='z' || 'A'<=c && c<='A' || '0'<=c && c<='9')) {
+                            if let Some(name_end) = c.find(|c| !(c=='=' || 'a'<=c && c<='z' || 'A'<=c && c<='Z' || '0'<=c && c<='9')) {
                                 param_name = &c[..name_end];
                                 c = &c[name_end..];
                             } else {
