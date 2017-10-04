@@ -187,22 +187,6 @@ pub mod cmds;
 
 mod types; // generated!
 
-// pub mod vk {
-//     //! Aliases for each type, constant and command with a stipped `VK`-prefix.
-//
-//     pub use util::VkHandle as Handle;
-//     pub use util::VkDispatchableHandle as DispatchableHandle;
-//     pub use util::VkNonDispatchableHandle as NonDispatchableHandle;
-//     pub use util::vk_null as null;
-//     pub use util::vk_null_handle as null_handle;
-//     pub use util::VkResultObj as ResultObj;
-//     pub use util::VkError as Error;
-//     pub use platform;
-//
-//     include!(concat!(env!("OUT_DIR"), "/vulkan_alias.rs"));
-//
-// }
-
 pub mod prelude;
 
 

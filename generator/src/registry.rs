@@ -1736,20 +1736,24 @@ fn named_vec_to_name_map<'r, N: NamedElement>(data: &'r Vec<N>) -> HashMap<&'r s
     result
 }
 
-const BUILTIN_TYPE_SIZE : [(&str,usize);10] = [
-    // (name, size)
-    ("float",        4),
-    ("double",       8),
-    ("uint8_t",      1),
-    ("uint16_t",     2),
-    ("uint32_t",     4),
-    ("uint64_t",     8),
-    ("int8_t",       1),
-    ("int16_t",      2),
-    ("int32_t",      4),
-    ("int64_t",      8),
-];
+// type-flags
+pub const TF_PRIMITIVE_TYPE : u32 = 0x01;
+pub const TF_CONTAINS_HANDLE : u32 = 0x010000;
+const TF_PROPAGATION_MASK : u32 = 0xFFFF0000;
 
+const BUILTIN_TYPE_INFOS : [(&str,usize, u32);10] = [
+    // (name, size)
+    ("float",        4, TF_PRIMITIVE_TYPE),
+    ("double",       8, TF_PRIMITIVE_TYPE),
+    ("uint8_t",      1, TF_PRIMITIVE_TYPE),
+    ("uint16_t",     2, TF_PRIMITIVE_TYPE),
+    ("uint32_t",     4, TF_PRIMITIVE_TYPE),
+    ("uint64_t",     8, TF_PRIMITIVE_TYPE),
+    ("int8_t",       1, TF_PRIMITIVE_TYPE),
+    ("int16_t",      2, TF_PRIMITIVE_TYPE),
+    ("int32_t",      4, TF_PRIMITIVE_TYPE),
+    ("int64_t",      8, TF_PRIMITIVE_TYPE),
+];
 
 impl<'r> Into<Registry<'r>> for &'r RegistryData {
     fn into(self) -> Registry<'r> {
@@ -1819,6 +1823,14 @@ impl<'r> Registry<'r> {
         Some(member_size_max)
     }
 
+    pub fn get_struct_def_flags(&self, ty: &StructDefinition) -> u32 {
+        let mut flags = 0;
+        for member in &ty.members {
+            flags |= self.get_type_ref_flags(&member.base_type) & TF_PROPAGATION_MASK;
+        }
+        flags
+    }
+
     pub fn get_type_def_size(&self, ty: &TypeDefinition) -> Option<usize> {
         use self::TypeDefinition::*;
         match *ty {
@@ -1827,6 +1839,17 @@ impl<'r> Registry<'r> {
             Struct(ref d) => self.get_struct_def_size(d),
             Union(ref d) => self.get_union_def_size(d),
             _ => None,
+        }
+    }
+
+    pub fn get_type_def_flags(&self, ty: &TypeDefinition) -> u32 {
+        use self::TypeDefinition::*;
+        match *ty {
+            BaseType(ref d) => self.get_type_ref_flags(&d.base_type),
+            BitMask(_) | Enum(_) => TF_PRIMITIVE_TYPE,
+            Handle(_) => TF_CONTAINS_HANDLE,
+            Struct(ref d) | Union(ref d) => self.get_struct_def_flags(d),
+            _ => 0,
         }
     }
 
@@ -1854,9 +1877,29 @@ impl<'r> Registry<'r> {
         Some(size)
     }
 
+    pub fn get_type_ref_flags(&self, ty: &TypeReference) -> u32 {
+        let mut flags = self.get_type_flags(&ty.type_name);
+        for m in &ty.modifiers {
+            match *m {
+                TypeModifier::Const => {},
+                TypeModifier::Pointer => {
+                    flags &= TF_PROPAGATION_MASK;
+                    break;
+                },
+                TypeModifier::Array(ref v) => {
+                    if self.get_variant_integer(v).is_none() {
+                        flags &= TF_PROPAGATION_MASK;
+                        break;
+                    }
+                }
+            }
+        }
+        flags
+    }
+
     pub fn get_type_size(&self, name: &str) -> Option<usize> {
         // check builtin type
-        for &(t, s) in &BUILTIN_TYPE_SIZE {
+        for &(t, s, _) in &BUILTIN_TYPE_INFOS {
             if t == name {
                 return Some(s);
             }
@@ -1865,6 +1908,20 @@ impl<'r> Registry<'r> {
             self.get_type_def_size(t)
         } else {
             None
+        }
+    }
+
+    pub fn get_type_flags(&self, name: &str) -> u32 {
+        // check builtin type
+        for &(t, _, f) in &BUILTIN_TYPE_INFOS {
+            if t == name {
+                return f;
+            }
+        }
+        if let Some(t) = self.type_by_name.get(name) {
+            self.get_type_def_flags(t)
+        } else {
+            0
         }
     }
 

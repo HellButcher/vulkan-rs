@@ -45,7 +45,7 @@ impl GeneratorWriter for TypesGenerator {
     fn write_basetype_definition<W: CodeWrite>(&mut self, w: &mut W, sel: &Selection, f: &FeatureSet, ty: &BasicDefinition) -> Result<()> {
         write_documentation(w, sel, f, ty)?;
         write_feature_protect(w, sel, f)?;
-        write!(w, "pub type {} = {};\n", ty.name, type_ref(sel, &ty.base_type, false))?;
+        write!(w, "pub type {} = {};\n", ty.name, type_ref(sel, &ty.base_type, 0))?;
         Ok(())
     }
 
@@ -96,6 +96,7 @@ impl GeneratorWriter for TypesGenerator {
         if let Some(default) = default {
             write!(w, "impl Default for {} {{\n", ty.name)?;
             w.indent(|w|{
+                write!(w, "#[inline]\n")?;
                 write!(w, "fn default() -> {0} {{ {0}::{1} }}\n", ty.name, default)
             })?;
             write!(w, "}}\n")?;
@@ -150,11 +151,11 @@ impl GeneratorWriter for TypesGenerator {
             } else {
                 write!(w, ", ")?;
             }
-            write!(w, "{}", type_ref(sel, &param.base_type, false))?;
+            write!(w, "{}", type_ref(sel, &param.base_type, 0))?;
         }
         write!(w, ")")?;
         if !ty.return_type.is_empty() {
-            write!(w, " -> {}", return_type_ref(sel, &ty.return_type))?;
+            write!(w, " -> {}", return_type_ref(sel, &ty.return_type, 0))?;
         }
         write!(w, ";\n")?;
         Ok(())
@@ -167,20 +168,21 @@ impl GeneratorWriter for TypesGenerator {
         if let Some(_) = sel.get_struct_def_size(ty) {
             write!(w, "#[derive(Copy,Clone)]\n")?;
         }
-        write!(w, "pub struct {} {{\n", ty.name)?;
+        let lifetime = ""; //if (sel.get_struct_def_flags(ty) & TF_CONTAINS_HANDLE) != 0 { "<'l>" } else { "" };
+        write!(w, "pub struct {}{} {{\n", ty.name, lifetime)?;
         w.indent(|w|{
             for m in &ty.members {
                 write_documentation(w, sel, f, m)?;
-                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), type_ref(sel, &m.base_type, false))?;
+                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), type_ref(sel, &m.base_type, TYPE_FORMAT_LIFETIME))?;
             }
             Ok(())
         })?;
         write!(w, "}}\n")?;
         write_feature_protect(w, sel, f)?;
-        write!(w, "impl {} {{\n", ty.name)?;
+        write!(w, "impl{1} {0}{1} {{\n", ty.name, lifetime)?;
         w.indent(|w|{
             write!(w, "#[inline]\n")?;
-            write!(w, "pub fn new() -> {} {{\n", ty.name)?;
+            write!(w, "pub fn new() -> {}{} {{\n", ty.name, lifetime)?;
             w.indent(|w|{
                 write!(w, "unsafe {{ ::std::mem::zeroed() }}\n")
             })?;
@@ -188,10 +190,10 @@ impl GeneratorWriter for TypesGenerator {
         })?;
         write!(w, "}}\n")?;
         write_feature_protect(w, sel, f)?;
-        write!(w, "impl Default for {} {{\n", ty.name)?;
+        write!(w, "impl{1} Default for {0}{1} {{\n", ty.name, lifetime)?;
         w.indent(|w|{
             write!(w, "#[inline]\n")?;
-            write!(w, "fn default() -> {} {{\n", ty.name)?;
+            write!(w, "fn default() -> {}{} {{\n", ty.name, lifetime)?;
             w.indent(|w|{
                 write!(w, "unsafe {{ ::std::mem::zeroed() }}\n")
             })?;
@@ -212,7 +214,7 @@ impl GeneratorWriter for TypesGenerator {
         w.indent(|w|{
             for m in &ty.members {
                 write_documentation(w, sel, f, m)?;
-                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), type_ref(sel, &m.base_type, false))?;
+                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), type_ref(sel, &m.base_type, 0))?;
             }
             Ok(())
         })?;
@@ -223,7 +225,7 @@ impl GeneratorWriter for TypesGenerator {
             write!(w, "pub fn new() -> {} {{ unsafe {{ ::std::mem::zeroed() }} }}\n", ty.name)?;
             for m in &ty.members {
                 let member_name = self.style.field_name(&m.name);
-                let member_type = type_ref(sel, &m.base_type, false);
+                let member_type = type_ref(sel, &m.base_type, 0);
                 write_documentation(w, sel, f, m)?;
                 write!(w, "#[inline]\n")?;
                 write!(w, "pub fn from_{}(v: {}) -> {} {{\n", member_name, member_type, ty.name)?;

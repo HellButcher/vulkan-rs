@@ -240,13 +240,13 @@ impl table::VkInstanceTable {
     }
 }
 
-static mut DEVICE_DATA : Option<table::VkDeviceTable> = None;
+static mut DEVICE_DATA : Option<(table::VkDeviceTable,VkDevice)> = None;
 static mut DEVICE_INITIALIZED : AtomicUsize = ATOMIC_USIZE_INIT; // 0=uninitialized, 1=initialized, 2=busy
 
 impl table::VkDeviceTable {
     pub unsafe fn get() -> Option<&'static table::VkDeviceTable> {
         if DEVICE_INITIALIZED.load(Ordering::Relaxed) == 1 {
-            if let Some(ref t) = DEVICE_DATA {
+            if let Some((ref t,_)) = DEVICE_DATA {
                 return Some(t);
             }
         }
@@ -266,7 +266,7 @@ impl table::VkDeviceTable {
                     tab.vkGetDeviceProcAddr = get_device_proc_addr;
                     debug!("loading VkDeviceTable for {:?} and {:?}", instance, device);
                     if tab.load(|n| wrap_proc_addr(get_device_proc_addr, device, n), has_extension).is_ok() {
-                        DEVICE_DATA = Some(tab);
+                        DEVICE_DATA = Some((tab, device));
                     }
                 }
             }
@@ -314,6 +314,16 @@ pub unsafe fn vkCreateInstance (p_create_info: *const VkInstanceCreateInfo, p_al
 }
 
 #[allow(non_snake_case)]
+pub unsafe fn vkCurrentInstance() -> Option<VkInstance> {
+    if INSTANCE_INITIALIZED.load(Ordering::Relaxed) == 1 {
+        if let Some((_,i)) = INSTANCE_DATA {
+            return Some(i);
+        }
+    }
+    None
+}
+
+#[allow(non_snake_case)]
 pub unsafe fn vkDestroyInstance (instance: VkInstance, p_allocator: *const VkAllocationCallbacks) {
     dispatch::vkDestroyInstance(instance, p_allocator);
     if INSTANCE_INITIALIZED.compare_and_swap(1, 2, Ordering::Relaxed) == 1 {
@@ -350,6 +360,16 @@ pub unsafe fn vkCreateDevice (physical_device: VkPhysicalDevice, p_create_info: 
         DEVICE_INITIALIZED.store(0, Ordering::Relaxed);
     }
     result
+}
+
+#[allow(non_snake_case)]
+pub unsafe fn vkCurrentDevice<'l>() -> Option<VkDevice> {
+    if INSTANCE_INITIALIZED.load(Ordering::Relaxed) == 1 {
+        if let Some((_,d)) = DEVICE_DATA {
+            return Some(d);
+        }
+    }
+    None
 }
 
 #[allow(non_snake_case)]

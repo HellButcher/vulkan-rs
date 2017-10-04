@@ -32,6 +32,7 @@ use std::collections::BTreeSet;
 use std::borrow::Cow;
 use std::os::raw;
 use std::ffi::CStr;
+use types;
 
 /// Holds a compressed version triple.
 ///
@@ -47,6 +48,7 @@ pub type VkVersionInfo = u32;
 #[derive(Copy,Clone,PartialEq,Eq)]
 pub struct VkDispatchableHandle{
     value: usize,
+    //phantom: ::std::marker::PhantomData<& 'l raw::c_void>
 }
 
 /// Base-type for a non-dispatchable object handle.
@@ -56,6 +58,7 @@ pub struct VkDispatchableHandle{
 #[derive(Copy,Clone,PartialEq,Eq)]
 pub struct VkNonDispatchableHandle {
     value: u64,
+    //phantom: ::std::marker::PhantomData<& 'l raw::c_void>
 }
 
 impl fmt::Debug for VkDispatchableHandle {
@@ -87,29 +90,34 @@ impl fmt::Pointer for VkNonDispatchableHandle {
 impl VkNullHandle for VkDispatchableHandle {
     #[inline]
     fn null() -> VkDispatchableHandle {
-        return VkDispatchableHandle { value: 0 };
+        VkDispatchableHandle { value: 0 } //, phantom: ::std::marker::PhantomData }
     }
 }
 
 impl VkNullHandle for VkNonDispatchableHandle {
     #[inline]
     fn null() -> VkNonDispatchableHandle {
-        return VkNonDispatchableHandle { value: 0 };
+        VkNonDispatchableHandle { value: 0 } //, phantom: ::std::marker::PhantomData }
     }
 }
 
 impl Default for VkDispatchableHandle {
     #[inline]
     fn default() -> VkDispatchableHandle {
-        return VkDispatchableHandle { value: 0 };
+        VkDispatchableHandle { value: 0 } //, phantom: ::std::marker::PhantomData }
     }
 }
 
 impl Default for VkNonDispatchableHandle {
     #[inline]
     fn default() -> VkNonDispatchableHandle {
-        return VkNonDispatchableHandle { value: 0 };
+        VkNonDispatchableHandle { value: 0 } //, phantom: ::std::marker::PhantomData }
     }
+}
+
+pub trait VkDestroyableHandle: VkNullHandle {
+    type Owner: Default+Copy+Clone;
+    fn destroy(self, owner: Self::Owner, p_allocator: Option<&types::VkAllocationCallbacks>);
 }
 
 pub type VkError = ::types::VkResult;
@@ -228,7 +236,7 @@ pub type VkResultObj<T=::types::VkResult> = Result<T, VkError>;
 pub use std::ptr::null_mut as vk_null;
 
 /// Support trait for the `vk_null_handle()` function
-pub trait VkNullHandle: Sized+PartialEq {
+pub trait VkNullHandle: Sized+PartialEq+Eq+Copy+Clone+Sized {
     /// Returns a reserved non-valid object handle.
     #[inline]
     fn null() -> Self;

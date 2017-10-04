@@ -224,7 +224,10 @@ pub fn get_variant_value_and_type<'l>(sel: &'l Selection<'l>, v: &VariantValue, 
     None
 }
 
-pub fn format_named_type_ref<W: fmt::Write>(w: &mut W, _: &Selection, ty: &str) -> fmt::Result {
+pub const TYPE_FORMAT_SAFE : u32 = 0x01;
+pub const TYPE_FORMAT_LIFETIME : u32 = 0; // disabled. originnal value: 0x02;
+
+pub fn format_named_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &str, format: u32) -> fmt::Result {
     for &(c_type, r_type) in &BUILTIN_TYPES {
         if ty == c_type {
             write!(w, "{}", r_type)?;
@@ -232,10 +235,13 @@ pub fn format_named_type_ref<W: fmt::Write>(w: &mut W, _: &Selection, ty: &str) 
         }
     }
     write!(w, "{}", ty)?;
+    if (format & TYPE_FORMAT_LIFETIME) != 0 && (sel.get_type_flags(ty) & TF_CONTAINS_HANDLE) != 0 {
+        write!(w, "<'l>")?;
+    }
     Ok(())
 }
 
-pub fn format_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &TypeReference, safe: bool) -> fmt::Result {
+pub fn format_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &TypeReference, format: u32) -> fmt::Result {
     let mut i = ty.modifiers.len();
     while i > 0 {
         i -= 1;
@@ -243,15 +249,25 @@ pub fn format_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &TypeRefer
             TypeModifier::Const => {}, // ignore
             TypeModifier::Pointer => {
                 if i > 0 && ty.modifiers[i-1] == TypeModifier::Const {
-                    if safe {
-                        write!(w, "&")?;
+                    if (format & TYPE_FORMAT_SAFE) != 0 {
+                        // if (format & TYPE_FORMAT_LIFETIME) != 0 && (sel.get_type_flags(ty) & TF_CONTAINS_HANDLE) != 0 {
+                        //     format &= !TYPE_FORMAT_LIFETIME;
+                        //     write!(w, "&'l ")?;
+                        // } else {
+                            write!(w, "&")?;
+                        // }
                     } else {
                         write!(w, "*const ")?;
                     }
                     i -= 1;
                 } else {
-                    if safe {
-                        write!(w, "&mut ")?;
+                    if (format & TYPE_FORMAT_SAFE) != 0 {
+                        // if (format & TYPE_FORMAT_LIFETIME) != 0 && (sel.get_type_flags(ty) & TF_CONTAINS_HANDLE) != 0 {
+                        //     format &= !TYPE_FORMAT_LIFETIME;
+                        //     write!(w, "&'l mut ")?;
+                        // } else {
+                            write!(w, "&mut ")?;
+                        // }
                     } else {
                         write!(w, "*mut ")?;
                     }
@@ -263,24 +279,24 @@ pub fn format_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &TypeRefer
                     modifiers: ty.modifiers[..i].iter().cloned().collect(),
                 };
                 write!(w, "[")?;
-                format_type_ref(w, sel, &rest, safe)?;
+                format_type_ref(w, sel, &rest, format)?;
                 write!(w, ";{}]", dim)?;
                 return Ok(());
             }
         }
     }
-    format_named_type_ref(w, sel, ty.type_name.as_str())
+    format_named_type_ref(w, sel, ty.type_name.as_str(), format)
 }
 
-pub fn named_type_ref(sel: &Selection, ty: &str) -> String {
+pub fn named_type_ref(sel: &Selection, ty: &str, format: u32) -> String {
     let mut w = String::new();
-    format_named_type_ref(&mut w, sel, ty).expect("unexpected");
+    format_named_type_ref(&mut w, sel, ty, format).expect("unexpected");
     w
 }
 
-pub fn type_ref(sel: &Selection, ty: &TypeReference, safe: bool) -> String {
+pub fn type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> String {
     let mut w = String::new();
-    format_type_ref(&mut w, sel, ty, safe).expect("unexpected");
+    format_type_ref(&mut w, sel, ty, format).expect("unexpected");
     w
 }
 
@@ -313,7 +329,16 @@ pub struct SafeParamInfoEntry<'l> {
     pub value: String,
 }
 
-pub fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &CodeStyle) -> (Vec<SafeParamInfoEntry<'l>>, Option<SafeParamInfoEntry<'l>>)
+pub fn get_return_param<'l>(sel: &Selection, cmd: &'l CommandDefinition) -> Option<&'l ParameterDefinition> {
+    if let Some(p) = cmd.parameters.last() {
+        if (cmd.return_type.is_empty() || cmd.returns_error()) && p.base_type.modifiers.starts_with(&[TypeModifier::Pointer]) {
+            return Some(p);
+        }
+    }
+    None
+}
+
+pub fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &CodeStyle, format: u32) -> (Vec<SafeParamInfoEntry<'l>>, Option<SafeParamInfoEntry<'l>>)
 {
     let param_names = get_param_name_map(&cmd.parameters);
     let param_lengths = get_param_length_map(&cmd.parameters);
@@ -339,7 +364,7 @@ pub fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &
             let value;
             let set_length;
             if let Some(ref l) = param.len {
-                safe_type = format!("Vec<{}>", return_type_ref(sel, &param.base_type));
+                safe_type = format!("Vec<{}>", return_type_ref(sel, &param.base_type, format));
                 match length_param {
                     Some(p) if p.base_type.modifiers == &[TypeModifier::Pointer] => {
                         tmp_var = format!("let mut {} : {} = Vec::new();", name, safe_type);
@@ -359,7 +384,7 @@ pub fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &
                 value = format!("{}.as_mut_ptr()", name);
             } else {
                 set_length = None;
-                safe_type = return_type_ref(sel, &param.base_type);
+                safe_type = return_type_ref(sel, &param.base_type, format);
                 if safe_type.starts_with("*mut") {
                     tmp_var = format!("let mut {} : {} = ptr::null_mut();", name, safe_type);
                 } else if safe_type.starts_with("*const") {
@@ -377,7 +402,7 @@ pub fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &
             length_for = Vec::new();
         }
 
-        let (safe_type, tmp_var, value) = safe_param_type_ref(name.as_str(), sel, cmd, param);
+        let (safe_type, tmp_var, value) = safe_param_type_ref(name.as_str(), sel, cmd, param, format);
 
         params_and_lengths.push(SafeParamInfoEntry{param, length_for, length_param, name, safe_type, tmp_var, set_length: None, value});
     }
@@ -385,7 +410,7 @@ pub fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &
 }
 
 
-pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition, param: &ParameterDefinition) -> (String,Option<String>,String) {
+pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition, param: &ParameterDefinition, format: u32) -> (String,Option<String>,String) {
     let ty = &param.base_type;
     if ty.modifiers.ends_with(&[TypeModifier::Const, TypeModifier::Pointer]) {
         match param.len {
@@ -404,13 +429,13 @@ pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinit
             },
             Some(ref len) => {
                 let base_type = if ty.modifiers.len()==2 && ty.type_name == "void" {
-                    named_type_ref(sel, "uint8_t")
+                    named_type_ref(sel, "uint8_t", format)
                 } else {
                     let rest = TypeReference{
                         type_name: ty.type_name.clone(),
                         modifiers: ty.modifiers[..ty.modifiers.len()-2].iter().cloned().collect(),
                     };
-                    type_ref(sel, &rest, true)
+                    type_ref(sel, &rest, format)
                 };
 
                 if let Ok(len) = len.parse::<i64>() {
@@ -436,7 +461,7 @@ pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinit
                 }
             }
             _ => {
-                let base_type = named_type_ref(sel, ty.type_name.as_str());
+                let base_type = named_type_ref(sel, ty.type_name.as_str(), format);
                 if param.optional {
                     let arg_type = format!("Option<&{}>", base_type);
                     let get_arg = format!("mem::transmute({})", param_name);
@@ -452,9 +477,9 @@ pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinit
         match param.len {
             Some(ref len) => {
                 let base_type = if ty.type_name == "void" {
-                    named_type_ref(sel, "uint8_t")
+                    named_type_ref(sel, "uint8_t", format)
                 } else {
-                    named_type_ref(sel, ty.type_name.as_str())
+                    named_type_ref(sel, ty.type_name.as_str(), format)
                 };
 
                 if let Ok(len) = len.parse::<i64>() {
@@ -480,7 +505,7 @@ pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinit
                 }
             }
             _ => {
-                let base_type = named_type_ref(sel, ty.type_name.as_str());
+                let base_type = named_type_ref(sel, ty.type_name.as_str(), format);
                 if param.optional {
                     let arg_type = format!("Option<&mut {}>", base_type);
                     let get_arg = format!("mem::transmute({})", param_name);
@@ -493,11 +518,11 @@ pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinit
         }
     }
 
-    return (type_ref(sel, ty, true), None, param_name.to_owned());
+    return (type_ref(sel, ty, format), None, param_name.to_owned());
 }
 
 
-pub fn return_type_ref(sel: &Selection, ty: &TypeReference) -> String {
+pub fn return_type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> String {
     if ty.modifiers.is_empty() {
         if ty.type_name.starts_with("PFN_") {
             return format!("Option<{}>", ty.type_name);
@@ -507,9 +532,9 @@ pub fn return_type_ref(sel: &Selection, ty: &TypeReference) -> String {
             type_name: ty.type_name.clone(),
             modifiers: ty.modifiers[..ty.modifiers.len()-1].iter().cloned().collect(),
         };
-        return type_ref(sel, &rest, false)
+        return type_ref(sel, &rest, format & !TYPE_FORMAT_SAFE)
     }
-    type_ref(sel, ty, false)
+    type_ref(sel, ty, format)
 }
 
 pub fn norm_snake_kw(name: &str, kw_prefix: &str) -> String {

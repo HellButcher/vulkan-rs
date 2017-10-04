@@ -136,11 +136,11 @@ impl DispatchGeneratorWriter for DispatchTableWriter {
             } else {
                 write!(w, ", ")?;
             }
-            write!(w, "{}", type_ref(sel, &param.base_type, false))?;
+            write!(w, "{}", type_ref(sel, &param.base_type, 0))?;
         }
         write!(w, ")")?;
         if !cmd.return_type.is_empty() {
-            write!(w, " -> {}", return_type_ref(sel, &cmd.return_type))?;
+            write!(w, " -> {}", return_type_ref(sel, &cmd.return_type, 0))?;
         }
         write!(w, ",\n")?;
         Ok(())
@@ -286,11 +286,11 @@ impl GeneratorWriter for DispatchCommandImplWriter {
             if i > 0 {
                 write!(w, ", ")?;
             }
-            write!(w, "{}: {}", self.style.param_name(&param.name), type_ref(sel, &param.base_type, false))?;
+            write!(w, "{}: {}", self.style.param_name(&param.name), type_ref(sel, &param.base_type, 0))?;
         }
         write!(w, ")")?;
         if !cmd.return_type.is_empty() {
-            write!(w, " -> {}", return_type_ref(sel, &cmd.return_type))?;
+            write!(w, " -> {}", return_type_ref(sel, &cmd.return_type, 0))?;
         }
         write!(w, " {{\n")?;
         w.indent(|w|{
@@ -332,12 +332,24 @@ impl CommonGeneratorWriter for SafeCommandImplWriter {
 impl GeneratorWriter for SafeCommandImplWriter {
     fn write_command_definition<W: CodeWrite>(&mut self, w: &mut W, sel: &Selection, f: &FeatureSet, cmd: &CommandDefinition) -> Result<()> {
         let cmd_name = self.style.command_name(&cmd.name);
-        let (params_with_info, result) = get_safe_params(sel, cmd, &self.style);
+        let type_format_flags;
+        let lifetime;
+        match get_return_param(sel, cmd) {
+            Some(p) if (sel.get_type_ref_flags(&p.base_type) & TF_CONTAINS_HANDLE) != 0 => {
+                type_format_flags = TYPE_FORMAT_LIFETIME;
+                lifetime = "<'l>";
+            },
+            _ => {
+                type_format_flags = TYPE_FORMAT_SAFE;
+                lifetime = "";
+            },
+        }
+        let (params_with_info, result) = get_safe_params(sel, cmd, &self.style, type_format_flags);
 
         write_documentation(w,sel, f, cmd)?;
         write_feature_protect(w, sel, f)?;
         write!(w, "#[inline]\n")?;
-        write!(w, "pub fn {} (", cmd_name)?;
+        write!(w, "pub fn {}{} (", cmd_name, lifetime)?;
         let mut i = 0;
         for param in &params_with_info {
             if !param.length_for.is_empty() {
@@ -370,9 +382,8 @@ impl GeneratorWriter for SafeCommandImplWriter {
             } else {
                 write!(w, " -> VkResultObj<()>")?;
             }
-            write!(w, " /* will be replaced by VkResult, when the Try-trait is stabilized */")?;
         } else if !cmd.return_type.is_empty() {
-            write!(w, " -> {}", return_type_ref(sel, &cmd.return_type))?;
+            write!(w, " -> {}", return_type_ref(sel, &cmd.return_type, type_format_flags))?;
         }
         let handle_vk_incomplete = handle_enumeration && cmd.returns_error() && cmd.success_codes.contains("VK_INCOMPLETE");
         if result.is_some() && cmd.returns_error() {
@@ -397,9 +408,9 @@ impl GeneratorWriter for SafeCommandImplWriter {
                             write!(w, "{}\n", tmp_var)?;
                         }
                     } else if param.param.base_type.modifiers == &[TypeModifier::Pointer] {
-                        write!(w, "let mut {} : {} = 0;\n", param.name, return_type_ref(sel, &param.param.base_type))?;
+                        write!(w, "let mut {} : {} = 0;\n", param.name, return_type_ref(sel, &param.param.base_type, 0))?;
                     } else {
-                        write!(w, "let {} = {}.len() as {};\n", param.name, self.style.param_name(&param.length_for[0].name), type_ref(sel, &param.param.base_type, true))?;
+                        write!(w, "let {} = {}.len() as {};\n", param.name, self.style.param_name(&param.length_for[0].name), type_ref(sel, &param.param.base_type, 0))?;
                         if let Some(errorvalue) = cmd.returns_status() {
                             for more_arg in &param.length_for[1..] {
                                 if more_arg.base_type.modifiers == &[TypeModifier::Pointer] {
