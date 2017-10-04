@@ -393,7 +393,13 @@ pub unsafe fn extensions_list_to_set<'l>(p: *const *const raw::c_char, len: u32)
 }
 
 pub trait VkFlagBits: Copy + Clone + 'static {
+    const NONE_VALUE : u32 = 0;
+    const ALL_VALUE : u32;
+    const NONE : VkFlags<Self> = VkFlags::NONE;
+    const ALL : VkFlags<Self> = VkFlags::ALL;
+
     fn value(self) -> u32;
+    fn from_value(value: u32) -> Option<Self>;
     #[inline]
     fn flags(self) -> VkFlags<Self> {
         VkFlags::one(self)
@@ -404,8 +410,14 @@ pub trait VkFlagBits: Copy + Clone + 'static {
 pub enum VkVoid{}
 
 impl VkFlagBits for VkVoid {
+    const ALL_VALUE : u32 = 0;
+    #[inline]
     fn value(self) -> u32 {
         unreachable!()
+    }
+    #[inline]
+    fn from_value(value: u32) -> Option<VkVoid> {
+        None
     }
 }
 
@@ -415,11 +427,12 @@ pub struct VkFlags<E:VkFlagBits=VkVoid>(u32, ::std::marker::PhantomData<E>);
 
 impl<E:VkFlagBits> VkFlags<E> {
 
-    pub const NONE : VkFlags<E> = VkFlags(0, ::std::marker::PhantomData);
+    pub const NONE : VkFlags<E> = VkFlags(E::NONE_VALUE, ::std::marker::PhantomData);
+    pub const ALL : VkFlags<E> = VkFlags(E::ALL_VALUE, ::std::marker::PhantomData);
 
     #[inline]
     pub fn none() -> VkFlags<E> {
-        VkFlags::NONE
+        Self::NONE
     }
 
     #[inline]
@@ -429,7 +442,7 @@ impl<E:VkFlagBits> VkFlags<E> {
 
     #[inline]
     pub fn all() -> VkFlags<E> {
-        VkFlags(0xffffffff, ::std::marker::PhantomData)
+        Self::ALL
     }
 
     #[inline]
@@ -501,16 +514,42 @@ impl<E:VkFlagBits> ops::BitOr<VkFlags<E>> for VkFlags<E> {
     }
 }
 
-impl<E:VkFlagBits> fmt::Debug for VkFlags<E> {
+impl<E:VkFlagBits+fmt::Debug> fmt::Debug for VkFlags<E> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "VkFlags({:#x})", self.0)
+        if self.is_empty() {
+            write!(f, "VkFlags[]")
+        } else {
+            write!(f, "VkFlags[{}]", self)
+        }
     }
 }
-impl<E:VkFlagBits> fmt::Display for VkFlags<E> {
+impl<E:VkFlagBits+fmt::Debug> fmt::Display for VkFlags<E> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:#x}", self.0)
+        if self.is_empty() {
+            write!(f, "(None)")
+        } else {
+            let value = self.0 & E::ALL_VALUE;
+            let mut i = 1;
+            let mut n = 0;
+            loop {
+                if (value & i) != 0 {
+                    if let Some(e) = E::from_value(i) {
+                        if n > 0 {
+                            write!(f, "|")?;
+                        }
+                        write!(f, "{:?}", e)?;
+                        n += 1;
+                    }
+                }
+                i = i << 1;
+                if i==0 || i>E::ALL_VALUE {
+                    break;
+                }
+            }
+            Ok(())
+        }
     }
 }
 impl<E:VkFlagBits> fmt::LowerHex for VkFlags<E> {

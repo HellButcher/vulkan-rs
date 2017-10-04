@@ -73,7 +73,17 @@ impl GeneratorWriter for TypesGenerator {
         write_documentation(w, sel, f, ty)?;
         write_feature_protect(w, sel, f)?;
         if !ty.requires.is_empty() {
-            write!(w, "vk_define_bitmask!({}, {});\n", ty.name, ty.requires)?;
+            let mut mask : i64 = 0;
+            if let Some(items) = sel.enum_items_by_group.get(ty.requires.as_str()) {
+                for item in items {
+                    if let Some(v) = sel.get_variant_integer(&item.value) {
+                        mask |= v;
+                    } else {
+                        return Err(io::Error::new(io::ErrorKind::Other, format!("unable to calcuate mast for {}", item.value)))
+                    }
+                }
+            }
+            write!(w, "vk_define_bitmask!({}, {}, {:#x});\n", ty.name, ty.requires, mask)?;
         } else {
             write!(w, "vk_define_bitmask!({});\n", ty.name)?;
         }

@@ -90,7 +90,7 @@ macro_rules! vk_make_version {
 
 /// Define a bitmask-type for a coresponding bit-enumeration.
 macro_rules! vk_define_bitmask {
-    ( $bitmask_ty:ident, $enum_type:ty ) => {
+    ( $bitmask_ty:ident, $enum_type:ty, $mask:expr ) => {
         pub type $bitmask_ty = VkFlags<$enum_type>;
         impl $enum_type {
             #[inline]
@@ -99,9 +99,18 @@ macro_rules! vk_define_bitmask {
             }
         }
         impl $crate::util::VkFlagBits for $enum_type {
+            const ALL_VALUE : u32 = $mask;
             #[inline]
             fn value(self) -> u32 {
                 self as u32
+            }
+
+            #[inline]
+            fn from_value(value: u32) -> Option<$enum_type> {
+                if (value & !Self::ALL_VALUE) != 0 || value.count_ones() != 1 {
+                    return None;
+                }
+                unsafe { Some(::std::mem::transmute(value)) }
             }
         }
         impl ::std::ops::BitAnd<$enum_type> for $enum_type {
