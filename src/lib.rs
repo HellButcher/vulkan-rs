@@ -31,7 +31,7 @@
 //!
 //! ```rust
 //! extern crate vulkan_rs;
-//! use vulkan_rs::prelude::*;
+//! use vulkan_rs::prelude::vk_version_1_0::*;
 //! use std::ffi::CString;
 //!
 //! fn main() {
@@ -40,15 +40,15 @@
 //!         sType: VK_STRUCTURE_TYPE_APPLICATION_INFO,
 //!         pNext: vk_null(),
 //!         pApplicationName: app_aame.as_ptr(),
-//!         applicationVersion: 1,
+//!         applicationVersion: VkVersion::new(1,0,0).into(),
 //!         pEngineName: app_aame.as_ptr(),
-//!         engineVersion: 1,
-//!         apiVersion: VK_API_VERSION_1_0,
+//!         engineVersion: VkVersion::new(1,0,0).into(),
+//!         apiVersion: VK_API_VERSION_1_0.into(),
 //!     };
 //!     let create_info = VkInstanceCreateInfo {
 //!         sType: VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
 //!         pNext: vk_null(),
-//!         flags: 0,
+//!         flags: VkFlags::NONE,
 //!         pApplicationInfo: &app_info,
 //!         enabledLayerCount: 0,
 //!         ppEnabledLayerNames: vk_null(),
@@ -82,72 +82,59 @@ extern crate kernel32;
 ///
 /// This macro can be used when constructing the `VkApplicationInfo.apiVersion` parameter passed to `vkCreateInstance`.
 macro_rules! vk_make_version {
+    // TODO: use `const fn` when feature stabilized
     ( $major:expr, $minor:expr, $patch:expr ) => {
-        (($major << 22) | ($minor << 12) | $patch)
+        $crate::util::VkVersion(($major << 22) | ($minor << 12) | $patch)
     };
 }
 
 /// Define a bitmask-type for a coresponding bit-enumeration.
 macro_rules! vk_define_bitmask {
     ( $bitmask_ty:ident, $enum_type:ty ) => {
-        pub type $bitmask_ty = VkFlags;
+        pub type $bitmask_ty = VkFlags<$enum_type>;
         impl $enum_type {
             #[inline]
             pub fn flags(self) -> $bitmask_ty {
-                self as VkFlags
+                $bitmask_ty::one(self)
             }
         }
-        impl Into<$bitmask_ty> for $enum_type {
+        impl $crate::util::VkFlagBits for $enum_type {
             #[inline]
-            fn into(self) -> $bitmask_ty {
-                self.flags()
+            fn value(self) -> u32 {
+                self as u32
             }
         }
         impl ::std::ops::BitAnd<$enum_type> for $enum_type {
             type Output = $bitmask_ty;
             #[inline]
             fn bitand(self, rhs: $enum_type) -> $bitmask_ty {
-                self as u32 & rhs as u32
+                $bitmask_ty::one(self) & rhs
             }
         }
         impl ::std::ops::BitOr<$enum_type> for $enum_type {
             type Output = $bitmask_ty;
             #[inline]
             fn bitor(self, rhs: $enum_type) -> $bitmask_ty {
-                self as u32 | rhs as u32
+                $bitmask_ty::one(self) | rhs
             }
         }
         impl ::std::ops::BitAnd<$bitmask_ty> for $enum_type {
             type Output = $bitmask_ty;
             #[inline]
             fn bitand(self, rhs: $bitmask_ty) -> $bitmask_ty {
-                self as u32 & rhs as u32
+                $bitmask_ty::one(self) & rhs
             }
         }
         impl ::std::ops::BitOr<$bitmask_ty> for $enum_type {
             type Output = $bitmask_ty;
             #[inline]
             fn bitor(self, rhs: $bitmask_ty) -> $bitmask_ty {
-                self as u32 | rhs as u32
-            }
-        }
-        impl ::std::ops::BitAnd<$enum_type> for $bitmask_ty {
-            type Output = $bitmask_ty;
-            #[inline]
-            fn bitand(self, rhs: $enum_type) -> $bitmask_ty {
-                self as u32 & rhs as u32
-            }
-        }
-        impl ::std::ops::BitOr<$enum_type> for $bitmask_ty {
-            type Output = $bitmask_ty;
-            #[inline]
-            fn bitor(self, rhs: $enum_type) -> $bitmask_ty {
-                self as u32 | rhs as u32
+                $bitmask_ty::one(self) | rhs
             }
         }
     };
     ( $bitmask_ty:ident ) => {
-        pub type $bitmask_ty = VkFlags;
+        pub type $bitmask_ty = $crate::util::VkFlags;
     };
 }
 
@@ -156,11 +143,32 @@ macro_rules! vk_define_handle {
     ( $name:ident ) => {
         #[repr(C)]
         #[derive(Copy,Clone,PartialEq,Eq,Default,Debug)]
-        pub struct $name (::util::VkDispatchableHandle);
-        impl ::util::VkNullHandle for $name  {
+        pub struct $name ($crate::util::VkDispatchableHandle);
+        impl $crate::util::VkNullHandle for $name  {
+            const NULL : $name = $name($crate::util::VkDispatchableHandle::NULL);
+        }
+        impl ::std::fmt::Display for $name {
             #[inline]
-            fn null() -> $name {
-                $name(::util::vk_null_handle())
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                write!(f, "{}", self.0)
+            }
+        }
+        impl ::std::fmt::Pointer for $name {
+            #[inline]
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                write!(f, "{:p}", self.0)
+            }
+        }
+        impl ::std::fmt::LowerHex for $name {
+            #[inline]
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                write!(f, "{:x}", self.0)
+            }
+        }
+        impl ::std::fmt::UpperHex for $name {
+            #[inline]
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                write!(f, "{:X}", self.0)
             }
         }
     };
@@ -171,11 +179,32 @@ macro_rules! vk_define_non_dispatchable_handle {
     ( $name:ident ) => {
         #[repr(C)]
         #[derive(Copy,Clone,PartialEq,Eq,Default,Debug)]
-        pub struct $name (util::VkNonDispatchableHandle);
-        impl util::VkNullHandle for $name {
+        pub struct $name ($crate::util::VkNonDispatchableHandle);
+        impl $crate::util::VkNullHandle for $name {
+            const NULL : $name = $name($crate::util::VkNonDispatchableHandle::NULL);
+        }
+        impl ::std::fmt::Display for $name {
             #[inline]
-            fn null() -> $name {
-                $name(util::vk_null_handle())
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                write!(f, "{}", self.0)
+            }
+        }
+        impl ::std::fmt::Pointer for $name {
+            #[inline]
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                write!(f, "{:p}", self.0)
+            }
+        }
+        impl ::std::fmt::LowerHex for $name {
+            #[inline]
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                write!(f, "{:x}", self.0)
+            }
+        }
+        impl ::std::fmt::UpperHex for $name {
+            #[inline]
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                write!(f, "{:X}", self.0)
             }
         }
     };
@@ -196,6 +225,8 @@ fn test_type_sizes() {
     let ptr_size = ::std::mem::size_of::<extern "system" fn()>();
     let fnptr_size = ::std::mem::size_of::<extern "system" fn()>();
 
+    assert_eq!(4, ::std::mem::size_of::<util::VkFlags>(), "check flag size");
+    assert_eq!(4, ::std::mem::size_of::<types::VkColorComponentFlags>(), "check flag size");
     assert_eq!(4, ::std::mem::size_of::<types::VkResult>(), "check enum size");
     assert_eq!(ptr_size, ::std::mem::size_of::<types::VkDevice>(), "check dispatchable handle size");
     assert_eq!(8, ::std::mem::size_of::<types::VkImage>(), "check non-dispatchable handle size");

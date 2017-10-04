@@ -136,7 +136,7 @@ impl DispatchGeneratorWriter for DispatchTableWriter {
             } else {
                 write!(w, ", ")?;
             }
-            write!(w, "{}", type_ref(sel, &param.base_type, 0))?;
+            write!(w, "{}", def_type_ref(sel, param, 0))?;
         }
         write!(w, ")")?;
         if !cmd.return_type.is_empty() {
@@ -286,7 +286,7 @@ impl GeneratorWriter for DispatchCommandImplWriter {
             if i > 0 {
                 write!(w, ", ")?;
             }
-            write!(w, "{}: {}", self.style.param_name(&param.name), type_ref(sel, &param.base_type, 0))?;
+            write!(w, "{}: {}", self.style.param_name(&param.name), def_type_ref(sel, param, 0))?;
         }
         write!(w, ")")?;
         if !cmd.return_type.is_empty() {
@@ -410,7 +410,7 @@ impl GeneratorWriter for SafeCommandImplWriter {
                     } else if param.param.base_type.modifiers == &[TypeModifier::Pointer] {
                         write!(w, "let mut {} : {} = 0;\n", param.name, return_type_ref(sel, &param.param.base_type, 0))?;
                     } else {
-                        write!(w, "let {} = {}.len() as {};\n", param.name, self.style.param_name(&param.length_for[0].name), type_ref(sel, &param.param.base_type, 0))?;
+                        write!(w, "let {} = {}.len() as {};\n", param.name, self.style.param_name(&param.length_for[0].name), def_type_ref(sel, param.param, 0))?;
                         if let Some(errorvalue) = cmd.returns_status() {
                             for more_arg in &param.length_for[1..] {
                                 if more_arg.base_type.modifiers == &[TypeModifier::Pointer] {

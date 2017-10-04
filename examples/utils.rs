@@ -115,7 +115,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
     let create_info = VkWin32SurfaceCreateInfoKHR {
         sType: VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         hinstance: kernel32::GetModuleHandleW(ptr::null()),
         hwnd: w.get_hwnd(),
     };
@@ -133,7 +133,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
         let create_info = VkWaylandSurfaceCreateInfoKHR {
             sType: VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
             pNext: vk_null(),
-            flags: 0,
+            flags: VkFlags::NONE,
             display: wayland_display as *mut vk_platform::wayland::wl_display,
             surface: wayland_surface as *mut vk_platform::wayland::wl_surface,
         };
@@ -146,7 +146,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
         let create_info = VkXlibSurfaceCreateInfoKHR {
             sType: VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
             pNext: vk_null(),
-            flags: 0,
+            flags: VkFlags::NONE,
             dpy: xlib_display as *mut vk_platform::xlib::Display,
             window: xlib_window as vk_platform::xlib::Window,
         };
@@ -178,7 +178,7 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
     let create_info = VkAndroidSurfaceCreateInfoKHR {
         sType: VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         window: w.get_native_window() as *mut vk_platform::android::ANativeWindow,
     };
     let surface = vkCreateAndroidSurfaceKHR(instance, &create_info, None)?;
@@ -201,7 +201,7 @@ fn choose_queue_family_indices(physical_device: VkPhysicalDevice, surface: VkSur
             };
             debug!("has_surface_support={}", has_surface_support);
 
-            if (props.queueFlags&VK_QUEUE_GRAPHICS_BIT)!=0 {
+            if props.queueFlags.contains(VK_QUEUE_GRAPHICS_BIT) {
                 if result[GRAPHIC_QUEUE] == INVALID_INDEX {
                     result[GRAPHIC_QUEUE] = i as u32;
                 }
@@ -239,15 +239,15 @@ fn create_instance(app_aame: &str, exts: &[&str]) -> VkResultObj<VkInstance> {
         sType: VK_STRUCTURE_TYPE_APPLICATION_INFO,
         pNext: vk_null(),
         pApplicationName: app_aame.as_ptr(),
-        applicationVersion: 1,
+        applicationVersion: VkVersion::new(1, 0, 0).into(),
         pEngineName: app_aame.as_ptr(),
-        engineVersion: 1,
-        apiVersion: VK_API_VERSION_1_0,
+        engineVersion: VkVersion::new(1, 0, 0).into(),
+        apiVersion: VK_API_VERSION_1_0.into(),
     };
     let create_info = VkInstanceCreateInfo {
         sType: VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         pApplicationInfo: &app_info,
         enabledLayerCount: 0,
         ppEnabledLayerNames: vk_null(),
@@ -392,7 +392,7 @@ fn create_logical_device(physical_device: VkPhysicalDevice, queue_family_indices
         .map(|family_index| VkDeviceQueueCreateInfo {
             sType: VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
             pNext: vk_null(),
-            flags: 0,
+            flags: VkFlags::NONE,
             queueCount: queue_priorities.len() as u32,
             pQueuePriorities: queue_priorities.as_ptr(),
             queueFamilyIndex: *family_index,
@@ -400,7 +400,7 @@ fn create_logical_device(physical_device: VkPhysicalDevice, queue_family_indices
     let device_create_info = VkDeviceCreateInfo{
         sType: VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         queueCreateInfoCount: queue_create_info.len() as u32,
         pQueueCreateInfos: queue_create_info.as_ptr(),
         enabledLayerCount: 0,
@@ -422,7 +422,7 @@ fn create_swapchain(device: VkDevice, surface: VkSurfaceKHR, details: &DeviceIni
     let mut create_info = VkSwapchainCreateInfoKHR{
         sType: VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         surface: surface,
         minImageCount: image_count,
         imageFormat: details.surface_format.format,
@@ -455,7 +455,7 @@ fn create_swapchain_image_views(device: VkDevice, details: &DeviceInitialization
         let create_info = VkImageViewCreateInfo{
             sType: VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
             pNext: vk_null(),
-            flags: 0,
+            flags: VkFlags::NONE,
             image: *image,
             viewType: VK_IMAGE_VIEW_TYPE_2D,
             format: details.surface_format.format,
@@ -483,7 +483,7 @@ fn create_shader_module(device: VkDevice, data: &[u8]) -> VkResultObj<VkShaderMo
     let create_info = VkShaderModuleCreateInfo{
         sType: VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         codeSize: data.len(),
         pCode: data.as_ptr() as *const u32,
     };
@@ -495,7 +495,7 @@ fn create_shader_module(device: VkDevice, data: &[u8]) -> VkResultObj<VkShaderMo
 fn create_render_pass(device: VkDevice, format: VkFormat) -> VkResultObj<VkRenderPass> {
     let color_attachments = [
         VkAttachmentDescription{
-            flags: 0,
+            flags: VkFlags::NONE,
             format: format,
             samples: VK_SAMPLE_COUNT_1_BIT,
             loadOp: VK_ATTACHMENT_LOAD_OP_CLEAR,
@@ -514,7 +514,7 @@ fn create_render_pass(device: VkDevice, format: VkFormat) -> VkResultObj<VkRende
     ];
     let subpasses = [
         VkSubpassDescription{
-            flags: 0,
+            flags: VkFlags::NONE,
             pipelineBindPoint: VK_PIPELINE_BIND_POINT_GRAPHICS,
             inputAttachmentCount: 0,
             pInputAttachments: vk_null(),
@@ -529,7 +529,7 @@ fn create_render_pass(device: VkDevice, format: VkFormat) -> VkResultObj<VkRende
     let create_info = VkRenderPassCreateInfo{
         sType: VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         attachmentCount: color_attachments.len() as u32,
         pAttachments: color_attachments.as_ptr(),
         subpassCount: subpasses.len() as u32,
@@ -546,7 +546,7 @@ fn create_pipeline_layout(device: VkDevice) -> VkResultObj<VkPipelineLayout> {
     let create_info = VkPipelineLayoutCreateInfo{
         sType: VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         setLayoutCount: 0,
         pSetLayouts: vk_null(),
         pushConstantRangeCount: 0,
@@ -568,7 +568,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
         VkPipelineShaderStageCreateInfo{
             sType: VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
             pNext: vk_null(),
-            flags: 0,
+            flags: VkFlags::NONE,
             stage: VK_SHADER_STAGE_VERTEX_BIT,
             module: vert_shader_module,
             pName: "main\0".as_ptr() as *const c_char,
@@ -577,7 +577,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
         VkPipelineShaderStageCreateInfo{
             sType: VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
             pNext: vk_null(),
-            flags: 0,
+            flags: VkFlags::NONE,
             stage: VK_SHADER_STAGE_FRAGMENT_BIT,
             module: frag_shader_module,
             pName: "main\0".as_ptr() as *const c_char,
@@ -587,7 +587,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
     let vertex_input_create_info = VkPipelineVertexInputStateCreateInfo{
         sType: VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         vertexBindingDescriptionCount: 0,
         pVertexBindingDescriptions: vk_null(),
         vertexAttributeDescriptionCount: 0,
@@ -596,14 +596,14 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
     let input_asselbly_create_info = VkPipelineInputAssemblyStateCreateInfo{
         sType: VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         topology: VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
         primitiveRestartEnable: VK_FALSE,
     };
     let viewport_state_create_info = VkPipelineViewportStateCreateInfo{
         sType: VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         viewportCount: 1,
         pViewports: &VkViewport{
             x: 0.0, y: 0.0,
@@ -619,7 +619,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
     let rasterizer_create_info = VkPipelineRasterizationStateCreateInfo{
         sType: VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         depthClampEnable: VK_FALSE,
         rasterizerDiscardEnable: VK_FALSE,
         polygonMode: VK_POLYGON_MODE_FILL,
@@ -634,7 +634,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
     let multisample_create_info = VkPipelineMultisampleStateCreateInfo{
         sType: VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         rasterizationSamples: VK_SAMPLE_COUNT_1_BIT,
         sampleShadingEnable: VK_FALSE,
         minSampleShading: 0.0,
@@ -657,7 +657,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
     let color_blending_create_info = VkPipelineColorBlendStateCreateInfo{
         sType: VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         logicOpEnable: VK_FALSE,
         logicOp: VK_LOGIC_OP_COPY,
         attachmentCount: color_blend_attachements.len() as u32,
@@ -667,7 +667,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
     let depth_stencli_create_info = VkPipelineDepthStencilStateCreateInfo{
         sType: VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
         depthTestEnable: VK_FALSE,
         depthWriteEnable: VK_FALSE,
         depthCompareOp: VK_COMPARE_OP_LESS_OR_EQUAL,
@@ -698,7 +698,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
         VkGraphicsPipelineCreateInfo{
             sType: VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
             pNext: vk_null(),
-            flags: 0,
+            flags: VkFlags::NONE,
             stageCount: shader_stage_create_infos.len() as u32,
             pStages: shader_stage_create_infos.as_ptr(),
             pVertexInputState: &vertex_input_create_info,
@@ -739,7 +739,7 @@ fn create_swapchain_framebuffers(device: VkDevice, render_pass: VkRenderPass, ex
         let create_info = VkFramebufferCreateInfo{
             sType: VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
             pNext: vk_null(),
-            flags: 0,
+            flags: VkFlags::NONE,
             renderPass: render_pass,
             attachmentCount: attachments.len() as u32,
             pAttachments: attachments.as_ptr(),
@@ -782,7 +782,7 @@ fn create_semaphore(device: VkDevice) -> VkResultObj<VkSemaphore> {
     let create_info = VkSemaphoreCreateInfo{
         sType: VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
         pNext: vk_null(),
-        flags: 0,
+        flags: VkFlags::NONE,
     };
     let semaphore = vkCreateSemaphore(device, &create_info, None)?;
     debug!("created semaphore {:?}", semaphore);
@@ -838,7 +838,7 @@ impl Application {
         vkBeginCommandBuffer(self.command_buffer, &VkCommandBufferBeginInfo{
             sType: VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
             pNext: vk_null(),
-            flags: 0,
+            flags: VkFlags::NONE,
             pInheritanceInfo: vk_null(),
         })?;
 

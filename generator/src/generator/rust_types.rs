@@ -5,6 +5,10 @@ use super::*;
 use super::rust::*;
 use std::io::Result;
 
+const MANUALLY_DEFINED_TYPES : [(&str,&str);1] = [
+    ("VkFlags", "util::VkFlags"),
+];
+
 pub struct TypesGenerator{
     pub style: CodeStyle,
 }
@@ -28,11 +32,27 @@ impl CommonGeneratorWriter for TypesGenerator {
 
 impl GeneratorWriter for TypesGenerator {
 
+    fn write_type_definition<W: CodeWrite>(&mut self, w: &mut W, sel: &Selection, f: &FeatureSet, ty: &TypeDefinition) -> Result<()> {
+        for &(name, import) in &MANUALLY_DEFINED_TYPES {
+            if ty.name == name {
+                write_documentation(w, sel, f, ty)?;
+                write_feature_protect(w, sel, f)?;
+                if import.ends_with(name) {
+                    write!(w, "pub use {};\n", import)?;
+                } else {
+                    write!(w, "pub use {} as {};\n", import, name)?;
+                }
+                return Ok(());
+            }
+        }
+        write_sub_type_definition(self, w, sel, f, ty)
+    }
+
     fn write_constant_definition<W: CodeWrite>(&mut self, w: &mut W, sel: &Selection, f: &FeatureSet, ty: &ConstantDefinition) -> Result<()> {
         if ty.base_type.type_name == "VK_MAKE_VERSION" {
             write_documentation(w, sel, f, ty)?;
             write_feature_protect(w, sel, f)?;
-            write!(w, "pub const {} : u32 = vk_make_version!{};\n", ty.name, ty.value)?;
+            write!(w, "pub const {} : util::VkVersion = vk_make_version!{};\n", ty.name, ty.value)?;
         } else if let Some((rust_value,rust_type)) = get_variant_value_and_type(sel, &ty.value, false) {
             write_documentation(w, sel, f, ty)?;
             write_feature_protect(w, sel, f)?;
@@ -45,7 +65,7 @@ impl GeneratorWriter for TypesGenerator {
     fn write_basetype_definition<W: CodeWrite>(&mut self, w: &mut W, sel: &Selection, f: &FeatureSet, ty: &BasicDefinition) -> Result<()> {
         write_documentation(w, sel, f, ty)?;
         write_feature_protect(w, sel, f)?;
-        write!(w, "pub type {} = {};\n", ty.name, type_ref(sel, &ty.base_type, 0))?;
+        write!(w, "pub type {} = {};\n", ty.name, def_type_ref(sel, ty, 0))?;
         Ok(())
     }
 
@@ -151,7 +171,7 @@ impl GeneratorWriter for TypesGenerator {
             } else {
                 write!(w, ", ")?;
             }
-            write!(w, "{}", type_ref(sel, &param.base_type, 0))?;
+            write!(w, "{}", def_type_ref(sel, param, 0))?;
         }
         write!(w, ")")?;
         if !ty.return_type.is_empty() {
@@ -173,7 +193,7 @@ impl GeneratorWriter for TypesGenerator {
         w.indent(|w|{
             for m in &ty.members {
                 write_documentation(w, sel, f, m)?;
-                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), type_ref(sel, &m.base_type, TYPE_FORMAT_LIFETIME))?;
+                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), def_type_ref(sel, m, TYPE_FORMAT_LIFETIME))?;
             }
             Ok(())
         })?;
@@ -214,7 +234,7 @@ impl GeneratorWriter for TypesGenerator {
         w.indent(|w|{
             for m in &ty.members {
                 write_documentation(w, sel, f, m)?;
-                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), type_ref(sel, &m.base_type, 0))?;
+                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), def_type_ref(sel, m, 0))?;
             }
             Ok(())
         })?;
@@ -225,7 +245,7 @@ impl GeneratorWriter for TypesGenerator {
             write!(w, "pub fn new() -> {} {{ unsafe {{ ::std::mem::zeroed() }} }}\n", ty.name)?;
             for m in &ty.members {
                 let member_name = self.style.field_name(&m.name);
-                let member_type = type_ref(sel, &m.base_type, 0);
+                let member_type = def_type_ref(sel, m, 0);
                 write_documentation(w, sel, f, m)?;
                 write!(w, "#[inline]\n")?;
                 write!(w, "pub fn from_{}(v: {}) -> {} {{\n", member_name, member_type, ty.name)?;

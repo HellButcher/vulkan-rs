@@ -300,6 +300,28 @@ pub fn type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> String {
     w
 }
 
+pub fn return_type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> String {
+    if ty.modifiers.is_empty() {
+        if ty.type_name.starts_with("PFN_") {
+            return format!("Option<{}>", ty.type_name);
+        }
+    } else if ty.modifiers.ends_with(&[TypeModifier::Pointer]) && !ty.modifiers.ends_with(&[TypeModifier::Const, TypeModifier::Pointer]) {
+        let rest = TypeReference{
+            type_name: ty.type_name.clone(),
+            modifiers: ty.modifiers[..ty.modifiers.len()-1].iter().cloned().collect(),
+        };
+        return type_ref(sel, &rest, format & !TYPE_FORMAT_SAFE)
+    }
+    type_ref(sel, ty, format)
+}
+
+pub fn def_type_ref(sel: &Selection, def: &BasicDefinition, format: u32) -> String {
+    // if def.base_type.modifiers.is_empty() && def.base_type.type_name == "uint32_t" && def.name.ends_with("Version") {
+    //     return "util::VkVersion".to_owned();
+    // }
+    type_ref(sel, &def.base_type, format)
+}
+
 pub fn get_param_name_map<'l>(params: &'l[ParameterDefinition]) -> BTreeMap<&'l str, &'l ParameterDefinition> {
     let mut names : BTreeMap<&'l str, &'l ParameterDefinition> = BTreeMap::new();
     for param in params {
@@ -329,7 +351,7 @@ pub struct SafeParamInfoEntry<'l> {
     pub value: String,
 }
 
-pub fn get_return_param<'l>(sel: &Selection, cmd: &'l CommandDefinition) -> Option<&'l ParameterDefinition> {
+pub fn get_return_param<'l>(_: &Selection, cmd: &'l CommandDefinition) -> Option<&'l ParameterDefinition> {
     if let Some(p) = cmd.parameters.last() {
         if (cmd.return_type.is_empty() || cmd.returns_error()) && p.base_type.modifiers.starts_with(&[TypeModifier::Pointer]) {
             return Some(p);
@@ -518,23 +540,7 @@ pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinit
         }
     }
 
-    return (type_ref(sel, ty, format), None, param_name.to_owned());
-}
-
-
-pub fn return_type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> String {
-    if ty.modifiers.is_empty() {
-        if ty.type_name.starts_with("PFN_") {
-            return format!("Option<{}>", ty.type_name);
-        }
-    } else if ty.modifiers.ends_with(&[TypeModifier::Pointer]) && !ty.modifiers.ends_with(&[TypeModifier::Const, TypeModifier::Pointer]) {
-        let rest = TypeReference{
-            type_name: ty.type_name.clone(),
-            modifiers: ty.modifiers[..ty.modifiers.len()-1].iter().cloned().collect(),
-        };
-        return type_ref(sel, &rest, format & !TYPE_FORMAT_SAFE)
-    }
-    type_ref(sel, ty, format)
+    return (def_type_ref(sel, param, format), None, param_name.to_owned());
 }
 
 pub fn norm_snake_kw(name: &str, kw_prefix: &str) -> String {

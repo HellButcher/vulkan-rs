@@ -287,6 +287,42 @@ pub trait CommonGeneratorWriter {
     }
 }
 
+fn write_sub_type_definition<W: CodeWrite, G: GeneratorWriter>(s: &mut G, w: &mut W, sel: &Selection, f: &FeatureSet, ty: &TypeDefinition) -> Result<()> {
+    use self::TypeDefinition::*;
+    match *ty {
+        Defined(ref d) => {
+            s.write_defined_definition(w, sel, f, d)
+        },
+        Include(ref d) => {
+            s.write_include_definition(w, sel, f, d)
+        },
+        Constant(ref d) => {
+            s.write_constant_definition(w, sel, f, d)
+        },
+        BaseType(ref d) => {
+            s.write_basetype_definition(w, sel, f, d)
+        },
+        BitMask(ref d) => {
+            s.write_bitmask_definition(w, sel, f, d)
+        },
+        Enum(ref d) => {
+            s.write_enum_definition(w, sel, f, d)
+        },
+        Handle(ref d) => {
+            s.write_handle_definition(w, sel, f, d)
+        },
+        FunctionPointer(ref d) => {
+            s.write_funcpointer_definition(w, sel, f, d)
+        },
+        Struct(ref d) => {
+            s.write_struct_definition(w, sel, f, d)
+        },
+        Union(ref d) => {
+            s.write_union_definition(w, sel, f, d)
+        },
+    }
+}
+
 pub trait GeneratorWriter: CommonGeneratorWriter {
 
     fn write_begin_feature<W: CodeWrite>(&mut self, w: &mut W, _: &Selection, f: &FeatureSet) -> Result<()> {

@@ -78,9 +78,10 @@ impl CommonGeneratorWriter for AliasGenerator {
             write!(w, "pub use util::VkResultObj as ResultObj;\n")?;
             write!(w, "pub use util::VkNullHandle as NullHandle;\n")?;
             write!(w, "pub use util::VkError as Error;\n")?;
+            write!(w, "pub use util::VkVersion as Version;\n")?;
             write!(w, "pub use platform;\n")?;
         } else {
-            write!(w, "pub use util::{{vk_null, vk_null_handle, VkNullHandle, VkResultObj, VkError}};\n")?;
+            write!(w, "pub use util::{{vk_null, vk_null_handle, VkNullHandle, VkResultObj, VkError, VkVersion}};\n")?;
             write!(w, "pub use platform as vk_platform;\n")?;
         }
         if self.use_feature_modules {
