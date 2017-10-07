@@ -282,6 +282,20 @@ impl fmt::UpperHex for VkError {
 //     }
 // }
 
+impl Into<String> for VkError {
+    #[inline]
+    fn into(self) -> String {
+        format!("{:?}", self)
+    }
+}
+
+impl Into<::std::io::Error> for VkError {
+    #[inline]
+    fn into(self) -> ::std::io::Error {
+        ::std::io::Error::new(::std::io::ErrorKind::Other, format!("{:?}", self))
+    }
+}
+
 impl Into<VkResultObj> for VkError {
     #[inline]
     fn into(self) -> VkResultObj {
@@ -416,7 +430,7 @@ impl VkFlagBits for VkVoid {
         unreachable!()
     }
     #[inline]
-    fn from_value(value: u32) -> Option<VkVoid> {
+    fn from_value(_: u32) -> Option<VkVoid> {
         None
     }
 }
