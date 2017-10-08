@@ -1,6 +1,6 @@
 [package]
 name = "vulkan_rs"
-version = "1.0.33"
+version = "1.0.62"
 authors = ["Christoph Hommelsheim <hellbutcher@gmx.de>"]
 license = "BSD-2-Clause"
 description = "Vulkan bindings for the rust programming language."
@@ -14,15 +14,26 @@ include = [
   "README.md",
   "build.rs",
   "src/**",
-  "tools/generator/*.py",
-  "tools/data/Vulkan-Docs/src/spec/*.py",
-  "tools/data/Vulkan-Docs/src/spec/*.xml",
+  "vulkan_spec/Vulkan-Docs/src/spec/*.xml",
+  #"vulkan_spec/Vulkan-Docs/doc/specs/vulkan/**/*.txt",
   "examples/**",
   "tests/**",
   "benches/**",
 ]
 
+[badges]
+travis-ci = { repository = "HellButcher/vulkan-rs", branch = "master" }
+
 [dependencies]
+log = "0.3"
+lazy_static = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+winapi = "0.2"
+kernel32-sys = "0.2"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
 
 [dev-dependencies]
 winit = "0.6"
@@ -30,6 +41,8 @@ log = "0.3"
 env_logger = "0.4"
 
 [build-dependencies]
+vulkan_rs_generator = { version = "0.1", path = "./generator" }
+shaderc = "0.2"
 
 #[[example]]
 #name = "utils"
@@ -39,7 +52,16 @@ env_logger = "0.4"
 name = "initialization"
 
 [features]
-default = [ "VK_USE_PLATFORM_DEFAULT" ]
+default = [ "VK_USE_PLATFORM_DEFAULT", "VK_default_extensions" ]
+VK_default_extensions = [ "VK_surface_extensions", "VK_KHR_swapchain", "VK_EXT_debug_report" ]
+VK_surface_extensions = [ "VK_KHR_surface", "VK_KHR_xlib_surface", "VK_KHR_xcb_surface", "VK_KHR_wayland_surface", "VK_KHR_mir_surface", "VK_KHR_android_surface", "VK_MVK_ios_surface", "VK_MVK_macos_surface", "VK_NN_vi_surface" ]
+
+# When enabeling VK_USE_PLATFORM_DEFAULT, the default plaftorm features for the
+# current target (see abobe) will be automatically enabled.
+# For example, when target_os="android" the VK_USE_PLATFORM_ANDROID_KHR feature
+# will be enabled. (see build.rs)
+VK_USE_PLATFORM_DEFAULT = []
+
 VK_USE_PLATFORM_XLIB_KHR = []
 VK_USE_PLATFORM_XLIB_XRANDR_EXT = [ "VK_USE_PLATFORM_XLIB_KHR" ]
 VK_USE_PLATFORM_XCB_KHR = []
@@ -47,19 +69,18 @@ VK_USE_PLATFORM_WAYLAND_KHR = []
 VK_USE_PLATFORM_MIR_KHR = []
 VK_USE_PLATFORM_ANDROID_KHR = []
 VK_USE_PLATFORM_WIN32_KHR = []
-VK_USE_PLATFORM_WIN32_KHX = [ "VK_USE_PLATFORM_WIN32_KHR" ]
 VK_USE_PLATFORM_IOS_MVK = []
-VK_USE_PLATFORM_MACOS_MVK = []
+VK_USE_PLATFORM_MACOS_MVK = [  ]
 VK_USE_PLATFORM_VI_NN = []
-# When enabeling VK_USE_PLATFORM_DEFAULT, the default plaftorm features for the
-# current target (see abobe) will be automatically enabled.
-# For example, when target_os="android" the VK_USE_PLATFORM_ANDROID_KHR feature
-# will be enabled. (see build.rs)
-VK_USE_PLATFORM_DEFAULT = []
 
-[package.metadata.release]
-no-dev-version = true
-pre-release-commit-message = "release {{version}}"
-pre-release-replacements = [
-  {file="README.md", search="(?m)^vulkan_rs = \"[a-z0-9\\.-]+\"$", replace="vulkan_rs = \"{{version}}\""}
-]
+VK_KHR_surface = []
+VK_KHR_xlib_surface = []
+VK_KHR_xcb_surface = []
+VK_KHR_wayland_surface = []
+VK_KHR_mir_surface = []
+VK_KHR_android_surface = []
+VK_MVK_ios_surface = []
+VK_MVK_macos_surface = []
+VK_NN_vi_surface = []
+VK_KHR_swapchain = []
+VK_EXT_debug_report = []
