@@ -29,7 +29,7 @@
 //!
 //! # Usage
 //!
-//! ```rust
+//! ```rust,no_run
 //! extern crate vulkan_rs;
 //! use vulkan_rs::prelude::vk_version_1_0::*;
 //! use std::ffi::CString;
