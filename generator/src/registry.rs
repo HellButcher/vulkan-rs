@@ -420,6 +420,23 @@ impl VariantValue {
         }
         (bits, unsigned, s.len())
     }
+
+    pub fn get_integer(&self, reg: &Registry) -> Option<i64> {
+        match *self {
+            VariantValue::Integer(v, _) => Some(v),
+            VariantValue::UnsignedInteger(v, _) => Some(v as i64),
+            VariantValue::Float(v, _) => Some(v as i64),
+            VariantValue::Bit(v) => Some(1 << v),
+            VariantValue::Raw(ref v) => {
+                if let Some(e) = reg.enum_item_by_name.get(v.as_str()) {
+                    e.value.get_integer(reg)
+                } else {
+                    None
+                }
+            },
+            _ => None,
+        }
+    }
 }
 
 macro_rules! add_sub_impl {
@@ -1866,7 +1883,7 @@ impl<'r> Registry<'r> {
                     return None;
                 },
                 TypeModifier::Array(ref v) => {
-                    if let Some(dim) = self.get_variant_integer(v) {
+                    if let Some(dim) = v.get_integer(self) {
                         size *= dim as usize;
                     } else {
                         return None;
@@ -1887,7 +1904,7 @@ impl<'r> Registry<'r> {
                     break;
                 },
                 TypeModifier::Array(ref v) => {
-                    if self.get_variant_integer(v).is_none() {
+                    if v.get_integer(self).is_none() {
                         flags &= TF_PROPAGATION_MASK;
                         break;
                     }
@@ -1922,23 +1939,6 @@ impl<'r> Registry<'r> {
             self.get_type_def_flags(t)
         } else {
             0
-        }
-    }
-
-    pub fn get_variant_integer(&self, v: &VariantValue) -> Option<i64> {
-        match *v {
-            VariantValue::Integer(v, _) => Some(v),
-            VariantValue::UnsignedInteger(v, _) => Some(v as i64),
-            VariantValue::Float(v, _) => Some(v as i64),
-            VariantValue::Bit(v) => Some(1 << v),
-            VariantValue::Raw(ref v) => {
-                if let Some(e) = self.enum_item_by_name.get(v.as_str()) {
-                    self.get_variant_integer(&e.value)
-                } else {
-                    None
-                }
-            },
-            _ => None,
         }
     }
 }

@@ -1,8 +1,8 @@
 use registry::*;
 use std::ascii::AsciiExt;
 use case::CaseStyle::SnakeCase;
+use super::super::*;
 use super::*;
-use super::rust::*;
 use std::io::Result;
 
 pub struct AliasGenerator{
@@ -135,7 +135,7 @@ impl GeneratorWriter for AliasGenerator {
     fn write_constant_definition<W: CodeWrite>(&mut self, w: &mut W, sel: &Selection, f: &FeatureSet, ty: &ConstantDefinition) -> Result<()> {
         if ty.base_type.type_name == "VK_MAKE_VERSION" {
             self.write_type_alias(w, sel, f, &ty.name)?;
-        } else if let Some(_) = get_variant_value_and_type(sel, &ty.value, false) {
+        } else if let Some(_) = ty.value.get_value_and_type(sel, false) {
             self.write_type_alias(w, sel, f, &ty.name)?;
         }
         // don't write the other defines

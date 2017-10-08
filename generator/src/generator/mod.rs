@@ -533,7 +533,4 @@ pub struct CodeStyle {
     pub snake_case_commands: bool,
 }
 
-mod rust;
-pub mod rust_types;
-pub mod rust_cmds;
-pub mod rust_alias;
+pub mod rust;

@@ -4,7 +4,7 @@ use std::ascii::AsciiExt;
 use std::collections::BTreeMap;
 use super::*;
 use std::io::Result;
-
+pub use super::CodeStyle;
 
 const BUILTIN_TYPES : [(&str,&str);15] = [
     ("void",         "raw::c_void"),
@@ -30,7 +30,7 @@ const KEYWORDS : [&str;33]  = ["as", "break", "const", "continue", "crate", "els
     "mod", "move", "mut", "pub", "ref", "return", "self", "static", "struct",
     "type", "trait", "true", "unsafe", "use", "where", "while"];
 
-pub fn get_dispatch_table_for_handle(handle: &str, reg: &Registry) -> Result<&'static str> {
+fn get_dispatch_table_for_handle(handle: &str, reg: &Registry) -> Result<&'static str> {
     match handle {
         "VkDevice" => Ok("VkDevice"),
         "VkInstance" => Ok("VkInstance"),
@@ -49,7 +49,7 @@ pub fn get_dispatch_table_for_handle(handle: &str, reg: &Registry) -> Result<&'s
     }
 }
 
-pub fn get_dispatch_table_for_command(cmd: &CommandDefinition, reg: &Registry) -> Result<&'static str> {
+fn get_dispatch_table_for_command(cmd: &CommandDefinition, reg: &Registry) -> Result<&'static str> {
     if cmd.parameters.is_empty() {
         Ok("VkLoader")
     } else {
@@ -58,7 +58,7 @@ pub fn get_dispatch_table_for_command(cmd: &CommandDefinition, reg: &Registry) -
 }
 
 #[inline]
-pub fn strip_enum_name(prefix: &str, strip_from: &str, reg: &Registry) -> String {
+fn strip_enum_name(prefix: &str, strip_from: &str, reg: &Registry) -> String {
     let (strip_from, vendor) = strip_vendor_suffix(strip_from, reg);
     let stripped = strip_snake_prefix(&prefix, strip_from);
     let enumn_name = PascalCase.apply_to_snake(stripped) + vendor;
@@ -66,7 +66,7 @@ pub fn strip_enum_name(prefix: &str, strip_from: &str, reg: &Registry) -> String
 }
 
 #[inline]
-pub fn write_feature_protect<W: CodeWrite>(w: &mut W, _: &Selection, f: &FeatureSet) -> Result<bool> {
+fn write_feature_protect<W: CodeWrite>(w: &mut W, _: &Selection, f: &FeatureSet) -> Result<bool> {
     if !f.protect.is_empty() {
         write!(w, "#[cfg(feature = \"{}\")]\n", f.protect)?;
         Ok(true)
@@ -76,7 +76,7 @@ pub fn write_feature_protect<W: CodeWrite>(w: &mut W, _: &Selection, f: &Feature
 }
 
 
-pub fn write_documentation<W: CodeWrite>(w: &mut W, _: &Selection, _: &FeatureSet, def: &BasicDefinition) -> Result<()> {
+fn write_documentation<W: CodeWrite>(w: &mut W, _: &Selection, _: &FeatureSet, def: &BasicDefinition) -> Result<()> {
     //let def = def.deref();
     let mut comment = def.comment.as_str();
     while comment.starts_with('/') {
@@ -92,142 +92,144 @@ pub fn write_documentation<W: CodeWrite>(w: &mut W, _: &Selection, _: &FeatureSe
     Ok(())
 }
 
-pub fn get_variant_type<'l>(sel: &'l Selection<'l>, v: &VariantValue, default_use_usize: bool) -> Option<&'l str> {
-    match *v {
-        VariantValue::None | VariantValue::Raw(_)  => None,
-        VariantValue::String(_) => Some("&str"),
-        VariantValue::Enum(ref s) => {
-            if let Some(e) = sel.enum_item_by_name.get(s.as_str()) {
-                if !e.group.is_empty() {
-                    return Some(e.group.as_str());
-                }
-            }
-            None
-        },
-        VariantValue::Bit(_) => Some("u32"),
-        VariantValue::Integer(i, mut bits) => {
-            if bits == 0 {
-                if i >= 0 {
-                    if default_use_usize {
-                        return Some("usize");
-                    } else if i as u64 <= ::std::u32::MAX as u64 {
-                        return Some("u32");
-                    } else {
-                        return Some("u64");
+impl VariantValue {
+    fn get_type<'l>(&self, sel: &'l Selection<'l>, default_use_usize: bool) -> Option<&'l str> {
+        match *self {
+            VariantValue::None | VariantValue::Raw(_)  => None,
+            VariantValue::String(_) => Some("&str"),
+            VariantValue::Enum(ref s) => {
+                if let Some(e) = sel.enum_item_by_name.get(s.as_str()) {
+                    if !e.group.is_empty() {
+                        return Some(e.group.as_str());
                     }
                 }
-                bits = if ::std::i32::MIN as i64 <= i && i <= ::std::i32::MAX as i64 { 32 } else { 64 };
-            }
-            match bits {
-                8 => Some("i8"), 16 => Some("i16"), 32 => Some("i32"), 64 => Some("i64"),
-                _ => None,
-            }
-        },
-        VariantValue::UnsignedInteger(i, mut bits) => {
-            if bits == 0 {
-                if default_use_usize {
-                    return Some("usize");
+                None
+            },
+            VariantValue::Bit(_) => Some("u32"),
+            VariantValue::Integer(i, mut bits) => {
+                if bits == 0 {
+                    if i >= 0 {
+                        if default_use_usize {
+                            return Some("usize");
+                        } else if i as u64 <= ::std::u32::MAX as u64 {
+                            return Some("u32");
+                        } else {
+                            return Some("u64");
+                        }
+                    }
+                    bits = if ::std::i32::MIN as i64 <= i && i <= ::std::i32::MAX as i64 { 32 } else { 64 };
                 }
-                if (i as i64) < 0 {
-                    bits = if (i as i64) < -(::std::u32::MAX as i64) { 64 } else { 32 };
-                } else {
-                    bits = if i <= ::std::u32::MAX as u64 { 32 } else { 64 };
+                match bits {
+                    8 => Some("i8"), 16 => Some("i16"), 32 => Some("i32"), 64 => Some("i64"),
+                    _ => None,
                 }
-            }
-            match bits {
-                8 => Some("u8"), 16 => Some("u16"), 32 => Some("u32"), 64 => Some("u64"),
-                _ => None,
-            }
-        },
-        VariantValue::Float(_, mut bits) => {
-            if bits == 0 {
-                bits = 32;
-            }
-            match bits {
-                8 => Some("f8"), 16 => Some("f16"), 32 => Some("f32"), 64 => Some("f64"),
-                _ => None,
-            }
-        },
-    }
-}
-
-pub fn get_variant_value(_: &Selection, v: &VariantValue) -> Option<String> {
-    match *v {
-        VariantValue::None => None,
-        VariantValue::String(ref s) | VariantValue::Raw(ref s) => Some(s.to_owned()),
-        VariantValue::Enum(ref s) => Some(s.to_ascii_uppercase()),
-        VariantValue::Bit(i) => Some(format!("1<<{}", i)),
-        VariantValue::Integer(i, _) => {
-            if i > 1024 {
-                Some(format!("0x{:x}", i))
-            } else {
-                Some(format!("{}", i))
-            }
-        },
-        VariantValue::UnsignedInteger(mut i, _) => {
-            let neg : bool = (i as i64) < 0i64;
-            if neg {
-                i = !i;
-            }
-            let neg_op = if neg { "!" } else { "" };
-            if i > 1024 {
-                Some(format!("{}0x{:x}", neg_op, i))
-            } else {
-                Some(format!("{}{}", neg_op, i))
-            }
-        },
-        VariantValue::Float(f, _) => {
-            Some(format!("{:e}", f))
-        },
-    }
-}
-
-pub fn get_variant_value_for_enum(sel: &Selection, v: &VariantValue) -> Option<String> {
-    match *v {
-        VariantValue::None => None,
-        VariantValue::String(ref s) | VariantValue::Raw(ref s) => Some(s.to_owned()),
-        VariantValue::Enum(ref s) => {
-            if let Some(_) = sel.enum_item_by_name.get(s.as_str()) {
-                Some(format!("{} as u32", s.to_ascii_uppercase()))
-            } else {
-                Some(s.to_owned())
-            }
-        },
-        VariantValue::Bit(i) => Some(format!("1<<{}", i)),
-        VariantValue::Integer(i, _) => {
-            if i < 0 {
-                Some(format!("!{}", !(i as u64)))
-            } else {
-                Some(format!("{}", i))
-            }
-        },
-        VariantValue::UnsignedInteger(i, _) => {
-            if (i as i64) < 0 {
-                Some(format!("!{}", !i))
-            } else {
-                Some(format!("{}", i))
-            }
-        },
-        VariantValue::Float(f, _) => {
-            Some(format!("{:e}", f))
-        },
-    }
-}
-
-#[inline]
-pub fn get_variant_value_and_type<'l>(sel: &'l Selection<'l>, v: &VariantValue, default_use_usize: bool) -> Option<(String,&'l str)> {
-    if let Some(ty) = get_variant_type(sel, v, default_use_usize) {
-        if let Some(val) = get_variant_value(sel, v) {
-            return Some((val, ty));
+            },
+            VariantValue::UnsignedInteger(i, mut bits) => {
+                if bits == 0 {
+                    if default_use_usize {
+                        return Some("usize");
+                    }
+                    if (i as i64) < 0 {
+                        bits = if (i as i64) < -(::std::u32::MAX as i64) { 64 } else { 32 };
+                    } else {
+                        bits = if i <= ::std::u32::MAX as u64 { 32 } else { 64 };
+                    }
+                }
+                match bits {
+                    8 => Some("u8"), 16 => Some("u16"), 32 => Some("u32"), 64 => Some("u64"),
+                    _ => None,
+                }
+            },
+            VariantValue::Float(_, mut bits) => {
+                if bits == 0 {
+                    bits = 32;
+                }
+                match bits {
+                    8 => Some("f8"), 16 => Some("f16"), 32 => Some("f32"), 64 => Some("f64"),
+                    _ => None,
+                }
+            },
         }
     }
-    None
+
+    fn get_value(&self, _: &Selection) -> Option<String> {
+        match *self {
+            VariantValue::None => None,
+            VariantValue::String(ref s) | VariantValue::Raw(ref s) => Some(s.to_owned()),
+            VariantValue::Enum(ref s) => Some(s.to_ascii_uppercase()),
+            VariantValue::Bit(i) => Some(format!("1<<{}", i)),
+            VariantValue::Integer(i, _) => {
+                if i > 1024 {
+                    Some(format!("0x{:x}", i))
+                } else {
+                    Some(format!("{}", i))
+                }
+            },
+            VariantValue::UnsignedInteger(mut i, _) => {
+                let neg : bool = (i as i64) < 0i64;
+                if neg {
+                    i = !i;
+                }
+                let neg_op = if neg { "!" } else { "" };
+                if i > 1024 {
+                    Some(format!("{}0x{:x}", neg_op, i))
+                } else {
+                    Some(format!("{}{}", neg_op, i))
+                }
+            },
+            VariantValue::Float(f, _) => {
+                Some(format!("{:e}", f))
+            },
+        }
+    }
+
+    fn get_unsigned_value(&self, sel: &Selection) -> Option<String> {
+        match *self {
+            VariantValue::None => None,
+            VariantValue::String(ref s) | VariantValue::Raw(ref s) => Some(s.to_owned()),
+            VariantValue::Enum(ref s) => {
+                if let Some(_) = sel.enum_item_by_name.get(s.as_str()) {
+                    Some(format!("{} as u32", s.to_ascii_uppercase()))
+                } else {
+                    Some(s.to_owned())
+                }
+            },
+            VariantValue::Bit(i) => Some(format!("1<<{}", i)),
+            VariantValue::Integer(i, _) => {
+                if i < 0 {
+                    Some(format!("!{}", !(i as u64)))
+                } else {
+                    Some(format!("{}", i))
+                }
+            },
+            VariantValue::UnsignedInteger(i, _) => {
+                if (i as i64) < 0 {
+                    Some(format!("!{}", !i))
+                } else {
+                    Some(format!("{}", i))
+                }
+            },
+            VariantValue::Float(f, _) => {
+                Some(format!("{:e}", f))
+            },
+        }
+    }
+
+    #[inline]
+    fn get_value_and_type<'l>(&self, sel: &'l Selection<'l>, default_use_usize: bool) -> Option<(String,&'l str)> {
+        if let Some(ty) = self.get_type(sel, default_use_usize) {
+            if let Some(val) = self.get_value(sel) {
+                return Some((val, ty));
+            }
+        }
+        None
+    }
 }
 
-pub const TYPE_FORMAT_SAFE : u32 = 0x01;
-pub const TYPE_FORMAT_LIFETIME : u32 = 0; // disabled. originnal value: 0x02;
+const TYPE_FORMAT_SAFE : u32 = 0x01;
+const TYPE_FORMAT_LIFETIME : u32 = 0; // disabled. originnal value: 0x02;
 
-pub fn format_named_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &str, format: u32) -> fmt::Result {
+fn format_named_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &str, format: u32) -> fmt::Result {
     for &(c_type, r_type) in &BUILTIN_TYPES {
         if ty == c_type {
             write!(w, "{}", r_type)?;
@@ -241,7 +243,7 @@ pub fn format_named_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &str
     Ok(())
 }
 
-pub fn format_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &TypeReference, format: u32) -> fmt::Result {
+fn format_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &TypeReference, format: u32) -> fmt::Result {
     let mut i = ty.modifiers.len();
     while i > 0 {
         i -= 1;
@@ -288,19 +290,23 @@ pub fn format_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &TypeRefer
     format_named_type_ref(w, sel, ty.type_name.as_str(), format)
 }
 
-pub fn named_type_ref(sel: &Selection, ty: &str, format: u32) -> String {
+// impl EnumGroupDefinition {
+//     pub fn 
+// }
+
+fn named_type_ref(sel: &Selection, ty: &str, format: u32) -> String {
     let mut w = String::new();
     format_named_type_ref(&mut w, sel, ty, format).expect("unexpected");
     w
 }
 
-pub fn type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> String {
+fn type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> String {
     let mut w = String::new();
     format_type_ref(&mut w, sel, ty, format).expect("unexpected");
     w
 }
 
-pub fn return_type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> String {
+fn return_type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> String {
     if ty.modifiers.is_empty() {
         if ty.type_name.starts_with("PFN_") {
             return format!("Option<{}>", ty.type_name);
@@ -315,14 +321,14 @@ pub fn return_type_ref(sel: &Selection, ty: &TypeReference, format: u32) -> Stri
     type_ref(sel, ty, format)
 }
 
-pub fn def_type_ref(sel: &Selection, def: &BasicDefinition, format: u32) -> String {
+fn def_type_ref(sel: &Selection, def: &BasicDefinition, format: u32) -> String {
     // if def.base_type.modifiers.is_empty() && def.base_type.type_name == "uint32_t" && def.name.ends_with("Version") {
     //     return "util::VkVersion".to_owned();
     // }
     type_ref(sel, &def.base_type, format)
 }
 
-pub fn get_param_name_map<'l>(params: &'l[ParameterDefinition]) -> BTreeMap<&'l str, &'l ParameterDefinition> {
+fn get_param_name_map<'l>(params: &'l[ParameterDefinition]) -> BTreeMap<&'l str, &'l ParameterDefinition> {
     let mut names : BTreeMap<&'l str, &'l ParameterDefinition> = BTreeMap::new();
     for param in params {
         names.insert(param.name.as_str(), param);
@@ -330,7 +336,7 @@ pub fn get_param_name_map<'l>(params: &'l[ParameterDefinition]) -> BTreeMap<&'l 
     names
 }
 
-pub fn get_param_length_map<'l>(params: &'l[ParameterDefinition]) -> BTreeMap<&'l str, Vec<&'l ParameterDefinition>> {
+fn get_param_length_map<'l>(params: &'l[ParameterDefinition]) -> BTreeMap<&'l str, Vec<&'l ParameterDefinition>> {
     let mut lengths : BTreeMap<&'l str, Vec<&'l ParameterDefinition>> = BTreeMap::new();
     for param in params {
         if let Some(ref l) = param.len {
@@ -340,7 +346,7 @@ pub fn get_param_length_map<'l>(params: &'l[ParameterDefinition]) -> BTreeMap<&'
     lengths
 }
 
-pub struct SafeParamInfoEntry<'l> {
+struct SafeParamInfoEntry<'l> {
     pub param: &'l ParameterDefinition,
     pub length_for: Vec<&'l ParameterDefinition>,
     pub length_param: Option<&'l ParameterDefinition>,
@@ -351,7 +357,7 @@ pub struct SafeParamInfoEntry<'l> {
     pub value: String,
 }
 
-pub fn get_return_param<'l>(_: &Selection, cmd: &'l CommandDefinition) -> Option<&'l ParameterDefinition> {
+fn get_return_param<'l>(_: &Selection, cmd: &'l CommandDefinition) -> Option<&'l ParameterDefinition> {
     if let Some(p) = cmd.parameters.last() {
         if (cmd.return_type.is_empty() || cmd.returns_error()) && p.base_type.modifiers.starts_with(&[TypeModifier::Pointer]) {
             return Some(p);
@@ -360,7 +366,7 @@ pub fn get_return_param<'l>(_: &Selection, cmd: &'l CommandDefinition) -> Option
     None
 }
 
-pub fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &CodeStyle, format: u32) -> (Vec<SafeParamInfoEntry<'l>>, Option<SafeParamInfoEntry<'l>>)
+fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &CodeStyle, format: u32) -> (Vec<SafeParamInfoEntry<'l>>, Option<SafeParamInfoEntry<'l>>)
 {
     let param_names = get_param_name_map(&cmd.parameters);
     let param_lengths = get_param_length_map(&cmd.parameters);
@@ -432,7 +438,7 @@ pub fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &
 }
 
 
-pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition, param: &ParameterDefinition, format: u32) -> (String,Option<String>,String) {
+fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition, param: &ParameterDefinition, format: u32) -> (String,Option<String>,String) {
     let ty = &param.base_type;
     if ty.modifiers.ends_with(&[TypeModifier::Const, TypeModifier::Pointer]) {
         match param.len {
@@ -543,7 +549,7 @@ pub fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinit
     return (def_type_ref(sel, param, format), None, param_name.to_owned());
 }
 
-pub fn norm_snake_kw(name: &str, kw_prefix: &str) -> String {
+fn norm_snake_kw(name: &str, kw_prefix: &str) -> String {
     if name.starts_with(char::is_numeric) {
         return kw_prefix.to_owned() + name;
     }
@@ -553,7 +559,7 @@ pub fn norm_snake_kw(name: &str, kw_prefix: &str) -> String {
     return name.to_owned();
 }
 
-pub fn norm_camel_kw(name: &str, kw_prefix: &str) -> String {
+fn norm_camel_kw(name: &str, kw_prefix: &str) -> String {
     if name.starts_with(char::is_numeric) {
         return kw_prefix.to_owned() + &name[..1].to_ascii_uppercase() + &name[1..];
     }
@@ -566,7 +572,7 @@ pub fn norm_camel_kw(name: &str, kw_prefix: &str) -> String {
 
 impl CodeStyle {
 
-    pub fn field_name(&self, name: &str) -> String {
+    fn field_name(&self, name: &str) -> String {
         if self.snake_case_fields {
             norm_snake_kw(&SnakeCase.apply_to_camel(name), "p_")
         } else {
@@ -574,7 +580,7 @@ impl CodeStyle {
         }
     }
 
-    pub fn command_name(&self, name: &str) -> String {
+    fn command_name(&self, name: &str) -> String {
         if self.snake_case_commands {
             SnakeCase.apply_to_camel(name)
         } else {
@@ -582,7 +588,11 @@ impl CodeStyle {
         }
     }
 
-    pub fn param_name(&self, name: &str) -> String {
+    fn param_name(&self, name: &str) -> String {
         norm_snake_kw(&SnakeCase.apply_to_camel(name), "p_")
     }
 }
+
+pub mod types;
+pub mod cmds;
+pub mod alias;

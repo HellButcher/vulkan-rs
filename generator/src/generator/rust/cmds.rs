@@ -1,7 +1,7 @@
 use registry::*;
 use std::collections::BTreeMap;
+use super::super::*;
 use super::*;
-use super::rust::*;
 use std::io::Result;
 
 pub struct DispatchTablePreprocessor<'r>{

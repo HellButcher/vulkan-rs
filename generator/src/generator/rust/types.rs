@@ -1,8 +1,8 @@
 use registry::*;
 use case::CaseStyle::ScreamingSnakeCase;
 use std::ascii::AsciiExt;
+use super::super::*;
 use super::*;
-use super::rust::*;
 use std::io::Result;
 
 const MANUALLY_DEFINED_TYPES : [(&str,&str);1] = [
@@ -53,7 +53,7 @@ impl GeneratorWriter for TypesGenerator {
             write_documentation(w, sel, f, ty)?;
             write_feature_protect(w, sel, f)?;
             write!(w, "pub const {} : util::VkVersion = vk_make_version!{};\n", ty.name, ty.value)?;
-        } else if let Some((rust_value,rust_type)) = get_variant_value_and_type(sel, &ty.value, false) {
+        } else if let Some((rust_value,rust_type)) = ty.value.get_value_and_type(sel, false) {
             write_documentation(w, sel, f, ty)?;
             write_feature_protect(w, sel, f)?;
             write!(w, "pub const {} : {} = {};\n", ty.name, rust_type, rust_value)?;
@@ -76,7 +76,7 @@ impl GeneratorWriter for TypesGenerator {
             let mut mask : i64 = 0;
             if let Some(items) = sel.enum_items_by_group.get(ty.requires.as_str()) {
                 for item in items {
-                    if let Some(v) = sel.get_variant_integer(&item.value) {
+                    if let Some(v) = item.value.get_integer(sel) {
                         mask |= v;
                     } else {
                         return Err(io::Error::new(io::ErrorKind::Other, format!("unable to calcuate mast for {}", item.value)))
@@ -107,10 +107,11 @@ impl GeneratorWriter for TypesGenerator {
             w.indent(|w|{
                 for item in items {
                     let stripped_item_name = strip_enum_name(&prefix, &item.name, sel);
+                    write_documentation(w, sel, f, item)?;
                     if let Some(item_ext) = sel.feature_by_name.get(item.extension.as_str()) {
                         write_feature_protect(w, sel, item_ext)?;
                     }
-                    if let Some(rust_value) = get_variant_value_for_enum(sel, &item.value) {
+                    if let Some(rust_value) = item.value.get_unsigned_value(sel) {
                         write!(w, "{} = {},\n", stripped_item_name, rust_value)?;
                         if default.is_none() && rust_value == "0" {
                             default = Some(stripped_item_name.clone())
@@ -139,12 +140,14 @@ impl GeneratorWriter for TypesGenerator {
             let (groupname,_) = strip_vendor_suffix(item.group.as_str(), sel);
             let prefix = ScreamingSnakeCase.apply_to_camel(groupname) + "_";
             let stripped_item_name = strip_enum_name(&prefix, &item.name, sel);
+            write_documentation(w, sel, f, item)?;
             write_feature_protect(w, sel, f)?;
             write!(w, "pub const {} : {} = {}::{};\n", item.name.to_ascii_uppercase(), item.group, item.group, stripped_item_name)?;
         } else {
             let default_use_usize = item.name.contains("_SIZE") || item.name.contains("_MAX");
+            write_documentation(w, sel, f, item)?;
             write_feature_protect(w, sel, f)?;
-            if let Some((rust_value,rust_type)) = get_variant_value_and_type(sel, &item.value, default_use_usize) {
+            if let Some((rust_value,rust_type)) = item.value.get_value_and_type(sel, default_use_usize) {
                 write!(w, "pub const {} : {} = {};\n", item.name, rust_type, rust_value)?;
             } else {
                 write!(w, "pub const {} : u32 = {};\n", item.name, item.value)?;

@@ -66,7 +66,8 @@ fn enable_default_platform() {
 fn enable_default_platform() {}
 
 fn generate_vulkan_bindings() {
-    use vulkan_rs_generator::{registry,generator};
+    use vulkan_rs_generator::registry;
+    use vulkan_rs_generator::generator::rust as rustgen;
 
     let vkdoc_path = Path::new("vulkan_spec").join("Vulkan-Docs");
     let registry_path = vkdoc_path.join("src/spec/vk.xml");
@@ -113,18 +114,18 @@ fn generate_vulkan_bindings() {
 
     println!("selection: num-selections: {}", selection.selected_set.len());
     println!("selection: num-features: {}", selection.features.len());
-    let style = generator::CodeStyle {
+    let style = rustgen::CodeStyle {
         snake_case_commands: false,
         snake_case_fields: false,
     };
     {
         let mut out_file = File::create(out_dir.join("types.rs")).expect("create types.rs");
-        let mut gen = generator::rust_types::TypesGenerator{ style };
+        let mut gen = rustgen::types::TypesGenerator{ style };
         selection.generate(&mut gen, &mut out_file).expect("generate types");
     }
     {
         let mut out_file = File::create(out_dir.join("prelude.rs")).expect("create prelude.rs");
-        let mut gen = generator::rust_alias::AliasGenerator{
+        let mut gen = rustgen::alias::AliasGenerator{
             strip_api_prefix: false,
             use_feature_modules: true,
             snake_case_commands: false,
@@ -132,19 +133,19 @@ fn generate_vulkan_bindings() {
         selection.generate(&mut gen, &mut out_file).expect("generate prelude");
     }
     {
-        let tables = generator::rust_cmds::DispatchTablePreprocessor::new(&selection).expect("preprocess table");
+        let tables = rustgen::cmds::DispatchTablePreprocessor::new(&selection).expect("preprocess table");
         let mut out_file = File::create(out_dir.join("cmds/table.rs")).expect("create cmds/table.rs");
-        tables.generate(&mut generator::rust_cmds::DispatchTableWriter::new(), &mut out_file).expect("generate dispatch table");
-        tables.generate(&mut generator::rust_cmds::DispatchTableImplWriter::new(), &mut out_file).expect("generate dispatch table impl");
+        tables.generate(&mut rustgen::cmds::DispatchTableWriter::new(), &mut out_file).expect("generate dispatch table");
+        tables.generate(&mut rustgen::cmds::DispatchTableImplWriter::new(), &mut out_file).expect("generate dispatch table impl");
     }
     {
         let mut out_file = File::create(out_dir.join("cmds/dispatch.rs")).expect("create cmd/dispatch.rs");
-        let mut gen = generator::rust_cmds::DispatchCommandImplWriter{ style };
+        let mut gen = rustgen::cmds::DispatchCommandImplWriter{ style };
         selection.generate(&mut gen, &mut out_file).expect("generate dispatch cmd impl");
     }
     {
         let mut out_file = File::create(out_dir.join("cmds/safe.rs")).expect("create cmd/safe.rs");
-        let mut gen = generator::rust_cmds::SafeCommandImplWriter{ style };
+        let mut gen = rustgen::cmds::SafeCommandImplWriter{ style };
         selection.generate(&mut gen, &mut out_file).expect("generate safe cmd impl");
     }
     // {
