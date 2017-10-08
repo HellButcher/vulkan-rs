@@ -223,9 +223,14 @@ pub mod platform;
 pub mod util;
 pub mod cmds;
 
-mod types; // generated!
+mod types {
+    #![allow(non_snake_case)]
+    include!(concat!(env!("OUT_DIR"), "/types.rs"));
+}
 
-pub mod prelude;
+pub mod prelude {
+    include!(concat!(env!("OUT_DIR"), "/prelude.rs"));
+}
 
 
 

@@ -2,7 +2,15 @@
 name = "vulkan_rs_generator"
 version = "0.1.0"
 authors = ["Christoph Hommelsheim <hellbutcher@gmx.de>"]
+license = "BSD-2-Clause"
+description = "Vulkan bindings generator for the rust programming language."
+homepage = "https://github.com/HellButcher/vulkan-rs"
+repository = "https://github.com/HellButcher/vulkan-rs.git"
+readme = "README.md"
 
 [dependencies]
 lazy_static = "0.2"
 xml-rs = "0.6"
+
+[badges]
+travis-ci = { repository = "HellButcher/vulkan-rs", branch = "master" }

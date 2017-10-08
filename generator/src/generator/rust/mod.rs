@@ -1,3 +1,29 @@
+/*
+**  Copyright (c) 2016, Christoph Hommelsheim
+**  All rights reserved.
+**
+**  Redistribution and use in source and binary forms, with or without
+**  modification, are permitted provided that the following conditions are met:
+**
+**  * Redistributions of source code must retain the above copyright notice, this
+**    list of conditions and the following disclaimer.
+**
+**  * Redistributions in binary form must reproduce the above copyright notice,
+**    this list of conditions and the following disclaimer in the documentation
+**    and/or other materials provided with the distribution.
+**
+**  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+**  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+**  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+**  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+**  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+**  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+**  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+**  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+**  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+**  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+**
+*/
 use registry::*;
 use case::CaseStyle::{SnakeCase,PascalCase};
 use std::ascii::AsciiExt;
@@ -366,7 +392,7 @@ fn get_return_param<'l>(_: &Selection, cmd: &'l CommandDefinition) -> Option<&'l
     None
 }
 
-fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &CodeStyle, format: u32) -> (Vec<SafeParamInfoEntry<'l>>, Option<SafeParamInfoEntry<'l>>)
+fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &RustCodeStyle, format: u32) -> (Vec<SafeParamInfoEntry<'l>>, Option<SafeParamInfoEntry<'l>>)
 {
     let param_names = get_param_name_map(&cmd.parameters);
     let param_lengths = get_param_length_map(&cmd.parameters);
@@ -569,8 +595,20 @@ fn norm_camel_kw(name: &str, kw_prefix: &str) -> String {
     return name.to_owned();
 }
 
+#[derive(Copy,Clone,Default,Eq,PartialEq,Debug)]
+pub struct RustCodeStyle {
+    pub style: CodeStyle,
+    pub out_dir: bool,
+}
 
-impl CodeStyle {
+impl ::std::ops::Deref for RustCodeStyle {
+    type Target = CodeStyle;
+    fn deref(&self) -> &CodeStyle {
+        &self.style
+    }
+}
+
+impl RustCodeStyle {
 
     fn field_name(&self, name: &str) -> String {
         if self.snake_case_fields {

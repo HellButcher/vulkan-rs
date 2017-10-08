@@ -1,6 +1,6 @@
 [package]
 name = "vulkan_rs"
-version = "0.2.2"
+version = "0.3.0"
 authors = ["Christoph Hommelsheim <hellbutcher@gmx.de>"]
 license = "BSD-2-Clause"
 description = "Vulkan bindings for the rust programming language."
@@ -9,17 +9,20 @@ repository = "https://github.com/HellButcher/vulkan-rs.git"
 readme = "README.md"
 build = "build.rs"
 include = [
-  "/Cargo.toml",
-  "/LICENSE",
-  "/README.md",
-  "/build.rs",
-  "/src/**",
-  "/vulkan_spec/Vulkan-Docs/src/spec/*.xml",
-  #/"vulkan_spec/Vulkan-Docs/doc/specs/vulkan/**/*.txt",
-  "/examples/**",
-  "/tests/**",
-  "/benches/**",
+  "Cargo.toml",
+  "LICENSE",
+  "README.md",
+  "build.rs",
+  "src/**",
+  "vulkan_spec/Vulkan-Docs/src/spec/*.xml",
+  #"vulkan_spec/Vulkan-Docs/doc/specs/vulkan/**/*.txt",
+  "examples/**",
+  "tests/**",
+  "benches/**",
 ]
+
+[badges]
+travis-ci = { repository = "HellButcher/vulkan-rs", branch = "master" }
 
 [dependencies]
 log = "0.3"
@@ -81,10 +84,3 @@ VK_MVK_macos_surface = []
 VK_NN_vi_surface = []
 VK_KHR_swapchain = []
 VK_EXT_debug_report = []
-
-[package.metadata.release]
-no-dev-version = true
-pre-release-commit-message = "release {{version}}"
-pre-release-replacements = [
-  {file="README.md", search="(?m)^vulkan_rs = \"[a-z0-9\\.-]+\"$", replace="vulkan_rs = \"{{version}}\""}
-]

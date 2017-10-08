@@ -1,13 +1,27 @@
-# vulkan-rs
+# `vulkan_rs`
 Vulkan bindings for the rust programming language.
 
-*EARLY STAGE!!!*
+[![Build Status](https://travis-ci.org/HellButcher/vulkan-rs.svg?branch=master)](https://travis-ci.org/HellButcher/vulkan-rs)
+[![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](LICENSE)
+
+## Overview
+
+* Crate `vulkan_rs`
+
+  [![Version](https://img.shields.io/crates/v/vulkan_rs.svg)](https://crates.io/crates/vulkan_rs)
+  [![Docs](https://docs.rs/vulkan_rs/badge.svg)](https://docs.rs/vulkan_rs)
+
+* Crate `vulkan_rs_generator`
+
+  [![Version](https://img.shields.io/crates/v/vulkan_rs_generator.svg)](https://crates.io/crates/vulkan_rs_generator)
+  [![Docs](https://docs.rs/vulkan_rs_generator/badge.svg)](https://docs.rs/vulkan_rs_generator)
+
 
 ## Basic usage
 
 ```toml
 [dependencies]
-vulkan_rs = "0.2.2"
+vulkan_rs = "0.3.0"
 ```
 
 ```rust
