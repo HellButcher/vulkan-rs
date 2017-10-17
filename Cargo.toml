@@ -15,16 +15,16 @@ repository = "https://github.com/HellButcher/vulkan-rs.git"
 readme = "README.md"
 build = "build.rs"
 include = [
-  "Cargo.toml",
-  "LICENSE",
-  "README.md",
-  "build.rs",
-  "src/**",
-  "vulkan_spec/Vulkan-Docs/src/spec/*.xml",
-  #"vulkan_spec/Vulkan-Docs/doc/specs/vulkan/**/*.txt",
-  "examples/**",
-  "tests/**",
-  "benches/**",
+  "/Cargo.toml",
+  "/LICENSE",
+  "/README.md",
+  "/build.rs",
+  "/src/**",
+  "/vulkan_spec/Vulkan-Docs/src/spec/*.xml",
+  #"/vulkan_spec/Vulkan-Docs/doc/specs/vulkan/**/*.txt",
+  "/examples/**",
+  "/tests/**",
+  "/benches/**",
 ]
 
 [badges]
