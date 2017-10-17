@@ -1,6 +1,12 @@
+
+[workspace]
+members = [
+  "generator"
+]
+
 [package]
 name = "vulkan_rs"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Christoph Hommelsheim <hellbutcher@gmx.de>"]
 license = "BSD-2-Clause"
 description = "Vulkan bindings for the rust programming language."
@@ -36,13 +42,13 @@ kernel32-sys = "0.2"
 libc = "0.2"
 
 [dev-dependencies]
-winit = "0.6"
+winit = "0.8"
 log = "0.3"
 env_logger = "0.4"
 
 [build-dependencies]
-vulkan_rs_generator = { version = "0.1", path = "./generator" }
-shaderc = "0.2"
+vulkan_rs_generator = { version = "0.2", path = "./generator" }
+shaderc = "0.3"
 
 #[[example]]
 #name = "utils"

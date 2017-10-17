@@ -157,7 +157,6 @@ impl ::std::str::FromStr for CaseStyle {
              ("aB", "ab", "AB", "aB", "AB", "a_b", "A_B"),
              ("Z12", "z12", "Z12", "z12", "Z12", "z12", "Z12"),
          ] {
-         assert_eq!(None.apply_to_camel(original), original);
          assert_eq!(LowerCase.apply_to_camel(original), lower);
          assert_eq!(UpperCase.apply_to_camel(original), upper);
          assert_eq!(CamelCase.apply_to_camel(original), camel);
@@ -182,7 +181,6 @@ impl ::std::str::FromStr for CaseStyle {
              ("Z12", "z12", "Z12", "z12", "Z12", "z12", "Z12"),
              ("Z_12", "z_12", "Z_12", "z12", "Z12", "z_12", "Z_12"),
          ] {
-         assert_eq!(None.apply_to_snake(original), original);
          assert_eq!(LowerCase.apply_to_snake(original), lower);
          assert_eq!(UpperCase.apply_to_snake(original), upper);
          assert_eq!(CamelCase.apply_to_snake(original), camel);

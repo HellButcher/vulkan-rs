@@ -36,7 +36,7 @@ use vulkan_rs::prelude::vk_version_1_0::*;
 
 fn main() {
     env_logger::init().unwrap();
-    let events_loop = winit::EventsLoop::new();
+    let mut events_loop = winit::EventsLoop::new();
 
     let window = winit::WindowBuilder::new()
         .with_title("A fantastic window!")
@@ -54,7 +54,7 @@ fn main() {
 
         match event {
             winit::Event::WindowEvent { event: winit::WindowEvent::Closed, .. } => {
-                events_loop.interrupt()
+                return winit::ControlFlow::Break;
             }
             _ => (),
         };
@@ -63,6 +63,7 @@ fn main() {
         vkCmdDraw(app.get_command_buffer(), 3, 1, 0, 0);
         app.end().unwrap();
 
+        winit::ControlFlow::Continue
     });
 
     app.wait_idle().unwrap();
