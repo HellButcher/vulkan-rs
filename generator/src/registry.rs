@@ -453,7 +453,7 @@ impl VariantValue {
             VariantValue::UnsignedInteger(v, _) => Some(v as i64),
             VariantValue::Float(v, _) => Some(v as i64),
             VariantValue::Bit(v) => Some(1 << v),
-            VariantValue::Raw(ref v) => {
+            VariantValue::Raw(ref v) | VariantValue::Enum(ref v)=> {
                 if let Some(e) = reg.enum_item_by_name.get(v.as_str()) {
                     e.value.get_integer(reg)
                 } else {
@@ -1782,6 +1782,7 @@ fn named_vec_to_name_map<'r, N: NamedElement>(data: &'r Vec<N>) -> HashMap<&'r s
 // type-flags
 pub const TF_PRIMITIVE_TYPE : u32 = 0x01;
 pub const TF_CONTAINS_HANDLE : u32 = 0x010000;
+pub const TF_CONTAINS_REFERENCE : u32 = 0x020000;
 const TF_PROPAGATION_MASK : u32 = 0xFFFF0000;
 
 const BUILTIN_TYPE_INFOS : [(&str,usize, u32);10] = [
@@ -1921,17 +1922,22 @@ impl<'r> Registry<'r> {
     }
 
     pub fn get_type_ref_flags(&self, ty: &TypeReference) -> u32 {
+        if ty.type_name == "void" && (ty.modifiers == &[TypeModifier::Pointer] || ty.modifiers == &[TypeModifier::Const, TypeModifier::Pointer]) {
+            return 0;
+        }
         let mut flags = self.get_type_flags(&ty.type_name);
         for m in &ty.modifiers {
             match *m {
                 TypeModifier::Const => {},
                 TypeModifier::Pointer => {
                     flags &= TF_PROPAGATION_MASK;
+                    flags |= TF_CONTAINS_REFERENCE;
                     break;
                 },
                 TypeModifier::Array(ref v) => {
                     if v.get_integer(self).is_none() {
                         flags &= TF_PROPAGATION_MASK;
+                        flags |= TF_CONTAINS_REFERENCE;
                         break;
                     }
                 }

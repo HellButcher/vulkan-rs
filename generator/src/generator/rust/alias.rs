@@ -35,6 +35,8 @@ pub struct AliasGenerator{
     pub strip_api_prefix: bool,
     pub use_feature_modules: bool,
     pub snake_case_commands: bool,
+    pub types_module: &'static str,
+    pub cmds_module: &'static str,
 }
 
 impl AliasGenerator {
@@ -63,9 +65,9 @@ impl AliasGenerator {
         self.write_feature_protect(w, sel, f)?;
         if self.strip_api_prefix {
             let name = self.strip_vk_prefix(name);
-            write!(w, "pub use types::{} as {};\n", name, name)?;
+            write!(w, "pub use {}::{} as {};\n", self.types_module, name, name)?;
         } else {
-            write!(w, "pub use types::{};\n", name)?;
+            write!(w, "pub use {}::{};\n", self.types_module, name)?;
         }
         Ok(())
     }
@@ -73,9 +75,9 @@ impl AliasGenerator {
     fn write_command_alias<W: CodeWrite>(&mut self, w: &mut W, sel: &Selection, f: &FeatureSet, name: &str) -> Result<()> {
         self.write_feature_protect(w, sel, f)?;
         if self.strip_api_prefix {
-            write!(w, "pub use cmds::{} as {};\n", name, self.cmd_case(self.strip_vk_prefix(name)))?;
+            write!(w, "pub use {}::{} as {};\n", self.cmds_module, name, self.cmd_case(self.strip_vk_prefix(name)))?;
         } else {
-            write!(w, "pub use cmds::{};\n", self.cmd_case(name))?;
+            write!(w, "pub use {}::{};\n", self.cmds_module, self.cmd_case(name))?;
         }
         Ok(())
     }

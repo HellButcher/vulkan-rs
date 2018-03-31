@@ -358,24 +358,12 @@ impl CommonGeneratorWriter for SafeCommandImplWriter {
 impl GeneratorWriter for SafeCommandImplWriter {
     fn write_command_definition<W: CodeWrite>(&mut self, w: &mut W, sel: &Selection, f: &FeatureSet, cmd: &CommandDefinition) -> Result<()> {
         let cmd_name = self.style.command_name(&cmd.name);
-        let type_format_flags;
-        let lifetime;
-        match get_return_param(sel, cmd) {
-            Some(p) if (sel.get_type_ref_flags(&p.base_type) & TF_CONTAINS_HANDLE) != 0 => {
-                type_format_flags = TYPE_FORMAT_LIFETIME;
-                lifetime = "<'l>";
-            },
-            _ => {
-                type_format_flags = TYPE_FORMAT_SAFE;
-                lifetime = "";
-            },
-        }
-        let (params_with_info, result) = get_safe_params(sel, cmd, &self.style, type_format_flags);
+        let (params_with_info, result) = get_safe_params(sel, cmd, &self.style, TYPE_FORMAT_SAFE);
 
         write_documentation(w,sel, f, cmd)?;
         write_feature_protect(w, sel, f)?;
         write!(w, "#[inline]\n")?;
-        write!(w, "pub fn {}{} (", cmd_name, lifetime)?;
+        write!(w, "pub fn {} (", cmd_name)?;
         let mut i = 0;
         for param in &params_with_info {
             if !param.length_for.is_empty() {
@@ -409,7 +397,7 @@ impl GeneratorWriter for SafeCommandImplWriter {
                 write!(w, " -> VkResultObj<()>")?;
             }
         } else if !cmd.return_type.is_empty() {
-            write!(w, " -> {}", return_type_ref(sel, &cmd.return_type, type_format_flags))?;
+            write!(w, " -> {}", return_type_ref(sel, &cmd.return_type, TYPE_FORMAT_SAFE))?;
         }
         let handle_vk_incomplete = handle_enumeration && cmd.returns_error() && cmd.success_codes.contains("VK_INCOMPLETE");
         if result.is_some() && cmd.returns_error() {

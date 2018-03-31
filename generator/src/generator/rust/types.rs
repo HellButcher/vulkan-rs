@@ -105,7 +105,7 @@ impl GeneratorWriter for TypesGenerator {
                     if let Some(v) = item.value.get_integer(sel) {
                         mask |= v;
                     } else {
-                        return Err(io::Error::new(io::ErrorKind::Other, format!("unable to calcuate mast for {}", item.value)))
+                        return Err(io::Error::new(io::ErrorKind::Other, format!("unable to calcuate mask for {}", item.value)))
                     }
                 }
             }
@@ -227,34 +227,47 @@ impl GeneratorWriter for TypesGenerator {
         if let Some(_) = sel.get_struct_def_size(ty) {
             write!(w, "#[derive(Copy,Clone)]\n")?;
         }
-        let lifetime = ""; //if (sel.get_struct_def_flags(ty) & TF_CONTAINS_HANDLE) != 0 { "<'l>" } else { "" };
-        write!(w, "pub struct {}{} {{\n", ty.name, lifetime)?;
+        write!(w, "pub struct {} {{\n", ty.name)?;
         w.indent(|w|{
             for m in &ty.members {
                 write_documentation(w, sel, f, m)?;
-                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), def_type_ref(sel, m, TYPE_FORMAT_LIFETIME))?;
+                write!(w, "pub {}: {},\n", self.style.field_name(&m.name), def_type_ref(sel, m, 0))?;
             }
             Ok(())
         })?;
         write!(w, "}}\n")?;
         write_feature_protect(w, sel, f)?;
-        write!(w, "impl{1} {0}{1} {{\n", ty.name, lifetime)?;
+        write!(w, "impl {} {{\n", ty.name)?;
         w.indent(|w|{
             write!(w, "#[inline]\n")?;
-            write!(w, "pub fn new() -> {}{} {{\n", ty.name, lifetime)?;
+            write!(w, "pub fn new() -> {} {{\n", ty.name)?;
             w.indent(|w|{
-                write!(w, "unsafe {{ ::std::mem::zeroed() }}\n")
+                let has_default_members = ty.members.iter().any(|m| m.values.len() == 1);
+                if has_default_members {
+                    write!(w, "unsafe {{ {} {{\n", ty.name)?;
+                    w.indent(|w|{
+                        for m in &ty.members {
+                            if m.values.len() == 1 {
+                                write!(w, "{}: {},\n", self.style.field_name(&m.name), m.values.iter().next().unwrap())?;
+                            }
+                        }
+                        write!(w, ".. ::std::mem::zeroed()\n")
+                    })?;
+                    write!(w, "}}}}\n")
+                } else {
+                    write!(w, "unsafe {{ ::std::mem::zeroed() }}\n")
+                }
             })?;
             write!(w, "}}\n")
         })?;
         write!(w, "}}\n")?;
         write_feature_protect(w, sel, f)?;
-        write!(w, "impl{1} Default for {0}{1} {{\n", ty.name, lifetime)?;
+        write!(w, "impl Default for {} {{\n", ty.name)?;
         w.indent(|w|{
             write!(w, "#[inline]\n")?;
-            write!(w, "fn default() -> {}{} {{\n", ty.name, lifetime)?;
+            write!(w, "fn default() -> {} {{\n", ty.name)?;
             w.indent(|w|{
-                write!(w, "unsafe {{ ::std::mem::zeroed() }}\n")
+                write!(w, "{}::new()\n", ty.name)
             })?;
             write!(w, "}}\n")
         })?;

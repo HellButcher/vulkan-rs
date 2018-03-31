@@ -131,11 +131,9 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
         let wayland_surface = w.get_wayland_surface().unwrap();
         debug!("wayland display is {}; wayland surface is {}", wayland_display as usize, wayland_surface as usize);
         let create_info = VkWaylandSurfaceCreateInfoKHR {
-            sType: VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
-            pNext: vk_null(),
-            flags: VkFlags::NONE,
             display: wayland_display as *mut vk_platform::wayland::wl_display,
             surface: wayland_surface as *mut vk_platform::wayland::wl_surface,
+            ..Default::default()
         };
         let surface = vkCreateWaylandSurfaceKHR(instance, &create_info, None)?;
         debug!("created wayland surface {:?}", surface);
@@ -144,11 +142,9 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
         let xlib_window = w.get_xlib_window().unwrap();
         debug!("xlib display is {}; xlib window is {}", xlib_display as usize, xlib_window as usize);
         let create_info = VkXlibSurfaceCreateInfoKHR {
-            sType: VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-            pNext: vk_null(),
-            flags: VkFlags::NONE,
             dpy: xlib_display as *mut vk_platform::xlib::Display,
             window: xlib_window as vk_platform::xlib::Window,
+            ..Default::default()
         };
         let surface = vkCreateXlibSurfaceKHR(instance, &create_info, None)?;
         debug!("created xlib surface {:?}", surface);
@@ -157,11 +153,9 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
         let xcb_window = w.get_xlib_window().unwrap();
         debug!("xcb connection is {}; xcb window is {}", xcb_connection as usize, xcb_window as usize);
         let create_info = VkXcbSurfaceCreateInfoKHR {
-            sType: VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
-            pNext: vk_null(),
-            flags: 0,
             connection: xcb_connection as *mut vk_platform::xcb::xcb_connection_t,
             window: xcb_window as vk_platform::xcb::xcb_window_t,
+            ..Default::default()
         };
         let surface = vkCreateXcbSurfaceKHR(instance, &create_info, None)?;
         debug!("created xcb surface {:?}", surface);
@@ -176,10 +170,8 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurf
 fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResultObj<VkSurfaceKHR> {
     use kernel32;
     let create_info = VkAndroidSurfaceCreateInfoKHR {
-        sType: VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         window: w.get_native_window() as *mut vk_platform::android::ANativeWindow,
+        ..Default::default()
     };
     let surface = vkCreateAndroidSurfaceKHR(instance, &create_info, None)?;
     debug!("created android surface {:?}", surface);
@@ -236,23 +228,18 @@ fn create_instance(app_aame: &str, exts: &[&str]) -> VkResultObj<VkInstance> {
     let exts: Vec<CString> = exts.iter().map(|s| CString::new(*s).unwrap()).collect();
     let exts_p: Vec<*const c_char> = exts.iter().map(|s| s.as_ptr()).collect();
     let app_info = VkApplicationInfo {
-        sType: VK_STRUCTURE_TYPE_APPLICATION_INFO,
-        pNext: vk_null(),
         pApplicationName: app_aame.as_ptr(),
         applicationVersion: VkVersion::new(1, 0, 0).into(),
         pEngineName: app_aame.as_ptr(),
         engineVersion: VkVersion::new(1, 0, 0).into(),
         apiVersion: VK_API_VERSION_1_0.into(),
+        ..Default::default()
     };
     let create_info = VkInstanceCreateInfo {
-        sType: VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         pApplicationInfo: &app_info,
-        enabledLayerCount: 0,
-        ppEnabledLayerNames: vk_null(),
         enabledExtensionCount: exts_p.len() as u32,
         ppEnabledExtensionNames: exts_p.as_ptr(),
+        ..Default::default()
     };
     let instance = vkCreateInstance(&create_info, None)?;
     debug!("created instalce {:?}", instance);
@@ -390,24 +377,17 @@ fn create_logical_device(physical_device: VkPhysicalDevice, queue_family_indices
     let queue_priorities = [0.0f32];
     let queue_create_info : Vec<VkDeviceQueueCreateInfo> = queue_family_indices.iter()
         .map(|family_index| VkDeviceQueueCreateInfo {
-            sType: VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-            pNext: vk_null(),
-            flags: VkFlags::NONE,
             queueCount: queue_priorities.len() as u32,
             pQueuePriorities: queue_priorities.as_ptr(),
             queueFamilyIndex: *family_index,
+            ..Default::default()
         }).collect();
     let device_create_info = VkDeviceCreateInfo{
-        sType: VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         queueCreateInfoCount: queue_create_info.len() as u32,
         pQueueCreateInfos: queue_create_info.as_ptr(),
-        enabledLayerCount: 0,
-        ppEnabledLayerNames: vk_null(),
         enabledExtensionCount: exts_p.len() as u32,
         ppEnabledExtensionNames: exts_p.as_ptr(),
-        pEnabledFeatures: vk_null(),
+        ..Default::default()
     };
     let device = vkCreateDevice(physical_device, &device_create_info, None)?;
     debug!("created device {:?}", device);
@@ -420,9 +400,6 @@ fn create_swapchain(device: VkDevice, surface: VkSurfaceKHR, details: &DeviceIni
         image_count = details.surface_capabilities.maxImageCount;
     }
     let mut create_info = VkSwapchainCreateInfoKHR{
-        sType: VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         surface: surface,
         minImageCount: image_count,
         imageFormat: details.surface_format.format,
@@ -431,13 +408,12 @@ fn create_swapchain(device: VkDevice, surface: VkSurfaceKHR, details: &DeviceIni
         imageArrayLayers: 1,
         imageUsage: VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT.flags(),
         imageSharingMode: VK_SHARING_MODE_EXCLUSIVE,
-        queueFamilyIndexCount: 0,
-        pQueueFamilyIndices: vk_null(),
         preTransform: details.surface_capabilities.currentTransform,
         compositeAlpha: VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
         presentMode: details.surface_present_mode,
         clipped: VK_TRUE,
         oldSwapchain: old_swapchain,
+        ..Default::default()
     };
     if details.queue_family_indices[0] != details.queue_family_indices[1] {
         create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
@@ -453,9 +429,6 @@ fn create_swapchain_image_views(device: VkDevice, details: &DeviceInitialization
     let mut image_views : Vec<VkImageView> = Vec::with_capacity(images.len());
     for image in images {
         let create_info = VkImageViewCreateInfo{
-            sType: VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-            pNext: vk_null(),
-            flags: VkFlags::NONE,
             image: *image,
             viewType: VK_IMAGE_VIEW_TYPE_2D,
             format: details.surface_format.format,
@@ -472,6 +445,7 @@ fn create_swapchain_image_views(device: VkDevice, details: &DeviceInitialization
                 baseArrayLayer: 0,
                 layerCount: 1,
             },
+            ..Default::default()
         };
         image_views.push(vkCreateImageView(device, &create_info, None)?);
     }
@@ -495,8 +469,7 @@ fn create_shader_module(device: VkDevice, data: &[u8]) -> VkResultObj<VkShaderMo
 fn create_render_pass(device: VkDevice, format: VkFormat) -> VkResultObj<VkRenderPass> {
     let color_attachments = [
         VkAttachmentDescription{
-            flags: VkFlags::NONE,
-            format: format,
+            format,
             samples: VK_SAMPLE_COUNT_1_BIT,
             loadOp: VK_ATTACHMENT_LOAD_OP_CLEAR,
             storeOp: VK_ATTACHMENT_STORE_OP_STORE,
@@ -504,38 +477,30 @@ fn create_render_pass(device: VkDevice, format: VkFormat) -> VkResultObj<VkRende
             stencilStoreOp: VK_ATTACHMENT_STORE_OP_DONT_CARE,
             initialLayout: VK_IMAGE_LAYOUT_UNDEFINED,
             finalLayout: VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+            ..Default::default()
         },
     ];
     let color_attachment_refs1 = [
         VkAttachmentReference{
             attachment: 0,
             layout: VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+            ..Default::default()
         },
     ];
     let subpasses = [
         VkSubpassDescription{
-            flags: VkFlags::NONE,
             pipelineBindPoint: VK_PIPELINE_BIND_POINT_GRAPHICS,
-            inputAttachmentCount: 0,
-            pInputAttachments: vk_null(),
             colorAttachmentCount: color_attachment_refs1.len() as u32,
             pColorAttachments: color_attachment_refs1.as_ptr(),
-            pResolveAttachments: vk_null(),
-            pDepthStencilAttachment: vk_null(),
-            preserveAttachmentCount: 0,
-            pPreserveAttachments: vk_null(),
+            ..Default::default()
         },
     ];
     let create_info = VkRenderPassCreateInfo{
-        sType: VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         attachmentCount: color_attachments.len() as u32,
         pAttachments: color_attachments.as_ptr(),
         subpassCount: subpasses.len() as u32,
         pSubpasses: subpasses.as_ptr(),
-        dependencyCount: 0,
-        pDependencies: vk_null(),
+        ..Default::default()
     };
     let render_pass = vkCreateRenderPass(device, &create_info, None)?;
     debug!("created render pass {:?}", render_pass);
@@ -544,13 +509,7 @@ fn create_render_pass(device: VkDevice, format: VkFormat) -> VkResultObj<VkRende
 
 fn create_pipeline_layout(device: VkDevice) -> VkResultObj<VkPipelineLayout> {
     let create_info = VkPipelineLayoutCreateInfo{
-        sType: VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
-        setLayoutCount: 0,
-        pSetLayouts: vk_null(),
-        pushConstantRangeCount: 0,
-        pPushConstantRanges: vk_null(),
+        ..Default::default()
     };
     let pipeline_layout = vkCreatePipelineLayout(device, &create_info, None)?;
     debug!("created pipeline layout {:?}", pipeline_layout);
@@ -566,44 +525,29 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
     ));
     let shader_stage_create_infos = [
         VkPipelineShaderStageCreateInfo{
-            sType: VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-            pNext: vk_null(),
-            flags: VkFlags::NONE,
             stage: VK_SHADER_STAGE_VERTEX_BIT,
             module: vert_shader_module,
-            pName: "main\0".as_ptr() as *const c_char,
+            pName: b"main\0".as_ptr() as *const c_char,
             pSpecializationInfo: vk_null(),
+            ..Default::default()
         },
         VkPipelineShaderStageCreateInfo{
-            sType: VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-            pNext: vk_null(),
-            flags: VkFlags::NONE,
             stage: VK_SHADER_STAGE_FRAGMENT_BIT,
             module: frag_shader_module,
-            pName: "main\0".as_ptr() as *const c_char,
+            pName: b"main\0".as_ptr() as *const c_char,
             pSpecializationInfo: vk_null(),
+            ..Default::default()
         },
     ];
     let vertex_input_create_info = VkPipelineVertexInputStateCreateInfo{
-        sType: VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
-        vertexBindingDescriptionCount: 0,
-        pVertexBindingDescriptions: vk_null(),
-        vertexAttributeDescriptionCount: 0,
-        pVertexAttributeDescriptions: vk_null(),
+        ..Default::default()
     };
     let input_asselbly_create_info = VkPipelineInputAssemblyStateCreateInfo{
-        sType: VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         topology: VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
         primitiveRestartEnable: VK_FALSE,
+        ..Default::default()
     };
     let viewport_state_create_info = VkPipelineViewportStateCreateInfo{
-        sType: VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         viewportCount: 1,
         pViewports: &VkViewport{
             x: 0.0, y: 0.0,
@@ -615,32 +559,18 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
             offset: VkOffset2D{x: 0, y: 0},
             extent: extent,
         },
+        ..Default::default()
     };
     let rasterizer_create_info = VkPipelineRasterizationStateCreateInfo{
-        sType: VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
-        depthClampEnable: VK_FALSE,
-        rasterizerDiscardEnable: VK_FALSE,
         polygonMode: VK_POLYGON_MODE_FILL,
         cullMode: VK_CULL_MODE_BACK_BIT.flags(),
         frontFace: VK_FRONT_FACE_CLOCKWISE,
-        depthBiasEnable: VK_FALSE,
-        depthBiasConstantFactor: 0.0,
-        depthBiasClamp: 0.0,
-        depthBiasSlopeFactor: 0.0,
         lineWidth: 1.0,
+        ..Default::default()
     };
     let multisample_create_info = VkPipelineMultisampleStateCreateInfo{
-        sType: VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         rasterizationSamples: VK_SAMPLE_COUNT_1_BIT,
-        sampleShadingEnable: VK_FALSE,
-        minSampleShading: 0.0,
-        pSampleMask: vk_null(),
-        alphaToCoverageEnable: VK_FALSE,
-        alphaToOneEnable: VK_FALSE,
+        ..Default::default()
     };
     let color_blend_attachements = [
         VkPipelineColorBlendAttachmentState{
@@ -655,19 +585,14 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
         },
     ];
     let color_blending_create_info = VkPipelineColorBlendStateCreateInfo{
-        sType: VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         logicOpEnable: VK_FALSE,
         logicOp: VK_LOGIC_OP_COPY,
         attachmentCount: color_blend_attachements.len() as u32,
         pAttachments: color_blend_attachements.as_ptr(),
         blendConstants: [0.0, 0.0, 0.0, 0.0],
+        ..Default::default()
     };
     let depth_stencli_create_info = VkPipelineDepthStencilStateCreateInfo{
-        sType: VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
         depthTestEnable: VK_FALSE,
         depthWriteEnable: VK_FALSE,
         depthCompareOp: VK_COMPARE_OP_LESS_OR_EQUAL,
@@ -678,27 +603,19 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
             passOp: VK_STENCIL_OP_KEEP,
             depthFailOp: VK_STENCIL_OP_KEEP,
             compareOp: VK_COMPARE_OP_ALWAYS,
-            compareMask: 0,
-            writeMask: 0,
-            reference: 0,
+            ..Default::default()
         },
         back: VkStencilOpState{
             failOp: VK_STENCIL_OP_KEEP,
             passOp: VK_STENCIL_OP_KEEP,
             depthFailOp: VK_STENCIL_OP_KEEP,
             compareOp: VK_COMPARE_OP_ALWAYS,
-            compareMask: 0,
-            writeMask: 0,
-            reference: 0,
+            ..Default::default()
         },
-        minDepthBounds: 0.0,
-        maxDepthBounds: 0.0,
+        ..Default::default()
     };
     let create_infos = [
         VkGraphicsPipelineCreateInfo{
-            sType: VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
-            pNext: vk_null(),
-            flags: VkFlags::NONE,
             stageCount: shader_stage_create_infos.len() as u32,
             pStages: shader_stage_create_infos.as_ptr(),
             pVertexInputState: &vertex_input_create_info,
@@ -715,6 +632,7 @@ fn create_graphics_pipeline(device: VkDevice, layout: VkPipelineLayout, render_p
             subpass: 0,
             basePipelineHandle: vk_null_handle(),
             basePipelineIndex: -1,
+            ..Default::default()
         },
     ];
     debug!("create graphics pipeline...");
@@ -737,15 +655,13 @@ fn create_swapchain_framebuffers(device: VkDevice, render_pass: VkRenderPass, ex
     for image_view in image_views {
         let attachments = [*image_view];
         let create_info = VkFramebufferCreateInfo{
-            sType: VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-            pNext: vk_null(),
-            flags: VkFlags::NONE,
             renderPass: render_pass,
             attachmentCount: attachments.len() as u32,
             pAttachments: attachments.as_ptr(),
             width: extent.width,
             height: extent.height,
             layers: 1,
+            ..Default::default()
         };
         framebuffers.push(vkCreateFramebuffer(device, &create_info, None)?);
     }
@@ -767,11 +683,10 @@ fn create_command_pool(device: VkDevice, graphics_family: u32) -> VkResultObj<Vk
 
 fn init_command_buffer(device: VkDevice, command_pool: VkCommandPool) -> VkResultObj<VkCommandBuffer> {
     let create_info = VkCommandBufferAllocateInfo{
-        sType: VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-        pNext: vk_null(),
         commandPool: command_pool,
         level: VK_COMMAND_BUFFER_LEVEL_PRIMARY,
         commandBufferCount: 1,
+        ..Default::default()
     };
     let commabd_buffer = vkAllocateCommandBuffers(device, &create_info)?;
     debug!("created command buffer {:?}", commabd_buffer);
@@ -780,9 +695,7 @@ fn init_command_buffer(device: VkDevice, command_pool: VkCommandPool) -> VkResul
 
 fn create_semaphore(device: VkDevice) -> VkResultObj<VkSemaphore> {
     let create_info = VkSemaphoreCreateInfo{
-        sType: VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
-        pNext: vk_null(),
-        flags: VkFlags::NONE,
+        ..Default::default()
     };
     let semaphore = vkCreateSemaphore(device, &create_info, None)?;
     debug!("created semaphore {:?}", semaphore);
@@ -836,15 +749,10 @@ impl Application {
         self.image_index.set(image_index);
 
         vkBeginCommandBuffer(self.command_buffer, &VkCommandBufferBeginInfo{
-            sType: VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-            pNext: vk_null(),
-            flags: VkFlags::NONE,
-            pInheritanceInfo: vk_null(),
+            ..Default::default()
         })?;
 
         vkCmdBeginRenderPass(self.command_buffer, &VkRenderPassBeginInfo{
-            sType: VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-            pNext: vk_null(),
             renderPass: self.render_pass,
             framebuffer: self.swapchain_framebuffers[image_index as usize],
             renderArea: VkRect2D{
@@ -853,6 +761,7 @@ impl Application {
             },
             clearValueCount: 1,
             pClearValues: &VkClearValue::from_color(VkClearColorValue::from_float32([0.0, 0.0, 0.0, 1.0])),
+            ..Default::default()
         }, VK_SUBPASS_CONTENTS_INLINE);
 
         vkCmdBindPipeline(self.command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, self.pipeline);
@@ -875,8 +784,6 @@ impl Application {
 
         let submit_info = [
             VkSubmitInfo{
-                sType: VK_STRUCTURE_TYPE_SUBMIT_INFO,
-                pNext: vk_null(),
                 waitSemaphoreCount: wait_semaphores.len() as u32,
                 pWaitSemaphores: wait_semaphores.as_ptr(),
                 pWaitDstStageMask: wait_stages.as_ptr(),
@@ -884,6 +791,7 @@ impl Application {
                 pCommandBuffers: &self.command_buffer,
                 signalSemaphoreCount: signal_semaphores.len() as u32,
                 pSignalSemaphores: signal_semaphores.as_ptr(),
+                ..Default::default()
             }
         ];
         vkQueueSubmit(self.queues[GRAPHIC_QUEUE], &submit_info, vk_null_handle())?;
@@ -891,14 +799,13 @@ impl Application {
         let image_index = self.image_index.get();
 
         let present_info = VkPresentInfoKHR {
-            sType: VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-            pNext: vk_null(),
             waitSemaphoreCount: signal_semaphores.len() as u32,
             pWaitSemaphores: signal_semaphores.as_ptr(),
             swapchainCount: 1,
             pSwapchains: &self.swapchain,
             pImageIndices: &image_index,
             pResults: vk_null(),
+            ..Default::default()
         };
         let _ = vkQueuePresentKHR(self.queues[PRESENT_QUEUE], &present_info)?; // ignore VK_SUBOPTIMAL_KHR
 

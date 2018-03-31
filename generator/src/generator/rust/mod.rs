@@ -253,7 +253,24 @@ impl VariantValue {
 }
 
 const TYPE_FORMAT_SAFE : u32 = 0x01;
-const TYPE_FORMAT_LIFETIME : u32 = 0; // disabled. originnal value: 0x02;
+const TYPE_FORMAT_LIFETIME : u32 = 0x02;
+const TYPE_FORMAT_NO_OPTION : u32 = 0x04;
+
+fn get_lifetimes(flags: u32, format: u32) -> &'static[&'static str] {
+    if (format & TYPE_FORMAT_LIFETIME) == 0 {
+        return &[];
+    }
+    // if (flags & TF_CONTAINS_HANDLE) != 0 && (flags & TF_CONTAINS_REFERENCE) != 0 {
+    //     return &["'l", "'h"];
+    // }
+    // if (flags & TF_CONTAINS_HANDLE) != 0 {
+    //     return &["'h"];
+    // }
+    if (flags & TF_CONTAINS_REFERENCE) != 0 {
+        return &["'l"];
+    }
+    &[]
+}
 
 fn format_named_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &str, format: u32) -> fmt::Result {
     for &(c_type, r_type) in &BUILTIN_TYPES {
@@ -263,8 +280,9 @@ fn format_named_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &str, fo
         }
     }
     write!(w, "{}", ty)?;
-    if (format & TYPE_FORMAT_LIFETIME) != 0 && (sel.get_type_flags(ty) & TF_CONTAINS_HANDLE) != 0 {
-        write!(w, "<'l>")?;
+    let lifetime = get_lifetimes(sel.get_type_flags(ty), format);
+    if !lifetime.is_empty() {
+        write!(w, "<{}>", lifetime.join(","))?;
     }
     Ok(())
 }
@@ -315,10 +333,6 @@ fn format_type_ref<W: fmt::Write>(w: &mut W, sel: &Selection, ty: &TypeReference
     }
     format_named_type_ref(w, sel, ty.type_name.as_str(), format)
 }
-
-// impl EnumGroupDefinition {
-//     pub fn 
-// }
 
 fn named_type_ref(sel: &Selection, ty: &str, format: u32) -> String {
     let mut w = String::new();
@@ -456,20 +470,50 @@ fn get_safe_params<'l>(sel: &Selection, cmd: &'l CommandDefinition, style: &Rust
             length_for = Vec::new();
         }
 
-        let (safe_type, tmp_var, value) = safe_param_type_ref(name.as_str(), sel, cmd, param, format);
+        let (safe_type, tmp_var, value) = safe_param_type_ref(name.as_str(), sel, param, format);
 
         params_and_lengths.push(SafeParamInfoEntry{param, length_for, length_param, name, safe_type, tmp_var, set_length: None, value});
     }
     (params_and_lengths, result)
 }
 
+fn get_safe_members<'l>(sel: &Selection, parameters: &'l[ParameterDefinition], style: &RustCodeStyle, format: u32) -> Vec<SafeParamInfoEntry<'l>>
+{
+    let param_names = get_param_name_map(parameters);
+    let param_lengths = get_param_length_map(parameters);
+    let mut params_and_lengths: Vec<SafeParamInfoEntry<'l>> = Vec::new();
+    for param in parameters.into_iter() {
+        let length_param;
+        if let Some(ref l) = param.len {
+            if let Some(p) = param_names.get(l.as_str()) {
+                length_param = Some(*p);
+            } else {
+                length_param = None;
+            }
+        } else {
+            length_param = None;
+        }
+        let name = style.param_name(&param.name);
+        let length_for;
+        if let Some(v) = param_lengths.get(param.name.as_str()) {
+            length_for = v.clone()
+        } else {
+            length_for = Vec::new();
+        }
 
-fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition, param: &ParameterDefinition, format: u32) -> (String,Option<String>,String) {
+        let (safe_type, tmp_var, value) = safe_param_type_ref(name.as_str(), sel, param, format);
+
+        params_and_lengths.push(SafeParamInfoEntry{param, length_for, length_param, name, safe_type, tmp_var, set_length: None, value});
+    }
+    params_and_lengths
+}
+
+fn safe_param_type_ref(param_name: &str, sel: &Selection, param: &ParameterDefinition, format: u32) -> (String,Option<String>,String) {
     let ty = &param.base_type;
     if ty.modifiers.ends_with(&[TypeModifier::Const, TypeModifier::Pointer]) {
         match param.len {
             Some(ref len) if ty.modifiers.len()==2 && len == "null-terminated" && param.base_type.type_name == "char"=> {
-                if param.optional {
+                if param.optional && (format & TYPE_FORMAT_NO_OPTION) == 0 {
                     let arg_type = "Option<&str>".to_owned();
                     let tmp_var = format!("let {0} = {0}.map(|s| CString::from_vec_unchecked(s.into()));\nlet {0} = {0}.map(|s|s.as_ptr()).unwrap_or(ptr::null());", param_name);
                     let get_arg = format!("{}", param_name);
@@ -493,7 +537,7 @@ fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition,
                 };
 
                 if let Ok(len) = len.parse::<i64>() {
-                    let arg_type = if param.optional {
+                    let arg_type = if param.optional && (format & TYPE_FORMAT_NO_OPTION) == 0 {
                         format!("Option<&[{};{}]>", base_type, len)
                     } else {
                         format!("&[{};{}]", base_type, len)
@@ -501,7 +545,7 @@ fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition,
                     let get_arg = format!("mem::transmute({})", param_name);
                     return (arg_type, None, get_arg);
                 } else {
-                    let arg_type = if param.optional {
+                    let arg_type = if param.optional && (format & TYPE_FORMAT_NO_OPTION) == 0 {
                         format!("Option<&[{}]>", base_type)
                     } else {
                         format!("&[{}]", base_type)
@@ -516,7 +560,7 @@ fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition,
             }
             _ => {
                 let base_type = named_type_ref(sel, ty.type_name.as_str(), format);
-                if param.optional {
+                if param.optional && (format & TYPE_FORMAT_NO_OPTION) == 0 {
                     let arg_type = format!("Option<&{}>", base_type);
                     let get_arg = format!("mem::transmute({})", param_name);
                     return (arg_type, None, get_arg);
@@ -537,7 +581,7 @@ fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition,
                 };
 
                 if let Ok(len) = len.parse::<i64>() {
-                    let arg_type = if param.optional {
+                    let arg_type = if param.optional && (format & TYPE_FORMAT_NO_OPTION) == 0 {
                         format!("Option<&mut[{};{}]>", base_type, len)
                     } else {
                         format!("&mut[{};{}]", base_type, len)
@@ -545,12 +589,12 @@ fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition,
                     let get_arg = format!("mem::transmute({})", param_name);
                     return (arg_type, None, get_arg);
                 } else {
-                    let arg_type = if param.optional {
+                    let arg_type = if param.optional && (format & TYPE_FORMAT_NO_OPTION) == 0 {
                         format!("Option<&mut[{}]>", base_type)
                     } else {
                         format!("&mut[{}]", base_type)
                     };
-                    let get_arg = if ty.type_name == "void" {
+                    let get_arg = if ty.type_name == "void" || ty.modifiers.len()>2 || !get_lifetimes(sel.get_type_flags(&ty.type_name), TYPE_FORMAT_LIFETIME).is_empty() {
                         format!("mem::transmute({}.as_mut_ptr())", param_name)
                     } else {
                         format!("{}.as_mut_ptr()", param_name)
@@ -560,19 +604,28 @@ fn safe_param_type_ref(param_name: &str, sel: &Selection, _: &CommandDefinition,
             }
             _ => {
                 let base_type = named_type_ref(sel, ty.type_name.as_str(), format);
-                if param.optional {
+                if param.optional && (format & TYPE_FORMAT_NO_OPTION) == 0 {
                     let arg_type = format!("Option<&mut {}>", base_type);
                     let get_arg = format!("mem::transmute({})", param_name);
                     return (arg_type, None, get_arg);
                 } else {
                     let arg_type = format!("&mut {}", base_type);
-                    return (arg_type, None, param_name.to_owned());
+                    if !get_lifetimes(sel.get_type_flags(&ty.type_name), TYPE_FORMAT_LIFETIME).is_empty() {
+                        let tmp_var = format!("let {0} = {0}.as_raw_mut();", param_name);
+                        return (arg_type, Some(tmp_var), param_name.to_owned());
+                    } else {
+                        return (arg_type, None, param_name.to_owned());
+                    }
                 }
             }
         }
     }
-
-    return (def_type_ref(sel, param, format), None, param_name.to_owned());
+    let arg_type = def_type_ref(sel, param, format);
+    if !get_lifetimes(sel.get_type_flags(&ty.type_name), TYPE_FORMAT_LIFETIME).is_empty() {
+        let tmp_var = format!("let {0} : raw_types::{1} = mem::transmute({0});", param_name, arg_type);
+        return (arg_type, Some(tmp_var), param_name.to_owned());
+    }
+    return (arg_type, None, param_name.to_owned());
 }
 
 fn norm_snake_kw(name: &str, kw_prefix: &str) -> String {

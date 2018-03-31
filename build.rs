@@ -130,6 +130,8 @@ fn generate_vulkan_bindings() {
             strip_api_prefix: false,
             use_feature_modules: true,
             snake_case_commands: false,
+            types_module: "types",
+            cmds_module: "cmds",
         };
         selection.generate(&mut gen, &mut out_file).expect("generate prelude");
     }
