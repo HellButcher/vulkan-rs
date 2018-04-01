@@ -1,97 +1,99 @@
-/*
-**  Copyright (c) 2016, Christoph Hommelsheim
-**  All rights reserved.
-**
-**  Redistribution and use in source and binary forms, with or without
-**  modification, are permitted provided that the following conditions are met:
-**
-**  * Redistributions of source code must retain the above copyright notice, this
-**    list of conditions and the following disclaimer.
-**
-**  * Redistributions in binary form must reproduce the above copyright notice,
-**    this list of conditions and the following disclaimer in the documentation
-**    and/or other materials provided with the distribution.
-**
-**  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-**  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-**  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-**  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-**  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-**  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-**  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-**  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-**  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-**  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-**
-*/
+#[doc(no_inline)]
+pub use std::os::raw::{c_char, c_int, c_void};
 
-//! Types used by the window-system-interface.
+#[doc(no_inline)]
+pub use std::ffi::CStr;
 
-#[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-pub mod xlib {
-    use std::os::raw::c_void;
+#[doc(no_inline)]
+pub use utils::vk_make_version;
 
-    pub type Display = c_void;
+pub mod wsi {
+
+  #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
+  pub mod xlib {
+
+    #[doc(hidden)]
+    pub enum Display__ {}
+    pub type Display = Display__;
+
     pub type Window = u32;
     pub type VisualID = u32;
     pub type RROutput = u32;
-}
-#[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-pub mod xcb {
+  }
+
+  #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
+  pub mod xcb {
     #![allow(non_camel_case_types)]
 
-    use std::os::raw::c_void;
+    #[doc(hidden)]
+    pub enum xcb_connection_t__ {}
+    pub type xcb_connection_t = xcb_connection_t__;
 
-    pub type xcb_connection_t = c_void;
     pub type xcb_visualid_t = u32;
     pub type xcb_window_t = u32;
-}
-#[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-pub mod android {
-    use std::os::raw::c_void;
+  }
 
-    pub type ANativeWindow = c_void;
-}
-#[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-pub mod mir {
-    use std::os::raw::c_void;
+  #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
+  pub mod android {
 
-    pub type MirConnection = c_void;
-    pub type MirSurface = c_void;
-}
-#[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-pub mod wayland {
+    #[doc(hidden)]
+    pub enum ANativeWindow__ {}
+    pub type ANativeWindow = ANativeWindow__;
+  }
+
+  #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
+  pub mod mir {
+
+    #[doc(hidden)]
+    pub enum MirConnection__ {}
+    pub type MirConnection = MirConnection__;
+
+    #[doc(hidden)]
+    pub enum MirSurface__ {}
+    pub type MirSurface = MirSurface__;
+  }
+
+  #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
+  pub mod wayland {
+    #![allow(non_camel_case_types)]
+
+    #[doc(hidden)]
+    pub enum wl_display__ {}
+    pub type wl_display = wl_display__;
+
+    #[doc(hidden)]
+    pub enum wl_surface__ {}
+    pub type wl_surface = wl_surface__;
+  }
+
+  #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+  pub mod win32 {
     #![allow(non_camel_case_types)]
 
     use std::os::raw::c_void;
 
-    pub type wl_display = c_void;
-    pub type wl_surface = c_void;
-}
-#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub mod win32 {
-    #![allow(non_camel_case_types)]
-
-    use std::os::raw::c_void;
-
-    pub type HANDLE = usize;
-    pub type HINSTANCE = HANDLE;
-    pub type HWND = HANDLE;
-    pub type SECURITY_ATTRIBUTES = c_void;
+    pub type BOOL = i32;
     pub type DWORD = u32;
-    pub type LPCWSTR = *const u16;
-}
-pub mod _all {
-    #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-    pub use platform::xlib::*;
-    #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-    pub use platform::xcb::*;
-    #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-    pub use platform::android::*;
-    #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-    pub use platform::mir::*;
-    #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-    pub use platform::wayland::*;
-    #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-    pub use platform::win32::*;
+    pub type WCHAR = u16;
+    pub type LPVOID = *mut c_void;
+    pub type LPCWSTR = *const WCHAR;
+
+    pub type HANDLE = *mut c_void;
+
+    #[doc(hidden)]
+    pub enum HINSTANCE__ {}
+    pub type HINSTANCE = *mut HINSTANCE__;
+
+    #[doc(hidden)]
+    pub enum HWND__ {}
+    pub type HWND = *mut HWND__;
+
+    #[doc(hidden)]
+    pub struct SECURITY_ATTRIBUTES__ {
+      pub nLength: DWORD,
+      pub lpSecurityDescriptor: LPVOID,
+      pub bInheritHandle: BOOL,
+    }
+    pub type SECURITY_ATTRIBUTES = SECURITY_ATTRIBUTES__;
+  }
 }

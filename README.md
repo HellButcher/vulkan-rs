@@ -1,4 +1,5 @@
 # `vulkan_rs`
+
 Vulkan bindings for the rust programming language.
 
 [![Build Status](https://travis-ci.org/HellButcher/vulkan-rs.svg?branch=master)](https://travis-ci.org/HellButcher/vulkan-rs)
@@ -26,32 +27,23 @@ vulkan_rs = "0.4"
 
 ```rust
 extern crate vulkan_rs;
-[...]
+
 use vulkan_rs::prelude::*;
-[...]
+
 fn main() {
-  [...]
-  let app_aame = CString::new("Application name").unwrap();
-  let app_info = VkApplicationInfo {
-      sType: VK_STRUCTURE_TYPE_APPLICATION_INFO,
-      pNext: vk_null(),
-      pApplicationName: app_aame.as_ptr(),
-      applicationVersion: 1,
-      pEngineName: app_aame.as_ptr(),
-      engineVersion: 1,
-      apiVersion: VK_API_VERSION_1_0,
-  };
-  let create_info = VkInstanceCreateInfo {
-      sType: VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-      pNext: vk_null(),
-      flags: 0,
-      pApplicationInfo: &app_info,
-      enabledLayerCount: 0,
-      ppEnabledLayerNames: vk_null(),
-      enabledExtensionCount: 0,
-      ppEnabledExtensionNames: vk_null(),
-  };
+  let app_name = CString::new("Application name").unwrap();
+  let app_info = VkApplicationInfo::new()
+    .set_application_name(Some(&app_name))
+    .set_application_version(vk_make_version(1, 0, 0))
+    .set_engine_name(Some(&app_name))
+    .set_engine_version(vk_make_version(1, 0, 0))
+    .set_api_version(VK_API_VERSION_1_0);
+  let create_info = VkInstanceCreateInfo::new()
+    .set_application_info(Some(&app_info));
   let instance = vkCreateInstance(&create_info, None).unwrap();
-  [...]
+  let phys_devices = vkEnumeratePhysicalDevices(instance).unwrap();
+  println!("There are {} physical devices", phys_devices.len());
+  // [...]
+  vkDestroyInstance(instance, None);
 }
 ```

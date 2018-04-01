@@ -1,248 +1,265 @@
-/*
-**  Copyright (c) 2016, Christoph Hommelsheim
-**  All rights reserved.
-**
-**  Redistribution and use in source and binary forms, with or without
-**  modification, are permitted provided that the following conditions are met:
-**
-**  * Redistributions of source code must retain the above copyright notice, this
-**    list of conditions and the following disclaimer.
-**
-**  * Redistributions in binary form must reproduce the above copyright notice,
-**    this list of conditions and the following disclaimer in the documentation
-**    and/or other materials provided with the distribution.
-**
-**  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-**  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-**  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-**  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-**  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-**  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-**  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-**  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-**  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-**  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-**
-*/
+#![cfg_attr(nightly, feature(core))]
+#![cfg_attr(nightly, feature(nonzero))]
 
-//! Vulkan bindings for the rust programming language.
-//!
-//! # Usage
-//!
-//! ```rust,no_run
-//! extern crate vulkan_rs;
-//! use vulkan_rs::prelude::vk_version_1_0::*;
-//! use std::ffi::CString;
-//!
-//! fn main() {
-//!     let app_aame = CString::new("Application name").unwrap();
-//!     let app_info = VkApplicationInfo {
-//!         sType: VK_STRUCTURE_TYPE_APPLICATION_INFO,
-//!         pNext: vk_null(),
-//!         pApplicationName: app_aame.as_ptr(),
-//!         applicationVersion: VkVersion::new(1,0,0).into(),
-//!         pEngineName: app_aame.as_ptr(),
-//!         engineVersion: VkVersion::new(1,0,0).into(),
-//!         apiVersion: VK_API_VERSION_1_0.into(),
-//!     };
-//!     let create_info = VkInstanceCreateInfo {
-//!         sType: VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-//!         pNext: vk_null(),
-//!         flags: VkFlags::NONE,
-//!         pApplicationInfo: &app_info,
-//!         enabledLayerCount: 0,
-//!         ppEnabledLayerNames: vk_null(),
-//!         enabledExtensionCount: 0,
-//!         ppEnabledExtensionNames: vk_null(),
-//!     };
-//!     let instance = vkCreateInstance(&create_info, None).unwrap();
-//!     println!("created instance {:?}", instance);
-//!     // ...
-//!     vkDestroyInstance(instance, None);
-//! }
-//! ```
-
-
-
-#[macro_use]
-extern crate log;
-
-#[macro_use]
-extern crate lazy_static;
+#[cfg(nightly)]
+extern crate core;
 
 #[cfg(unix)]
 extern crate libc;
 
 #[cfg(windows)]
-extern crate winapi;
-#[cfg(windows)]
 extern crate kernel32;
+#[cfg(windows)]
+extern crate winapi;
 
-/// Construct an API version number.
-///
-/// This macro can be used when constructing the `VkApplicationInfo.apiVersion` parameter passed to `vkCreateInstance`.
+#[macro_use]
+extern crate bitflags;
+
+use std::os::raw::c_char;
+use std::ffi::CStr;
+
+#[cfg(test)]
+macro_rules! assert_eq {
+    ($expected:expr, $actual:expr) => {
+        {
+            let expected = $expected;
+            let actual = $actual;
+            assert!(expected == actual, "{}: expected = {:?}, actual = {:?}", stringify!($actual), expected, actual);
+        }
+    };
+}
+
+#[cfg(test)]
+macro_rules! assert_size {
+    ($expected:ty, $actual:ty) => {
+        {
+            let expected = ::std::mem::size_of::<$expected>();
+            let actual = ::std::mem::size_of::<$actual>();
+            assert!(expected == actual, "{}: expected size = {:?}, actual = {:?}", stringify!($actual), expected, actual);
+        }
+    };
+    ($expected:expr, $actual:ty) => {
+        {
+            let expected : usize = $expected;
+            let actual = ::std::mem::size_of::<$actual>();
+            assert!(expected == actual, "{}: expected size = {:?}, actual = {:?}", stringify!($actual), expected, actual);
+        }
+    };
+}
+
+macro_rules! define_enum {
+  (
+    $(#[$outer:meta])*
+    pub enum $name:ident {
+      $(
+        $(#[$inner:ident $($args:tt)*])*
+        $item:ident = $value:expr
+      ),+
+    }
+  ) => {
+    $(#[$outer])*
+    #[repr(u32)]
+    #[allow(non_camel_case_types)]
+    #[derive(Copy,Clone,PartialEq,Eq,PartialOrd,Ord,Hash,Debug)]
+    pub enum $name {
+      $(
+        $(#[$inner $($args)*])*
+        $item = $value
+      ),+
+    }
+    impl $crate::Primitive for $name {}
+  };
+}
+
+macro_rules! define_bitmask {
+  (
+    $(#[$outer:meta])*
+    pub enum $name:ident {
+      $(
+        $(#[$inner:ident $($args:tt)*])*
+        $item:ident = $value:expr
+      ),+
+    }
+  ) => {
+    bitflags! {
+      $(#[$outer])*
+      pub struct $name: u32 {
+        $(
+          $(#[$inner $($args)*])*
+          const $item = $value;
+        )+
+      }
+    }
+    impl $crate::Primitive for $name {}
+  };
+}
+
 macro_rules! vk_make_version {
-    // TODO: use `const fn` when feature stabilized
-    ( $major:expr, $minor:expr, $patch:expr ) => {
-        $crate::util::VkVersion(($major << 22) | ($minor << 12) | $patch)
-    };
+  ($major:expr, $minor:expr) => {
+    vk_make_version!($major, $minor, 0)
+  };
+  ($major:expr, $minor:expr, $patch:expr) => {
+    (($major << 22) | ($minor << 12) | $patch)
+  };
 }
 
-/// Define a bitmask-type for a coresponding bit-enumeration.
-macro_rules! vk_define_bitmask {
-    ( $bitmask_ty:ident, $enum_type:ty, $mask:expr ) => {
-        pub type $bitmask_ty = VkFlags<$enum_type>;
-        impl $enum_type {
-            #[inline]
-            pub fn flags(self) -> $bitmask_ty {
-                $bitmask_ty::one(self)
-            }
-        }
-        impl $crate::util::VkFlagBits for $enum_type {
-            const ALL_VALUE : u32 = $mask;
-            #[inline]
-            fn value(self) -> u32 {
-                self as u32
-            }
-
-            #[inline]
-            fn from_value(value: u32) -> Option<$enum_type> {
-                if (value & !Self::ALL_VALUE) != 0 || value.count_ones() != 1 {
-                    return None;
-                }
-                unsafe { Some(::std::mem::transmute(value)) }
-            }
-        }
-        impl ::std::ops::BitAnd<$enum_type> for $enum_type {
-            type Output = $bitmask_ty;
-            #[inline]
-            fn bitand(self, rhs: $enum_type) -> $bitmask_ty {
-                $bitmask_ty::one(self) & rhs
-            }
-        }
-        impl ::std::ops::BitOr<$enum_type> for $enum_type {
-            type Output = $bitmask_ty;
-            #[inline]
-            fn bitor(self, rhs: $enum_type) -> $bitmask_ty {
-                $bitmask_ty::one(self) | rhs
-            }
-        }
-        impl ::std::ops::BitAnd<$bitmask_ty> for $enum_type {
-            type Output = $bitmask_ty;
-            #[inline]
-            fn bitand(self, rhs: $bitmask_ty) -> $bitmask_ty {
-                $bitmask_ty::one(self) & rhs
-            }
-        }
-        impl ::std::ops::BitOr<$bitmask_ty> for $enum_type {
-            type Output = $bitmask_ty;
-            #[inline]
-            fn bitor(self, rhs: $bitmask_ty) -> $bitmask_ty {
-                $bitmask_ty::one(self) | rhs
-            }
-        }
-    };
-    ( $bitmask_ty:ident ) => {
-        pub type $bitmask_ty = $crate::util::VkFlags;
-    };
-}
-
-/// Define a dispatchable handle.
-macro_rules! vk_define_handle {
-    ( $name:ident ) => {
-        #[repr(C)]
-        #[derive(Copy,Clone,PartialEq,Eq,Default,Debug)]
-        pub struct $name ($crate::util::VkDispatchableHandle);
-        impl $crate::util::VkNullHandle for $name  {
-            const NULL : $name = $name($crate::util::VkDispatchableHandle::NULL);
-        }
-        impl ::std::fmt::Display for $name {
-            #[inline]
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                write!(f, "{}", self.0)
-            }
-        }
-        impl ::std::fmt::Pointer for $name {
-            #[inline]
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                write!(f, "{:p}", self.0)
-            }
-        }
-        impl ::std::fmt::LowerHex for $name {
-            #[inline]
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                write!(f, "{:x}", self.0)
-            }
-        }
-        impl ::std::fmt::UpperHex for $name {
-            #[inline]
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                write!(f, "{:X}", self.0)
-            }
-        }
-    };
-}
-
-/// Define a non-dispatchable handle.
-macro_rules! vk_define_non_dispatchable_handle {
-    ( $name:ident ) => {
-        #[repr(C)]
-        #[derive(Copy,Clone,PartialEq,Eq,Default,Debug)]
-        pub struct $name ($crate::util::VkNonDispatchableHandle);
-        impl $crate::util::VkNullHandle for $name {
-            const NULL : $name = $name($crate::util::VkNonDispatchableHandle::NULL);
-        }
-        impl ::std::fmt::Display for $name {
-            #[inline]
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                write!(f, "{}", self.0)
-            }
-        }
-        impl ::std::fmt::Pointer for $name {
-            #[inline]
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                write!(f, "{:p}", self.0)
-            }
-        }
-        impl ::std::fmt::LowerHex for $name {
-            #[inline]
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                write!(f, "{:x}", self.0)
-            }
-        }
-        impl ::std::fmt::UpperHex for $name {
-            #[inline]
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                write!(f, "{:X}", self.0)
-            }
-        }
-    };
-}
-
+pub mod utils;
 pub mod platform;
-pub mod util;
-pub mod cmds;
 
-mod types {
-    #![allow(non_snake_case)]
-    include!(concat!(env!("OUT_DIR"), "/types.rs"));
+// generated modules
+pub mod enums;
+pub mod types_base;
+pub mod types_raw;
+pub mod types;
+mod protos;
+mod dispatch_table;
+pub mod dispatch_commands;
+pub mod prelude;
+// end of generated modules
+
+mod dl;
+mod loader;
+
+trait RawStruct: Sized {
+  type Raw;
+
+  #[inline]
+  fn as_raw(&self) -> &Self::Raw {
+    unsafe { ::std::mem::transmute(self) }
+  }
+  #[inline]
+  unsafe fn as_raw_mut(&mut self) -> &mut Self::Raw {
+    ::std::mem::transmute(self)
+  }
 }
 
-pub mod prelude {
-    include!(concat!(env!("OUT_DIR"), "/prelude.rs"));
+trait AsRaw {
+  type Output: Copy;
+  unsafe fn as_raw(self) -> Self::Output;
 }
 
+trait Primitive {}
 
+trait Zero {
+  fn zero() -> Self;
+}
 
-#[test]
-fn test_type_sizes() {
-    let ptr_size = ::std::mem::size_of::<extern "system" fn()>();
-    let fnptr_size = ::std::mem::size_of::<extern "system" fn()>();
+macro_rules! primitive_impls {
+  ($($T:ty = $V:expr),+) => {
+    $(
+      impl Zero for $T {
+        #[inline]
+        fn zero() -> $T { $V }
+      }
+      impl Primitive for $T{}
+    )+
+  }
+}
 
-    assert_eq!(4, ::std::mem::size_of::<util::VkFlags>(), "check flag size");
-    assert_eq!(4, ::std::mem::size_of::<types::VkColorComponentFlags>(), "check flag size");
-    assert_eq!(4, ::std::mem::size_of::<types::VkResult>(), "check enum size");
-    assert_eq!(ptr_size, ::std::mem::size_of::<types::VkDevice>(), "check dispatchable handle size");
-    assert_eq!(8, ::std::mem::size_of::<types::VkImage>(), "check non-dispatchable handle size");
-    assert_eq!(fnptr_size, ::std::mem::size_of::<types::PFN_vkVoidFunction>(), "check function pointer size");
+primitive_impls!{
+  u8 = 0, i8 = 0, u16 = 0, i16 = 0, u32 = 0, i32 = 0, u64 = 0, i64 = 0,
+  usize = 0, isize = 0, f32 = 0.0, f64 = 0.0
+}
+
+impl<T: Sized> Zero for *const T {
+  #[inline]
+  fn zero() -> *const T {
+    ::std::ptr::null()
+  }
+}
+
+impl<T: Sized> Zero for *mut T {
+  #[inline]
+  fn zero() -> *mut T {
+    ::std::ptr::null_mut()
+  }
+}
+
+impl<P> RawStruct for P
+where
+  P: Primitive,
+{
+  type Raw = Self;
+  #[inline]
+  fn as_raw(&self) -> &Self {
+    self
+  }
+  #[inline]
+  unsafe fn as_raw_mut(&mut self) -> &mut Self {
+    self
+  }
+}
+
+impl<T: AsRaw> AsRaw for Option<T>
+where
+  T::Output: Zero,
+{
+  type Output = T::Output;
+  #[inline]
+  unsafe fn as_raw(self) -> T::Output {
+    if let Some(v) = self {
+      v.as_raw()
+    } else {
+      T::Output::zero()
+    }
+  }
+}
+impl<'a, T> AsRaw for &'a T
+where
+  T: RawStruct,
+{
+  type Output = *const T::Raw;
+  #[inline]
+  unsafe fn as_raw(self) -> *const T::Raw {
+    RawStruct::as_raw(self)
+  }
+}
+
+impl<'a, T> AsRaw for &'a mut T
+where
+  T: RawStruct,
+{
+  type Output = *mut T::Raw;
+  #[inline]
+  unsafe fn as_raw(self) -> *mut T::Raw {
+    RawStruct::as_raw_mut(self)
+  }
+}
+
+impl<'a, T> AsRaw for &'a [T]
+where
+  T: RawStruct,
+{
+  type Output = *const T::Raw;
+  #[inline]
+  unsafe fn as_raw(self) -> *const T::Raw {
+    if let Some(a) = self.first() {
+      RawStruct::as_raw(a)
+    } else {
+      ::std::ptr::null()
+    }
+  }
+}
+
+impl<'a, T> AsRaw for &'a mut [T]
+where
+  T: RawStruct,
+{
+  type Output = *mut T::Raw;
+  #[inline]
+  unsafe fn as_raw(self) -> *mut T::Raw {
+    if let Some(a) = self.first_mut() {
+      RawStruct::as_raw_mut(a)
+    } else {
+      ::std::ptr::null_mut()
+    }
+  }
+}
+
+impl<'a> AsRaw for &'a AsRef<CStr> {
+  type Output = *const c_char;
+  #[inline]
+  unsafe fn as_raw(self) -> *const c_char {
+    self.as_ref().as_ptr()
+  }
 }
