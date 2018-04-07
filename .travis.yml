@@ -5,12 +5,24 @@ rust:
   - beta
   - stable
 
+env:
+  - TARGET=x86_64-unknown-linux-gnu
+  - TARGET=i686-unknown-linux-gnu
+
 cache: cargo
 
 matrix:
   allow_failures:
     - rust: nightly
 
+install:
+  - rustup target add $TARGET || true
+
 script:
-  - cargo build --verbose --all
-  - cargo test --verbose --all
+  - cargo build --verbose --all --target $TARGET
+  - cargo test --verbose --all --target $TARGET
+
+addons:
+  apt:
+    packages:
+      - gcc-multilib
