@@ -2,10 +2,12 @@ import re, sys
 
 _RE_BEGIN_ = re.compile(r"^\[open,(?P<attribs>refpage=.*)\]")
 _RE_ATTRIB_ = re.compile(r"([a-z]+)='([^'\\]*(?:\\.[^'\\]*)*)'")
-_RE_CODE_NAME_ = re.compile(r"\b(?:[spefd]name|code):([a-zA-Z][a-zA-Z0-9_]*)\b")
-_RE_CODE_LINK_ = re.compile(r"\b[spefd]link:([a-zA-Z][a-zA-Z0-9_]*)\b")
+_RE_CODE_NAME_ = re.compile(r"\b(?:[spefdt]name|code):([a-zA-Z][a-zA-Z0-9_]*)\b")
+_RE_CODE_LINK_ = re.compile(r"\b[spefdt]link:([a-zA-Z][a-zA-Z0-9_]*)\b")
 _RE_CODE_SCOPE_ = re.compile(r"\`([a-zA-Z][a-zA-Z0-9_]*)\`\:\:\`([a-zA-Z][a-zA-Z0-9_]*)\`")
-_RE_ANCHOR_ = re.compile(r"\[\[([a-zA-Z0-9_\-]+)\]\]")
+
+_RE_ANCHOR1_ = re.compile(r"<<([a-zA-Z0-9_\-]+)(\,[^>]*)?>>")
+_SUBST_ANCHOR1_ = r'<<\1,[\1]>>'
 
 class Page:
     _TYPES_=set(['structs', 'protos', 'funcpointers', 'flags', 'enums', 'handles', 'basetypes', 'defines'])
@@ -147,5 +149,6 @@ def extract_spec_page(file, registry):
         elif state is not None:
             raise ValueError('unexpected state `%s`' % state) 
         else:
+            line = _RE_ANCHOR1_.sub(_SUBST_ANCHOR1_, line)
             page.append(line)
 

@@ -13,6 +13,9 @@ extern crate kernel32;
 extern crate winapi;
 
 #[macro_use]
+extern crate log;
+
+#[macro_use]
 extern crate bitflags;
 
 use std::os::raw::c_char;
@@ -67,7 +70,7 @@ macro_rules! define_enum {
         $item = $value
       ),+
     }
-    impl $crate::Primitive for $name {}
+    unsafe impl $crate::Primitive for $name {}
   };
 }
 
@@ -90,7 +93,7 @@ macro_rules! define_bitmask {
         )+
       }
     }
-    impl $crate::Primitive for $name {}
+    unsafe impl $crate::Primitive for $name {}
   };
 }
 
@@ -120,7 +123,7 @@ pub mod prelude;
 mod dl;
 mod loader;
 
-trait RawStruct: Sized {
+unsafe trait RawStruct: Sized {
   type Raw;
 
   #[inline]
@@ -138,7 +141,7 @@ trait AsRaw {
   unsafe fn as_raw(self) -> Self::Output;
 }
 
-trait Primitive {}
+unsafe trait Primitive {}
 
 trait Zero {
   fn zero() -> Self;
@@ -151,7 +154,7 @@ macro_rules! primitive_impls {
         #[inline]
         fn zero() -> $T { $V }
       }
-      impl Primitive for $T{}
+      unsafe impl Primitive for $T{}
     )+
   }
 }
@@ -175,7 +178,7 @@ impl<T: Sized> Zero for *mut T {
   }
 }
 
-impl<P> RawStruct for P
+unsafe impl<P> RawStruct for P
 where
   P: Primitive,
 {
@@ -204,6 +207,7 @@ where
     }
   }
 }
+
 impl<'a, T> AsRaw for &'a T
 where
   T: RawStruct,
@@ -253,6 +257,28 @@ where
     } else {
       ::std::ptr::null_mut()
     }
+  }
+}
+
+impl<T> AsRaw for *const T
+where
+  T: RawStruct,
+{
+  type Output = *const T::Raw;
+  #[inline]
+  unsafe fn as_raw(self) -> *const T::Raw {
+    RawStruct::as_raw(&(*self))
+  }
+}
+
+impl<T> AsRaw for *mut T
+where
+  T: RawStruct,
+{
+  type Output = *mut T::Raw;
+  #[inline]
+  unsafe fn as_raw(self) -> *mut T::Raw {
+    RawStruct::as_raw_mut(&mut(*self))
   }
 }
 

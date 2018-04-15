@@ -7,9 +7,6 @@ _VULKAN_DOCS_ROOT_ = 'Vulkan-Docs/'
 _VULKAN_SPEC_DIR_ = _VULKAN_DOCS_ROOT_ + 'src/spec/'
 _SPECDEST_DIR_ = 'target/extracted-docs/'
 
-_RE_RELATIVE_LINK_ = re.compile(r"\]\((\#[a-zA-Z0-9_\-]+)\)")
-_BASE_REF_URL_='https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html'
-_SUBST_RELATIVE_LINK_ = r'](%s\1)' % _BASE_REF_URL_
 
 _CARGO_TOML_ = 'Cargo.toml'
 
@@ -17,7 +14,7 @@ def read_docs(name):
     filename = _SPECDEST_DIR_ + name + '.md'
     try:
         with open(filename, 'r', encoding='utf-8') as f:
-            return [_RE_RELATIVE_LINK_.sub(_SUBST_RELATIVE_LINK_, l.rstrip()) for l in f.readlines()]
+            f.readlines()
     except OSError:
         return None
 

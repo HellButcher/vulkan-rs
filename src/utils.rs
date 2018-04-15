@@ -43,11 +43,11 @@ impl<T> VkNonDispatchableHandle<T> {
   }
 }
 
-impl<T> RawStruct for VkDispatchableHandle<T> {
+unsafe impl<T> RawStruct for VkDispatchableHandle<T> {
   type Raw = usize;
 }
 
-impl<T> RawStruct for VkNonDispatchableHandle<T> {
+unsafe impl<T> RawStruct for VkNonDispatchableHandle<T> {
   type Raw = u64;
 }
 

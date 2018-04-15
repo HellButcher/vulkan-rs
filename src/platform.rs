@@ -89,6 +89,7 @@ pub mod wsi {
     pub type HWND = *mut HWND__;
 
     #[doc(hidden)]
+    #[repr(C)]
     pub struct SECURITY_ATTRIBUTES__ {
       pub nLength: DWORD,
       pub lpSecurityDescriptor: LPVOID,

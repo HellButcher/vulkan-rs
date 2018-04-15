@@ -20,4 +20,5 @@ Cargo.lock
 *.log
 *.bak
 
+.gdb_history
 .vscode/

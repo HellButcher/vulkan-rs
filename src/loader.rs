@@ -32,32 +32,35 @@ unsafe fn dispatch_key<T>(handle: VkDispatchableHandle<T>) -> usize {
   return *handle;
 }
 
-unsafe fn call_gipa(gipa: PFN_vkGetInstanceProcAddr, arg: Option<types::VkInstance>, name: &str) -> VoidFunctionResult {
+unsafe fn call_glpa(gipa: PFN_vkGetInstanceProcAddr, name: &str) -> VoidFunctionResult {
   let name = CStr::from_bytes_with_nul(name.as_bytes()).unwrap();
-  let gipa_usize: usize = ::std::mem::transmute(gipa);
-  println!(
-    "loading command {:?} with vkGetInstanceProcAddr({:#x}) from instance {:?}",
-    name, gipa_usize, arg
-  );
-  if let Some(p) = gipa(arg.map(|a| a.value()).unwrap_or(0), name.as_ptr()) {
+  debug!("loading command {:?} from loader", name);
+  if let Some(p) = gipa(0, name.as_ptr()) {
     Ok(p)
   } else {
-    println!("unable to load command {:?}", name);
+    error!("unable to load command {:?}", name);
+    Err("unable to load command with vkGetInstanceProcAddr")
+  }
+}
+
+unsafe fn call_gipa(gipa: PFN_vkGetInstanceProcAddr, arg: types::VkInstance, name: &str) -> VoidFunctionResult {
+  let name = CStr::from_bytes_with_nul(name.as_bytes()).unwrap();
+  debug!("loading command {:?} from instance {:?}", name, arg);
+  if let Some(p) = gipa(arg.value(), name.as_ptr()) {
+    Ok(p)
+  } else {
+    error!("unable to load command {:?}", name);
     Err("unable to load command with vkGetInstanceProcAddr")
   }
 }
 
 unsafe fn call_gdpa(gdpa: PFN_vkGetDeviceProcAddr, arg: types::VkDevice, name: &str) -> VoidFunctionResult {
   let name = CStr::from_bytes_with_nul(name.as_bytes()).unwrap();
-  let gdpa_usize: usize = ::std::mem::transmute(gdpa);
-  println!(
-    "loading command {:?} with vkGetDeviceProcAddr({:#x}) from device {:?}",
-    name, gdpa_usize, arg
-  );
+  debug!("loading command {:?} from device {:?}", name, arg);
   if let Some(p) = gdpa(arg.value(), name.as_ptr()) {
     Ok(p)
   } else {
-    println!("unable to load command {:?}", name);
+    error!("unable to load command {:?}", name);
     Err("unable to load command with vkGetDeviceProcAddr")
   }
 }
@@ -132,7 +135,7 @@ impl LoaderData {
         LOADER_DATA = match Self::open(&VULKAN_LIB_NAME) {
           Ok(tab) => Some(tab),
           Err(err) => {
-            println!("loading vulkan failed: {}", err);
+            error!("loading vulkan failed: {}", err);
             None
           }
         };
@@ -215,7 +218,7 @@ impl VkLoaderDispatchTable {
   pub unsafe fn load_with(
     gipa: PFN_vkGetInstanceProcAddr,
   ) -> Result<(VkLoaderDispatchTable, PFN_vkGetInstanceProcAddr), &'static str> {
-    let tab = Self::load(|name| call_gipa(gipa, None, name))?;
+    let tab = Self::load(|name| call_glpa(gipa, name))?;
     Ok((tab, gipa))
   }
 
@@ -252,14 +255,10 @@ impl VkInstanceDispatchTable {
   ) -> Result<(VkInstanceDispatchTable, PFN_vkGetDeviceProcAddr), &'static str> {
     use std::mem::transmute;
     let create_info = create_info.as_raw();
-    let gipa: PFN_vkGetInstanceProcAddr = transmute(call_gipa(
-      gipa,
-      Some(instance),
-      GET_INSTANCE_PROC_ADDR_NAME,
-    )?);
-    let gdpa: PFN_vkGetDeviceProcAddr = transmute(call_gipa(gipa, Some(instance), GET_DEVICE_PROC_ADDR_NAME)?);
+    let gipa: PFN_vkGetInstanceProcAddr = transmute(call_gipa(gipa, instance, GET_INSTANCE_PROC_ADDR_NAME)?);
+    let gdpa: PFN_vkGetDeviceProcAddr = transmute(call_gipa(gipa, instance, GET_DEVICE_PROC_ADDR_NAME)?);
     let tab = Self::load(
-      |name| call_gipa(gipa, Some(instance), name),
+      |name| call_gipa(gipa, instance, name),
       |ext| {
         has_ext(
           create_info.enabledExtensionCount,

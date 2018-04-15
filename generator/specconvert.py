@@ -36,7 +36,7 @@ def call_pandoc(input_filename, output_filename=None, frontend='docbook', backen
             return
     if _pandoc_exe is False:
         return
-    cmdline = [_pandoc_exe, '--normalize', '--parse-raw', '--wrap=auto', '--columns=80', '-f', frontend, '-t', backend]
+    cmdline = [_pandoc_exe, '--normalize', '--parse-raw', '--reference-links', '--wrap=auto', '--columns=80', '-f', frontend, '-t', backend]
     if output_filename:
         cmdline.append('-o')
         cmdline.append(output_filename)

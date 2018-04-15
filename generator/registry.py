@@ -553,7 +553,7 @@ class Member(BaseElem,BaseParameter):
         self.is_out = False
         self.len_for = None
         self.container = container
-        length = elem.get('len')
+        length = elem.get('altlen', elem.get('len'))
         if length:
             self.len = length.split(',')[0]
         else:
@@ -579,8 +579,8 @@ class Member(BaseElem,BaseParameter):
                 if m.len_for is None:
                     m.len_for = []
                 m.len_for.append(self)
-            else:
-                self.is_out = False
+            #else:
+            #    self.is_out = False
 
 class EnumGroup(BaseElem,Named):
     def __init__(self, registry, elem):
