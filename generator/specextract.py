@@ -1,44 +1,47 @@
 import re, sys
 
-_RE_BEGIN_ = re.compile(r"^\[open,(?P<attribs>refpage=.*)\]")
-_RE_ATTRIB_ = re.compile(r"([a-z]+)='([^'\\]*(?:\\.[^'\\]*)*)'")
+_RE_BEGIN_ = re.compile(r"^\[open,(?P<attribs>refpage.*)\]")
+_RE_ATTRIB_ = re.compile(r"(\b[a-z]+\b)=?'([^'\\]*(?:\\.[^'\\]*)*)'")
 _RE_CODE_NAME_ = re.compile(r"\b(?:[spefdt]name|code):([a-zA-Z][a-zA-Z0-9_]*)\b")
 _RE_CODE_LINK_ = re.compile(r"\b[spefdt]link:([a-zA-Z][a-zA-Z0-9_]*)\b")
 _RE_CODE_SCOPE_ = re.compile(r"\`([a-zA-Z][a-zA-Z0-9_]*)\`\:\:\`([a-zA-Z][a-zA-Z0-9_]*)\`")
-
 _RE_ANCHOR1_ = re.compile(r"<<([a-zA-Z0-9_\-]+)(\,[^>]*)?>>")
-_SUBST_ANCHOR1_ = r'<<\1,[\1]>>'
+
+def handle_line_macros(line):
+    line = _RE_CODE_NAME_.sub(r'`\1`', line)
+    line = _RE_CODE_LINK_.sub(r'`\1`', line)
+    line = _RE_CODE_SCOPE_.sub(r'`\1::\2`', line)
+    line = _RE_ANCHOR1_.sub(r'<<\1,[\1]>>', line)
+    return line
 
 class Page:
     _TYPES_=set(['structs', 'protos', 'funcpointers', 'flags', 'enums', 'handles', 'basetypes', 'defines'])
     def __init__(self, refpage, type, desc=None, xrefs=None):
+        if desc is None:
+            raise ValueError('unknown missing desc for %s' % refpage)
+        if type not in Page._TYPES_:
+            raise ValueError('unknown type %s for %s' % (type, refpage))
         self.name = refpage
-        self.desc = desc
+        self.desc = handle_line_macros(desc)
         self.type = type
         self.xrefs = xrefs
-        self.lines = [desc, '']
-        if desc is None:
-            raise ValueError('unknown missing desc for %s' % self.name)
-        if self.type not in Page._TYPES_:
-            raise ValueError('unknown type %s for %s' % (self.type, self.name))
+        self.lines = [self.desc, '']
     def append(self, line):
         if not line and len(self.lines)>0 and not self.lines[-1]:
             return
-        line = _RE_CODE_NAME_.sub(r'`\1`', line)
-        line = _RE_CODE_LINK_.sub(r'`\1`', line)
-        line = _RE_CODE_SCOPE_.sub(r'`\1::\2`', line)
+        line = handle_line_macros(line)
         self.lines.append(line)
 
-def extract_spec_pages(specs, registry):
+def extract_spec_pages(specs, registry, **kwargs):
     for s in specs:
-        for page in extract_spec_page(s, registry):
+        for page in extract_spec_page(s, registry, **kwargs):
             yield page
 
-def extract_spec_page(file, registry):
+def extract_spec_page(file, registry, short=False):
     if isinstance(file, str):
         with open(file, 'r', encoding='utf-8') as f:
             try:
-                for page in extract_spec_page(f, registry):
+                for page in extract_spec_page(f, registry, short=short):
                     yield page
             except ValueError as e:
                 print('ValueError', e, 'in file', file, file=sys.stderr)
@@ -76,34 +79,37 @@ def extract_spec_page(file, registry):
             raise ValueError('unable to handle line ifdef::%s', line)
     for line in iter(file.readlines()):
         line=line.rstrip()
-        if line.startswith('ifdef::'):
-            line = start_ifndef(line[7:], check_section)
-            if line is None:
+        if not short:
+            if line.startswith('ifdef::'):
+                line = start_ifndef(line[7:], check_section)
+                if line is None:
+                    continue
+            if line.startswith('ifndef::'):
+                line = start_ifndef(line[8:], lambda s: not check_section(s))
+                if line is None:
+                    continue
+            if line.startswith('endif::'):
+                line = line[7:]
+                if line.endswith('[]'):
+                    section = line[:-2]
+                else:
+                    raise ValueError('unable to handle line endif::%s', line)
+                if len(ifdef_sects) == 0 or ifdef_sects[-1] != section:
+                    raise KeyError('ifdef-endif pairs for %s are dissync' % line)
+                ifdef_sects.pop()
+                if len(ifdef_sects) < ifdef_dis:
+                    ifdef_dis = 0
                 continue
-        if line.startswith('ifndef::'):
-            line = start_ifndef(line[8:], lambda s: not check_section(s))
-            if line is None:
+            if ifdef_dis>0:
                 continue
-        if line.startswith('endif::'):
-            line = line[7:]
-            if line.endswith('[]'):
-                section = line[:-2]
-            else:
-                raise ValueError('unable to handle line endif::%s', line)
-            if len(ifdef_sects) == 0 or ifdef_sects[-1] != section:
-                raise KeyError('ifdef-endif pairs for %s are dissync' % line)
-            ifdef_sects.pop()
-            if len(ifdef_sects) < ifdef_dis:
-                ifdef_dis = 0
-            continue
-        if ifdef_dis>0:
-            continue
         m = _RE_BEGIN_.search(line)
         if m is not None:
             state = 'begin'
             attribs = dict(_RE_ATTRIB_.findall(m.group('attribs')))
             page = Page(**attribs)
-        elif page is None:
+            if short:
+                yield page
+        elif short or page is None:
             continue #ignore content that is outside of pages
         elif line == '--':
             if state == 'begin':
@@ -149,6 +155,5 @@ def extract_spec_page(file, registry):
         elif state is not None:
             raise ValueError('unexpected state `%s`' % state) 
         else:
-            line = _RE_ANCHOR1_.sub(_SUBST_ANCHOR1_, line)
             page.append(line)
 

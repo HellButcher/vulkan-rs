@@ -10,13 +10,33 @@ _SPECDEST_DIR_ = 'target/extracted-docs/'
 
 _CARGO_TOML_ = 'Cargo.toml'
 
-def read_docs(name):
+def read_full_docs(name):
     filename = _SPECDEST_DIR_ + name + '.md'
     try:
         with open(filename, 'r', encoding='utf-8') as f:
-            f.readlines()
+            return f.readlines()
     except OSError:
         return None
+
+def initialize_docs(registry, short=False):
+    if short:
+        from extract_docs import specfiles, extract_spec_pages
+        import textwrap
+        docs = dict()
+        for page in extract_spec_pages(specfiles(), registry, short=True):
+            docs[page.name] = page.desc
+        def read_docs(name):
+            desc = docs.get(name, None)
+            if desc:
+                desc = textwrap.wrap(desc, 80)
+            return desc
+    else:
+        read_docs = read_full_docs
+    for cmd in registry.commands:
+        cmd.docs = read_docs(cmd.name)
+    for ty in registry.types:
+        ty.docs = read_docs(ty.name)
+
 
 def update_cargo_toml(reg):
     with open(_CARGO_TOML_ + '.tmp', 'w', encoding='utf-8') as f_out:
@@ -40,11 +60,9 @@ def update_cargo_toml(reg):
 
 def main(args):
     registry = Registry.load_file(_VULKAN_SPEC_DIR_ + 'vk.xml')
+    initialize_docs(registry, short=True)
     rust_gen = RustGenerator(registry)
-    for cmd in registry.commands:
-        cmd.docs = read_docs(cmd.name)
-    for ty in registry.types:
-        ty.docs = read_docs(ty.name)
+
     rust_gen.generate_all()
     update_cargo_toml(registry)
 

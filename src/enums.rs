@@ -1,7 +1,11 @@
 /* GENERATED FILE */
 
 // feature: VK_VERSION_1_0
+
+/// Return API version number for Vulkan 1.0
 pub const VK_API_VERSION_1_0: u32 = vk_make_version!(1, 0, 0);
+
+/// Vulkan header file version number
 pub const VK_HEADER_VERSION: u32 = 69;
 
 // API Constants
@@ -39,6 +43,8 @@ pub const VK_MAX_DEVICE_GROUP_SIZE_KHX: u32 = 32;
 // feature: VK_VERSION_1_0
 
 define_enum! {
+
+  /// Layout of image and image subresources
   pub enum VkImageLayout {
     E_UNDEFINED = 0,
     E_GENERAL = 1,
@@ -67,6 +73,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify how contents of an attachment are treated at the beginning of a subpass
   pub enum VkAttachmentLoadOp {
     E_LOAD = 0,
     E_CLEAR = 1,
@@ -75,6 +83,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify how contents of an attachment are treated at the end of a subpass
   pub enum VkAttachmentStoreOp {
     E_STORE = 0,
     E_DONT_CARE = 1
@@ -82,6 +92,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specifies the type of an image object
   pub enum VkImageType {
     E_1D = 0,
     E_2D = 1,
@@ -90,6 +102,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specifies the tiling arrangement of data in an image
   pub enum VkImageTiling {
     E_OPTIMAL = 0,
     E_LINEAR = 1
@@ -97,6 +111,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Image view types
   pub enum VkImageViewType {
     E_1D = 0,
     E_2D = 1,
@@ -109,6 +125,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Enumerant specifying a command buffer level
   pub enum VkCommandBufferLevel {
     E_PRIMARY = 0,
     E_SECONDARY = 1
@@ -116,6 +134,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify how a component is swizzled
   pub enum VkComponentSwizzle {
     E_IDENTITY = 0,
     E_ZERO = 1,
@@ -128,6 +148,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specifies the type of a descriptor in a descriptor set
   pub enum VkDescriptorType {
     E_SAMPLER = 0,
     E_COMBINED_IMAGE_SAMPLER = 1,
@@ -144,6 +166,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify the type of queries managed by a query pool
   pub enum VkQueryType {
     E_OCCLUSION = 0,
     E_PIPELINE_STATISTICS = 1,
@@ -152,6 +176,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify border color used for texture lookups
   pub enum VkBorderColor {
     E_FLOAT_TRANSPARENT_BLACK = 0,
     E_INT_TRANSPARENT_BLACK = 1,
@@ -163,6 +189,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify the bind point of a pipeline object to a command buffer
   pub enum VkPipelineBindPoint {
     E_GRAPHICS = 0,
     E_COMPUTE = 1
@@ -170,12 +198,16 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Encode pipeline cache version
   pub enum VkPipelineCacheHeaderVersion {
     E_ONE = 1
   }
 }
 
 define_enum! {
+
+  /// Supported primitive topologies
   pub enum VkPrimitiveTopology {
     E_POINT_LIST = 0,
     E_LINE_LIST = 1,
@@ -192,6 +224,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Buffer and image sharing modes
   pub enum VkSharingMode {
     E_EXCLUSIVE = 0,
     E_CONCURRENT = 1
@@ -199,6 +233,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Type of index buffer indices
   pub enum VkIndexType {
     E_UINT16 = 0,
     E_UINT32 = 1
@@ -206,6 +242,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify filters used for texture lookups
   pub enum VkFilter {
     E_NEAREST = 0,
     E_LINEAR = 1,
@@ -217,6 +255,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify mipmap mode used for texture lookups
   pub enum VkSamplerMipmapMode {
     E_NEAREST = 0,
     E_LINEAR = 1
@@ -224,6 +264,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify behavior of sampling with texture coordinates outside an image
   pub enum VkSamplerAddressMode {
     E_REPEAT = 0,
     E_MIRRORED_REPEAT = 1,
@@ -237,6 +279,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Stencil comparison function
   pub enum VkCompareOp {
     E_NEVER = 0,
     E_LESS = 1,
@@ -250,6 +294,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Control polygon rasterization mode
   pub enum VkPolygonMode {
     E_FILL = 0,
     E_LINE = 1,
@@ -262,6 +308,8 @@ define_enum! {
 }
 
 define_bitmask! {
+
+  /// Bitmask controlling triangle culling
   pub enum VkCullModeFlagBits {
     NONE_BIT = 0,
     FRONT_BIT = 1<<0,
@@ -271,6 +319,8 @@ define_bitmask! {
 }
 
 define_enum! {
+
+  /// Interpret polygon front-facing orientation
   pub enum VkFrontFace {
     E_COUNTER_CLOCKWISE = 0,
     E_CLOCKWISE = 1
@@ -278,6 +328,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Framebuffer blending factors
   pub enum VkBlendFactor {
     E_ZERO = 0,
     E_ONE = 1,
@@ -302,6 +354,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Framebuffer blending operations
   pub enum VkBlendOp {
     E_ADD = 0,
     E_SUBTRACT = 1,
@@ -406,6 +460,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Stencil comparison function
   pub enum VkStencilOp {
     E_KEEP = 0,
     E_ZERO = 1,
@@ -419,6 +475,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Framebuffer logical operations
   pub enum VkLogicOp {
     E_CLEAR = 0,
     E_AND = 1,
@@ -440,12 +498,16 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Allocation type
   pub enum VkInternalAllocationType {
     E_EXECUTABLE = 0
   }
 }
 
 define_enum! {
+
+  /// Allocation scope
   pub enum VkSystemAllocationScope {
     E_COMMAND = 0,
     E_OBJECT = 1,
@@ -456,6 +518,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Supported physical device types
   pub enum VkPhysicalDeviceType {
     E_OTHER = 0,
     E_INTEGRATED_GPU = 1,
@@ -466,6 +530,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify rate at which vertex attributes are pulled from buffers
   pub enum VkVertexInputRate {
     E_VERTEX = 0,
     E_INSTANCE = 1
@@ -473,6 +539,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Available image formats
   pub enum VkFormat {
     E_UNDEFINED = 0,
     E_R4G4_UNORM_PACK8 = 1,
@@ -751,6 +819,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Vulkan structure types (`stype`)
   pub enum VkStructureType {
     E_APPLICATION_INFO = 0,
     E_INSTANCE_CREATE_INFO = 1,
@@ -1279,6 +1349,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Specify how commands in the first subpass of a render pass are provided
   pub enum VkSubpassContents {
     E_INLINE = 0,
     E_SECONDARY_COMMAND_BUFFERS = 1
@@ -1286,6 +1358,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Vulkan command return codes
   pub enum VkResult {
     E_SUCCESS = 0,
     E_NOT_READY = 1,
@@ -1345,6 +1419,8 @@ define_enum! {
 }
 
 define_enum! {
+
+  /// Indicate which dynamic state is taken from dynamic state commands
   pub enum VkDynamicState {
     E_VIEWPORT = 0,
     E_SCISSOR = 1,
@@ -1374,6 +1450,8 @@ define_enum! {
 
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 define_enum! {
+
+  /// Indicates the valid usage of the descriptor update template
   pub enum VkDescriptorUpdateTemplateTypeKHR {
     E_DESCRIPTOR_SET_KHR = 0,
     E_PUSH_DESCRIPTORS_KHR = 1
@@ -1383,6 +1461,8 @@ define_enum! {
 // feature: VK_VERSION_1_0
 
 define_enum! {
+
+  /// Specify an enumeration to track object handle types
   pub enum VkObjectType {
     E_UNKNOWN = 0,
     E_INSTANCE = 1,
@@ -1450,6 +1530,8 @@ define_enum! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying capabilities of queues in a queue family
   pub enum VkQueueFlagBits {
     GRAPHICS_BIT = 1<<0,
     COMPUTE_BIT = 1<<1,
@@ -1459,6 +1541,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying properties for a memory type
   pub enum VkMemoryPropertyFlagBits {
     DEVICE_LOCAL_BIT = 1<<0,
     HOST_VISIBLE_BIT = 1<<1,
@@ -1469,6 +1553,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying attribute flags for a heap
   pub enum VkMemoryHeapFlagBits {
     DEVICE_LOCAL_BIT = 1<<0,
 
@@ -1479,6 +1565,9 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying memory access types that will participate in a memory
+  /// dependency
   pub enum VkAccessFlagBits {
     INDIRECT_COMMAND_READ_BIT = 1<<0,
     INDEX_READ_BIT = 1<<1,
@@ -1511,6 +1600,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying allowed usage of a buffer
   pub enum VkBufferUsageFlagBits {
     TRANSFER_SRC_BIT = 1<<0,
     TRANSFER_DST_BIT = 1<<1,
@@ -1525,6 +1616,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying additional parameters of a buffer
   pub enum VkBufferCreateFlagBits {
     SPARSE_BINDING_BIT = 1<<0,
     SPARSE_RESIDENCY_BIT = 1<<1,
@@ -1533,6 +1626,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying a pipeline stage
   pub enum VkShaderStageFlagBits {
     VERTEX_BIT = 1<<0,
     TESSELLATION_CONTROL_BIT = 1<<1,
@@ -1546,6 +1641,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying intended usage of an image
   pub enum VkImageUsageFlagBits {
     TRANSFER_SRC_BIT = 1<<0,
     TRANSFER_DST_BIT = 1<<1,
@@ -1559,6 +1656,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying additional parameters of an image
   pub enum VkImageCreateFlagBits {
     SPARSE_BINDING_BIT = 1<<0,
     SPARSE_RESIDENCY_BIT = 1<<1,
@@ -1595,6 +1694,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask controlling how a pipeline is created
   pub enum VkPipelineCreateFlagBits {
     DISABLE_OPTIMIZATION_BIT = 1<<0,
     ALLOW_DERIVATIVES_BIT = 1<<1,
@@ -1609,6 +1710,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask controlling which components are written to the framebuffer
   pub enum VkColorComponentFlagBits {
     R_BIT = 1<<0,
     G_BIT = 1<<1,
@@ -1618,12 +1721,16 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying initial state and behavior of a fence
   pub enum VkFenceCreateFlagBits {
     SIGNALED_BIT = 1<<0
   }
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying features supported by a buffer
   pub enum VkFormatFeatureFlagBits {
     SAMPLED_IMAGE_BIT = 1<<0,
     STORAGE_IMAGE_BIT = 1<<1,
@@ -1672,12 +1779,16 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying constraints on a query
   pub enum VkQueryControlFlagBits {
     PRECISE_BIT = 1<<0
   }
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying how and when query results are returned
   pub enum VkQueryResultFlagBits {
     BIT_64 = 1<<0,
     WAIT_BIT = 1<<1,
@@ -1687,6 +1798,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying usage behavior for command buffer
   pub enum VkCommandBufferUsageFlagBits {
     ONE_TIME_SUBMIT_BIT = 1<<0,
     RENDER_PASS_CONTINUE_BIT = 1<<1,
@@ -1695,6 +1808,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying queried pipeline statistics
   pub enum VkQueryPipelineStatisticFlagBits {
     INPUT_ASSEMBLY_VERTICES_BIT = 1<<0,
     INPUT_ASSEMBLY_PRIMITIVES_BIT = 1<<1,
@@ -1711,6 +1826,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying which aspects of an image are included in a view
   pub enum VkImageAspectFlagBits {
     COLOR_BIT = 1<<0,
     DEPTH_BIT = 1<<1,
@@ -1728,6 +1845,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying additional information about a sparse image resource
   pub enum VkSparseImageFormatFlagBits {
     SINGLE_MIPTAIL_BIT = 1<<0,
     ALIGNED_MIP_SIZE_BIT = 1<<1,
@@ -1736,12 +1855,16 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying usage of a sparse memory binding operation
   pub enum VkSparseMemoryBindFlagBits {
     METADATA_BIT = 1<<0
   }
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying pipeline stages
   pub enum VkPipelineStageFlagBits {
     TOP_OF_PIPE_BIT = 1<<0,
     DRAW_INDIRECT_BIT = 1<<1,
@@ -1768,6 +1891,8 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying usage behavior for a command pool
   pub enum VkCommandPoolCreateFlagBits {
     TRANSIENT_BIT = 1<<0,
     RESET_COMMAND_BUFFER_BIT = 1<<1
@@ -1775,18 +1900,25 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask controlling behavior of a command pool reset
   pub enum VkCommandPoolResetFlagBits {
     RELEASE_RESOURCES_BIT = 1<<0
   }
 }
 
 define_bitmask! {
+
+  /// Bitmask controlling behavior of a command buffer reset
   pub enum VkCommandBufferResetFlagBits {
     RELEASE_RESOURCES_BIT = 1<<0
   }
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying sample counts supported for an image used for storage
+  /// operations
   pub enum VkSampleCountFlagBits {
     BIT_1 = 1<<0,
     BIT_2 = 1<<1,
@@ -1799,12 +1931,16 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying additional properties of an attachment
   pub enum VkAttachmentDescriptionFlagBits {
     MAY_ALIAS_BIT = 1<<0
   }
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying sets of stencil state for which to update the compare mask
   pub enum VkStencilFaceFlagBits {
     FACE_FRONT_BIT = 1<<0,
     FACE_BACK_BIT = 1<<1,
@@ -1813,12 +1949,16 @@ define_bitmask! {
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying certain supported operations on a descriptor pool
   pub enum VkDescriptorPoolCreateFlagBits {
     FREE_DESCRIPTOR_SET_BIT = 1<<0
   }
 }
 
 define_bitmask! {
+
+  /// Bitmask specifying how execution and memory dependencies are formed
   pub enum VkDependencyFlagBits {
     BY_REGION_BIT = 1<<0,
 
@@ -1836,6 +1976,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_surface")]
 define_enum! {
+
+  /// presentation mode supported for a surface
   pub enum VkPresentModeKHR {
     E_IMMEDIATE_KHR = 0,
     E_MAILBOX_KHR = 1,
@@ -1852,6 +1994,8 @@ define_enum! {
 
 #[cfg(feature = "VK_KHR_surface")]
 define_enum! {
+
+  /// supported color space of the presentation engine
   pub enum VkColorSpaceKHR {
     E_SRGB_NONLINEAR_KHR = 0,
 
@@ -1891,6 +2035,8 @@ define_enum! {
 
 #[cfg(feature = "VK_KHR_display")]
 define_bitmask! {
+
+  /// Alpha blending type
   pub enum VkDisplayPlaneAlphaFlagBitsKHR {
     OPAQUE_BIT_KHR_BIT = 1<<0,
     GLOBAL_BIT_KHR_BIT = 1<<1,
@@ -1903,6 +2049,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_surface")]
 define_bitmask! {
+
+  /// alpha compositing modes supported on a device
   pub enum VkCompositeAlphaFlagBitsKHR {
     OPAQUE_BIT_KHR_BIT = 1<<0,
     PRE_MULTIPLIED_BIT_KHR_BIT = 1<<1,
@@ -1913,6 +2061,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_surface")]
 define_bitmask! {
+
+  /// presentation transforms supported on a device
   pub enum VkSurfaceTransformFlagBitsKHR {
     IDENTITY_BIT_KHR_BIT = 1<<0,
     ROTATE_90_BIT_KHR_BIT = 1<<1,
@@ -1930,6 +2080,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_EXT_debug_report")]
 define_bitmask! {
+
+  /// Bitmask specifying events which cause a debug report callback
   pub enum VkDebugReportFlagBitsEXT {
     INFORMATION_BIT_EXT_BIT = 1<<0,
     WARNING_BIT_EXT_BIT = 1<<1,
@@ -1941,6 +2093,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_EXT_debug_report")]
 define_enum! {
+
+  /// Specify the type of an object handle
   pub enum VkDebugReportObjectTypeEXT {
     E_UNKNOWN_EXT = 0,
     E_INSTANCE_EXT = 1,
@@ -1991,6 +2145,8 @@ define_enum! {
 
 #[cfg(feature = "VK_AMD_rasterization_order")]
 define_enum! {
+
+  /// Specify rasterization order for a graphics pipeline
   pub enum VkRasterizationOrderAMD {
     E_STRICT_AMD = 0,
     E_RELAXED_AMD = 1
@@ -2001,6 +2157,8 @@ define_enum! {
 
 #[cfg(feature = "VK_NV_external_memory_capabilities")]
 define_bitmask! {
+
+  /// Bitmask specifying external memory handle types
   pub enum VkExternalMemoryHandleTypeFlagBitsNV {
     OPAQUE_WIN32_BIT_NV_BIT = 1<<0,
     OPAQUE_WIN32_KMT_BIT_NV_BIT = 1<<1,
@@ -2011,6 +2169,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_NV_external_memory_capabilities")]
 define_bitmask! {
+
+  /// Bitmask specifying external memory features
   pub enum VkExternalMemoryFeatureFlagBitsNV {
     DEDICATED_ONLY_BIT_NV_BIT = 1<<0,
     EXPORTABLE_BIT_NV_BIT = 1<<1,
@@ -2022,6 +2182,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_EXT_validation_flags")]
 define_enum! {
+
+  /// Specify validation checks to disable
   pub enum VkValidationCheckEXT {
     E_ALL_EXT = 0,
     E_SHADERS_EXT = 1
@@ -2032,6 +2194,8 @@ define_enum! {
 
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 define_bitmask! {
+
+  /// Bitmask specifying allowed usage of a indirect commands layout
   pub enum VkIndirectCommandsLayoutUsageFlagBitsNVX {
     UNORDERED_SEQUENCES_BIT_NVX_BIT = 1<<0,
     SPARSE_SEQUENCES_BIT_NVX_BIT = 1<<1,
@@ -2042,6 +2206,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 define_bitmask! {
+
+  /// Bitmask specifying allowed usage of an object entry
   pub enum VkObjectEntryUsageFlagBitsNVX {
     GRAPHICS_BIT_NVX_BIT = 1<<0,
     COMPUTE_BIT_NVX_BIT = 1<<1
@@ -2050,6 +2216,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 define_enum! {
+
+  /// Enum specifying
   pub enum VkIndirectCommandsTokenTypeNVX {
     E_PIPELINE_NVX = 0,
     E_DESCRIPTOR_SET_NVX = 1,
@@ -2064,6 +2232,8 @@ define_enum! {
 
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 define_enum! {
+
+  /// Enum specifying object table entry type
   pub enum VkObjectEntryTypeNVX {
     E_DESCRIPTOR_SET_NVX = 0,
     E_PIPELINE_NVX = 1,
@@ -2076,6 +2246,8 @@ define_enum! {
 // feature: VK_VERSION_1_0
 
 define_bitmask! {
+
+  /// Bitmask specifying descriptor set layout properties
   pub enum VkDescriptorSetLayoutCreateFlagBits {
 
     // feature: VK_KHR_push_descriptor
@@ -2088,6 +2260,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 define_bitmask! {
+
+  /// Bit specifying external memory handle types
   pub enum VkExternalMemoryHandleTypeFlagBitsKHR {
     OPAQUE_FD_BIT_KHR_BIT = 1<<0,
     OPAQUE_WIN32_BIT_KHR_BIT = 1<<1,
@@ -2111,6 +2285,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 define_bitmask! {
+
+  /// Bitmask specifying features of an external memory handle type
   pub enum VkExternalMemoryFeatureFlagBitsKHR {
     DEDICATED_ONLY_BIT_KHR_BIT = 1<<0,
     EXPORTABLE_BIT_KHR_BIT = 1<<1,
@@ -2122,6 +2298,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
 define_bitmask! {
+
+  /// Bitmask of valid external semaphore handle types
   pub enum VkExternalSemaphoreHandleTypeFlagBitsKHR {
     OPAQUE_FD_BIT_KHR_BIT = 1<<0,
     OPAQUE_WIN32_BIT_KHR_BIT = 1<<1,
@@ -2133,6 +2311,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
 define_bitmask! {
+
+  /// Bitfield describing features of an external semaphore handle type
   pub enum VkExternalSemaphoreFeatureFlagBitsKHR {
     EXPORTABLE_BIT_KHR_BIT = 1<<0,
     IMPORTABLE_BIT_KHR_BIT = 1<<1
@@ -2143,6 +2323,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_external_semaphore")]
 define_bitmask! {
+
+  /// Bitmask specifying additional parameters of semaphore payload import
   pub enum VkSemaphoreImportFlagBitsKHR {
     TEMPORARY_BIT_KHR_BIT = 1<<0
   }
@@ -2152,6 +2334,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
 define_bitmask! {
+
+  /// Bitmask of valid external fence handle types
   pub enum VkExternalFenceHandleTypeFlagBitsKHR {
     OPAQUE_FD_BIT_KHR_BIT = 1<<0,
     OPAQUE_WIN32_BIT_KHR_BIT = 1<<1,
@@ -2162,6 +2346,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
 define_bitmask! {
+
+  /// Bitfield describing features of an external fence handle type
   pub enum VkExternalFenceFeatureFlagBitsKHR {
     EXPORTABLE_BIT_KHR_BIT = 1<<0,
     IMPORTABLE_BIT_KHR_BIT = 1<<1
@@ -2172,6 +2358,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_external_fence")]
 define_bitmask! {
+
+  /// Bitmask specifying additional parameters of fence payload import
   pub enum VkFenceImportFlagBitsKHR {
     TEMPORARY_BIT_KHR_BIT = 1<<0
   }
@@ -2181,6 +2369,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_EXT_display_surface_counter")]
 define_bitmask! {
+
+  /// Surface-relative counter types
   pub enum VkSurfaceCounterFlagBitsEXT {
     VBLANK_EXT_BIT = 1<<0
   }
@@ -2190,6 +2380,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_EXT_display_control")]
 define_enum! {
+
+  /// Possible power states for a display
   pub enum VkDisplayPowerStateEXT {
     E_OFF_EXT = 0,
     E_SUSPEND_EXT = 1,
@@ -2199,6 +2391,8 @@ define_enum! {
 
 #[cfg(feature = "VK_EXT_display_control")]
 define_enum! {
+
+  /// Events that can occur on a device object
   pub enum VkDeviceEventTypeEXT {
     E_DISPLAY_HOTPLUG_EXT = 0
   }
@@ -2206,6 +2400,8 @@ define_enum! {
 
 #[cfg(feature = "VK_EXT_display_control")]
 define_enum! {
+
+  /// Events that can occur on a display object
   pub enum VkDisplayEventTypeEXT {
     E_FIRST_PIXEL_OUT_EXT = 0
   }
@@ -2215,6 +2411,8 @@ define_enum! {
 
 #[cfg(feature = "VK_KHX_device_group")]
 define_bitmask! {
+
+  /// Bitmask specifying supported peer memory features
   pub enum VkPeerMemoryFeatureFlagBitsKHX {
     COPY_SRC_BIT_KHX_BIT = 1<<0,
     COPY_DST_BIT_KHX_BIT = 1<<1,
@@ -2225,6 +2423,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHX_device_group")]
 define_bitmask! {
+
+  /// Bitmask specifying flags for a device memory allocation
   pub enum VkMemoryAllocateFlagBitsKHX {
     DEVICE_MASK_BIT_KHX_BIT = 1<<0
   }
@@ -2232,6 +2432,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHX_device_group")]
 define_bitmask! {
+
+  /// Bitmask specifying supported device group present modes
   pub enum VkDeviceGroupPresentModeFlagBitsKHX {
     LOCAL_BIT_KHX_BIT = 1<<0,
     REMOTE_BIT_KHX_BIT = 1<<1,
@@ -2244,6 +2446,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_swapchain")]
 define_bitmask! {
+
+  /// Bitmask controlling swapchain creation
   pub enum VkSwapchainCreateFlagBitsKHR {
 
     // feature: VK_KHX_device_group
@@ -2256,6 +2460,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_NV_viewport_swizzle")]
 define_enum! {
+
+  /// Specify how a viewport coordinate is swizzled
   pub enum VkViewportCoordinateSwizzleNV {
     E_POSITIVE_X_NV = 0,
     E_NEGATIVE_X_NV = 1,
@@ -2272,6 +2478,8 @@ define_enum! {
 
 #[cfg(feature = "VK_EXT_discard_rectangles")]
 define_enum! {
+
+  /// Specify the discard rectangle mode
   pub enum VkDiscardRectangleModeEXT {
     E_INCLUSIVE_EXT = 0,
     E_EXCLUSIVE_EXT = 1
@@ -2281,6 +2489,8 @@ define_enum! {
 // feature: VK_VERSION_1_0
 
 define_bitmask! {
+
+  /// Bitmask specifying usage of a subpass
   pub enum VkSubpassDescriptionFlagBits {
 
     // feature: VK_NVX_multiview_per_view_attributes
@@ -2295,6 +2505,8 @@ define_bitmask! {
 
 #[cfg(feature = "VK_KHR_maintenance2")]
 define_enum! {
+
+  /// Enum specifying the point clipping behaviour
   pub enum VkPointClippingBehaviorKHR {
     E_ALL_CLIP_PLANES_KHR = 0,
     E_USER_CLIP_PLANES_ONLY_KHR = 1
@@ -2305,6 +2517,8 @@ define_enum! {
 
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
 define_enum! {
+
+  /// Specify reduction mode for texture filtering
   pub enum VkSamplerReductionModeEXT {
     E_WEIGHTED_AVERAGE_EXT = 0,
     E_MIN_EXT = 1,
@@ -2316,6 +2530,8 @@ define_enum! {
 
 #[cfg(feature = "VK_KHR_maintenance2")]
 define_enum! {
+
+  /// Enum describing tessellation domain origin
   pub enum VkTessellationDomainOriginKHR {
     E_UPPER_LEFT_KHR = 0,
     E_LOWER_LEFT_KHR = 1
@@ -2326,6 +2542,8 @@ define_enum! {
 
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 define_enum! {
+
+  /// Color model component of a color space
   pub enum VkSamplerYcbcrModelConversionKHR {
     E_RGB_IDENTITY_KHR = 0,
     E_YCBCR_IDENTITY_KHR = 1,
@@ -2337,6 +2555,8 @@ define_enum! {
 
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 define_enum! {
+
+  /// Range of encoded values in a color space
   pub enum VkSamplerYcbcrRangeKHR {
     E_ITU_FULL_KHR = 0,
     E_ITU_NARROW_KHR = 1
@@ -2345,6 +2565,8 @@ define_enum! {
 
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 define_enum! {
+
+  /// Position of downsampled chroma samples
   pub enum VkChromaLocationKHR {
     E_COSITED_EVEN_KHR = 0,
     E_MIDPOINT_KHR = 1
@@ -2355,6 +2577,8 @@ define_enum! {
 
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
 define_enum! {
+
+  /// Enumerant specifying the blend overlap parameter
   pub enum VkBlendOverlapEXT {
     E_UNCORRELATED_EXT = 0,
     E_DISJOINT_EXT = 1,
@@ -2366,6 +2590,8 @@ define_enum! {
 
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
 define_enum! {
+
+  /// Specify the discard rectangle mode
   pub enum VkCoverageModulationModeNV {
     E_NONE_NV = 0,
     E_RGB_NV = 1,
@@ -2378,6 +2604,8 @@ define_enum! {
 
 #[cfg(feature = "VK_EXT_validation_cache")]
 define_enum! {
+
+  /// Encode validation cache version
   pub enum VkValidationCacheHeaderVersionEXT {
     E_ONE_EXT = 1
   }
@@ -2398,6 +2626,8 @@ define_enum! {
 
 #[cfg(feature = "VK_EXT_global_priority")]
 define_enum! {
+
+  /// Values specifying a system-wide queue priority
   pub enum VkQueueGlobalPriorityEXT {
     E_LOW_EXT = 128,
     E_MEDIUM_EXT = 256,
@@ -2410,6 +2640,8 @@ define_enum! {
 
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
 define_enum! {
+
+  /// Specify the conservative rasterization mode
   pub enum VkConservativeRasterizationModeEXT {
     E_DISABLED_EXT = 0,
     E_OVERESTIMATE_EXT = 1,

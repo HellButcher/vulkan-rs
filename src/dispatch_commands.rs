@@ -9,6 +9,8 @@ use platform::*;
 use types::*;
 
 // feature: VK_VERSION_1_0
+
+/// Create a new Vulkan instance
 pub fn vkCreateInstance(
   pCreateInfo: &VkInstanceCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
@@ -29,6 +31,8 @@ pub fn vkCreateInstance(
     })
   }
 }
+
+/// Destroy an instance of Vulkan
 pub fn vkDestroyInstance(instance: VkInstance, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkInstanceDispatchTable::with(instance, |_t| {
@@ -37,6 +41,8 @@ pub fn vkDestroyInstance(instance: VkInstance, pAllocator: Option<&VkAllocationC
     VkInstanceDispatchTable::destroy(instance);
   }
 }
+
+/// Enumerates the physical devices accessible to a Vulkan instance
 pub fn vkEnumeratePhysicalDevices(instance: VkInstance) -> Result<Vec<VkPhysicalDevice>, VkResult> {
   unsafe {
     let mut pPhysicalDeviceCount: u32 = 0;
@@ -73,6 +79,8 @@ pub fn vkEnumeratePhysicalDevices(instance: VkInstance) -> Result<Vec<VkPhysical
     })
   }
 }
+
+/// Reports capabilities of a physical device
 pub fn vkGetPhysicalDeviceFeatures(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceFeatures {
   unsafe {
     let mut pFeatures: VkPhysicalDeviceFeatures = ::std::mem::zeroed();
@@ -82,6 +90,8 @@ pub fn vkGetPhysicalDeviceFeatures(physicalDevice: VkPhysicalDevice) -> VkPhysic
     })
   }
 }
+
+/// Lists physical device\'s format capabilities
 pub fn vkGetPhysicalDeviceFormatProperties(physicalDevice: VkPhysicalDevice, format: VkFormat) -> VkFormatProperties {
   unsafe {
     let mut pFormatProperties: VkFormatProperties = ::std::mem::zeroed();
@@ -95,6 +105,8 @@ pub fn vkGetPhysicalDeviceFormatProperties(physicalDevice: VkPhysicalDevice, for
     })
   }
 }
+
+/// Lists physical device\'s image format capabilities
 pub fn vkGetPhysicalDeviceImageFormatProperties(
   physicalDevice: VkPhysicalDevice,
   format: VkFormat,
@@ -122,6 +134,8 @@ pub fn vkGetPhysicalDeviceImageFormatProperties(
     })
   }
 }
+
+/// Returns properties of a physical device
 pub fn vkGetPhysicalDeviceProperties(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceProperties {
   unsafe {
     let mut pProperties: VkPhysicalDeviceProperties = ::std::mem::zeroed();
@@ -131,6 +145,8 @@ pub fn vkGetPhysicalDeviceProperties(physicalDevice: VkPhysicalDevice) -> VkPhys
     })
   }
 }
+
+/// Reports properties of the queues of the specified physical device
 pub fn vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice: VkPhysicalDevice) -> Vec<VkQueueFamilyProperties> {
   unsafe {
     let mut pQueueFamilyPropertyCount: u32 = 0;
@@ -155,6 +171,8 @@ pub fn vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice: VkPhysicalDevice
     })
   }
 }
+
+/// Reports memory information for the specified physical device
 pub fn vkGetPhysicalDeviceMemoryProperties(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceMemoryProperties {
   unsafe {
     let mut pMemoryProperties: VkPhysicalDeviceMemoryProperties = ::std::mem::zeroed();
@@ -164,6 +182,8 @@ pub fn vkGetPhysicalDeviceMemoryProperties(physicalDevice: VkPhysicalDevice) -> 
     })
   }
 }
+
+/// Create a new device instance
 pub fn vkCreateDevice(
   physicalDevice: VkPhysicalDevice,
   pCreateInfo: &VkDeviceCreateInfo,
@@ -186,6 +206,8 @@ pub fn vkCreateDevice(
     })
   }
 }
+
+/// Destroy a logical device
 pub fn vkDestroyDevice(device: VkDevice, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -194,6 +216,8 @@ pub fn vkDestroyDevice(device: VkDevice, pAllocator: Option<&VkAllocationCallbac
     VkDeviceDispatchTable::destroy(device);
   }
 }
+
+/// Returns up to requested number of global extension properties
 pub fn vkEnumerateInstanceExtensionProperties(
   pLayerName: Option<&AsRef<CStr>>,
 ) -> Result<Vec<VkExtensionProperties>, VkResult> {
@@ -232,6 +256,8 @@ pub fn vkEnumerateInstanceExtensionProperties(
     })
   }
 }
+
+/// Returns properties of available physical device extensions
 pub fn vkEnumerateDeviceExtensionProperties(
   physicalDevice: VkPhysicalDevice,
   pLayerName: Option<&AsRef<CStr>>,
@@ -273,6 +299,8 @@ pub fn vkEnumerateDeviceExtensionProperties(
     })
   }
 }
+
+/// Returns up to requested number of global layer properties
 pub fn vkEnumerateInstanceLayerProperties() -> Result<Vec<VkLayerProperties>, VkResult> {
   unsafe {
     let mut pPropertyCount: u32 = 0;
@@ -301,6 +329,8 @@ pub fn vkEnumerateInstanceLayerProperties() -> Result<Vec<VkLayerProperties>, Vk
     })
   }
 }
+
+/// Returns properties of available physical device layers
 pub fn vkEnumerateDeviceLayerProperties(physicalDevice: VkPhysicalDevice) -> Result<Vec<VkLayerProperties>, VkResult> {
   unsafe {
     let mut pPropertyCount: u32 = 0;
@@ -337,6 +367,8 @@ pub fn vkEnumerateDeviceLayerProperties(physicalDevice: VkPhysicalDevice) -> Res
     })
   }
 }
+
+/// Get a queue handle from a device
 pub fn vkGetDeviceQueue(device: VkDevice, queueFamilyIndex: u32, queueIndex: u32) -> VkQueue {
   unsafe {
     let mut pQueue: VkQueue = ::std::mem::zeroed();
@@ -351,6 +383,8 @@ pub fn vkGetDeviceQueue(device: VkDevice, queueFamilyIndex: u32, queueIndex: u32
     })
   }
 }
+
+/// Submits a sequence of semaphores or command buffers to a queue
 pub fn vkQueueSubmit(queue: VkQueue, pSubmits: &[VkSubmitInfo], fence: Option<VkFence>) -> VkResult {
   unsafe {
     let submitCount = pSubmits.len() as u32;
@@ -364,12 +398,18 @@ pub fn vkQueueSubmit(queue: VkQueue, pSubmits: &[VkSubmitInfo], fence: Option<Vk
     })
   }
 }
+
+/// Wait for a queue to become idle
 pub fn vkQueueWaitIdle(queue: VkQueue) -> VkResult {
   unsafe { VkDeviceDispatchTable::with(queue, |_t| _t.vkQueueWaitIdle.unwrap()(queue.as_raw())) }
 }
+
+/// Wait for a device to become idle
 pub fn vkDeviceWaitIdle(device: VkDevice) -> VkResult {
   unsafe { VkDeviceDispatchTable::with(device, |_t| _t.vkDeviceWaitIdle.unwrap()(device.as_raw())) }
 }
+
+/// Allocate GPU memory
 pub fn vkAllocateMemory(
   device: VkDevice,
   pAllocateInfo: &VkMemoryAllocateInfo,
@@ -391,6 +431,8 @@ pub fn vkAllocateMemory(
     })
   }
 }
+
+/// Free GPU memory
 pub fn vkFreeMemory(device: VkDevice, memory: Option<VkDeviceMemory>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -398,6 +440,8 @@ pub fn vkFreeMemory(device: VkDevice, memory: Option<VkDeviceMemory>, pAllocator
     })
   }
 }
+
+/// Map a memory object into application address space
 pub fn vkMapMemory(
   device: VkDevice,
   memory: VkDeviceMemory,
@@ -423,6 +467,8 @@ pub fn vkMapMemory(
     })
   }
 }
+
+/// Unmap a previously mapped memory object
 pub fn vkUnmapMemory(device: VkDevice, memory: VkDeviceMemory) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -430,6 +476,8 @@ pub fn vkUnmapMemory(device: VkDevice, memory: VkDeviceMemory) {
     })
   }
 }
+
+/// Flush mapped memory ranges
 pub fn vkFlushMappedMemoryRanges(device: VkDevice, pMemoryRanges: &[VkMappedMemoryRange]) -> VkResult {
   unsafe {
     let memoryRangeCount = pMemoryRanges.len() as u32;
@@ -438,6 +486,8 @@ pub fn vkFlushMappedMemoryRanges(device: VkDevice, pMemoryRanges: &[VkMappedMemo
     })
   }
 }
+
+/// Invalidate ranges of mapped memory objects
 pub fn vkInvalidateMappedMemoryRanges(device: VkDevice, pMemoryRanges: &[VkMappedMemoryRange]) -> VkResult {
   unsafe {
     let memoryRangeCount = pMemoryRanges.len() as u32;
@@ -446,6 +496,8 @@ pub fn vkInvalidateMappedMemoryRanges(device: VkDevice, pMemoryRanges: &[VkMappe
     })
   }
 }
+
+/// Query the current commitment for a VkDeviceMemory
 pub fn vkGetDeviceMemoryCommitment(device: VkDevice, memory: VkDeviceMemory) -> VkDeviceSize {
   unsafe {
     let mut pCommittedMemoryInBytes: VkDeviceSize = ::std::mem::zeroed();
@@ -459,6 +511,8 @@ pub fn vkGetDeviceMemoryCommitment(device: VkDevice, memory: VkDeviceMemory) -> 
     })
   }
 }
+
+/// Bind device memory to a buffer object
 pub fn vkBindBufferMemory(
   device: VkDevice,
   buffer: VkBuffer,
@@ -476,6 +530,8 @@ pub fn vkBindBufferMemory(
     })
   }
 }
+
+/// Bind device memory to an image object
 pub fn vkBindImageMemory(
   device: VkDevice,
   image: VkImage,
@@ -493,6 +549,8 @@ pub fn vkBindImageMemory(
     })
   }
 }
+
+/// Returns the memory requirements for specified Vulkan object
 pub fn vkGetBufferMemoryRequirements(device: VkDevice, buffer: VkBuffer) -> VkMemoryRequirements {
   unsafe {
     let mut pMemoryRequirements: VkMemoryRequirements = ::std::mem::zeroed();
@@ -506,6 +564,8 @@ pub fn vkGetBufferMemoryRequirements(device: VkDevice, buffer: VkBuffer) -> VkMe
     })
   }
 }
+
+/// Returns the memory requirements for specified Vulkan object
 pub fn vkGetImageMemoryRequirements(device: VkDevice, image: VkImage) -> VkMemoryRequirements {
   unsafe {
     let mut pMemoryRequirements: VkMemoryRequirements = ::std::mem::zeroed();
@@ -519,6 +579,8 @@ pub fn vkGetImageMemoryRequirements(device: VkDevice, image: VkImage) -> VkMemor
     })
   }
 }
+
+/// Query the memory requirements for a sparse image
 pub fn vkGetImageSparseMemoryRequirements(device: VkDevice, image: VkImage) -> Vec<VkSparseImageMemoryRequirements> {
   unsafe {
     let mut pSparseMemoryRequirementCount: u32 = 0;
@@ -545,6 +607,8 @@ pub fn vkGetImageSparseMemoryRequirements(device: VkDevice, image: VkImage) -> V
     })
   }
 }
+
+/// Retrieve properties of an image format applied to sparse images
 pub fn vkGetPhysicalDeviceSparseImageFormatProperties(
   physicalDevice: VkPhysicalDevice,
   format: VkFormat,
@@ -586,6 +650,8 @@ pub fn vkGetPhysicalDeviceSparseImageFormatProperties(
     })
   }
 }
+
+/// Bind device memory to a sparse resource object
 pub fn vkQueueBindSparse(queue: VkQueue, pBindInfo: &[VkBindSparseInfo], fence: Option<VkFence>) -> VkResult {
   unsafe {
     let bindInfoCount = pBindInfo.len() as u32;
@@ -599,6 +665,8 @@ pub fn vkQueueBindSparse(queue: VkQueue, pBindInfo: &[VkBindSparseInfo], fence: 
     })
   }
 }
+
+/// Create a new fence object
 pub fn vkCreateFence(
   device: VkDevice,
   pCreateInfo: &VkFenceCreateInfo,
@@ -620,6 +688,8 @@ pub fn vkCreateFence(
     })
   }
 }
+
+/// Destroy a fence object
 pub fn vkDestroyFence(device: VkDevice, fence: Option<VkFence>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -627,6 +697,8 @@ pub fn vkDestroyFence(device: VkDevice, fence: Option<VkFence>, pAllocator: Opti
     })
   }
 }
+
+/// Resets one or more fence objects
 pub fn vkResetFences(device: VkDevice, pFences: &[VkFence]) -> VkResult {
   unsafe {
     let fenceCount = pFences.len() as u32;
@@ -635,6 +707,8 @@ pub fn vkResetFences(device: VkDevice, pFences: &[VkFence]) -> VkResult {
     })
   }
 }
+
+/// Return the status of a fence
 pub fn vkGetFenceStatus(device: VkDevice, fence: VkFence) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -642,6 +716,8 @@ pub fn vkGetFenceStatus(device: VkDevice, fence: VkFence) -> VkResult {
     })
   }
 }
+
+/// Wait for one or more fences to become signaled
 pub fn vkWaitForFences(device: VkDevice, pFences: &[VkFence], waitAll: VkBool32, timeout: u64) -> VkResult {
   unsafe {
     let fenceCount = pFences.len() as u32;
@@ -656,6 +732,8 @@ pub fn vkWaitForFences(device: VkDevice, pFences: &[VkFence], waitAll: VkBool32,
     })
   }
 }
+
+/// Create a new queue semaphore object
 pub fn vkCreateSemaphore(
   device: VkDevice,
   pCreateInfo: &VkSemaphoreCreateInfo,
@@ -677,6 +755,8 @@ pub fn vkCreateSemaphore(
     })
   }
 }
+
+/// Destroy a semaphore object
 pub fn vkDestroySemaphore(
   device: VkDevice,
   semaphore: Option<VkSemaphore>,
@@ -688,6 +768,8 @@ pub fn vkDestroySemaphore(
     })
   }
 }
+
+/// Create a new event object
 pub fn vkCreateEvent(
   device: VkDevice,
   pCreateInfo: &VkEventCreateInfo,
@@ -709,6 +791,8 @@ pub fn vkCreateEvent(
     })
   }
 }
+
+/// Destroy an event object
 pub fn vkDestroyEvent(device: VkDevice, event: Option<VkEvent>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -716,6 +800,8 @@ pub fn vkDestroyEvent(device: VkDevice, event: Option<VkEvent>, pAllocator: Opti
     })
   }
 }
+
+/// Retrieve the status of an event object
 pub fn vkGetEventStatus(device: VkDevice, event: VkEvent) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -723,6 +809,8 @@ pub fn vkGetEventStatus(device: VkDevice, event: VkEvent) -> VkResult {
     })
   }
 }
+
+/// Set an event to signaled state
 pub fn vkSetEvent(device: VkDevice, event: VkEvent) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -730,6 +818,8 @@ pub fn vkSetEvent(device: VkDevice, event: VkEvent) -> VkResult {
     })
   }
 }
+
+/// Reset an event to non-signaled state
 pub fn vkResetEvent(device: VkDevice, event: VkEvent) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -737,6 +827,8 @@ pub fn vkResetEvent(device: VkDevice, event: VkEvent) -> VkResult {
     })
   }
 }
+
+/// Create a new query pool object
 pub fn vkCreateQueryPool(
   device: VkDevice,
   pCreateInfo: &VkQueryPoolCreateInfo,
@@ -758,6 +850,8 @@ pub fn vkCreateQueryPool(
     })
   }
 }
+
+/// Destroy a query pool object
 pub fn vkDestroyQueryPool(
   device: VkDevice,
   queryPool: Option<VkQueryPool>,
@@ -769,6 +863,8 @@ pub fn vkDestroyQueryPool(
     })
   }
 }
+
+/// Copy results of queries in a query pool to a host memory region
 pub fn vkGetQueryPoolResults(
   device: VkDevice,
   queryPool: VkQueryPool,
@@ -794,6 +890,8 @@ pub fn vkGetQueryPoolResults(
     })
   }
 }
+
+/// Create a new buffer object
 pub fn vkCreateBuffer(
   device: VkDevice,
   pCreateInfo: &VkBufferCreateInfo,
@@ -815,6 +913,8 @@ pub fn vkCreateBuffer(
     })
   }
 }
+
+/// Destroy a buffer object
 pub fn vkDestroyBuffer(device: VkDevice, buffer: Option<VkBuffer>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -822,6 +922,8 @@ pub fn vkDestroyBuffer(device: VkDevice, buffer: Option<VkBuffer>, pAllocator: O
     })
   }
 }
+
+/// Create a new buffer view object
 pub fn vkCreateBufferView(
   device: VkDevice,
   pCreateInfo: &VkBufferViewCreateInfo,
@@ -843,6 +945,8 @@ pub fn vkCreateBufferView(
     })
   }
 }
+
+/// Destroy a buffer view object
 pub fn vkDestroyBufferView(
   device: VkDevice,
   bufferView: Option<VkBufferView>,
@@ -854,6 +958,8 @@ pub fn vkDestroyBufferView(
     })
   }
 }
+
+/// Create a new image object
 pub fn vkCreateImage(
   device: VkDevice,
   pCreateInfo: &VkImageCreateInfo,
@@ -875,6 +981,8 @@ pub fn vkCreateImage(
     })
   }
 }
+
+/// Destroy an image object
 pub fn vkDestroyImage(device: VkDevice, image: Option<VkImage>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -882,6 +990,8 @@ pub fn vkDestroyImage(device: VkDevice, image: Option<VkImage>, pAllocator: Opti
     })
   }
 }
+
+/// Retrieve information about an image subresource
 pub fn vkGetImageSubresourceLayout(
   device: VkDevice,
   image: VkImage,
@@ -900,6 +1010,8 @@ pub fn vkGetImageSubresourceLayout(
     })
   }
 }
+
+/// Create an image view from an existing image
 pub fn vkCreateImageView(
   device: VkDevice,
   pCreateInfo: &VkImageViewCreateInfo,
@@ -921,6 +1033,8 @@ pub fn vkCreateImageView(
     })
   }
 }
+
+/// Destroy an image view object
 pub fn vkDestroyImageView(
   device: VkDevice,
   imageView: Option<VkImageView>,
@@ -932,6 +1046,8 @@ pub fn vkDestroyImageView(
     })
   }
 }
+
+/// Creates a new shader module object
 pub fn vkCreateShaderModule(
   device: VkDevice,
   pCreateInfo: &VkShaderModuleCreateInfo,
@@ -953,6 +1069,8 @@ pub fn vkCreateShaderModule(
     })
   }
 }
+
+/// Destroy a shader module module
 pub fn vkDestroyShaderModule(
   device: VkDevice,
   shaderModule: Option<VkShaderModule>,
@@ -964,6 +1082,8 @@ pub fn vkDestroyShaderModule(
     })
   }
 }
+
+/// Creates a new pipeline cache
 pub fn vkCreatePipelineCache(
   device: VkDevice,
   pCreateInfo: &VkPipelineCacheCreateInfo,
@@ -985,6 +1105,8 @@ pub fn vkCreatePipelineCache(
     })
   }
 }
+
+/// Destroy a pipeline cache object
 pub fn vkDestroyPipelineCache(
   device: VkDevice,
   pipelineCache: Option<VkPipelineCache>,
@@ -996,6 +1118,8 @@ pub fn vkDestroyPipelineCache(
     })
   }
 }
+
+/// Get the data store from a pipeline cache
 pub fn vkGetPipelineCacheData(device: VkDevice, pipelineCache: VkPipelineCache) -> Result<Vec<u8>, VkResult> {
   unsafe {
     let mut pDataSize: usize = 0;
@@ -1034,6 +1158,8 @@ pub fn vkGetPipelineCacheData(device: VkDevice, pipelineCache: VkPipelineCache) 
     })
   }
 }
+
+/// Combine the data stores of pipeline caches
 pub fn vkMergePipelineCaches(device: VkDevice, dstCache: VkPipelineCache, pSrcCaches: &[VkPipelineCache]) -> VkResult {
   unsafe {
     let srcCacheCount = pSrcCaches.len() as u32;
@@ -1047,6 +1173,8 @@ pub fn vkMergePipelineCaches(device: VkDevice, dstCache: VkPipelineCache, pSrcCa
     })
   }
 }
+
+/// Create graphics pipelines
 pub fn vkCreateGraphicsPipelines(
   device: VkDevice,
   pipelineCache: Option<VkPipelineCache>,
@@ -1069,6 +1197,8 @@ pub fn vkCreateGraphicsPipelines(
     })
   }
 }
+
+/// Creates a new compute pipeline object
 pub fn vkCreateComputePipelines(
   device: VkDevice,
   pipelineCache: Option<VkPipelineCache>,
@@ -1091,6 +1221,8 @@ pub fn vkCreateComputePipelines(
     })
   }
 }
+
+/// Destroy a pipeline object
 pub fn vkDestroyPipeline(device: VkDevice, pipeline: Option<VkPipeline>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -1098,6 +1230,8 @@ pub fn vkDestroyPipeline(device: VkDevice, pipeline: Option<VkPipeline>, pAlloca
     })
   }
 }
+
+/// Creates a new pipeline layout object
 pub fn vkCreatePipelineLayout(
   device: VkDevice,
   pCreateInfo: &VkPipelineLayoutCreateInfo,
@@ -1119,6 +1253,8 @@ pub fn vkCreatePipelineLayout(
     })
   }
 }
+
+/// Destroy a pipeline layout object
 pub fn vkDestroyPipelineLayout(
   device: VkDevice,
   pipelineLayout: Option<VkPipelineLayout>,
@@ -1134,6 +1270,8 @@ pub fn vkDestroyPipelineLayout(
     })
   }
 }
+
+/// Create a new sampler object
 pub fn vkCreateSampler(
   device: VkDevice,
   pCreateInfo: &VkSamplerCreateInfo,
@@ -1155,6 +1293,8 @@ pub fn vkCreateSampler(
     })
   }
 }
+
+/// Destroy a sampler object
 pub fn vkDestroySampler(device: VkDevice, sampler: Option<VkSampler>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -1162,6 +1302,8 @@ pub fn vkDestroySampler(device: VkDevice, sampler: Option<VkSampler>, pAllocator
     })
   }
 }
+
+/// Create a new descriptor set layout
 pub fn vkCreateDescriptorSetLayout(
   device: VkDevice,
   pCreateInfo: &VkDescriptorSetLayoutCreateInfo,
@@ -1183,6 +1325,8 @@ pub fn vkCreateDescriptorSetLayout(
     })
   }
 }
+
+/// Destroy a descriptor set layout object
 pub fn vkDestroyDescriptorSetLayout(
   device: VkDevice,
   descriptorSetLayout: Option<VkDescriptorSetLayout>,
@@ -1198,6 +1342,8 @@ pub fn vkDestroyDescriptorSetLayout(
     })
   }
 }
+
+/// Creates a descriptor pool object
 pub fn vkCreateDescriptorPool(
   device: VkDevice,
   pCreateInfo: &VkDescriptorPoolCreateInfo,
@@ -1219,6 +1365,8 @@ pub fn vkCreateDescriptorPool(
     })
   }
 }
+
+/// Destroy a descriptor pool object
 pub fn vkDestroyDescriptorPool(
   device: VkDevice,
   descriptorPool: Option<VkDescriptorPool>,
@@ -1234,6 +1382,8 @@ pub fn vkDestroyDescriptorPool(
     })
   }
 }
+
+/// Resets a descriptor pool object
 pub fn vkResetDescriptorPool(
   device: VkDevice,
   descriptorPool: VkDescriptorPool,
@@ -1245,6 +1395,8 @@ pub fn vkResetDescriptorPool(
     })
   }
 }
+
+/// Allocate one or more descriptor sets
 pub fn vkAllocateDescriptorSets(
   device: VkDevice,
   pAllocateInfo: &VkDescriptorSetAllocateInfo,
@@ -1266,6 +1418,8 @@ pub fn vkAllocateDescriptorSets(
     })
   }
 }
+
+/// Free one or more descriptor sets
 pub fn vkFreeDescriptorSets(
   device: VkDevice,
   descriptorPool: VkDescriptorPool,
@@ -1283,6 +1437,8 @@ pub fn vkFreeDescriptorSets(
     })
   }
 }
+
+/// Update the contents of a descriptor set object
 pub fn vkUpdateDescriptorSets(
   device: VkDevice,
   pDescriptorWrites: &[VkWriteDescriptorSet],
@@ -1302,6 +1458,8 @@ pub fn vkUpdateDescriptorSets(
     })
   }
 }
+
+/// Create a new framebuffer object
 pub fn vkCreateFramebuffer(
   device: VkDevice,
   pCreateInfo: &VkFramebufferCreateInfo,
@@ -1323,6 +1481,8 @@ pub fn vkCreateFramebuffer(
     })
   }
 }
+
+/// Destroy a framebuffer object
 pub fn vkDestroyFramebuffer(
   device: VkDevice,
   framebuffer: Option<VkFramebuffer>,
@@ -1334,6 +1494,8 @@ pub fn vkDestroyFramebuffer(
     })
   }
 }
+
+/// Create a new render pass object
 pub fn vkCreateRenderPass(
   device: VkDevice,
   pCreateInfo: &VkRenderPassCreateInfo,
@@ -1355,6 +1517,8 @@ pub fn vkCreateRenderPass(
     })
   }
 }
+
+/// Destroy a render pass object
 pub fn vkDestroyRenderPass(
   device: VkDevice,
   renderPass: Option<VkRenderPass>,
@@ -1366,6 +1530,8 @@ pub fn vkDestroyRenderPass(
     })
   }
 }
+
+/// Returns the granularity for optimal render area
 pub fn vkGetRenderAreaGranularity(device: VkDevice, renderPass: VkRenderPass) -> VkExtent2D {
   unsafe {
     let mut pGranularity: VkExtent2D = ::std::mem::zeroed();
@@ -1379,6 +1545,8 @@ pub fn vkGetRenderAreaGranularity(device: VkDevice, renderPass: VkRenderPass) ->
     })
   }
 }
+
+/// Create a new command pool object
 pub fn vkCreateCommandPool(
   device: VkDevice,
   pCreateInfo: &VkCommandPoolCreateInfo,
@@ -1400,6 +1568,8 @@ pub fn vkCreateCommandPool(
     })
   }
 }
+
+/// Destroy a command pool object
 pub fn vkDestroyCommandPool(
   device: VkDevice,
   commandPool: Option<VkCommandPool>,
@@ -1411,6 +1581,8 @@ pub fn vkDestroyCommandPool(
     })
   }
 }
+
+/// Reset a command pool
 pub fn vkResetCommandPool(device: VkDevice, commandPool: VkCommandPool, flags: VkCommandPoolResetFlags) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
@@ -1418,6 +1590,8 @@ pub fn vkResetCommandPool(device: VkDevice, commandPool: VkCommandPool, flags: V
     })
   }
 }
+
+/// Allocate command buffers from an existing command pool
 pub fn vkAllocateCommandBuffers(
   device: VkDevice,
   pAllocateInfo: &VkCommandBufferAllocateInfo,
@@ -1439,6 +1613,8 @@ pub fn vkAllocateCommandBuffers(
     })
   }
 }
+
+/// Free command buffers
 pub fn vkFreeCommandBuffers(device: VkDevice, commandPool: VkCommandPool, pCommandBuffers: &[VkCommandBuffer]) {
   unsafe {
     let commandBufferCount = pCommandBuffers.len() as u32;
@@ -1452,6 +1628,8 @@ pub fn vkFreeCommandBuffers(device: VkDevice, commandPool: VkCommandPool, pComma
     })
   }
 }
+
+/// Start recording a command buffer
 pub fn vkBeginCommandBuffer(commandBuffer: VkCommandBuffer, pBeginInfo: &VkCommandBufferBeginInfo) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1459,6 +1637,8 @@ pub fn vkBeginCommandBuffer(commandBuffer: VkCommandBuffer, pBeginInfo: &VkComma
     })
   }
 }
+
+/// Finish recording a command buffer
 pub fn vkEndCommandBuffer(commandBuffer: VkCommandBuffer) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1466,6 +1646,8 @@ pub fn vkEndCommandBuffer(commandBuffer: VkCommandBuffer) -> VkResult {
     })
   }
 }
+
+/// Reset a command buffer to the initial state
 pub fn vkResetCommandBuffer(commandBuffer: VkCommandBuffer, flags: VkCommandBufferResetFlags) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1473,6 +1655,8 @@ pub fn vkResetCommandBuffer(commandBuffer: VkCommandBuffer, flags: VkCommandBuff
     })
   }
 }
+
+/// Bind a pipeline object to a command buffer
 pub fn vkCmdBindPipeline(commandBuffer: VkCommandBuffer, pipelineBindPoint: VkPipelineBindPoint, pipeline: VkPipeline) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1480,6 +1664,8 @@ pub fn vkCmdBindPipeline(commandBuffer: VkCommandBuffer, pipelineBindPoint: VkPi
     })
   }
 }
+
+/// Set the viewport on a command buffer
 pub fn vkCmdSetViewport(commandBuffer: VkCommandBuffer, firstViewport: u32, pViewports: &[VkViewport]) {
   unsafe {
     let viewportCount = pViewports.len() as u32;
@@ -1493,6 +1679,8 @@ pub fn vkCmdSetViewport(commandBuffer: VkCommandBuffer, firstViewport: u32, pVie
     })
   }
 }
+
+/// Set the dynamic scissor rectangles on a command buffer
 pub fn vkCmdSetScissor(commandBuffer: VkCommandBuffer, firstScissor: u32, pScissors: &[VkRect2D]) {
   unsafe {
     let scissorCount = pScissors.len() as u32;
@@ -1506,6 +1694,8 @@ pub fn vkCmdSetScissor(commandBuffer: VkCommandBuffer, firstScissor: u32, pSciss
     })
   }
 }
+
+/// Set the dynamic line width state
 pub fn vkCmdSetLineWidth(commandBuffer: VkCommandBuffer, lineWidth: f32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1513,6 +1703,8 @@ pub fn vkCmdSetLineWidth(commandBuffer: VkCommandBuffer, lineWidth: f32) {
     })
   }
 }
+
+/// Set the depth bias dynamic state
 pub fn vkCmdSetDepthBias(
   commandBuffer: VkCommandBuffer,
   depthBiasConstantFactor: f32,
@@ -1530,6 +1722,8 @@ pub fn vkCmdSetDepthBias(
     })
   }
 }
+
+/// Set the values of blend constants
 pub fn vkCmdSetBlendConstants(commandBuffer: VkCommandBuffer, blendConstants: [f32; 4]) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1537,6 +1731,8 @@ pub fn vkCmdSetBlendConstants(commandBuffer: VkCommandBuffer, blendConstants: [f
     })
   }
 }
+
+/// Set the depth bounds test values for a command buffer
 pub fn vkCmdSetDepthBounds(commandBuffer: VkCommandBuffer, minDepthBounds: f32, maxDepthBounds: f32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1544,6 +1740,8 @@ pub fn vkCmdSetDepthBounds(commandBuffer: VkCommandBuffer, minDepthBounds: f32, 
     })
   }
 }
+
+/// Set the stencil compare mask dynamic state
 pub fn vkCmdSetStencilCompareMask(commandBuffer: VkCommandBuffer, faceMask: VkStencilFaceFlags, compareMask: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1551,6 +1749,8 @@ pub fn vkCmdSetStencilCompareMask(commandBuffer: VkCommandBuffer, faceMask: VkSt
     })
   }
 }
+
+/// Set the stencil write mask dynamic state
 pub fn vkCmdSetStencilWriteMask(commandBuffer: VkCommandBuffer, faceMask: VkStencilFaceFlags, writeMask: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1558,6 +1758,8 @@ pub fn vkCmdSetStencilWriteMask(commandBuffer: VkCommandBuffer, faceMask: VkSten
     })
   }
 }
+
+/// Set the stencil reference dynamic state
 pub fn vkCmdSetStencilReference(commandBuffer: VkCommandBuffer, faceMask: VkStencilFaceFlags, reference: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1565,6 +1767,8 @@ pub fn vkCmdSetStencilReference(commandBuffer: VkCommandBuffer, faceMask: VkSten
     })
   }
 }
+
+/// Binds descriptor sets to a command buffer
 pub fn vkCmdBindDescriptorSets(
   commandBuffer: VkCommandBuffer,
   pipelineBindPoint: VkPipelineBindPoint,
@@ -1590,6 +1794,8 @@ pub fn vkCmdBindDescriptorSets(
     })
   }
 }
+
+/// Bind an index buffer to a command buffer
 pub fn vkCmdBindIndexBuffer(
   commandBuffer: VkCommandBuffer,
   buffer: VkBuffer,
@@ -1602,6 +1808,8 @@ pub fn vkCmdBindIndexBuffer(
     })
   }
 }
+
+/// Bind vertex buffers to a command buffer
 pub fn vkCmdBindVertexBuffers(
   commandBuffer: VkCommandBuffer,
   firstBinding: u32,
@@ -1622,6 +1830,8 @@ pub fn vkCmdBindVertexBuffers(
     })
   }
 }
+
+/// Draw primitives
 pub fn vkCmdDraw(
   commandBuffer: VkCommandBuffer,
   vertexCount: u32,
@@ -1641,6 +1851,8 @@ pub fn vkCmdDraw(
     })
   }
 }
+
+/// Issue an indexed draw into a command buffer
 pub fn vkCmdDrawIndexed(
   commandBuffer: VkCommandBuffer,
   indexCount: u32,
@@ -1662,6 +1874,8 @@ pub fn vkCmdDrawIndexed(
     })
   }
 }
+
+/// Issue an indirect draw into a command buffer
 pub fn vkCmdDrawIndirect(
   commandBuffer: VkCommandBuffer,
   buffer: VkBuffer,
@@ -1681,6 +1895,8 @@ pub fn vkCmdDrawIndirect(
     })
   }
 }
+
+/// Perform an indexed indirect draw
 pub fn vkCmdDrawIndexedIndirect(
   commandBuffer: VkCommandBuffer,
   buffer: VkBuffer,
@@ -1700,6 +1916,8 @@ pub fn vkCmdDrawIndexedIndirect(
     })
   }
 }
+
+/// Dispatch compute work items
 pub fn vkCmdDispatch(commandBuffer: VkCommandBuffer, groupCountX: u32, groupCountY: u32, groupCountZ: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1712,6 +1930,8 @@ pub fn vkCmdDispatch(commandBuffer: VkCommandBuffer, groupCountX: u32, groupCoun
     })
   }
 }
+
+/// Dispatch compute work items using indirect parameters
 pub fn vkCmdDispatchIndirect(commandBuffer: VkCommandBuffer, buffer: VkBuffer, offset: VkDeviceSize) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1719,6 +1939,8 @@ pub fn vkCmdDispatchIndirect(commandBuffer: VkCommandBuffer, buffer: VkBuffer, o
     })
   }
 }
+
+/// Copy data between buffer regions
 pub fn vkCmdCopyBuffer(
   commandBuffer: VkCommandBuffer,
   srcBuffer: VkBuffer,
@@ -1738,6 +1960,8 @@ pub fn vkCmdCopyBuffer(
     })
   }
 }
+
+/// Copy data between images
 pub fn vkCmdCopyImage(
   commandBuffer: VkCommandBuffer,
   srcImage: VkImage,
@@ -1761,6 +1985,8 @@ pub fn vkCmdCopyImage(
     })
   }
 }
+
+/// Copy regions of an image, potentially performing format conversion,
 pub fn vkCmdBlitImage(
   commandBuffer: VkCommandBuffer,
   srcImage: VkImage,
@@ -1786,6 +2012,8 @@ pub fn vkCmdBlitImage(
     })
   }
 }
+
+/// Copy data from a buffer into an image
 pub fn vkCmdCopyBufferToImage(
   commandBuffer: VkCommandBuffer,
   srcBuffer: VkBuffer,
@@ -1807,6 +2035,8 @@ pub fn vkCmdCopyBufferToImage(
     })
   }
 }
+
+/// Copy image data into a buffer
 pub fn vkCmdCopyImageToBuffer(
   commandBuffer: VkCommandBuffer,
   srcImage: VkImage,
@@ -1828,6 +2058,8 @@ pub fn vkCmdCopyImageToBuffer(
     })
   }
 }
+
+/// Update a buffer\'s contents from host memory
 pub fn vkCmdUpdateBuffer(commandBuffer: VkCommandBuffer, dstBuffer: VkBuffer, dstOffset: VkDeviceSize, pData: &[u8]) {
   unsafe {
     let dataSize = pData.len() as VkDeviceSize;
@@ -1842,6 +2074,8 @@ pub fn vkCmdUpdateBuffer(commandBuffer: VkCommandBuffer, dstBuffer: VkBuffer, ds
     })
   }
 }
+
+/// Fill a region of a buffer with a fixed value
 pub fn vkCmdFillBuffer(
   commandBuffer: VkCommandBuffer,
   dstBuffer: VkBuffer,
@@ -1861,6 +2095,8 @@ pub fn vkCmdFillBuffer(
     })
   }
 }
+
+/// Clear regions of a color image
 pub fn vkCmdClearColorImage(
   commandBuffer: VkCommandBuffer,
   image: VkImage,
@@ -1882,6 +2118,8 @@ pub fn vkCmdClearColorImage(
     })
   }
 }
+
+/// Fill regions of a combined depth/stencil image
 pub fn vkCmdClearDepthStencilImage(
   commandBuffer: VkCommandBuffer,
   image: VkImage,
@@ -1903,6 +2141,8 @@ pub fn vkCmdClearDepthStencilImage(
     })
   }
 }
+
+/// Clear regions within currently bound framebuffer attachments
 pub fn vkCmdClearAttachments(
   commandBuffer: VkCommandBuffer,
   pAttachments: &[VkClearAttachment],
@@ -1922,6 +2162,8 @@ pub fn vkCmdClearAttachments(
     })
   }
 }
+
+/// Resolve regions of an image
 pub fn vkCmdResolveImage(
   commandBuffer: VkCommandBuffer,
   srcImage: VkImage,
@@ -1945,6 +2187,8 @@ pub fn vkCmdResolveImage(
     })
   }
 }
+
+/// Set an event object to signaled state
 pub fn vkCmdSetEvent(commandBuffer: VkCommandBuffer, event: VkEvent, stageMask: VkPipelineStageFlags) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1952,6 +2196,8 @@ pub fn vkCmdSetEvent(commandBuffer: VkCommandBuffer, event: VkEvent, stageMask: 
     })
   }
 }
+
+/// Reset an event object to non-signaled state
 pub fn vkCmdResetEvent(commandBuffer: VkCommandBuffer, event: VkEvent, stageMask: VkPipelineStageFlags) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1959,6 +2205,8 @@ pub fn vkCmdResetEvent(commandBuffer: VkCommandBuffer, event: VkEvent, stageMask
     })
   }
 }
+
+/// Wait for one or more events and insert a set of memory
 pub fn vkCmdWaitEvents(
   commandBuffer: VkCommandBuffer,
   pEvents: &[VkEvent],
@@ -1990,6 +2238,8 @@ pub fn vkCmdWaitEvents(
     })
   }
 }
+
+/// Insert a memory dependency
 pub fn vkCmdPipelineBarrier(
   commandBuffer: VkCommandBuffer,
   srcStageMask: VkPipelineStageFlags,
@@ -2019,6 +2269,8 @@ pub fn vkCmdPipelineBarrier(
     })
   }
 }
+
+/// Begin a query
 pub fn vkCmdBeginQuery(commandBuffer: VkCommandBuffer, queryPool: VkQueryPool, query: u32, flags: VkQueryControlFlags) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -2026,6 +2278,8 @@ pub fn vkCmdBeginQuery(commandBuffer: VkCommandBuffer, queryPool: VkQueryPool, q
     })
   }
 }
+
+/// Ends a query
 pub fn vkCmdEndQuery(commandBuffer: VkCommandBuffer, queryPool: VkQueryPool, query: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -2033,6 +2287,8 @@ pub fn vkCmdEndQuery(commandBuffer: VkCommandBuffer, queryPool: VkQueryPool, que
     })
   }
 }
+
+/// Reset queries in a query pool
 pub fn vkCmdResetQueryPool(commandBuffer: VkCommandBuffer, queryPool: VkQueryPool, firstQuery: u32, queryCount: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -2045,6 +2301,8 @@ pub fn vkCmdResetQueryPool(commandBuffer: VkCommandBuffer, queryPool: VkQueryPoo
     })
   }
 }
+
+/// Write a device timestamp into a query object
 pub fn vkCmdWriteTimestamp(
   commandBuffer: VkCommandBuffer,
   pipelineStage: VkPipelineStageFlagBits,
@@ -2062,6 +2320,8 @@ pub fn vkCmdWriteTimestamp(
     })
   }
 }
+
+/// Copy the results of queries in a query pool to a buffer object
 pub fn vkCmdCopyQueryPoolResults(
   commandBuffer: VkCommandBuffer,
   queryPool: VkQueryPool,
@@ -2087,6 +2347,8 @@ pub fn vkCmdCopyQueryPoolResults(
     })
   }
 }
+
+/// Update the values of push constants
 pub fn vkCmdPushConstants(
   commandBuffer: VkCommandBuffer,
   layout: VkPipelineLayout,
@@ -2108,6 +2370,8 @@ pub fn vkCmdPushConstants(
     })
   }
 }
+
+/// Begin a new render pass
 pub fn vkCmdBeginRenderPass(
   commandBuffer: VkCommandBuffer,
   pRenderPassBegin: &VkRenderPassBeginInfo,
@@ -2119,6 +2383,8 @@ pub fn vkCmdBeginRenderPass(
     })
   }
 }
+
+/// Transition to the next subpass of a render pass
 pub fn vkCmdNextSubpass(commandBuffer: VkCommandBuffer, contents: VkSubpassContents) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -2126,6 +2392,8 @@ pub fn vkCmdNextSubpass(commandBuffer: VkCommandBuffer, contents: VkSubpassConte
     })
   }
 }
+
+/// End the current render pass
 pub fn vkCmdEndRenderPass(commandBuffer: VkCommandBuffer) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -2133,6 +2401,8 @@ pub fn vkCmdEndRenderPass(commandBuffer: VkCommandBuffer) {
     })
   }
 }
+
+/// Execute a secondary command buffer from a primary command buffer
 pub fn vkCmdExecuteCommands(commandBuffer: VkCommandBuffer, pCommandBuffers: &[VkCommandBuffer]) {
   unsafe {
     let commandBufferCount = pCommandBuffers.len() as u32;
@@ -2147,6 +2417,8 @@ pub fn vkCmdExecuteCommands(commandBuffer: VkCommandBuffer, pCommandBuffers: &[V
 }
 
 // feature: VK_KHR_surface
+
+/// Destroy a VkSurfaceKHR object
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkDestroySurfaceKHR(
   instance: VkInstance,
@@ -2159,6 +2431,8 @@ pub fn vkDestroySurfaceKHR(
     })
   }
 }
+
+/// Query if presentation is supported
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkGetPhysicalDeviceSurfaceSupportKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2181,6 +2455,8 @@ pub fn vkGetPhysicalDeviceSurfaceSupportKHR(
     })
   }
 }
+
+/// Query surface capabilities
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2201,6 +2477,8 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
     })
   }
 }
+
+/// Query color formats supported by surface
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkGetPhysicalDeviceSurfaceFormatsKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2243,6 +2521,8 @@ pub fn vkGetPhysicalDeviceSurfaceFormatsKHR(
     })
   }
 }
+
+/// Query supported presentation modes
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkGetPhysicalDeviceSurfacePresentModesKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2287,6 +2567,8 @@ pub fn vkGetPhysicalDeviceSurfacePresentModesKHR(
 }
 
 // feature: VK_KHR_swapchain
+
+/// Create a swapchain
 #[cfg(feature = "VK_KHR_swapchain")]
 pub fn vkCreateSwapchainKHR(
   device: VkDevice,
@@ -2309,6 +2591,8 @@ pub fn vkCreateSwapchainKHR(
     })
   }
 }
+
+/// Destroy a swapchain object
 #[cfg(feature = "VK_KHR_swapchain")]
 pub fn vkDestroySwapchainKHR(
   device: VkDevice,
@@ -2321,6 +2605,8 @@ pub fn vkDestroySwapchainKHR(
     })
   }
 }
+
+/// Obtain the array of presentable images associated with a swapchain
 #[cfg(feature = "VK_KHR_swapchain")]
 pub fn vkGetSwapchainImagesKHR(device: VkDevice, swapchain: VkSwapchainKHR) -> Result<Vec<VkImage>, VkResult> {
   unsafe {
@@ -2360,6 +2646,8 @@ pub fn vkGetSwapchainImagesKHR(device: VkDevice, swapchain: VkSwapchainKHR) -> R
     })
   }
 }
+
+/// Retrieve the index of the next available presentable image
 #[cfg(feature = "VK_KHR_swapchain")]
 pub fn vkAcquireNextImageKHR(
   device: VkDevice,
@@ -2386,6 +2674,8 @@ pub fn vkAcquireNextImageKHR(
     })
   }
 }
+
+/// Queue an image for presentation
 #[cfg(feature = "VK_KHR_swapchain")]
 pub fn vkQueuePresentKHR(queue: VkQueue, pPresentInfo: &VkPresentInfoKHR) -> VkResult {
   unsafe {
@@ -2396,6 +2686,8 @@ pub fn vkQueuePresentKHR(queue: VkQueue, pPresentInfo: &VkPresentInfoKHR) -> VkR
 }
 
 // feature: VK_KHR_display
+
+/// Query information about the available displays
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetPhysicalDeviceDisplayPropertiesKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2435,6 +2727,8 @@ pub fn vkGetPhysicalDeviceDisplayPropertiesKHR(
     })
   }
 }
+
+/// Query the plane properties
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetPhysicalDeviceDisplayPlanePropertiesKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2474,6 +2768,8 @@ pub fn vkGetPhysicalDeviceDisplayPlanePropertiesKHR(
     })
   }
 }
+
+/// Query the list of displays a plane supports
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetDisplayPlaneSupportedDisplaysKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2516,6 +2812,8 @@ pub fn vkGetDisplayPlaneSupportedDisplaysKHR(
     })
   }
 }
+
+/// Query the set of mode properties supported by the display
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetDisplayModePropertiesKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2558,6 +2856,8 @@ pub fn vkGetDisplayModePropertiesKHR(
     })
   }
 }
+
+/// Create a display mode
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkCreateDisplayModeKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2582,6 +2882,8 @@ pub fn vkCreateDisplayModeKHR(
     })
   }
 }
+
+/// Query capabilities of a mode and plane combination
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetDisplayPlaneCapabilitiesKHR(
   physicalDevice: VkPhysicalDevice,
@@ -2604,6 +2906,8 @@ pub fn vkGetDisplayPlaneCapabilitiesKHR(
     })
   }
 }
+
+/// Create a `VkSurfaceKHR` structure representing a display plane and mode
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkCreateDisplayPlaneSurfaceKHR(
   instance: VkInstance,
@@ -2628,6 +2932,8 @@ pub fn vkCreateDisplayPlaneSurfaceKHR(
 }
 
 // feature: VK_KHR_display_swapchain
+
+/// Create multiple swapchains that share presentable images
 #[cfg(feature = "VK_KHR_display_swapchain")]
 pub fn vkCreateSharedSwapchainsKHR(
   device: VkDevice,
@@ -2651,6 +2957,9 @@ pub fn vkCreateSharedSwapchainsKHR(
 }
 
 // feature: VK_KHR_xlib_surface
+
+/// Create a `VkSurfaceKHR` object for an X11 window, using the Xlib client-side
+/// library
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
 pub fn vkCreateXlibSurfaceKHR(
@@ -2674,6 +2983,8 @@ pub fn vkCreateXlibSurfaceKHR(
     })
   }
 }
+
+/// Query physical device for presentation to X11 server using Xlib
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
 pub fn vkGetPhysicalDeviceXlibPresentationSupportKHR(
@@ -2695,6 +3006,9 @@ pub fn vkGetPhysicalDeviceXlibPresentationSupportKHR(
 }
 
 // feature: VK_KHR_xcb_surface
+
+/// Create a `VkSurfaceKHR` object for a X11 window, using the XCB client-side
+/// library
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
 pub fn vkCreateXcbSurfaceKHR(
@@ -2718,6 +3032,8 @@ pub fn vkCreateXcbSurfaceKHR(
     })
   }
 }
+
+/// Query physical device for presentation to X11 server using XCB
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
 pub fn vkGetPhysicalDeviceXcbPresentationSupportKHR(
@@ -2739,6 +3055,8 @@ pub fn vkGetPhysicalDeviceXcbPresentationSupportKHR(
 }
 
 // feature: VK_KHR_wayland_surface
+
+/// Create a `VkSurfaceKHR` object for a Wayland window
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
 pub fn vkCreateWaylandSurfaceKHR(
@@ -2762,6 +3080,8 @@ pub fn vkCreateWaylandSurfaceKHR(
     })
   }
 }
+
+/// Query physical device for presentation to Wayland
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
 pub fn vkGetPhysicalDeviceWaylandPresentationSupportKHR(
@@ -2777,6 +3097,8 @@ pub fn vkGetPhysicalDeviceWaylandPresentationSupportKHR(
 }
 
 // feature: VK_KHR_mir_surface
+
+/// Create a `VkSurfaceKHR` object for a Mir window
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
 pub fn vkCreateMirSurfaceKHR(
@@ -2800,6 +3122,8 @@ pub fn vkCreateMirSurfaceKHR(
     })
   }
 }
+
+/// Query physical device for presentation to Mir
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
 pub fn vkGetPhysicalDeviceMirPresentationSupportKHR(
@@ -2815,6 +3139,8 @@ pub fn vkGetPhysicalDeviceMirPresentationSupportKHR(
 }
 
 // feature: VK_KHR_android_surface
+
+/// Create a `VkSurfaceKHR` object for an Android native window
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
 pub fn vkCreateAndroidSurfaceKHR(
@@ -2840,6 +3166,8 @@ pub fn vkCreateAndroidSurfaceKHR(
 }
 
 // feature: VK_KHR_win32_surface
+
+/// Create a `VkSurfaceKHR` object for an Win32 native window
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkCreateWin32SurfaceKHR(
@@ -2863,6 +3191,8 @@ pub fn vkCreateWin32SurfaceKHR(
     })
   }
 }
+
+/// query queue family support for presentation on a Win32 display
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetPhysicalDeviceWin32PresentationSupportKHR(physicalDevice: VkPhysicalDevice, queueFamilyIndex: u32) -> bool {
@@ -2874,6 +3204,8 @@ pub fn vkGetPhysicalDeviceWin32PresentationSupportKHR(physicalDevice: VkPhysical
 }
 
 // feature: VK_EXT_debug_report
+
+/// Create a debug report callback object
 #[cfg(feature = "VK_EXT_debug_report")]
 pub fn vkCreateDebugReportCallbackEXT(
   instance: VkInstance,
@@ -2896,6 +3228,8 @@ pub fn vkCreateDebugReportCallbackEXT(
     })
   }
 }
+
+/// Destroy a debug report callback object
 #[cfg(feature = "VK_EXT_debug_report")]
 pub fn vkDestroyDebugReportCallbackEXT(
   instance: VkInstance,
@@ -2908,6 +3242,8 @@ pub fn vkDestroyDebugReportCallbackEXT(
     })
   }
 }
+
+/// Inject a message into a debug stream
 #[cfg(feature = "VK_EXT_debug_report")]
 pub fn vkDebugReportMessageEXT(
   instance: VkInstance,
@@ -2936,6 +3272,8 @@ pub fn vkDebugReportMessageEXT(
 }
 
 // feature: VK_EXT_debug_marker
+
+/// Attach arbitrary data to an object
 #[cfg(feature = "VK_EXT_debug_marker")]
 pub fn vkDebugMarkerSetObjectTagEXT(device: VkDevice, pTagInfo: &VkDebugMarkerObjectTagInfoEXT) -> VkResult {
   unsafe {
@@ -2944,6 +3282,8 @@ pub fn vkDebugMarkerSetObjectTagEXT(device: VkDevice, pTagInfo: &VkDebugMarkerOb
     })
   }
 }
+
+/// Give a user-friendly name to an object
 #[cfg(feature = "VK_EXT_debug_marker")]
 pub fn vkDebugMarkerSetObjectNameEXT(device: VkDevice, pNameInfo: &VkDebugMarkerObjectNameInfoEXT) -> VkResult {
   unsafe {
@@ -2952,6 +3292,8 @@ pub fn vkDebugMarkerSetObjectNameEXT(device: VkDevice, pNameInfo: &VkDebugMarker
     })
   }
 }
+
+/// Open a command buffer marker region
 #[cfg(feature = "VK_EXT_debug_marker")]
 pub fn vkCmdDebugMarkerBeginEXT(commandBuffer: VkCommandBuffer, pMarkerInfo: &VkDebugMarkerMarkerInfoEXT) {
   unsafe {
@@ -2960,6 +3302,8 @@ pub fn vkCmdDebugMarkerBeginEXT(commandBuffer: VkCommandBuffer, pMarkerInfo: &Vk
     })
   }
 }
+
+/// Close a command buffer marker region
 #[cfg(feature = "VK_EXT_debug_marker")]
 pub fn vkCmdDebugMarkerEndEXT(commandBuffer: VkCommandBuffer) {
   unsafe {
@@ -2968,6 +3312,8 @@ pub fn vkCmdDebugMarkerEndEXT(commandBuffer: VkCommandBuffer) {
     })
   }
 }
+
+/// Insert a marker label into a command buffer
 #[cfg(feature = "VK_EXT_debug_marker")]
 pub fn vkCmdDebugMarkerInsertEXT(commandBuffer: VkCommandBuffer, pMarkerInfo: &VkDebugMarkerMarkerInfoEXT) {
   unsafe {
@@ -2978,6 +3324,8 @@ pub fn vkCmdDebugMarkerInsertEXT(commandBuffer: VkCommandBuffer, pMarkerInfo: &V
 }
 
 // feature: VK_AMD_draw_indirect_count
+
+/// Perform an indirect draw with the draw count sourced from a buffer
 #[cfg(feature = "VK_AMD_draw_indirect_count")]
 pub fn vkCmdDrawIndirectCountAMD(
   commandBuffer: VkCommandBuffer,
@@ -3002,6 +3350,8 @@ pub fn vkCmdDrawIndirectCountAMD(
     })
   }
 }
+
+/// Perform an indexed indirect draw with the draw count sourced from a buffer
 #[cfg(feature = "VK_AMD_draw_indirect_count")]
 pub fn vkCmdDrawIndexedIndirectCountAMD(
   commandBuffer: VkCommandBuffer,
@@ -3028,6 +3378,8 @@ pub fn vkCmdDrawIndexedIndirectCountAMD(
 }
 
 // feature: VK_KHR_get_physical_device_properties2
+
+/// Reports capabilities of a physical device
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceFeatures2KHR(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceFeatures2KHR {
   unsafe {
@@ -3038,6 +3390,8 @@ pub fn vkGetPhysicalDeviceFeatures2KHR(physicalDevice: VkPhysicalDevice) -> VkPh
     })
   }
 }
+
+/// Returns properties of a physical device
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceProperties2KHR(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceProperties2KHR {
   unsafe {
@@ -3048,6 +3402,8 @@ pub fn vkGetPhysicalDeviceProperties2KHR(physicalDevice: VkPhysicalDevice) -> Vk
     })
   }
 }
+
+/// Lists physical device\'s format capabilities
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceFormatProperties2KHR(
   physicalDevice: VkPhysicalDevice,
@@ -3065,6 +3421,8 @@ pub fn vkGetPhysicalDeviceFormatProperties2KHR(
     })
   }
 }
+
+/// Lists physical device\'s image format capabilities
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceImageFormatProperties2KHR(
   physicalDevice: VkPhysicalDevice,
@@ -3085,6 +3443,8 @@ pub fn vkGetPhysicalDeviceImageFormatProperties2KHR(
     })
   }
 }
+
+/// Reports properties of the queues of the specified physical device
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceQueueFamilyProperties2KHR(
   physicalDevice: VkPhysicalDevice,
@@ -3112,6 +3472,8 @@ pub fn vkGetPhysicalDeviceQueueFamilyProperties2KHR(
     })
   }
 }
+
+/// Reports memory information for the specified physical device
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceMemoryProperties2KHR(
   physicalDevice: VkPhysicalDevice,
@@ -3124,6 +3486,8 @@ pub fn vkGetPhysicalDeviceMemoryProperties2KHR(
     })
   }
 }
+
+/// Retrieve properties of an image format applied to sparse images
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceSparseImageFormatProperties2KHR(
   physicalDevice: VkPhysicalDevice,
@@ -3158,6 +3522,8 @@ pub fn vkGetPhysicalDeviceSparseImageFormatProperties2KHR(
 }
 
 // feature: VK_AMD_shader_info
+
+/// Get information about a shader in a pipeline
 #[cfg(feature = "VK_AMD_shader_info")]
 pub fn vkGetShaderInfoAMD(
   device: VkDevice,
@@ -3208,6 +3574,8 @@ pub fn vkGetShaderInfoAMD(
 }
 
 // feature: VK_NV_external_memory_capabilities
+
+/// determine image capabilities compatible with external memory handle types
 #[cfg(feature = "VK_NV_external_memory_capabilities")]
 pub fn vkGetPhysicalDeviceExternalImageFormatPropertiesNV(
   physicalDevice: VkPhysicalDevice,
@@ -3241,6 +3609,8 @@ pub fn vkGetPhysicalDeviceExternalImageFormatPropertiesNV(
 }
 
 // feature: VK_NV_external_memory_win32
+
+/// retrieve Win32 handle to a device memory object
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetMemoryWin32HandleNV(
@@ -3261,6 +3631,9 @@ pub fn vkGetMemoryWin32HandleNV(
 }
 
 // feature: VK_KHX_device_group_creation
+
+/// Enumerates groups of physical devices that can be used to create a single
+/// logical device
 #[cfg(feature = "VK_KHX_device_group_creation")]
 pub fn vkEnumeratePhysicalDeviceGroupsKHX(
   instance: VkInstance,
@@ -3302,6 +3675,8 @@ pub fn vkEnumeratePhysicalDeviceGroupsKHX(
 }
 
 // feature: VK_KHX_device_group
+
+/// Query supported peer memory features of a device
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkGetDeviceGroupPeerMemoryFeaturesKHX(
   device: VkDevice,
@@ -3323,6 +3698,8 @@ pub fn vkGetDeviceGroupPeerMemoryFeaturesKHX(
     })
   }
 }
+
+/// Modify device mask of a command buffer
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkCmdSetDeviceMaskKHX(commandBuffer: VkCommandBuffer, deviceMask: u32) {
   unsafe {
@@ -3331,6 +3708,8 @@ pub fn vkCmdSetDeviceMaskKHX(commandBuffer: VkCommandBuffer, deviceMask: u32) {
     })
   }
 }
+
+/// Dispatch compute work items
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkCmdDispatchBaseKHX(
   commandBuffer: VkCommandBuffer,
@@ -3355,6 +3734,8 @@ pub fn vkCmdDispatchBaseKHX(
     })
   }
 }
+
+/// Query present capabilities from other physical devices
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkGetDeviceGroupPresentCapabilitiesKHX(
   device: VkDevice,
@@ -3373,6 +3754,8 @@ pub fn vkGetDeviceGroupPresentCapabilitiesKHX(
     })
   }
 }
+
+/// Query present capabilities for a surface
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkGetDeviceGroupSurfacePresentModesKHX(
   device: VkDevice,
@@ -3389,6 +3772,8 @@ pub fn vkGetDeviceGroupSurfacePresentModesKHX(
     })
   }
 }
+
+/// Query present rectangles for a surface on a physical device
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkGetPhysicalDevicePresentRectanglesKHX(
   physicalDevice: VkPhysicalDevice,
@@ -3431,6 +3816,8 @@ pub fn vkGetPhysicalDevicePresentRectanglesKHX(
     })
   }
 }
+
+/// Retrieve the index of the next available presentable image
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkAcquireNextImage2KHX(device: VkDevice, pAcquireInfo: &VkAcquireNextImageInfoKHX) -> Result<u32, VkResult> {
   unsafe {
@@ -3446,6 +3833,8 @@ pub fn vkAcquireNextImage2KHX(device: VkDevice, pAcquireInfo: &VkAcquireNextImag
 }
 
 // feature: VK_NN_vi_surface
+
+/// Create a `VkSurfaceKHR` object for a VI layer
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
 pub fn vkCreateViSurfaceNN(
@@ -3471,6 +3860,8 @@ pub fn vkCreateViSurfaceNN(
 }
 
 // feature: VK_KHR_maintenance1
+
+/// Trim a command pool
 #[cfg(feature = "VK_KHR_maintenance1")]
 pub fn vkTrimCommandPoolKHR(device: VkDevice, commandPool: VkCommandPool, flags: VkCommandPoolTrimFlagsKHR) {
   unsafe {
@@ -3481,6 +3872,8 @@ pub fn vkTrimCommandPoolKHR(device: VkDevice, commandPool: VkCommandPool, flags:
 }
 
 // feature: VK_KHR_external_memory_capabilities
+
+/// Query external handle types supported by buffers
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 pub fn vkGetPhysicalDeviceExternalBufferPropertiesKHR(
   physicalDevice: VkPhysicalDevice,
@@ -3500,6 +3893,8 @@ pub fn vkGetPhysicalDeviceExternalBufferPropertiesKHR(
 }
 
 // feature: VK_KHR_external_memory_win32
+
+/// Get a Windows HANDLE for a memory object
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetMemoryWin32HandleKHR(
@@ -3517,6 +3912,8 @@ pub fn vkGetMemoryWin32HandleKHR(
     })
   }
 }
+
+/// Get Properties of External Memory Win32 Handles
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetMemoryWin32HandlePropertiesKHR(
@@ -3542,6 +3939,8 @@ pub fn vkGetMemoryWin32HandlePropertiesKHR(
 }
 
 // feature: VK_KHR_external_memory_fd
+
+/// Get a POSIX file descriptor for a memory object
 #[cfg(feature = "VK_KHR_external_memory_fd")]
 pub fn vkGetMemoryFdKHR(device: VkDevice, pGetFdInfo: &VkMemoryGetFdInfoKHR) -> Result<c_int, VkResult> {
   unsafe {
@@ -3555,6 +3954,8 @@ pub fn vkGetMemoryFdKHR(device: VkDevice, pGetFdInfo: &VkMemoryGetFdInfoKHR) -> 
     })
   }
 }
+
+/// Get Properties of External Memory File Descriptors
 #[cfg(feature = "VK_KHR_external_memory_fd")]
 pub fn vkGetMemoryFdPropertiesKHR(
   device: VkDevice,
@@ -3579,6 +3980,8 @@ pub fn vkGetMemoryFdPropertiesKHR(
 }
 
 // feature: VK_KHR_external_semaphore_capabilities
+
+/// Function for querying external semaphore handle capabilities.
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
 pub fn vkGetPhysicalDeviceExternalSemaphorePropertiesKHR(
   physicalDevice: VkPhysicalDevice,
@@ -3599,6 +4002,8 @@ pub fn vkGetPhysicalDeviceExternalSemaphorePropertiesKHR(
 }
 
 // feature: VK_KHR_external_semaphore_win32
+
+/// Import a semaphore from a Windows HANDLE
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkImportSemaphoreWin32HandleKHR(
@@ -3611,6 +4016,8 @@ pub fn vkImportSemaphoreWin32HandleKHR(
     })
   }
 }
+
+/// Get a Windows HANDLE for a semaphore
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetSemaphoreWin32HandleKHR(
@@ -3630,6 +4037,8 @@ pub fn vkGetSemaphoreWin32HandleKHR(
 }
 
 // feature: VK_KHR_external_semaphore_fd
+
+/// Import a semaphore from a POSIX file descriptor
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
 pub fn vkImportSemaphoreFdKHR(device: VkDevice, pImportSemaphoreFdInfo: &VkImportSemaphoreFdInfoKHR) -> VkResult {
   unsafe {
@@ -3638,6 +4047,8 @@ pub fn vkImportSemaphoreFdKHR(device: VkDevice, pImportSemaphoreFdInfo: &VkImpor
     })
   }
 }
+
+/// Get a POSIX file descriptor handle for a semaphore
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
 pub fn vkGetSemaphoreFdKHR(device: VkDevice, pGetFdInfo: &VkSemaphoreGetFdInfoKHR) -> Result<c_int, VkResult> {
   unsafe {
@@ -3653,6 +4064,8 @@ pub fn vkGetSemaphoreFdKHR(device: VkDevice, pGetFdInfo: &VkSemaphoreGetFdInfoKH
 }
 
 // feature: VK_KHR_push_descriptor
+
+/// Pushes descriptor updates into a command buffer
 #[cfg(feature = "VK_KHR_push_descriptor")]
 pub fn vkCmdPushDescriptorSetKHR(
   commandBuffer: VkCommandBuffer,
@@ -3677,6 +4090,8 @@ pub fn vkCmdPushDescriptorSetKHR(
 }
 
 // feature: VK_KHR_descriptor_update_template
+
+/// Create a new descriptor update template
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub fn vkCreateDescriptorUpdateTemplateKHR(
   device: VkDevice,
@@ -3699,6 +4114,8 @@ pub fn vkCreateDescriptorUpdateTemplateKHR(
     })
   }
 }
+
+/// Destroy a descriptor update template object
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub fn vkDestroyDescriptorUpdateTemplateKHR(
   device: VkDevice,
@@ -3715,6 +4132,8 @@ pub fn vkDestroyDescriptorUpdateTemplateKHR(
     })
   }
 }
+
+/// Update the contents of a descriptor set object using an update template
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub fn vkUpdateDescriptorSetWithTemplateKHR(
   device: VkDevice,
@@ -3733,6 +4152,9 @@ pub fn vkUpdateDescriptorSetWithTemplateKHR(
     })
   }
 }
+
+/// Pushes descriptor updates into a command buffer using a descriptor update
+/// template
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub fn vkCmdPushDescriptorSetWithTemplateKHR(
   commandBuffer: VkCommandBuffer,
@@ -3755,6 +4177,8 @@ pub fn vkCmdPushDescriptorSetWithTemplateKHR(
 }
 
 // feature: VK_NVX_device_generated_commands
+
+/// Performs the generation of commands on the device
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkCmdProcessCommandsNVX(commandBuffer: VkCommandBuffer, pProcessCommandsInfo: &VkCmdProcessCommandsInfoNVX) {
   unsafe {
@@ -3763,6 +4187,8 @@ pub fn vkCmdProcessCommandsNVX(commandBuffer: VkCommandBuffer, pProcessCommandsI
     })
   }
 }
+
+/// Perform a reservation of command buffer space
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkCmdReserveSpaceForCommandsNVX(
   commandBuffer: VkCommandBuffer,
@@ -3774,6 +4200,8 @@ pub fn vkCmdReserveSpaceForCommandsNVX(
     })
   }
 }
+
+/// Create an indirect command layout object
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkCreateIndirectCommandsLayoutNVX(
   device: VkDevice,
@@ -3796,6 +4224,8 @@ pub fn vkCreateIndirectCommandsLayoutNVX(
     })
   }
 }
+
+/// Destroy a object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkDestroyIndirectCommandsLayoutNVX(
   device: VkDevice,
@@ -3812,6 +4242,8 @@ pub fn vkDestroyIndirectCommandsLayoutNVX(
     })
   }
 }
+
+/// Create an object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkCreateObjectTableNVX(
   device: VkDevice,
@@ -3834,6 +4266,8 @@ pub fn vkCreateObjectTableNVX(
     })
   }
 }
+
+/// Destroy a object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkDestroyObjectTableNVX(
   device: VkDevice,
@@ -3846,6 +4280,8 @@ pub fn vkDestroyObjectTableNVX(
     })
   }
 }
+
+/// Register resource bindings in an object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkRegisterObjectsNVX(
   device: VkDevice,
@@ -3867,6 +4303,8 @@ pub fn vkRegisterObjectsNVX(
     })
   }
 }
+
+/// Unregister resource bindings in an object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkUnregisterObjectsNVX(
   device: VkDevice,
@@ -3888,6 +4326,8 @@ pub fn vkUnregisterObjectsNVX(
     })
   }
 }
+
+/// Returns device-generated commands related properties of a physical device
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX(
   physicalDevice: VkPhysicalDevice,
@@ -3908,6 +4348,8 @@ pub fn vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX(
 }
 
 // feature: VK_NV_clip_space_w_scaling
+
+/// Set the viewport W scaling on a command buffer
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
 pub fn vkCmdSetViewportWScalingNV(
   commandBuffer: VkCommandBuffer,
@@ -3928,6 +4370,8 @@ pub fn vkCmdSetViewportWScalingNV(
 }
 
 // feature: VK_EXT_direct_mode_display
+
+/// Release access to an acquired VkDisplayKHR
 #[cfg(feature = "VK_EXT_direct_mode_display")]
 pub fn vkReleaseDisplayEXT(physicalDevice: VkPhysicalDevice, display: VkDisplayKHR) -> VkResult {
   unsafe {
@@ -3938,6 +4382,8 @@ pub fn vkReleaseDisplayEXT(physicalDevice: VkPhysicalDevice, display: VkDisplayK
 }
 
 // feature: VK_EXT_acquire_xlib_display
+
+/// Acquire access to a VkDisplayKHR using Xlib
 #[cfg(feature = "VK_EXT_acquire_xlib_display")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_XRANDR_EXT")]
 pub fn vkAcquireXlibDisplayEXT(
@@ -3951,6 +4397,8 @@ pub fn vkAcquireXlibDisplayEXT(
     })
   }
 }
+
+/// Query the VkDisplayKHR corresponding to an X11 RandR Output
 #[cfg(feature = "VK_EXT_acquire_xlib_display")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_XRANDR_EXT")]
 pub fn vkGetRandROutputDisplayEXT(
@@ -3976,6 +4424,8 @@ pub fn vkGetRandROutputDisplayEXT(
 }
 
 // feature: VK_EXT_display_surface_counter
+
+/// Query surface capabilities
 #[cfg(feature = "VK_EXT_display_surface_counter")]
 pub fn vkGetPhysicalDeviceSurfaceCapabilities2EXT(
   physicalDevice: VkPhysicalDevice,
@@ -3998,6 +4448,8 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilities2EXT(
 }
 
 // feature: VK_EXT_display_control
+
+/// Set the power state of a display
 #[cfg(feature = "VK_EXT_display_control")]
 pub fn vkDisplayPowerControlEXT(
   device: VkDevice,
@@ -4014,6 +4466,8 @@ pub fn vkDisplayPowerControlEXT(
     })
   }
 }
+
+/// Signal a fence when a device event occurs
 #[cfg(feature = "VK_EXT_display_control")]
 pub fn vkRegisterDeviceEventEXT(
   device: VkDevice,
@@ -4036,6 +4490,8 @@ pub fn vkRegisterDeviceEventEXT(
     })
   }
 }
+
+/// Signal a fence when a display event occurs
 #[cfg(feature = "VK_EXT_display_control")]
 pub fn vkRegisterDisplayEventEXT(
   device: VkDevice,
@@ -4060,6 +4516,8 @@ pub fn vkRegisterDisplayEventEXT(
     })
   }
 }
+
+/// Query the current value of a surface counter
 #[cfg(feature = "VK_EXT_display_control")]
 pub fn vkGetSwapchainCounterEXT(
   device: VkDevice,
@@ -4084,6 +4542,8 @@ pub fn vkGetSwapchainCounterEXT(
 }
 
 // feature: VK_GOOGLE_display_timing
+
+/// Obtain the RC duration of the PE\'s display
 #[cfg(feature = "VK_GOOGLE_display_timing")]
 pub fn vkGetRefreshCycleDurationGOOGLE(
   device: VkDevice,
@@ -4104,6 +4564,8 @@ pub fn vkGetRefreshCycleDurationGOOGLE(
     })
   }
 }
+
+/// Obtain timing of a previously-presented image
 #[cfg(feature = "VK_GOOGLE_display_timing")]
 pub fn vkGetPastPresentationTimingGOOGLE(
   device: VkDevice,
@@ -4148,6 +4610,8 @@ pub fn vkGetPastPresentationTimingGOOGLE(
 }
 
 // feature: VK_EXT_discard_rectangles
+
+/// Set discard rectangles dynamically
 #[cfg(feature = "VK_EXT_discard_rectangles")]
 pub fn vkCmdSetDiscardRectangleEXT(
   commandBuffer: VkCommandBuffer,
@@ -4168,6 +4632,8 @@ pub fn vkCmdSetDiscardRectangleEXT(
 }
 
 // feature: VK_EXT_hdr_metadata
+
+/// function to set Hdr metadata
 #[cfg(feature = "VK_EXT_hdr_metadata")]
 pub fn vkSetHdrMetadataEXT(device: VkDevice, pSwapchains: &[VkSwapchainKHR], pMetadata: &[VkHdrMetadataEXT]) {
   unsafe {
@@ -4185,6 +4651,8 @@ pub fn vkSetHdrMetadataEXT(device: VkDevice, pSwapchains: &[VkSwapchainKHR], pMe
 }
 
 // feature: VK_KHR_get_surface_capabilities2
+
+/// Reports capabilities of a surface on a physical device
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
 pub fn vkGetPhysicalDeviceSurfaceCapabilities2KHR(
   physicalDevice: VkPhysicalDevice,
@@ -4205,6 +4673,8 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilities2KHR(
     })
   }
 }
+
+/// Query color formats supported by surface
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
 pub fn vkGetPhysicalDeviceSurfaceFormats2KHR(
   physicalDevice: VkPhysicalDevice,
@@ -4249,6 +4719,8 @@ pub fn vkGetPhysicalDeviceSurfaceFormats2KHR(
 }
 
 // feature: VK_KHR_shared_presentable_image
+
+/// Get a swapchain\'s status
 #[cfg(feature = "VK_KHR_shared_presentable_image")]
 pub fn vkGetSwapchainStatusKHR(device: VkDevice, swapchain: VkSwapchainKHR) -> VkResult {
   unsafe {
@@ -4259,6 +4731,8 @@ pub fn vkGetSwapchainStatusKHR(device: VkDevice, swapchain: VkSwapchainKHR) -> V
 }
 
 // feature: VK_KHR_external_fence_capabilities
+
+/// Function for querying external fence handle capabilities.
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
 pub fn vkGetPhysicalDeviceExternalFencePropertiesKHR(
   physicalDevice: VkPhysicalDevice,
@@ -4278,6 +4752,8 @@ pub fn vkGetPhysicalDeviceExternalFencePropertiesKHR(
 }
 
 // feature: VK_KHR_external_fence_win32
+
+/// Import a fence from a Windows HANDLE
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkImportFenceWin32HandleKHR(
@@ -4290,6 +4766,8 @@ pub fn vkImportFenceWin32HandleKHR(
     })
   }
 }
+
+/// Get a Windows HANDLE for a fence
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetFenceWin32HandleKHR(
@@ -4309,6 +4787,8 @@ pub fn vkGetFenceWin32HandleKHR(
 }
 
 // feature: VK_KHR_external_fence_fd
+
+/// Import a fence from a POSIX file descriptor
 #[cfg(feature = "VK_KHR_external_fence_fd")]
 pub fn vkImportFenceFdKHR(device: VkDevice, pImportFenceFdInfo: &VkImportFenceFdInfoKHR) -> VkResult {
   unsafe {
@@ -4317,6 +4797,8 @@ pub fn vkImportFenceFdKHR(device: VkDevice, pImportFenceFdInfo: &VkImportFenceFd
     })
   }
 }
+
+/// Get a POSIX file descriptor handle for a fence
 #[cfg(feature = "VK_KHR_external_fence_fd")]
 pub fn vkGetFenceFdKHR(device: VkDevice, pGetFdInfo: &VkFenceGetFdInfoKHR) -> Result<c_int, VkResult> {
   unsafe {
@@ -4332,6 +4814,8 @@ pub fn vkGetFenceFdKHR(device: VkDevice, pGetFdInfo: &VkFenceGetFdInfoKHR) -> Re
 }
 
 // feature: VK_MVK_ios_surface
+
+/// Create a VkSurfaceKHR object for an iOS UIView
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
 pub fn vkCreateIOSSurfaceMVK(
@@ -4357,6 +4841,8 @@ pub fn vkCreateIOSSurfaceMVK(
 }
 
 // feature: VK_MVK_macos_surface
+
+/// Create a VkSurfaceKHR object for a macOS NSView
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
 pub fn vkCreateMacOSSurfaceMVK(
@@ -4382,6 +4868,8 @@ pub fn vkCreateMacOSSurfaceMVK(
 }
 
 // feature: VK_KHR_get_memory_requirements2
+
+/// Returns the memory requirements for specified Vulkan object
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
 pub fn vkGetImageMemoryRequirements2KHR(
   device: VkDevice,
@@ -4399,6 +4887,8 @@ pub fn vkGetImageMemoryRequirements2KHR(
     })
   }
 }
+
+/// Returns the memory requirements for specified Vulkan object
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
 pub fn vkGetBufferMemoryRequirements2KHR(
   device: VkDevice,
@@ -4448,6 +4938,8 @@ pub fn vkGetImageSparseMemoryRequirements2KHR(
 }
 
 // feature: VK_EXT_sample_locations
+
+/// Set the dynamic sample locations state
 #[cfg(feature = "VK_EXT_sample_locations")]
 pub fn vkCmdSetSampleLocationsEXT(commandBuffer: VkCommandBuffer, pSampleLocationsInfo: &VkSampleLocationsInfoEXT) {
   unsafe {
@@ -4456,6 +4948,8 @@ pub fn vkCmdSetSampleLocationsEXT(commandBuffer: VkCommandBuffer, pSampleLocatio
     })
   }
 }
+
+/// Report sample count specific multisampling capabilities of a physical device
 #[cfg(feature = "VK_EXT_sample_locations")]
 pub fn vkGetPhysicalDeviceMultisamplePropertiesEXT(
   physicalDevice: VkPhysicalDevice,
@@ -4475,6 +4969,8 @@ pub fn vkGetPhysicalDeviceMultisamplePropertiesEXT(
 }
 
 // feature: VK_KHR_bind_memory2
+
+/// Bind device memory to buffer objects
 #[cfg(feature = "VK_KHR_bind_memory2")]
 pub fn vkBindBufferMemory2KHR(device: VkDevice, pBindInfos: &[VkBindBufferMemoryInfoKHR]) -> VkResult {
   unsafe {
@@ -4484,6 +4980,8 @@ pub fn vkBindBufferMemory2KHR(device: VkDevice, pBindInfos: &[VkBindBufferMemory
     })
   }
 }
+
+/// Bind device memory to image objects
 #[cfg(feature = "VK_KHR_bind_memory2")]
 pub fn vkBindImageMemory2KHR(device: VkDevice, pBindInfos: &[VkBindImageMemoryInfoKHR]) -> VkResult {
   unsafe {
@@ -4495,6 +4993,8 @@ pub fn vkBindImageMemory2KHR(device: VkDevice, pBindInfos: &[VkBindImageMemoryIn
 }
 
 // feature: VK_KHR_sampler_ycbcr_conversion
+
+/// Create a new Ycbcr conversion
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 pub fn vkCreateSamplerYcbcrConversionKHR(
   device: VkDevice,
@@ -4517,6 +5017,8 @@ pub fn vkCreateSamplerYcbcrConversionKHR(
     })
   }
 }
+
+/// Destroy a created Y\'CbCr conversion
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 pub fn vkDestroySamplerYcbcrConversionKHR(
   device: VkDevice,
@@ -4535,6 +5037,8 @@ pub fn vkDestroySamplerYcbcrConversionKHR(
 }
 
 // feature: VK_EXT_validation_cache
+
+/// Creates a new validation cache
 #[cfg(feature = "VK_EXT_validation_cache")]
 pub fn vkCreateValidationCacheEXT(
   device: VkDevice,
@@ -4557,6 +5061,8 @@ pub fn vkCreateValidationCacheEXT(
     })
   }
 }
+
+/// Destroy a validation cache object
 #[cfg(feature = "VK_EXT_validation_cache")]
 pub fn vkDestroyValidationCacheEXT(
   device: VkDevice,
@@ -4573,6 +5079,8 @@ pub fn vkDestroyValidationCacheEXT(
     })
   }
 }
+
+/// Combine the data stores of validation caches
 #[cfg(feature = "VK_EXT_validation_cache")]
 pub fn vkMergeValidationCachesEXT(
   device: VkDevice,
@@ -4591,6 +5099,8 @@ pub fn vkMergeValidationCachesEXT(
     })
   }
 }
+
+/// Get the data store from a validation cache
 #[cfg(feature = "VK_EXT_validation_cache")]
 pub fn vkGetValidationCacheDataEXT(
   device: VkDevice,
@@ -4635,6 +5145,8 @@ pub fn vkGetValidationCacheDataEXT(
 }
 
 // feature: VK_EXT_external_memory_host
+
+/// Get properties of external memory host pointer
 #[cfg(feature = "VK_EXT_external_memory_host")]
 pub fn vkGetMemoryHostPointerPropertiesEXT(
   device: VkDevice,
@@ -4659,6 +5171,8 @@ pub fn vkGetMemoryHostPointerPropertiesEXT(
 }
 
 // feature: VK_AMD_buffer_marker
+
+/// Execute a pipelined write of a marker value into a buffer
 #[cfg(feature = "VK_AMD_buffer_marker")]
 pub fn vkCmdWriteBufferMarkerAMD(
   commandBuffer: VkCommandBuffer,

@@ -32,11 +32,11 @@ def call_pandoc(input_filename, output_filename=None, frontend='docbook', backen
         _pandoc_exe = which('pandoc')
         if _pandoc_exe is None:
             _pandoc_exe = False
-            print('`asciidoctor` not found in PATH.')
+            print('`pandoc` not found in PATH.')
             return
     if _pandoc_exe is False:
         return
-    cmdline = [_pandoc_exe, '--normalize', '--parse-raw', '--reference-links', '--wrap=auto', '--columns=80', '-f', frontend, '-t', backend]
+    cmdline = [_pandoc_exe, '--reference-links', '--wrap=auto', '--columns=80', '-f', frontend, '-t', backend]
     if output_filename:
         cmdline.append('-o')
         cmdline.append(output_filename)

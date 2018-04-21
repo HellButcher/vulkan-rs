@@ -15,7 +15,11 @@ use utils::VkNonDispatchableHandle;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkBuffer__ {}
+
+/// Opaque handle to a buffer object
 pub type VkBuffer = VkNonDispatchableHandle<VkBuffer__>;
+
+/// Structure specifying a buffer memory barrier
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkBufferMemoryBarrier {
@@ -124,6 +128,8 @@ unsafe impl RawStruct for VkBufferMemoryBarrier {
 fn test_struct_size_vk_buffer_memory_barrier() {
   assert_size!(types_raw::VkBufferMemoryBarrier, VkBufferMemoryBarrier);
 }
+
+/// Structure specifying a dispatch indirect command
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDispatchIndirectCommand {
@@ -180,6 +186,8 @@ fn test_struct_size_vk_dispatch_indirect_command() {
     VkDispatchIndirectCommand
   );
 }
+
+/// Structure specifying a draw indexed indirect command
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDrawIndexedIndirectCommand {
@@ -256,6 +264,8 @@ fn test_struct_size_vk_draw_indexed_indirect_command() {
     VkDrawIndexedIndirectCommand
   );
 }
+
+/// Structure specifying a draw indirect command
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDrawIndirectCommand {
@@ -322,7 +332,11 @@ fn test_struct_size_vk_draw_indirect_command() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkImage__ {}
+
+/// Opaque handle to a image object
 pub type VkImage = VkNonDispatchableHandle<VkImage__>;
+
+/// Structure specifying a image subresource range
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageSubresourceRange {
@@ -396,6 +410,8 @@ unsafe impl RawStruct for VkImageSubresourceRange {
 fn test_struct_size_vk_image_subresource_range() {
   assert_size!(types_raw::VkImageSubresourceRange, VkImageSubresourceRange);
 }
+
+/// Structure specifying the parameters of an image memory barrier
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageMemoryBarrier {
@@ -514,6 +530,8 @@ unsafe impl RawStruct for VkImageMemoryBarrier {
 fn test_struct_size_vk_image_memory_barrier() {
   assert_size!(types_raw::VkImageMemoryBarrier, VkImageMemoryBarrier);
 }
+
+/// Structure specifying a global memory barrier
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkMemoryBarrier {
@@ -572,6 +590,8 @@ unsafe impl RawStruct for VkMemoryBarrier {
 fn test_struct_size_vk_memory_barrier() {
   assert_size!(types_raw::VkMemoryBarrier, VkMemoryBarrier);
 }
+
+/// Structure specifying application info
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkApplicationInfo<'a> {
@@ -665,6 +685,8 @@ unsafe impl<'a> RawStruct for VkApplicationInfo<'a> {
 fn test_struct_size_vk_application_info() {
   assert_size!(types_raw::VkApplicationInfo, VkApplicationInfo);
 }
+
+/// Structure specifying parameters of a newly created instance
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkInstanceCreateInfo<'a> {
@@ -735,11 +757,23 @@ unsafe impl<'a> RawStruct for VkInstanceCreateInfo<'a> {
 fn test_struct_size_vk_instance_create_info() {
   assert_size!(types_raw::VkInstanceCreateInfo, VkInstanceCreateInfo);
 }
+
+/// Application-defined memory allocation function
 pub use types_raw::PFN_vkAllocationFunction;
+
+/// Application-defined memory reallocation function
 pub use types_raw::PFN_vkReallocationFunction;
+
+/// Application-defined memory free function
 pub use types_raw::PFN_vkFreeFunction;
+
+/// Application-defined memory allocation notification function
 pub use types_raw::PFN_vkInternalAllocationNotification;
+
+/// Application-defined memory free notification function
 pub use types_raw::PFN_vkInternalFreeNotification;
+
+/// Structure containing callback function pointers for memory allocation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkAllocationCallbacks {
@@ -821,11 +855,18 @@ fn test_struct_size_vk_allocation_callbacks() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkInstance__ {}
+
+/// Opaque handle to a instance object
 pub type VkInstance = VkDispatchableHandle<VkInstance__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkPhysicalDevice__ {}
+
+/// Opaque handle to a physical device object
 pub type VkPhysicalDevice = VkDispatchableHandle<VkPhysicalDevice__>;
+
+/// Structure describing the fine-grained features that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPhysicalDeviceFeatures {
@@ -1457,6 +1498,8 @@ fn test_struct_size_vk_physical_device_features() {
     VkPhysicalDeviceFeatures
   );
 }
+
+/// Structure specifying image format properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkFormatProperties {
@@ -1510,6 +1553,8 @@ unsafe impl RawStruct for VkFormatProperties {
 fn test_struct_size_vk_format_properties() {
   assert_size!(types_raw::VkFormatProperties, VkFormatProperties);
 }
+
+/// Structure specifying a three-dimensional extent
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkExtent3D {
@@ -1563,6 +1608,8 @@ unsafe impl RawStruct for VkExtent3D {
 fn test_struct_size_vk_extent3_d() {
   assert_size!(types_raw::VkExtent3D, VkExtent3D);
 }
+
+/// Structure specifying a image format properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageFormatProperties {
@@ -1636,6 +1683,8 @@ unsafe impl RawStruct for VkImageFormatProperties {
 fn test_struct_size_vk_image_format_properties() {
   assert_size!(types_raw::VkImageFormatProperties, VkImageFormatProperties);
 }
+
+/// Structure reporting implementation-dependent physical device limits
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPhysicalDeviceLimits {
@@ -2722,6 +2771,8 @@ unsafe impl RawStruct for VkPhysicalDeviceLimits {
 fn test_struct_size_vk_physical_device_limits() {
   assert_size!(types_raw::VkPhysicalDeviceLimits, VkPhysicalDeviceLimits);
 }
+
+/// Structure specifying physical device sparse memory properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPhysicalDeviceSparseProperties {
@@ -2803,6 +2854,8 @@ fn test_struct_size_vk_physical_device_sparse_properties() {
     VkPhysicalDeviceSparseProperties
   );
 }
+
+/// Structure specifying physical device properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPhysicalDeviceProperties {
@@ -2919,6 +2972,8 @@ fn test_struct_size_vk_physical_device_properties() {
     VkPhysicalDeviceProperties
   );
 }
+
+/// Structure providing information about a queue family
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkQueueFamilyProperties {
@@ -2982,6 +3037,8 @@ unsafe impl RawStruct for VkQueueFamilyProperties {
 fn test_struct_size_vk_queue_family_properties() {
   assert_size!(types_raw::VkQueueFamilyProperties, VkQueueFamilyProperties);
 }
+
+/// Structure specifying memory type
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkMemoryType {
@@ -3025,6 +3082,8 @@ unsafe impl RawStruct for VkMemoryType {
 fn test_struct_size_vk_memory_type() {
   assert_size!(types_raw::VkMemoryType, VkMemoryType);
 }
+
+/// Structure specifying a memory heap
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkMemoryHeap {
@@ -3068,6 +3127,8 @@ unsafe impl RawStruct for VkMemoryHeap {
 fn test_struct_size_vk_memory_heap() {
   assert_size!(types_raw::VkMemoryHeap, VkMemoryHeap);
 }
+
+/// Structure specifying physical device memory properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPhysicalDeviceMemoryProperties {
@@ -3134,11 +3195,17 @@ fn test_struct_size_vk_physical_device_memory_properties() {
     VkPhysicalDeviceMemoryProperties
   );
 }
+
+/// Dummy function pointer type returned by queries
 pub use types_raw::PFN_vkVoidFunction;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkDevice__ {}
+
+/// Opaque handle to a device object
 pub type VkDevice = VkDispatchableHandle<VkDevice__>;
+
+/// Structure specifying parameters of a newly created device queue
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDeviceQueueCreateInfo<'a> {
@@ -3212,6 +3279,8 @@ unsafe impl<'a> RawStruct for VkDeviceQueueCreateInfo<'a> {
 fn test_struct_size_vk_device_queue_create_info() {
   assert_size!(types_raw::VkDeviceQueueCreateInfo, VkDeviceQueueCreateInfo);
 }
+
+/// Structure specifying parameters of a newly created device
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDeviceCreateInfo<'a> {
@@ -3296,6 +3365,8 @@ unsafe impl<'a> RawStruct for VkDeviceCreateInfo<'a> {
 fn test_struct_size_vk_device_create_info() {
   assert_size!(types_raw::VkDeviceCreateInfo, VkDeviceCreateInfo);
 }
+
+/// Structure specifying a extension properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkExtensionProperties {
@@ -3339,6 +3410,8 @@ unsafe impl RawStruct for VkExtensionProperties {
 fn test_struct_size_vk_extension_properties() {
   assert_size!(types_raw::VkExtensionProperties, VkExtensionProperties);
 }
+
+/// Structure specifying layer properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkLayerProperties {
@@ -3405,15 +3478,23 @@ fn test_struct_size_vk_layer_properties() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkQueue__ {}
+
+/// Opaque handle to a queue object
 pub type VkQueue = VkDispatchableHandle<VkQueue__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkSemaphore__ {}
+
+/// Opaque handle to a semaphore object
 pub type VkSemaphore = VkNonDispatchableHandle<VkSemaphore__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkCommandBuffer__ {}
+
+/// Opaque handle to a command buffer object
 pub type VkCommandBuffer = VkDispatchableHandle<VkCommandBuffer__>;
+
+/// Structure specifying a queue submit operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSubmitInfo<'a> {
@@ -3491,7 +3572,11 @@ fn test_struct_size_vk_submit_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkFence__ {}
+
+/// Opaque handle to a fence object
 pub type VkFence = VkNonDispatchableHandle<VkFence__>;
+
+/// Structure containing parameters of a memory allocation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkMemoryAllocateInfo {
@@ -3553,7 +3638,11 @@ fn test_struct_size_vk_memory_allocate_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkDeviceMemory__ {}
+
+/// Opaque handle to a device memory object
 pub type VkDeviceMemory = VkNonDispatchableHandle<VkDeviceMemory__>;
+
+/// Structure specifying a mapped memory range
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkMappedMemoryRange {
@@ -3622,6 +3711,8 @@ unsafe impl RawStruct for VkMappedMemoryRange {
 fn test_struct_size_vk_mapped_memory_range() {
   assert_size!(types_raw::VkMappedMemoryRange, VkMappedMemoryRange);
 }
+
+/// Structure specifying memory requirements
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkMemoryRequirements {
@@ -3675,6 +3766,8 @@ unsafe impl RawStruct for VkMemoryRequirements {
 fn test_struct_size_vk_memory_requirements() {
   assert_size!(types_raw::VkMemoryRequirements, VkMemoryRequirements);
 }
+
+/// Structure specifying sparse image format properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSparseImageFormatProperties {
@@ -3731,6 +3824,8 @@ fn test_struct_size_vk_sparse_image_format_properties() {
     VkSparseImageFormatProperties
   );
 }
+
+/// Structure specifying sparse image memory requirements
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSparseImageMemoryRequirements {
@@ -3807,6 +3902,8 @@ fn test_struct_size_vk_sparse_image_memory_requirements() {
     VkSparseImageMemoryRequirements
   );
 }
+
+/// Structure specifying a sparse memory bind operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSparseMemoryBind {
@@ -3880,6 +3977,8 @@ unsafe impl RawStruct for VkSparseMemoryBind {
 fn test_struct_size_vk_sparse_memory_bind() {
   assert_size!(types_raw::VkSparseMemoryBind, VkSparseMemoryBind);
 }
+
+/// Structure specifying a sparse buffer memory bind operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSparseBufferMemoryBindInfo<'a> {
@@ -3931,6 +4030,8 @@ fn test_struct_size_vk_sparse_buffer_memory_bind_info() {
     VkSparseBufferMemoryBindInfo
   );
 }
+
+/// Structure specifying sparse image opaque memory bind info
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSparseImageOpaqueMemoryBindInfo<'a> {
@@ -3982,6 +4083,8 @@ fn test_struct_size_vk_sparse_image_opaque_memory_bind_info() {
     VkSparseImageOpaqueMemoryBindInfo
   );
 }
+
+/// Structure specifying a image subresource
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageSubresource {
@@ -4035,6 +4138,8 @@ unsafe impl RawStruct for VkImageSubresource {
 fn test_struct_size_vk_image_subresource() {
   assert_size!(types_raw::VkImageSubresource, VkImageSubresource);
 }
+
+/// Structure specifying a three-dimensional offset
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkOffset3D {
@@ -4088,6 +4193,8 @@ unsafe impl RawStruct for VkOffset3D {
 fn test_struct_size_vk_offset3_d() {
   assert_size!(types_raw::VkOffset3D, VkOffset3D);
 }
+
+/// Structure specifying sparse image memory bind
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSparseImageMemoryBind {
@@ -4171,6 +4278,8 @@ unsafe impl RawStruct for VkSparseImageMemoryBind {
 fn test_struct_size_vk_sparse_image_memory_bind() {
   assert_size!(types_raw::VkSparseImageMemoryBind, VkSparseImageMemoryBind);
 }
+
+/// Structure specifying sparse image memory bind info
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSparseImageMemoryBindInfo<'a> {
@@ -4222,6 +4331,8 @@ fn test_struct_size_vk_sparse_image_memory_bind_info() {
     VkSparseImageMemoryBindInfo
   );
 }
+
+/// Structure specifying a sparse binding operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkBindSparseInfo<'a> {
@@ -4331,6 +4442,8 @@ unsafe impl<'a> RawStruct for VkBindSparseInfo<'a> {
 fn test_struct_size_vk_bind_sparse_info() {
   assert_size!(types_raw::VkBindSparseInfo, VkBindSparseInfo);
 }
+
+/// Structure specifying parameters of a newly created fence
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkFenceCreateInfo {
@@ -4379,6 +4492,8 @@ unsafe impl RawStruct for VkFenceCreateInfo {
 fn test_struct_size_vk_fence_create_info() {
   assert_size!(types_raw::VkFenceCreateInfo, VkFenceCreateInfo);
 }
+
+/// Structure specifying parameters of a newly created semaphore
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSemaphoreCreateInfo {
@@ -4427,6 +4542,8 @@ unsafe impl RawStruct for VkSemaphoreCreateInfo {
 fn test_struct_size_vk_semaphore_create_info() {
   assert_size!(types_raw::VkSemaphoreCreateInfo, VkSemaphoreCreateInfo);
 }
+
+/// Structure specifying parameters of a newly created event
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkEventCreateInfo {
@@ -4478,7 +4595,11 @@ fn test_struct_size_vk_event_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkEvent__ {}
+
+/// Opaque handle to a event object
 pub type VkEvent = VkNonDispatchableHandle<VkEvent__>;
+
+/// Structure specifying parameters of a newly created query pool
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkQueryPoolCreateInfo {
@@ -4560,7 +4681,11 @@ fn test_struct_size_vk_query_pool_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkQueryPool__ {}
+
+/// Opaque handle to a query pool object
 pub type VkQueryPool = VkNonDispatchableHandle<VkQueryPool__>;
+
+/// Structure specifying the parameters of a newly created buffer object
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkBufferCreateInfo<'a> {
@@ -4654,6 +4779,8 @@ unsafe impl<'a> RawStruct for VkBufferCreateInfo<'a> {
 fn test_struct_size_vk_buffer_create_info() {
   assert_size!(types_raw::VkBufferCreateInfo, VkBufferCreateInfo);
 }
+
+/// Structure specifying parameters of a newly created buffer view
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkBufferViewCreateInfo {
@@ -4745,7 +4872,11 @@ fn test_struct_size_vk_buffer_view_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkBufferView__ {}
+
+/// Opaque handle to a buffer view object
 pub type VkBufferView = VkNonDispatchableHandle<VkBufferView__>;
+
+/// Structure specifying the parameters of a newly created image object
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageCreateInfo<'a> {
@@ -4909,6 +5040,8 @@ unsafe impl<'a> RawStruct for VkImageCreateInfo<'a> {
 fn test_struct_size_vk_image_create_info() {
   assert_size!(types_raw::VkImageCreateInfo, VkImageCreateInfo);
 }
+
+/// Structure specifying subresource layout
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSubresourceLayout {
@@ -4982,6 +5115,8 @@ unsafe impl RawStruct for VkSubresourceLayout {
 fn test_struct_size_vk_subresource_layout() {
   assert_size!(types_raw::VkSubresourceLayout, VkSubresourceLayout);
 }
+
+/// Structure specifying a color component mapping
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkComponentMapping {
@@ -5045,6 +5180,8 @@ unsafe impl RawStruct for VkComponentMapping {
 fn test_struct_size_vk_component_mapping() {
   assert_size!(types_raw::VkComponentMapping, VkComponentMapping);
 }
+
+/// Structure specifying parameters of a newly created image view
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageViewCreateInfo {
@@ -5146,7 +5283,11 @@ fn test_struct_size_vk_image_view_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkImageView__ {}
+
+/// Opaque handle to a image view object
 pub type VkImageView = VkNonDispatchableHandle<VkImageView__>;
+
+/// Structure specifying parameters of a newly created shader module
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkShaderModuleCreateInfo<'a> {
@@ -5213,7 +5354,11 @@ fn test_struct_size_vk_shader_module_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkShaderModule__ {}
+
+/// Opaque handle to a shader module object
 pub type VkShaderModule = VkNonDispatchableHandle<VkShaderModule__>;
+
+/// Structure specifying parameters of a newly created pipeline cache
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineCacheCreateInfo<'a> {
@@ -5283,7 +5428,11 @@ fn test_struct_size_vk_pipeline_cache_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkPipelineCache__ {}
+
+/// Opaque handle to a pipeline cache object
 pub type VkPipelineCache = VkNonDispatchableHandle<VkPipelineCache__>;
+
+/// Structure specifying a specialization map entry
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSpecializationMapEntry {
@@ -5340,6 +5489,8 @@ fn test_struct_size_vk_specialization_map_entry() {
     VkSpecializationMapEntry
   );
 }
+
+/// Structure specifying specialization info
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSpecializationInfo<'a> {
@@ -5392,6 +5543,8 @@ unsafe impl<'a> RawStruct for VkSpecializationInfo<'a> {
 fn test_struct_size_vk_specialization_info() {
   assert_size!(types_raw::VkSpecializationInfo, VkSpecializationInfo);
 }
+
+/// Structure specifying parameters of a newly created pipeline shader stage
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineShaderStageCreateInfo<'a> {
@@ -5485,6 +5638,8 @@ fn test_struct_size_vk_pipeline_shader_stage_create_info() {
     VkPipelineShaderStageCreateInfo
   );
 }
+
+/// Structure specifying vertex input binding description
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkVertexInputBindingDescription {
@@ -5541,6 +5696,8 @@ fn test_struct_size_vk_vertex_input_binding_description() {
     VkVertexInputBindingDescription
   );
 }
+
+/// Structure specifying vertex input attribute description
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkVertexInputAttributeDescription {
@@ -5607,6 +5764,8 @@ fn test_struct_size_vk_vertex_input_attribute_description() {
     VkVertexInputAttributeDescription
   );
 }
+
+/// Structure specifying parameters of a newly created pipeline vertex input state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineVertexInputStateCreateInfo<'a> {
@@ -5687,6 +5846,8 @@ fn test_struct_size_vk_pipeline_vertex_input_state_create_info() {
     VkPipelineVertexInputStateCreateInfo
   );
 }
+
+/// Structure specifying parameters of a newly created pipeline input assembly state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineInputAssemblyStateCreateInfo {
@@ -5759,6 +5920,8 @@ fn test_struct_size_vk_pipeline_input_assembly_state_create_info() {
     VkPipelineInputAssemblyStateCreateInfo
   );
 }
+
+/// Structure specifying parameters of a newly created pipeline tessellation state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineTessellationStateCreateInfo {
@@ -5820,6 +5983,8 @@ fn test_struct_size_vk_pipeline_tessellation_state_create_info() {
     VkPipelineTessellationStateCreateInfo
   );
 }
+
+/// Structure specifying a viewport
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkViewport {
@@ -5903,6 +6068,8 @@ unsafe impl RawStruct for VkViewport {
 fn test_struct_size_vk_viewport() {
   assert_size!(types_raw::VkViewport, VkViewport);
 }
+
+/// Structure specifying a two-dimensional offset
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkOffset2D {
@@ -5946,6 +6113,8 @@ unsafe impl RawStruct for VkOffset2D {
 fn test_struct_size_vk_offset2_d() {
   assert_size!(types_raw::VkOffset2D, VkOffset2D);
 }
+
+/// Structure specifying a two-dimensional extent
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkExtent2D {
@@ -5989,6 +6158,8 @@ unsafe impl RawStruct for VkExtent2D {
 fn test_struct_size_vk_extent2_d() {
   assert_size!(types_raw::VkExtent2D, VkExtent2D);
 }
+
+/// Structure specifying a two-dimensional subregion
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkRect2D {
@@ -6032,6 +6203,8 @@ unsafe impl RawStruct for VkRect2D {
 fn test_struct_size_vk_rect2_d() {
   assert_size!(types_raw::VkRect2D, VkRect2D);
 }
+
+/// Structure specifying parameters of a newly created pipeline viewport state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineViewportStateCreateInfo<'a> {
@@ -6112,6 +6285,8 @@ fn test_struct_size_vk_pipeline_viewport_state_create_info() {
     VkPipelineViewportStateCreateInfo
   );
 }
+
+/// Structure specifying parameters of a newly created pipeline rasterization state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineRasterizationStateCreateInfo {
@@ -6266,6 +6441,8 @@ fn test_struct_size_vk_pipeline_rasterization_state_create_info() {
     VkPipelineRasterizationStateCreateInfo
   );
 }
+
+/// Structure specifying parameters of a newly created pipeline multisample state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineMultisampleStateCreateInfo<'a> {
@@ -6372,6 +6549,8 @@ fn test_struct_size_vk_pipeline_multisample_state_create_info() {
     VkPipelineMultisampleStateCreateInfo
   );
 }
+
+/// Structure specifying stencil operation state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkStencilOpState {
@@ -6465,6 +6644,8 @@ unsafe impl RawStruct for VkStencilOpState {
 fn test_struct_size_vk_stencil_op_state() {
   assert_size!(types_raw::VkStencilOpState, VkStencilOpState);
 }
+
+/// Structure specifying parameters of a newly created pipeline depth stencil state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineDepthStencilStateCreateInfo {
@@ -6610,6 +6791,8 @@ fn test_struct_size_vk_pipeline_depth_stencil_state_create_info() {
     VkPipelineDepthStencilStateCreateInfo
   );
 }
+
+/// Structure specifying a pipeline color blend attachment state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineColorBlendAttachmentState {
@@ -6717,6 +6900,8 @@ fn test_struct_size_vk_pipeline_color_blend_attachment_state() {
     VkPipelineColorBlendAttachmentState
   );
 }
+
+/// Structure specifying parameters of a newly created pipeline color blend state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineColorBlendStateCreateInfo<'a> {
@@ -6814,6 +6999,8 @@ fn test_struct_size_vk_pipeline_color_blend_state_create_info() {
     VkPipelineColorBlendStateCreateInfo
   );
 }
+
+/// Structure specifying parameters of a newly created pipeline dynamic state
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineDynamicStateCreateInfo<'a> {
@@ -6883,15 +7070,23 @@ fn test_struct_size_vk_pipeline_dynamic_state_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkPipelineLayout__ {}
+
+/// Opaque handle to a pipeline layout object
 pub type VkPipelineLayout = VkNonDispatchableHandle<VkPipelineLayout__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkRenderPass__ {}
+
+/// Opaque handle to a render pass object
 pub type VkRenderPass = VkNonDispatchableHandle<VkRenderPass__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkPipeline__ {}
+
+/// Opaque handle to a pipeline object
 pub type VkPipeline = VkNonDispatchableHandle<VkPipeline__>;
+
+/// Structure specifying parameters of a newly created graphics pipeline
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkGraphicsPipelineCreateInfo<'a> {
@@ -7097,6 +7292,8 @@ fn test_struct_size_vk_graphics_pipeline_create_info() {
     VkGraphicsPipelineCreateInfo
   );
 }
+
+/// Structure specifying parameters of a newly created compute pipeline
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkComputePipelineCreateInfo<'a> {
@@ -7191,7 +7388,11 @@ fn test_struct_size_vk_compute_pipeline_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkDescriptorSetLayout__ {}
+
+/// Opaque handle to a descriptor set layout object
 pub type VkDescriptorSetLayout = VkNonDispatchableHandle<VkDescriptorSetLayout__>;
+
+/// Structure specifying a push constant range
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPushConstantRange {
@@ -7245,6 +7446,8 @@ unsafe impl RawStruct for VkPushConstantRange {
 fn test_struct_size_vk_push_constant_range() {
   assert_size!(types_raw::VkPushConstantRange, VkPushConstantRange);
 }
+
+/// Structure specifying the parameters of a newly created pipeline layout object
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkPipelineLayoutCreateInfo<'a> {
@@ -7325,6 +7528,8 @@ fn test_struct_size_vk_pipeline_layout_create_info() {
     VkPipelineLayoutCreateInfo
   );
 }
+
+/// Structure specifying parameters of a newly created sampler
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSamplerCreateInfo {
@@ -7529,7 +7734,11 @@ fn test_struct_size_vk_sampler_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkSampler__ {}
+
+/// Opaque handle to a sampler object
 pub type VkSampler = VkNonDispatchableHandle<VkSampler__>;
+
+/// Structure specifying a descriptor set layout binding
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDescriptorSetLayoutBinding<'a> {
@@ -7601,6 +7810,8 @@ fn test_struct_size_vk_descriptor_set_layout_binding() {
     VkDescriptorSetLayoutBinding
   );
 }
+
+/// Structure specifying parameters of a newly created descriptor set layout
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDescriptorSetLayoutCreateInfo<'a> {
@@ -7667,6 +7878,8 @@ fn test_struct_size_vk_descriptor_set_layout_create_info() {
     VkDescriptorSetLayoutCreateInfo
   );
 }
+
+/// Structure specifying descriptor pool size
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDescriptorPoolSize {
@@ -7710,6 +7923,8 @@ unsafe impl RawStruct for VkDescriptorPoolSize {
 fn test_struct_size_vk_descriptor_pool_size() {
   assert_size!(types_raw::VkDescriptorPoolSize, VkDescriptorPoolSize);
 }
+
+/// Structure specifying parameters of a newly created descriptor pool
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDescriptorPoolCreateInfo<'a> {
@@ -7789,7 +8004,11 @@ fn test_struct_size_vk_descriptor_pool_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkDescriptorPool__ {}
+
+/// Opaque handle to a descriptor pool object
 pub type VkDescriptorPool = VkNonDispatchableHandle<VkDescriptorPool__>;
+
+/// Structure specifying the allocation parameters for descriptor sets
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDescriptorSetAllocateInfo<'a> {
@@ -7859,7 +8078,11 @@ fn test_struct_size_vk_descriptor_set_allocate_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkDescriptorSet__ {}
+
+/// Opaque handle to a descriptor set object
 pub type VkDescriptorSet = VkNonDispatchableHandle<VkDescriptorSet__>;
+
+/// Structure specifying descriptor image info
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDescriptorImageInfo {
@@ -7913,6 +8136,8 @@ unsafe impl RawStruct for VkDescriptorImageInfo {
 fn test_struct_size_vk_descriptor_image_info() {
   assert_size!(types_raw::VkDescriptorImageInfo, VkDescriptorImageInfo);
 }
+
+/// Structure specifying descriptor buffer info
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkDescriptorBufferInfo {
@@ -7966,6 +8191,8 @@ unsafe impl RawStruct for VkDescriptorBufferInfo {
 fn test_struct_size_vk_descriptor_buffer_info() {
   assert_size!(types_raw::VkDescriptorBufferInfo, VkDescriptorBufferInfo);
 }
+
+/// Structure specifying the parameters of a descriptor set write operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkWriteDescriptorSet<'a> {
@@ -8053,6 +8280,8 @@ unsafe impl<'a> RawStruct for VkWriteDescriptorSet<'a> {
 fn test_struct_size_vk_write_descriptor_set() {
   assert_size!(types_raw::VkWriteDescriptorSet, VkWriteDescriptorSet);
 }
+
+/// Structure specifying a copy descriptor set operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkCopyDescriptorSet {
@@ -8161,6 +8390,8 @@ unsafe impl RawStruct for VkCopyDescriptorSet {
 fn test_struct_size_vk_copy_descriptor_set() {
   assert_size!(types_raw::VkCopyDescriptorSet, VkCopyDescriptorSet);
 }
+
+/// Structure specifying parameters of a newly created framebuffer
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkFramebufferCreateInfo<'a> {
@@ -8267,7 +8498,11 @@ fn test_struct_size_vk_framebuffer_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkFramebuffer__ {}
+
+/// Opaque handle to a framebuffer object
 pub type VkFramebuffer = VkNonDispatchableHandle<VkFramebuffer__>;
+
+/// Structure specifying an attachment description
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkAttachmentDescription {
@@ -8381,6 +8616,8 @@ unsafe impl RawStruct for VkAttachmentDescription {
 fn test_struct_size_vk_attachment_description() {
   assert_size!(types_raw::VkAttachmentDescription, VkAttachmentDescription);
 }
+
+/// Structure specifying an attachment reference
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkAttachmentReference {
@@ -8424,6 +8661,8 @@ unsafe impl RawStruct for VkAttachmentReference {
 fn test_struct_size_vk_attachment_reference() {
   assert_size!(types_raw::VkAttachmentReference, VkAttachmentReference);
 }
+
+/// Structure specifying a subpass description
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSubpassDescription<'a> {
@@ -8512,6 +8751,8 @@ unsafe impl<'a> RawStruct for VkSubpassDescription<'a> {
 fn test_struct_size_vk_subpass_description() {
   assert_size!(types_raw::VkSubpassDescription, VkSubpassDescription);
 }
+
+/// Structure specifying a subpass dependency
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkSubpassDependency {
@@ -8605,6 +8846,8 @@ unsafe impl RawStruct for VkSubpassDependency {
 fn test_struct_size_vk_subpass_dependency() {
   assert_size!(types_raw::VkSubpassDependency, VkSubpassDependency);
 }
+
+/// Structure specifying parameters of a newly created render pass
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkRenderPassCreateInfo<'a> {
@@ -8696,6 +8939,8 @@ unsafe impl<'a> RawStruct for VkRenderPassCreateInfo<'a> {
 fn test_struct_size_vk_render_pass_create_info() {
   assert_size!(types_raw::VkRenderPassCreateInfo, VkRenderPassCreateInfo);
 }
+
+/// Structure specifying parameters of a newly created command pool
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkCommandPoolCreateInfo {
@@ -8757,7 +9002,11 @@ fn test_struct_size_vk_command_pool_create_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkCommandPool__ {}
+
+/// Opaque handle to a command pool object
 pub type VkCommandPool = VkNonDispatchableHandle<VkCommandPool__>;
+
+/// Structure specifying the allocation parameters for command buffer object
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkCommandBufferAllocateInfo {
@@ -8829,6 +9078,8 @@ fn test_struct_size_vk_command_buffer_allocate_info() {
     VkCommandBufferAllocateInfo
   );
 }
+
+/// Structure specifying command buffer inheritance info
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkCommandBufferInheritanceInfo {
@@ -8931,6 +9182,8 @@ fn test_struct_size_vk_command_buffer_inheritance_info() {
     VkCommandBufferInheritanceInfo
   );
 }
+
+/// Structure specifying a command buffer begin operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkCommandBufferBeginInfo<'a> {
@@ -8992,6 +9245,8 @@ fn test_struct_size_vk_command_buffer_begin_info() {
     VkCommandBufferBeginInfo
   );
 }
+
+/// Structure specifying a buffer copy operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkBufferCopy {
@@ -9045,6 +9300,8 @@ unsafe impl RawStruct for VkBufferCopy {
 fn test_struct_size_vk_buffer_copy() {
   assert_size!(types_raw::VkBufferCopy, VkBufferCopy);
 }
+
+/// Structure specifying a image subresource layers
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageSubresourceLayers {
@@ -9111,6 +9368,8 @@ fn test_struct_size_vk_image_subresource_layers() {
     VkImageSubresourceLayers
   );
 }
+
+/// Structure specifying an image copy operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageCopy {
@@ -9184,6 +9443,8 @@ unsafe impl RawStruct for VkImageCopy {
 fn test_struct_size_vk_image_copy() {
   assert_size!(types_raw::VkImageCopy, VkImageCopy);
 }
+
+/// Structure specifying an image blit operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageBlit {
@@ -9247,6 +9508,8 @@ unsafe impl RawStruct for VkImageBlit {
 fn test_struct_size_vk_image_blit() {
   assert_size!(types_raw::VkImageBlit, VkImageBlit);
 }
+
+/// Structure specifying a buffer image copy operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkBufferImageCopy {
@@ -9330,6 +9593,8 @@ unsafe impl RawStruct for VkBufferImageCopy {
 fn test_struct_size_vk_buffer_image_copy() {
   assert_size!(types_raw::VkBufferImageCopy, VkBufferImageCopy);
 }
+
+/// Structure specifying a clear color value
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union VkClearColorValue {
@@ -9345,6 +9610,8 @@ unsafe impl RawStruct for VkClearColorValue {
 fn test_union_size_vk_clear_color_value() {
   assert_size!(types_raw::VkClearColorValue, VkClearColorValue);
 }
+
+/// Structure specifying a clear depth stencil value
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkClearDepthStencilValue {
@@ -9391,6 +9658,8 @@ fn test_struct_size_vk_clear_depth_stencil_value() {
     VkClearDepthStencilValue
   );
 }
+
+/// Structure specifying a clear value
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union VkClearValue {
@@ -9405,6 +9674,8 @@ unsafe impl RawStruct for VkClearValue {
 fn test_union_size_vk_clear_value() {
   assert_size!(types_raw::VkClearValue, VkClearValue);
 }
+
+/// Structure specifying a clear attachment
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkClearAttachment {
@@ -9458,6 +9729,8 @@ unsafe impl RawStruct for VkClearAttachment {
 fn test_struct_size_vk_clear_attachment() {
   assert_size!(types_raw::VkClearAttachment, VkClearAttachment);
 }
+
+/// Structure specifying a clear rectangle
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkClearRect {
@@ -9511,6 +9784,8 @@ unsafe impl RawStruct for VkClearRect {
 fn test_struct_size_vk_clear_rect() {
   assert_size!(types_raw::VkClearRect, VkClearRect);
 }
+
+/// Structure specifying an image resolve operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkImageResolve {
@@ -9584,6 +9859,8 @@ unsafe impl RawStruct for VkImageResolve {
 fn test_struct_size_vk_image_resolve() {
   assert_size!(types_raw::VkImageResolve, VkImageResolve);
 }
+
+/// Structure specifying render pass begin info
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct VkRenderPassBeginInfo<'a> {
@@ -9673,8 +9950,12 @@ fn test_struct_size_vk_render_pass_begin_info() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkSurfaceKHR__ {}
+
+/// Opaque handle to a surface object
 #[cfg(feature = "VK_KHR_surface")]
 pub type VkSurfaceKHR = VkNonDispatchableHandle<VkSurfaceKHR__>;
+
+/// Structure describing capabilities of a surface
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_surface")]
@@ -9806,6 +10087,8 @@ fn test_struct_size_vk_surface_capabilities_khr() {
     VkSurfaceCapabilitiesKHR
   );
 }
+
+/// Structure describing a supported swapchain format-color space pair
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_surface")]
@@ -9860,8 +10143,12 @@ fn test_struct_size_vk_surface_format_khr() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkSwapchainKHR__ {}
+
+/// Opaque handle to a swapchain object
 #[cfg(feature = "VK_KHR_swapchain")]
 pub type VkSwapchainKHR = VkNonDispatchableHandle<VkSwapchainKHR__>;
+
+/// Structure specifying parameters of a newly created swapchain object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_swapchain")]
@@ -10064,6 +10351,8 @@ fn test_struct_size_vk_swapchain_create_info_khr() {
     VkSwapchainCreateInfoKHR
   );
 }
+
+/// Structure describing parameters of a queue presentation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_swapchain")]
@@ -10136,8 +10425,12 @@ fn test_struct_size_vk_present_info_khr() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkDisplayKHR__ {}
+
+/// Opaque handle to a display object
 #[cfg(feature = "VK_KHR_display")]
 pub type VkDisplayKHR = VkNonDispatchableHandle<VkDisplayKHR__>;
+
+/// Structure describing an available display device
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
@@ -10241,6 +10534,8 @@ unsafe impl<'a> RawStruct for VkDisplayPropertiesKHR<'a> {
 fn test_struct_size_vk_display_properties_khr() {
   assert_size!(types_raw::VkDisplayPropertiesKHR, VkDisplayPropertiesKHR);
 }
+
+/// Structure describing display parameters associated with a display mode
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
@@ -10296,8 +10591,12 @@ fn test_struct_size_vk_display_mode_parameters_khr() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkDisplayModeKHR__ {}
+
+/// Opaque handle to a display mode object
 #[cfg(feature = "VK_KHR_display")]
 pub type VkDisplayModeKHR = VkNonDispatchableHandle<VkDisplayModeKHR__>;
+
+/// Structure describing display mode properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
@@ -10349,6 +10648,8 @@ fn test_struct_size_vk_display_mode_properties_khr() {
     VkDisplayModePropertiesKHR
   );
 }
+
+/// Structure specifying parameters of a newly created display mode object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
@@ -10415,6 +10716,8 @@ fn test_struct_size_vk_display_mode_create_info_khr() {
     VkDisplayModeCreateInfoKHR
   );
 }
+
+/// Structure describing capabilities of a mode and plane combination
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
@@ -10536,6 +10839,8 @@ fn test_struct_size_vk_display_plane_capabilities_khr() {
     VkDisplayPlaneCapabilitiesKHR
   );
 }
+
+/// Structure describing display plane properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
@@ -10587,6 +10892,8 @@ fn test_struct_size_vk_display_plane_properties_khr() {
     VkDisplayPlanePropertiesKHR
   );
 }
+
+/// Structure specifying parameters of a newly created display plane surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
@@ -10715,6 +11022,8 @@ fn test_struct_size_vk_display_surface_create_info_khr() {
 }
 
 // feature: VK_KHR_display_swapchain
+
+/// Structure describing parameters of a queue presentation to a swapchain
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display_swapchain")]
@@ -10791,6 +11100,8 @@ fn test_struct_size_vk_display_present_info_khr() {
 }
 
 // feature: VK_KHR_xlib_surface
+
+/// Structure specifying parameters of a newly created Xlib surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_xlib_surface")]
@@ -10874,6 +11185,8 @@ fn test_struct_size_vk_xlib_surface_create_info_khr() {
 }
 
 // feature: VK_KHR_xcb_surface
+
+/// Structure specifying parameters of a newly created Xcb surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_xcb_surface")]
@@ -10957,6 +11270,8 @@ fn test_struct_size_vk_xcb_surface_create_info_khr() {
 }
 
 // feature: VK_KHR_wayland_surface
+
+/// Structure specifying parameters of a newly created Wayland surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_wayland_surface")]
@@ -11040,6 +11355,8 @@ fn test_struct_size_vk_wayland_surface_create_info_khr() {
 }
 
 // feature: VK_KHR_mir_surface
+
+/// Structure specifying parameters of a newly created Mir surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_mir_surface")]
@@ -11123,6 +11440,8 @@ fn test_struct_size_vk_mir_surface_create_info_khr() {
 }
 
 // feature: VK_KHR_android_surface
+
+/// Structure specifying parameters of a newly created Android surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_android_surface")]
@@ -11196,6 +11515,8 @@ fn test_struct_size_vk_android_surface_create_info_khr() {
 }
 
 // feature: VK_KHR_win32_surface
+
+/// Structure specifying parameters of a newly created Win32 surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_win32_surface")]
@@ -11279,8 +11600,12 @@ fn test_struct_size_vk_win32_surface_create_info_khr() {
 }
 
 // feature: VK_EXT_debug_report
+
+/// Application-defined debug report callback function
 #[cfg(feature = "VK_EXT_debug_report")]
 pub use types_raw::PFN_vkDebugReportCallbackEXT;
+
+/// Structure specifying parameters of a newly created debug report callback
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_debug_report")]
@@ -11356,10 +11681,14 @@ fn test_struct_size_vk_debug_report_callback_create_info_ext() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkDebugReportCallbackEXT__ {}
+
+/// Opaque handle to a debug report callback object
 #[cfg(feature = "VK_EXT_debug_report")]
 pub type VkDebugReportCallbackEXT = VkNonDispatchableHandle<VkDebugReportCallbackEXT__>;
 
 // feature: VK_AMD_rasterization_order
+
+/// Structure defining rasterization order for a graphics pipeline
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_AMD_rasterization_order")]
@@ -11418,6 +11747,8 @@ fn test_struct_size_vk_pipeline_rasterization_state_rasterization_order_amd() {
 }
 
 // feature: VK_EXT_debug_marker
+
+/// Specify parameters of a name to give to an object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_debug_marker")]
@@ -11497,6 +11828,8 @@ fn test_struct_size_vk_debug_marker_object_name_info_ext() {
     VkDebugMarkerObjectNameInfoEXT
   );
 }
+
+/// Specify parameters of a tag to attach to an object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_debug_marker")]
@@ -11588,6 +11921,8 @@ fn test_struct_size_vk_debug_marker_object_tag_info_ext() {
     VkDebugMarkerObjectTagInfoEXT
   );
 }
+
+/// Specify parameters of a command buffer marker region
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_debug_marker")]
@@ -11659,6 +11994,8 @@ fn test_struct_size_vk_debug_marker_marker_info_ext() {
 }
 
 // feature: VK_NV_dedicated_allocation
+
+/// Specify that an image is bound to a dedicated memory resource
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_dedicated_allocation")]
@@ -11716,6 +12053,8 @@ fn test_struct_size_vk_dedicated_allocation_image_create_info_nv() {
     VkDedicatedAllocationImageCreateInfoNV
   );
 }
+
+/// Specify that a buffer is bound to a dedicated memory resource
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_dedicated_allocation")]
@@ -11773,6 +12112,8 @@ fn test_struct_size_vk_dedicated_allocation_buffer_create_info_nv() {
     VkDedicatedAllocationBufferCreateInfoNV
   );
 }
+
+/// Specify a dedicated memory allocation resource
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_dedicated_allocation")]
@@ -11841,6 +12182,9 @@ fn test_struct_size_vk_dedicated_allocation_memory_allocate_info_nv() {
 }
 
 // feature: VK_KHR_get_physical_device_properties2
+
+/// Structure describing the fine-grained features that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11897,6 +12241,8 @@ fn test_struct_size_vk_physical_device_features2_khr() {
     VkPhysicalDeviceFeatures2KHR
   );
 }
+
+/// Structure specifying physical device properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11953,6 +12299,8 @@ fn test_struct_size_vk_physical_device_properties2_khr() {
     VkPhysicalDeviceProperties2KHR
   );
 }
+
+/// Structure specifying image format properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12006,6 +12354,8 @@ unsafe impl RawStruct for VkFormatProperties2KHR {
 fn test_struct_size_vk_format_properties2_khr() {
   assert_size!(types_raw::VkFormatProperties2KHR, VkFormatProperties2KHR);
 }
+
+/// Structure specifying a image format properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12062,6 +12412,8 @@ fn test_struct_size_vk_image_format_properties2_khr() {
     VkImageFormatProperties2KHR
   );
 }
+
+/// Structure specifying image creation parameters
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12158,6 +12510,8 @@ fn test_struct_size_vk_physical_device_image_format_info2_khr() {
     VkPhysicalDeviceImageFormatInfo2KHR
   );
 }
+
+/// Structure providing information about a queue family
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12214,6 +12568,8 @@ fn test_struct_size_vk_queue_family_properties2_khr() {
     VkQueueFamilyProperties2KHR
   );
 }
+
+/// Structure specifying physical device memory properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12270,6 +12626,8 @@ fn test_struct_size_vk_physical_device_memory_properties2_khr() {
     VkPhysicalDeviceMemoryProperties2KHR
   );
 }
+
+/// Structure specifying sparse image format properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12326,6 +12684,8 @@ fn test_struct_size_vk_sparse_image_format_properties2_khr() {
     VkSparseImageFormatProperties2KHR
   );
 }
+
+/// Structure specifying sparse image format inputs
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12424,6 +12784,9 @@ fn test_struct_size_vk_physical_device_sparse_image_format_info2_khr() {
 }
 
 // feature: VK_AMD_texture_gather_bias_lod
+
+/// Structure informing whether or not texture gather bias/LOD functionality is
+/// supported for a given image format and a given physical device.
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_AMD_texture_gather_bias_lod")]
@@ -12483,6 +12846,8 @@ fn test_struct_size_vk_texture_lod_gather_format_properties_amd() {
 }
 
 // feature: VK_AMD_shader_info
+
+/// Resource usage information about a particular shader within a pipeline
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_AMD_shader_info")]
@@ -12564,6 +12929,8 @@ fn test_struct_size_vk_shader_resource_usage_amd() {
     VkShaderResourceUsageAMD
   );
 }
+
+/// Statistical information about a particular shader within a pipeline
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_AMD_shader_info")]
@@ -12667,6 +13034,8 @@ fn test_struct_size_vk_shader_statistics_info_amd() {
 }
 
 // feature: VK_KHX_multiview
+
+/// Structure containing multiview info for all subpasses
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_multiview")]
@@ -12756,6 +13125,9 @@ fn test_struct_size_vk_render_pass_multiview_create_info_khx() {
     VkRenderPassMultiviewCreateInfoKHX
   );
 }
+
+/// Structure describing multiview features that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_multiview")]
@@ -12835,6 +13207,8 @@ fn test_struct_size_vk_physical_device_multiview_features_khx() {
     VkPhysicalDeviceMultiviewFeaturesKHX
   );
 }
+
+/// Structure describing multiview limits that can be supported by an implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_multiview")]
@@ -12903,6 +13277,8 @@ fn test_struct_size_vk_physical_device_multiview_properties_khx() {
 }
 
 // feature: VK_NV_external_memory_capabilities
+
+/// Structure specifying external image format properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_external_memory_capabilities")]
@@ -12976,6 +13352,8 @@ fn test_struct_size_vk_external_image_format_properties_nv() {
 }
 
 // feature: VK_NV_external_memory
+
+/// Specify that an image may be backed by external memory
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_external_memory")]
@@ -13032,6 +13410,8 @@ fn test_struct_size_vk_external_memory_image_create_info_nv() {
     VkExternalMemoryImageCreateInfoNV
   );
 }
+
+/// Specify memory handle types that may be exported
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_external_memory")]
@@ -13090,6 +13470,8 @@ fn test_struct_size_vk_export_memory_allocate_info_nv() {
 }
 
 // feature: VK_NV_external_memory_win32
+
+/// import Win32 memory created on the same physical device
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_external_memory_win32")]
@@ -13161,6 +13543,8 @@ fn test_struct_size_vk_import_memory_win32_handle_info_nv() {
     VkImportMemoryWin32HandleInfoNV
   );
 }
+
+/// specify security attributes and access rights for Win32 memory handles
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_external_memory_win32")]
@@ -13234,6 +13618,8 @@ fn test_struct_size_vk_export_memory_win32_handle_info_nv() {
 }
 
 // feature: VK_NV_win32_keyed_mutex
+
+/// use Windows keyex mutex mechanism to synchronize work
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
@@ -13303,6 +13689,8 @@ fn test_struct_size_vk_win32_keyed_mutex_acquire_release_info_nv() {
 }
 
 // feature: VK_KHX_device_group_creation
+
+/// Structure specifying physical device group properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group_creation")]
@@ -13383,6 +13771,8 @@ fn test_struct_size_vk_physical_device_group_properties_khx() {
     VkPhysicalDeviceGroupPropertiesKHX
   );
 }
+
+/// Create a logical device from multiple physical devices
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group_creation")]
@@ -13446,6 +13836,8 @@ fn test_struct_size_vk_device_group_device_create_info_khx() {
 }
 
 // feature: VK_KHX_device_group
+
+/// Structure controlling how many instances of memory will be allocated
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -13512,6 +13904,8 @@ fn test_struct_size_vk_memory_allocate_flags_info_khx() {
     VkMemoryAllocateFlagsInfoKHX
   );
 }
+
+/// Set the initial device mask and render areas for a render pass instance
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -13583,6 +13977,8 @@ fn test_struct_size_vk_device_group_render_pass_begin_info_khx() {
     VkDeviceGroupRenderPassBeginInfoKHX
   );
 }
+
+/// Set the initial device mask for a command buffer
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -13639,6 +14035,9 @@ fn test_struct_size_vk_device_group_command_buffer_begin_info_khx() {
     VkDeviceGroupCommandBufferBeginInfoKHX
   );
 }
+
+/// Structure indicating which physical devices execute semaphore operations and
+/// command buffers
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -13728,6 +14127,8 @@ fn test_struct_size_vk_device_group_submit_info_khx() {
     VkDeviceGroupSubmitInfoKHX
   );
 }
+
+/// Structure indicating which instances are bound
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -13794,6 +14195,8 @@ fn test_struct_size_vk_device_group_bind_sparse_info_khx() {
     VkDeviceGroupBindSparseInfoKHX
   );
 }
+
+/// Structure specifying device within a group to bind to
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -13855,6 +14258,8 @@ fn test_struct_size_vk_bind_buffer_memory_device_group_info_khx() {
     VkBindBufferMemoryDeviceGroupInfoKHX
   );
 }
+
+/// Structure specifying device within a group to bind to
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -13930,6 +14335,8 @@ fn test_struct_size_vk_bind_image_memory_device_group_info_khx() {
     VkBindImageMemoryDeviceGroupInfoKHX
   );
 }
+
+/// Present capabilities from other physical devices
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -13996,6 +14403,8 @@ fn test_struct_size_vk_device_group_present_capabilities_khx() {
     VkDeviceGroupPresentCapabilitiesKHX
   );
 }
+
+/// Specify that an image will be bound to swapchain memory
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -14052,6 +14461,8 @@ fn test_struct_size_vk_image_swapchain_create_info_khx() {
     VkImageSwapchainCreateInfoKHX
   );
 }
+
+/// Structure specifying swapchain image memory to bind to
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -14118,6 +14529,8 @@ fn test_struct_size_vk_bind_image_memory_swapchain_info_khx() {
     VkBindImageMemorySwapchainInfoKHX
   );
 }
+
+/// Structure specifying parameters of the acquire
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -14214,6 +14627,8 @@ fn test_struct_size_vk_acquire_next_image_info_khx() {
     VkAcquireNextImageInfoKHX
   );
 }
+
+/// Mode and mask controlling which physical devices\' images are presented
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -14285,6 +14700,8 @@ fn test_struct_size_vk_device_group_present_info_khx() {
     VkDeviceGroupPresentInfoKHX
   );
 }
+
+/// Structure specifying parameters of a newly created swapchain object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
@@ -14343,6 +14760,8 @@ fn test_struct_size_vk_device_group_swapchain_create_info_khx() {
 }
 
 // feature: VK_EXT_validation_flags
+
+/// Specify validation checks to disable for a Vulkan instance
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_validation_flags")]
@@ -14403,6 +14822,8 @@ fn test_struct_size_vk_validation_flags_ext() {
 }
 
 // feature: VK_NN_vi_surface
+
+/// Structure specifying parameters of a newly created VI surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NN_vi_surface")]
@@ -14468,6 +14889,8 @@ fn test_struct_size_vk_vi_surface_create_info_nn() {
 }
 
 // feature: VK_KHR_external_memory_capabilities
+
+/// Structure specifying external memory handle type capabilities
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -14529,6 +14952,8 @@ fn test_struct_size_vk_external_memory_properties_khr() {
     VkExternalMemoryPropertiesKHR
   );
 }
+
+/// Structure specifying external image creation parameters
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -14585,6 +15010,8 @@ fn test_struct_size_vk_physical_device_external_image_format_info_khr() {
     VkPhysicalDeviceExternalImageFormatInfoKHR
   );
 }
+
+/// Structure specifying supported external handle properties
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -14641,6 +15068,8 @@ fn test_struct_size_vk_external_image_format_properties_khr() {
     VkExternalImageFormatPropertiesKHR
   );
 }
+
+/// Structure specifying buffer creation parameters
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -14717,6 +15146,8 @@ fn test_struct_size_vk_physical_device_external_buffer_info_khr() {
     VkPhysicalDeviceExternalBufferInfoKHR
   );
 }
+
+/// Structure specifying supported external handle capabilities
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -14773,6 +15204,8 @@ fn test_struct_size_vk_external_buffer_properties_khr() {
     VkExternalBufferPropertiesKHR
   );
 }
+
+/// Structure specifying IDs related to the physical device
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -14872,6 +15305,8 @@ fn test_struct_size_vk_physical_device_id_properties_khr() {
 }
 
 // feature: VK_KHR_external_memory
+
+/// Specify that an image may be backed by external memory
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory")]
@@ -14928,6 +15363,8 @@ fn test_struct_size_vk_external_memory_image_create_info_khr() {
     VkExternalMemoryImageCreateInfoKHR
   );
 }
+
+/// Specify that a buffer may be backed by external memory
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory")]
@@ -14984,6 +15421,8 @@ fn test_struct_size_vk_external_memory_buffer_create_info_khr() {
     VkExternalMemoryBufferCreateInfoKHR
   );
 }
+
+/// Specify exportable handle types for a device memory object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory")]
@@ -15042,6 +15481,8 @@ fn test_struct_size_vk_export_memory_allocate_info_khr() {
 }
 
 // feature: VK_KHR_external_memory_win32
+
+/// import Win32 memory created on the same physical device
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
@@ -15123,6 +15564,9 @@ fn test_struct_size_vk_import_memory_win32_handle_info_khr() {
     VkImportMemoryWin32HandleInfoKHR
   );
 }
+
+/// Structure specifying additional attributes of Windows handles exported from a
+/// memory
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
@@ -15204,6 +15648,8 @@ fn test_struct_size_vk_export_memory_win32_handle_info_khr() {
     VkExportMemoryWin32HandleInfoKHR
   );
 }
+
+/// Properties of External Memory Windows Handles
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
@@ -15265,6 +15711,8 @@ fn test_struct_size_vk_memory_win32_handle_properties_khr() {
     VkMemoryWin32HandlePropertiesKHR
   );
 }
+
+/// Structure describing a Win32 handle semaphore export operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
@@ -15338,6 +15786,8 @@ fn test_struct_size_vk_memory_get_win32_handle_info_khr() {
 }
 
 // feature: VK_KHR_external_memory_fd
+
+/// import memory created on the same physical device from a file descriptor
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_fd")]
@@ -15401,6 +15851,8 @@ unsafe impl RawStruct for VkImportMemoryFdInfoKHR {
 fn test_struct_size_vk_import_memory_fd_info_khr() {
   assert_size!(types_raw::VkImportMemoryFdInfoKHR, VkImportMemoryFdInfoKHR);
 }
+
+/// Properties of External Memory File Descriptors
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_fd")]
@@ -15454,6 +15906,8 @@ unsafe impl RawStruct for VkMemoryFdPropertiesKHR {
 fn test_struct_size_vk_memory_fd_properties_khr() {
   assert_size!(types_raw::VkMemoryFdPropertiesKHR, VkMemoryFdPropertiesKHR);
 }
+
+/// Structure describing a POSIX FD semaphore export operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_fd")]
@@ -15519,6 +15973,8 @@ fn test_struct_size_vk_memory_get_fd_info_khr() {
 }
 
 // feature: VK_KHR_win32_keyed_mutex
+
+/// Use the Windows keyed mutex mechanism to synchronize work
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
@@ -15588,6 +16044,8 @@ fn test_struct_size_vk_win32_keyed_mutex_acquire_release_info_khr() {
 }
 
 // feature: VK_KHR_external_semaphore_capabilities
+
+/// Structure specifying semaphore creation parameters.
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
@@ -15644,6 +16102,8 @@ fn test_struct_size_vk_physical_device_external_semaphore_info_khr() {
     VkPhysicalDeviceExternalSemaphoreInfoKHR
   );
 }
+
+/// Structure describing supported external semaphore handle features
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
@@ -15722,6 +16182,8 @@ fn test_struct_size_vk_external_semaphore_properties_khr() {
 }
 
 // feature: VK_KHR_external_semaphore
+
+/// Structure specifying handle types that can be exported from a semaphore
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore")]
@@ -15780,6 +16242,8 @@ fn test_struct_size_vk_export_semaphore_create_info_khr() {
 }
 
 // feature: VK_KHR_external_semaphore_win32
+
+/// Structure specifying Windows handle to import to a semaphore
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
@@ -15881,6 +16345,9 @@ fn test_struct_size_vk_import_semaphore_win32_handle_info_khr() {
     VkImportSemaphoreWin32HandleInfoKHR
   );
 }
+
+/// Structure specifying additional attributes of Windows handles exported from a
+/// semaphore
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
@@ -15962,6 +16429,8 @@ fn test_struct_size_vk_export_semaphore_win32_handle_info_khr() {
     VkExportSemaphoreWin32HandleInfoKHR
   );
 }
+
+/// Structure specifying values for Direct3D 12 fence-backed semaphores
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
@@ -16042,6 +16511,8 @@ fn test_struct_size_vk_d3_d12_fence_submit_info_khr() {
     VkD3D12FenceSubmitInfoKHR
   );
 }
+
+/// Structure describing a Win32 handle semaphore export operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
@@ -16115,6 +16586,8 @@ fn test_struct_size_vk_semaphore_get_win32_handle_info_khr() {
 }
 
 // feature: VK_KHR_external_semaphore_fd
+
+/// Structure specifying POSIX file descriptor to import to a semaphore
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
@@ -16201,6 +16674,8 @@ fn test_struct_size_vk_import_semaphore_fd_info_khr() {
     VkImportSemaphoreFdInfoKHR
   );
 }
+
+/// Structure describing a POSIX FD semaphore export operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
@@ -16266,6 +16741,9 @@ fn test_struct_size_vk_semaphore_get_fd_info_khr() {
 }
 
 // feature: VK_KHR_push_descriptor
+
+/// Structure describing push descriptor limits that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_push_descriptor")]
@@ -16416,6 +16894,9 @@ fn test_struct_size_vk_physical_device16_bit_storage_features_khr() {
 }
 
 // feature: VK_KHR_incremental_present
+
+/// Structure containing a rectangle, including layer, changed by vkQueuePresentKHR
+/// for a given VkImage
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_incremental_present")]
@@ -16474,6 +16955,9 @@ unsafe impl RawStruct for VkRectLayerKHR {
 fn test_struct_size_vk_rect_layer_khr() {
   assert_size!(types_raw::VkRectLayerKHR, VkRectLayerKHR);
 }
+
+/// Structure containing rectangular region changed by vkQueuePresentKHR for a given
+/// VkImage
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_incremental_present")]
@@ -16517,6 +17001,8 @@ unsafe impl<'a> RawStruct for VkPresentRegionKHR<'a> {
 fn test_struct_size_vk_present_region_khr() {
   assert_size!(types_raw::VkPresentRegionKHR, VkPresentRegionKHR);
 }
+
+/// Structure hint of rectangular regions changed by vkQueuePresentKHR
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_incremental_present")]
@@ -16581,8 +17067,12 @@ fn test_struct_size_vk_present_regions_khr() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkDescriptorUpdateTemplateKHR__ {}
+
+/// Opaque handle to a descriptor update template
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub type VkDescriptorUpdateTemplateKHR = VkNonDispatchableHandle<VkDescriptorUpdateTemplateKHR__>;
+
+/// Describes a single descriptor update of the descriptor update template
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
@@ -16674,6 +17164,8 @@ fn test_struct_size_vk_descriptor_update_template_entry_khr() {
     VkDescriptorUpdateTemplateEntryKHR
   );
 }
+
+/// Structure specifying parameters of a newly created descriptor update template
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
@@ -16801,14 +17293,20 @@ fn test_struct_size_vk_descriptor_update_template_create_info_khr() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkObjectTableNVX__ {}
+
+/// Opaque handle to an object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub type VkObjectTableNVX = VkNonDispatchableHandle<VkObjectTableNVX__>;
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkIndirectCommandsLayoutNVX__ {}
+
+/// Opaque handle to an indirect commands layout object
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub type VkIndirectCommandsLayoutNVX = VkNonDispatchableHandle<VkIndirectCommandsLayoutNVX__>;
+
+/// Structure specifying physical device support
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16866,6 +17364,8 @@ fn test_struct_size_vk_device_generated_commands_features_nvx() {
     VkDeviceGeneratedCommandsFeaturesNVX
   );
 }
+
+/// Structure specifying physical device limits
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16962,6 +17462,8 @@ fn test_struct_size_vk_device_generated_commands_limits_nvx() {
     VkDeviceGeneratedCommandsLimitsNVX
   );
 }
+
+/// Structure specifying parameters for the reservation of command buffer space
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17023,6 +17525,8 @@ fn test_struct_size_vk_indirect_commands_token_nvx() {
     VkIndirectCommandsTokenNVX
   );
 }
+
+/// Struct specifying the details of an indirect command layout token
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17094,6 +17598,9 @@ fn test_struct_size_vk_indirect_commands_layout_token_nvx() {
     VkIndirectCommandsLayoutTokenNVX
   );
 }
+
+/// Structure specifying the parameters of a newly created indirect commands layout
+/// object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17175,6 +17682,8 @@ fn test_struct_size_vk_indirect_commands_layout_create_info_nvx() {
     VkIndirectCommandsLayoutCreateInfoNVX
   );
 }
+
+/// Structure specifying parameters for the generation of commands
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17316,6 +17825,8 @@ fn test_struct_size_vk_cmd_process_commands_info_nvx() {
     VkCmdProcessCommandsInfoNVX
   );
 }
+
+/// Structure specifying parameters for the reservation of command buffer space
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17392,6 +17903,8 @@ fn test_struct_size_vk_cmd_reserve_space_for_commands_info_nvx() {
     VkCmdReserveSpaceForCommandsInfoNVX
   );
 }
+
+/// Structure specifying the parameters of a newly created object table
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17497,6 +18010,8 @@ fn test_struct_size_vk_object_table_create_info_nvx() {
     VkObjectTableCreateInfoNVX
   );
 }
+
+/// Common parameters of an object table resource entry
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17545,6 +18060,8 @@ unsafe impl RawStruct for VkObjectTableEntryNVX {
 fn test_struct_size_vk_object_table_entry_nvx() {
   assert_size!(types_raw::VkObjectTableEntryNVX, VkObjectTableEntryNVX);
 }
+
+/// Parameters of an object table pipeline entry
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17606,6 +18123,8 @@ fn test_struct_size_vk_object_table_pipeline_entry_nvx() {
     VkObjectTablePipelineEntryNVX
   );
 }
+
+/// Parameters of an object table descriptor set entry
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17677,6 +18196,8 @@ fn test_struct_size_vk_object_table_descriptor_set_entry_nvx() {
     VkObjectTableDescriptorSetEntryNVX
   );
 }
+
+/// Parameters of an object table vertex buffer entry
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17738,6 +18259,8 @@ fn test_struct_size_vk_object_table_vertex_buffer_entry_nvx() {
     VkObjectTableVertexBufferEntryNVX
   );
 }
+
+/// Parameters of an object table index buffer entry
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17809,6 +18332,8 @@ fn test_struct_size_vk_object_table_index_buffer_entry_nvx() {
     VkObjectTableIndexBufferEntryNVX
   );
 }
+
+/// Parameters of an object table push constant entry
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17882,6 +18407,8 @@ fn test_struct_size_vk_object_table_push_constant_entry_nvx() {
 }
 
 // feature: VK_NV_clip_space_w_scaling
+
+/// Structure specifying a viewport
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
@@ -17930,6 +18457,9 @@ unsafe impl RawStruct for VkViewportWScalingNV {
 fn test_struct_size_vk_viewport_w_scaling_nv() {
   assert_size!(types_raw::VkViewportWScalingNV, VkViewportWScalingNV);
 }
+
+/// Structure specifying parameters of a newly created pipeline viewport W scaling
+/// state
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
@@ -18004,6 +18534,8 @@ fn test_struct_size_vk_pipeline_viewport_w_scaling_state_create_info_nv() {
 }
 
 // feature: VK_EXT_display_surface_counter
+
+/// Structure describing capabilities of a surface
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_display_surface_counter")]
@@ -18162,6 +18694,8 @@ fn test_struct_size_vk_surface_capabilities2_ext() {
 }
 
 // feature: VK_EXT_display_control
+
+/// Describe the power state of a display
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_display_control")]
@@ -18215,6 +18749,8 @@ unsafe impl RawStruct for VkDisplayPowerInfoEXT {
 fn test_struct_size_vk_display_power_info_ext() {
   assert_size!(types_raw::VkDisplayPowerInfoEXT, VkDisplayPowerInfoEXT);
 }
+
+/// Describe a device event to create
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_display_control")]
@@ -18268,6 +18804,8 @@ unsafe impl RawStruct for VkDeviceEventInfoEXT {
 fn test_struct_size_vk_device_event_info_ext() {
   assert_size!(types_raw::VkDeviceEventInfoEXT, VkDeviceEventInfoEXT);
 }
+
+/// Describe a display event to create
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_display_control")]
@@ -18321,6 +18859,8 @@ unsafe impl RawStruct for VkDisplayEventInfoEXT {
 fn test_struct_size_vk_display_event_info_ext() {
   assert_size!(types_raw::VkDisplayEventInfoEXT, VkDisplayEventInfoEXT);
 }
+
+/// Specify the surface counters desired
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_display_control")]
@@ -18379,6 +18919,8 @@ fn test_struct_size_vk_swapchain_counter_create_info_ext() {
 }
 
 // feature: VK_GOOGLE_display_timing
+
+/// Structure containing the RC duration of a display
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_GOOGLE_display_timing")]
@@ -18420,6 +18962,8 @@ fn test_struct_size_vk_refresh_cycle_duration_google() {
     VkRefreshCycleDurationGOOGLE
   );
 }
+
+/// Structure containing timing information about a previously-presented image
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_GOOGLE_display_timing")]
@@ -18501,6 +19045,8 @@ fn test_struct_size_vk_past_presentation_timing_google() {
     VkPastPresentationTimingGOOGLE
   );
 }
+
+/// The earliest time image should be presented
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_GOOGLE_display_timing")]
@@ -18549,6 +19095,8 @@ unsafe impl RawStruct for VkPresentTimeGOOGLE {
 fn test_struct_size_vk_present_time_google() {
   assert_size!(types_raw::VkPresentTimeGOOGLE, VkPresentTimeGOOGLE);
 }
+
+/// The earliest time each image should be presented
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_GOOGLE_display_timing")]
@@ -18612,6 +19160,8 @@ fn test_struct_size_vk_present_times_info_google() {
 }
 
 // feature: VK_NVX_multiview_per_view_attributes
+
+/// Structure describing multiview limits that can be supported by an implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_multiview_per_view_attributes")]
@@ -18671,6 +19221,8 @@ fn test_struct_size_vk_physical_device_multiview_per_view_attributes_properties_
 }
 
 // feature: VK_NV_viewport_swizzle
+
+/// Structure specifying a viewport swizzle
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_viewport_swizzle")]
@@ -18739,6 +19291,8 @@ unsafe impl RawStruct for VkViewportSwizzleNV {
 fn test_struct_size_vk_viewport_swizzle_nv() {
   assert_size!(types_raw::VkViewportSwizzleNV, VkViewportSwizzleNV);
 }
+
+/// Structure specifying swizzle applied to primitive clip coordinates
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_viewport_swizzle")]
@@ -18812,6 +19366,9 @@ fn test_struct_size_vk_pipeline_viewport_swizzle_state_create_info_nv() {
 }
 
 // feature: VK_EXT_discard_rectangles
+
+/// Structure describing discard rectangle limits that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_discard_rectangles")]
@@ -18868,6 +19425,8 @@ fn test_struct_size_vk_physical_device_discard_rectangle_properties_ext() {
     VkPhysicalDeviceDiscardRectanglePropertiesEXT
   );
 }
+
+/// Structure specifying discard rectangle
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_discard_rectangles")]
@@ -18951,6 +19510,9 @@ fn test_struct_size_vk_pipeline_discard_rectangle_state_create_info_ext() {
 }
 
 // feature: VK_EXT_conservative_rasterization
+
+/// Structure describing conservative raster properties that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
@@ -19093,6 +19655,8 @@ fn test_struct_size_vk_physical_device_conservative_rasterization_properties_ext
     VkPhysicalDeviceConservativeRasterizationPropertiesEXT
   );
 }
+
+/// Structure specifying conservative raster state
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
@@ -19171,6 +19735,8 @@ fn test_struct_size_vk_pipeline_rasterization_conservative_state_create_info_ext
 }
 
 // feature: VK_EXT_hdr_metadata
+
+/// structure to specify X,Y chromaticity coordinates
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_hdr_metadata")]
@@ -19219,6 +19785,8 @@ unsafe impl RawStruct for VkXYColorEXT {
 fn test_struct_size_vk_xy_color_ext() {
   assert_size!(types_raw::VkXYColorEXT, VkXYColorEXT);
 }
+
+/// structure to specify Hdr metadata
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_hdr_metadata")]
@@ -19344,6 +19912,8 @@ fn test_struct_size_vk_hdr_metadata_ext() {
 }
 
 // feature: VK_KHR_get_surface_capabilities2
+
+/// Structure specifying a surface and related swapchain creation parameters
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
@@ -19400,6 +19970,8 @@ fn test_struct_size_vk_physical_device_surface_info2_khr() {
     VkPhysicalDeviceSurfaceInfo2KHR
   );
 }
+
+/// Structure describing capabilities of a surface
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
@@ -19456,6 +20028,8 @@ fn test_struct_size_vk_surface_capabilities2_khr() {
     VkSurfaceCapabilities2KHR
   );
 }
+
+/// Structure describing a supported swapchain format tuple
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
@@ -19511,6 +20085,8 @@ fn test_struct_size_vk_surface_format2_khr() {
 }
 
 // feature: VK_KHR_shared_presentable_image
+
+/// structure describing capabilities of a surface for shared presentation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_shared_presentable_image")]
@@ -19569,6 +20145,8 @@ fn test_struct_size_vk_shared_present_surface_capabilities_khr() {
 }
 
 // feature: VK_KHR_external_fence_capabilities
+
+/// Structure specifying fence creation parameters.
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
@@ -19625,6 +20203,8 @@ fn test_struct_size_vk_physical_device_external_fence_info_khr() {
     VkPhysicalDeviceExternalFenceInfoKHR
   );
 }
+
+/// Structure describing supported external fence handle features
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
@@ -19703,6 +20283,8 @@ fn test_struct_size_vk_external_fence_properties_khr() {
 }
 
 // feature: VK_KHR_external_fence
+
+/// Structure specifying handle types that can be exported from a fence
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence")]
@@ -19761,6 +20343,8 @@ fn test_struct_size_vk_export_fence_create_info_khr() {
 }
 
 // feature: VK_KHR_external_fence_win32
+
+/// (None)
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_win32")]
@@ -19862,6 +20446,9 @@ fn test_struct_size_vk_import_fence_win32_handle_info_khr() {
     VkImportFenceWin32HandleInfoKHR
   );
 }
+
+/// Structure specifying additional attributes of Windows handles exported from a
+/// fence
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_win32")]
@@ -19943,6 +20530,8 @@ fn test_struct_size_vk_export_fence_win32_handle_info_khr() {
     VkExportFenceWin32HandleInfoKHR
   );
 }
+
+/// Structure describing a Win32 handle fence export operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_win32")]
@@ -20016,6 +20605,8 @@ fn test_struct_size_vk_fence_get_win32_handle_info_khr() {
 }
 
 // feature: VK_KHR_external_fence_fd
+
+/// (None)
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_fd")]
@@ -20099,6 +20690,8 @@ unsafe impl RawStruct for VkImportFenceFdInfoKHR {
 fn test_struct_size_vk_import_fence_fd_info_khr() {
   assert_size!(types_raw::VkImportFenceFdInfoKHR, VkImportFenceFdInfoKHR);
 }
+
+/// Structure describing a POSIX FD fence export operation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_fd")]
@@ -20164,6 +20757,8 @@ fn test_struct_size_vk_fence_get_fd_info_khr() {
 }
 
 // feature: VK_KHR_maintenance2
+
+/// Structure describing the point clipping behavior supported by an implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_maintenance2")]
@@ -20220,6 +20815,9 @@ fn test_struct_size_vk_physical_device_point_clipping_properties_khr() {
     VkPhysicalDevicePointClippingPropertiesKHR
   );
 }
+
+/// Structure specifying a subpass/input attachment pair and an aspect mask that
+/// can: be read.
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_maintenance2")]
@@ -20281,6 +20879,9 @@ fn test_struct_size_vk_input_attachment_aspect_reference_khr() {
     VkInputAttachmentAspectReferenceKHR
   );
 }
+
+/// Structure specifying, for a given subpass/input attachment pair, which aspect
+/// can: be read.
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_maintenance2")]
@@ -20342,6 +20943,8 @@ fn test_struct_size_vk_render_pass_input_attachment_aspect_create_info_khr() {
     VkRenderPassInputAttachmentAspectCreateInfoKHR
   );
 }
+
+/// Specify the intended usage of an image view
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_maintenance2")]
@@ -20398,6 +21001,8 @@ fn test_struct_size_vk_image_view_usage_create_info_khr() {
     VkImageViewUsageCreateInfoKHR
   );
 }
+
+/// Structure specifying the orientation of the tessellation domain
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_maintenance2")]
@@ -20456,6 +21061,9 @@ fn test_struct_size_vk_pipeline_tessellation_domain_origin_state_create_info_khr
 }
 
 // feature: VK_KHR_variable_pointers
+
+/// Structure describing variable pointers features that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_variable_pointers")]
@@ -20526,6 +21134,8 @@ fn test_struct_size_vk_physical_device_variable_pointer_features_khr() {
 }
 
 // feature: VK_MVK_ios_surface
+
+/// Structure specifying parameters of a newly created iOS surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_MVK_ios_surface")]
@@ -20594,6 +21204,8 @@ fn test_struct_size_vk_ios_surface_create_info_mvk() {
 }
 
 // feature: VK_MVK_macos_surface
+
+/// Structure specifying parameters of a newly created macOS surface object
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_MVK_macos_surface")]
@@ -20662,6 +21274,8 @@ fn test_struct_size_vk_mac_os_surface_create_info_mvk() {
 }
 
 // feature: VK_KHR_get_memory_requirements2
+
+/// (None)
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -20718,6 +21332,8 @@ fn test_struct_size_vk_buffer_memory_requirements_info2_khr() {
     VkBufferMemoryRequirementsInfo2KHR
   );
 }
+
+/// (None)
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -20830,6 +21446,8 @@ fn test_struct_size_vk_image_sparse_memory_requirements_info2_khr() {
     VkImageSparseMemoryRequirementsInfo2KHR
   );
 }
+
+/// Structure specifying memory requirements
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -20944,6 +21562,9 @@ fn test_struct_size_vk_sparse_image_memory_requirements2_khr() {
 }
 
 // feature: VK_KHR_dedicated_allocation
+
+/// Structure describing dedicated allocation requirements of buffer and image
+/// resources
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
@@ -21012,6 +21633,8 @@ fn test_struct_size_vk_memory_dedicated_requirements_khr() {
     VkMemoryDedicatedRequirementsKHR
   );
 }
+
+/// Specify a dedicated memory allocation resource
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
@@ -21080,6 +21703,8 @@ fn test_struct_size_vk_memory_dedicated_allocate_info_khr() {
 }
 
 // feature: VK_EXT_sampler_filter_minmax
+
+/// Structure specifying sampler reduction mode
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
@@ -21136,6 +21761,9 @@ fn test_struct_size_vk_sampler_reduction_mode_create_info_ext() {
     VkSamplerReductionModeCreateInfoEXT
   );
 }
+
+/// Structure describing sampler filter minmax limits that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
@@ -21206,6 +21834,8 @@ fn test_struct_size_vk_physical_device_sampler_filter_minmax_properties_ext() {
 }
 
 // feature: VK_EXT_sample_locations
+
+/// Structure specifying the coordinates of a sample location
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -21254,6 +21884,8 @@ unsafe impl RawStruct for VkSampleLocationEXT {
 fn test_struct_size_vk_sample_location_ext() {
   assert_size!(types_raw::VkSampleLocationEXT, VkSampleLocationEXT);
 }
+
+/// Structure specifying a set of sample locations
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -21335,6 +21967,9 @@ fn test_struct_size_vk_sample_locations_info_ext() {
     VkSampleLocationsInfoEXT
   );
 }
+
+/// Structure specifying the sample locations state to use in the initial layout
+/// transition of attachments
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -21386,6 +22021,9 @@ fn test_struct_size_vk_attachment_sample_locations_ext() {
     VkAttachmentSampleLocationsEXT
   );
 }
+
+/// Structure specifying the sample locations state to use for layout transitions of
+/// attachments performed after a given subpass
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -21437,6 +22075,9 @@ fn test_struct_size_vk_subpass_sample_locations_ext() {
     VkSubpassSampleLocationsEXT
   );
 }
+
+/// Structure specifying sample locations to use for the layout transition of custom
+/// sample locations compatible depth/stencil attachments
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -21512,6 +22153,8 @@ fn test_struct_size_vk_render_pass_sample_locations_begin_info_ext() {
     VkRenderPassSampleLocationsBeginInfoEXT
   );
 }
+
+/// Structure specifying sample locations for a pipeline
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -21579,6 +22222,9 @@ fn test_struct_size_vk_pipeline_sample_locations_state_create_info_ext() {
     VkPipelineSampleLocationsStateCreateInfoEXT
   );
 }
+
+/// Structure describing sample location limits that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -21676,6 +22322,9 @@ fn test_struct_size_vk_physical_device_sample_locations_properties_ext() {
     VkPhysicalDeviceSampleLocationsPropertiesEXT
   );
 }
+
+/// Structure returning information about sample count specific additional
+/// multisampling capabilities
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -21734,6 +22383,8 @@ fn test_struct_size_vk_multisample_properties_ext() {
 }
 
 // feature: VK_KHR_image_format_list
+
+/// Specify that an image can: be used with a particular set of formats
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_image_format_list")]
@@ -21797,6 +22448,9 @@ fn test_struct_size_vk_image_format_list_create_info_khr() {
 }
 
 // feature: VK_EXT_blend_operation_advanced
+
+/// Structure describing advanced blending features that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
@@ -21854,6 +22508,9 @@ fn test_struct_size_vk_physical_device_blend_operation_advanced_features_ext() {
     VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT
   );
 }
+
+/// Structure describing advanced blending limits that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
@@ -21965,6 +22622,8 @@ fn test_struct_size_vk_physical_device_blend_operation_advanced_properties_ext()
     VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT
   );
 }
+
+/// Structure specifying parameters that affect advanced blend operations
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
@@ -22045,6 +22704,8 @@ fn test_struct_size_vk_pipeline_color_blend_advanced_state_create_info_ext() {
 }
 
 // feature: VK_NV_fragment_coverage_to_color
+
+/// Structure specifying whether fragment coverage replaces a color
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
@@ -22124,6 +22785,8 @@ fn test_struct_size_vk_pipeline_coverage_to_color_state_create_info_nv() {
 }
 
 // feature: VK_NV_framebuffer_mixed_samples
+
+/// Structure specifying parameters controlling coverage modulation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
@@ -22218,6 +22881,8 @@ fn test_struct_size_vk_pipeline_coverage_modulation_state_create_info_nv() {
 }
 
 // feature: VK_KHR_bind_memory2
+
+/// Structure specifying how to bind a buffer to memory
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_bind_memory2")]
@@ -22294,6 +22959,8 @@ fn test_struct_size_vk_bind_buffer_memory_info_khr() {
     VkBindBufferMemoryInfoKHR
   );
 }
+
+/// Structure specifying how to bind an image to memory
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_bind_memory2")]
@@ -22372,6 +23039,8 @@ fn test_struct_size_vk_bind_image_memory_info_khr() {
 }
 
 // feature: VK_KHR_sampler_ycbcr_conversion
+
+/// Structure specifying the parameters of the newly created conversion
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -22503,8 +23172,11 @@ fn test_struct_size_vk_sampler_ycbcr_conversion_create_info_khr() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkSamplerYcbcrConversionKHR__ {}
+
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 pub type VkSamplerYcbcrConversionKHR = VkNonDispatchableHandle<VkSamplerYcbcrConversionKHR__>;
+
+/// Structure specifying Y\'CbCr conversion to a sampler or image view
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -22561,6 +23233,8 @@ fn test_struct_size_vk_sampler_ycbcr_conversion_info_khr() {
     VkSamplerYcbcrConversionInfoKHR
   );
 }
+
+/// Structure specifying how to bind an image plane to memory
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -22617,6 +23291,8 @@ fn test_struct_size_vk_bind_image_plane_memory_info_khr() {
     VkBindImagePlaneMemoryInfoKHR
   );
 }
+
+/// Structure specifying image plane for memory requirements
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -22673,6 +23349,9 @@ fn test_struct_size_vk_image_plane_memory_requirements_info_khr() {
     VkImagePlaneMemoryRequirementsInfoKHR
   );
 }
+
+/// Structure describing Y\'CbCr conversion features that can be supported by an
+/// implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -22730,6 +23409,9 @@ fn test_struct_size_vk_physical_device_sampler_ycbcr_conversion_features_khr() {
     VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR
   );
 }
+
+/// Structure specifying combined image sampler descriptor count for multi-planar
+/// images
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -22792,8 +23474,12 @@ fn test_struct_size_vk_sampler_ycbcr_conversion_image_format_properties_khr() {
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkValidationCacheEXT__ {}
+
+/// Opaque handle to a validation cache object
 #[cfg(feature = "VK_EXT_validation_cache")]
 pub type VkValidationCacheEXT = VkNonDispatchableHandle<VkValidationCacheEXT__>;
+
+/// Structure specifying parameters of a newly created validation cache
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_validation_cache")]
@@ -22865,6 +23551,8 @@ fn test_struct_size_vk_validation_cache_create_info_ext() {
     VkValidationCacheCreateInfoEXT
   );
 }
+
+/// Specify validation cache to use during shader module creation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_validation_cache")]
@@ -22923,6 +23611,8 @@ fn test_struct_size_vk_shader_module_validation_cache_create_info_ext() {
 }
 
 // feature: VK_EXT_global_priority
+
+/// Specify a system wide priority
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_global_priority")]
@@ -22981,6 +23671,8 @@ fn test_struct_size_vk_device_queue_global_priority_create_info_ext() {
 }
 
 // feature: VK_EXT_external_memory_host
+
+/// import memory from a host pointer
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_external_memory_host")]
@@ -23042,6 +23734,8 @@ fn test_struct_size_vk_import_memory_host_pointer_info_ext() {
     VkImportMemoryHostPointerInfoEXT
   );
 }
+
+/// Properties of external memory host pointer
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_external_memory_host")]
@@ -23098,6 +23792,9 @@ fn test_struct_size_vk_memory_host_pointer_properties_ext() {
     VkMemoryHostPointerPropertiesEXT
   );
 }
+
+/// Structure describing external memory host pointer limits that can be supported
+/// by an implementation
 #[repr(C)]
 #[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_external_memory_host")]
