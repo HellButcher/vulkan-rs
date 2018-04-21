@@ -204,13 +204,13 @@ class RustGenerator:
         if item.enum_group.type is None:
             return item.name
         name = item.shortname
-        if item.enum_group.type == 'bitmask':
-            if not name.endswith('_BIT'):
-                name += '_BIT'
-            if name[0].isnumeric():
-                name = 'BIT_' + name[:-4]
-        else:
-            name = 'E_' + name
+        if name[0].isnumeric() or name in RESERVED_KEYWORDS:
+            if item.enum_group.type == 'bitmask':
+                if name.endswith('_BIT'):
+                    name = name[:-4]
+                name = 'BIT_' + name
+            else:
+                name = 'E_' + name
         return name
 
     def rust_member_name(self, member):
@@ -1111,9 +1111,9 @@ class RustGenerator:
                         all_args = ', '.join(all_params_as_raw[:-1] + ['::std::ptr::null_mut()'])
                         gen('_t.', command.name, '.unwrap()(', all_args, ');').nl()
                         if enumerate_with_incomplete:
-                            gen('if _r == VkResult::E_INCOMPLETE { continue; }').nl()
+                            gen('if _r == VkResult::INCOMPLETE { continue; }').nl()
                         if is_check_result:
-                            gen('if _r != VkResult::E_SUCCESS { return Err(_r); }').nl()
+                            gen('if _r != VkResult::SUCCESS { return Err(_r); }').nl()
                         gen('if ', self.rust_param_name(enumerate_len_param) ,' == 0 {').nl()
                         with gen.open_indention():
                             if is_check_result:
@@ -1132,13 +1132,13 @@ class RustGenerator:
                     if out_param:
                         gen(';').nl()
                         if enumerate_with_incomplete:
-                            gen('if _r == VkResult::E_INCOMPLETE { continue; }').nl()
+                            gen('if _r == VkResult::INCOMPLETE { continue; }').nl()
                         if is_check_result:
-                            gen('if _r != VkResult::E_SUCCESS { return Err(_r); }').nl()
+                            gen('if _r != VkResult::SUCCESS { return Err(_r); }').nl()
                     elif is_create:
                         gen(';').nl()
                         if is_check_result:
-                            gen('if _r != VkResult::E_SUCCESS { return _r; }').nl()
+                            gen('if _r != VkResult::SUCCESS { return _r; }').nl()
                     else:
                         gen.nl()
                     
@@ -1164,7 +1164,7 @@ class RustGenerator:
                 if is_destroy:
                     gen(';').nl()
                     if is_check_result:
-                        gen('if _r != VkResult::E_SUCCESS { return _r; }').nl()
+                        gen('if _r != VkResult::SUCCESS { return _r; }').nl()
                     gen('Vk', table_name, 'DispatchTable::destroy(', handle_arg, ');')
                     if is_check_result:
                         gen('return _r;')

@@ -38,7 +38,7 @@ impl VkBufferMemoryBarrier {
   pub fn new() -> VkBufferMemoryBarrier {
     unsafe {
       VkBufferMemoryBarrier {
-        sType: VkStructureType::E_BUFFER_MEMORY_BARRIER,
+        sType: VkStructureType::BUFFER_MEMORY_BARRIER,
         ..::std::mem::zeroed()
       }
     }
@@ -431,7 +431,7 @@ impl VkImageMemoryBarrier {
   pub fn new() -> VkImageMemoryBarrier {
     unsafe {
       VkImageMemoryBarrier {
-        sType: VkStructureType::E_IMAGE_MEMORY_BARRIER,
+        sType: VkStructureType::IMAGE_MEMORY_BARRIER,
         ..::std::mem::zeroed()
       }
     }
@@ -545,7 +545,7 @@ impl VkMemoryBarrier {
   pub fn new() -> VkMemoryBarrier {
     unsafe {
       VkMemoryBarrier {
-        sType: VkStructureType::E_MEMORY_BARRIER,
+        sType: VkStructureType::MEMORY_BARRIER,
         ..::std::mem::zeroed()
       }
     }
@@ -609,7 +609,7 @@ impl<'a> VkApplicationInfo<'a> {
   pub fn new() -> VkApplicationInfo<'a> {
     unsafe {
       VkApplicationInfo {
-        sType: VkStructureType::E_APPLICATION_INFO,
+        sType: VkStructureType::APPLICATION_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -704,7 +704,7 @@ impl<'a> VkInstanceCreateInfo<'a> {
   pub fn new() -> VkInstanceCreateInfo<'a> {
     unsafe {
       VkInstanceCreateInfo {
-        sType: VkStructureType::E_INSTANCE_CREATE_INFO,
+        sType: VkStructureType::INSTANCE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -3222,7 +3222,7 @@ impl<'a> VkDeviceQueueCreateInfo<'a> {
   pub fn new() -> VkDeviceQueueCreateInfo<'a> {
     unsafe {
       VkDeviceQueueCreateInfo {
-        sType: VkStructureType::E_DEVICE_QUEUE_CREATE_INFO,
+        sType: VkStructureType::DEVICE_QUEUE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -3300,7 +3300,7 @@ impl<'a> VkDeviceCreateInfo<'a> {
   pub fn new() -> VkDeviceCreateInfo<'a> {
     unsafe {
       VkDeviceCreateInfo {
-        sType: VkStructureType::E_DEVICE_CREATE_INFO,
+        sType: VkStructureType::DEVICE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -3514,7 +3514,7 @@ impl<'a> VkSubmitInfo<'a> {
   pub fn new() -> VkSubmitInfo<'a> {
     unsafe {
       VkSubmitInfo {
-        sType: VkStructureType::E_SUBMIT_INFO,
+        sType: VkStructureType::SUBMIT_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -3590,7 +3590,7 @@ impl VkMemoryAllocateInfo {
   pub fn new() -> VkMemoryAllocateInfo {
     unsafe {
       VkMemoryAllocateInfo {
-        sType: VkStructureType::E_MEMORY_ALLOCATE_INFO,
+        sType: VkStructureType::MEMORY_ALLOCATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -3657,7 +3657,7 @@ impl VkMappedMemoryRange {
   pub fn new() -> VkMappedMemoryRange {
     unsafe {
       VkMappedMemoryRange {
-        sType: VkStructureType::E_MAPPED_MEMORY_RANGE,
+        sType: VkStructureType::MAPPED_MEMORY_RANGE,
         ..::std::mem::zeroed()
       }
     }
@@ -4355,7 +4355,7 @@ impl<'a> VkBindSparseInfo<'a> {
   pub fn new() -> VkBindSparseInfo<'a> {
     unsafe {
       VkBindSparseInfo {
-        sType: VkStructureType::E_BIND_SPARSE_INFO,
+        sType: VkStructureType::BIND_SPARSE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -4456,7 +4456,7 @@ impl VkFenceCreateInfo {
   pub fn new() -> VkFenceCreateInfo {
     unsafe {
       VkFenceCreateInfo {
-        sType: VkStructureType::E_FENCE_CREATE_INFO,
+        sType: VkStructureType::FENCE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -4506,7 +4506,7 @@ impl VkSemaphoreCreateInfo {
   pub fn new() -> VkSemaphoreCreateInfo {
     unsafe {
       VkSemaphoreCreateInfo {
-        sType: VkStructureType::E_SEMAPHORE_CREATE_INFO,
+        sType: VkStructureType::SEMAPHORE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -4556,7 +4556,7 @@ impl VkEventCreateInfo {
   pub fn new() -> VkEventCreateInfo {
     unsafe {
       VkEventCreateInfo {
-        sType: VkStructureType::E_EVENT_CREATE_INFO,
+        sType: VkStructureType::EVENT_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -4615,7 +4615,7 @@ impl VkQueryPoolCreateInfo {
   pub fn new() -> VkQueryPoolCreateInfo {
     unsafe {
       VkQueryPoolCreateInfo {
-        sType: VkStructureType::E_QUERY_POOL_CREATE_INFO,
+        sType: VkStructureType::QUERY_POOL_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -4704,7 +4704,7 @@ impl<'a> VkBufferCreateInfo<'a> {
   pub fn new() -> VkBufferCreateInfo<'a> {
     unsafe {
       VkBufferCreateInfo {
-        sType: VkStructureType::E_BUFFER_CREATE_INFO,
+        sType: VkStructureType::BUFFER_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -4797,7 +4797,7 @@ impl VkBufferViewCreateInfo {
   pub fn new() -> VkBufferViewCreateInfo {
     unsafe {
       VkBufferViewCreateInfo {
-        sType: VkStructureType::E_BUFFER_VIEW_CREATE_INFO,
+        sType: VkStructureType::BUFFER_VIEW_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -4902,7 +4902,7 @@ impl<'a> VkImageCreateInfo<'a> {
   pub fn new() -> VkImageCreateInfo<'a> {
     unsafe {
       VkImageCreateInfo {
-        sType: VkStructureType::E_IMAGE_CREATE_INFO,
+        sType: VkStructureType::IMAGE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -5199,7 +5199,7 @@ impl VkImageViewCreateInfo {
   pub fn new() -> VkImageViewCreateInfo {
     unsafe {
       VkImageViewCreateInfo {
-        sType: VkStructureType::E_IMAGE_VIEW_CREATE_INFO,
+        sType: VkStructureType::IMAGE_VIEW_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -5303,7 +5303,7 @@ impl<'a> VkShaderModuleCreateInfo<'a> {
   pub fn new() -> VkShaderModuleCreateInfo<'a> {
     unsafe {
       VkShaderModuleCreateInfo {
-        sType: VkStructureType::E_SHADER_MODULE_CREATE_INFO,
+        sType: VkStructureType::SHADER_MODULE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -5374,7 +5374,7 @@ impl<'a> VkPipelineCacheCreateInfo<'a> {
   pub fn new() -> VkPipelineCacheCreateInfo<'a> {
     unsafe {
       VkPipelineCacheCreateInfo {
-        sType: VkStructureType::E_PIPELINE_CACHE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_CACHE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -5561,7 +5561,7 @@ impl<'a> VkPipelineShaderStageCreateInfo<'a> {
   pub fn new() -> VkPipelineShaderStageCreateInfo<'a> {
     unsafe {
       VkPipelineShaderStageCreateInfo {
-        sType: VkStructureType::E_PIPELINE_SHADER_STAGE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_SHADER_STAGE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -5783,7 +5783,7 @@ impl<'a> VkPipelineVertexInputStateCreateInfo<'a> {
   pub fn new() -> VkPipelineVertexInputStateCreateInfo<'a> {
     unsafe {
       VkPipelineVertexInputStateCreateInfo {
-        sType: VkStructureType::E_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -5862,7 +5862,7 @@ impl VkPipelineInputAssemblyStateCreateInfo {
   pub fn new() -> VkPipelineInputAssemblyStateCreateInfo {
     unsafe {
       VkPipelineInputAssemblyStateCreateInfo {
-        sType: VkStructureType::E_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -5935,7 +5935,7 @@ impl VkPipelineTessellationStateCreateInfo {
   pub fn new() -> VkPipelineTessellationStateCreateInfo {
     unsafe {
       VkPipelineTessellationStateCreateInfo {
-        sType: VkStructureType::E_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_TESSELLATION_STATE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -6222,7 +6222,7 @@ impl<'a> VkPipelineViewportStateCreateInfo<'a> {
   pub fn new() -> VkPipelineViewportStateCreateInfo<'a> {
     unsafe {
       VkPipelineViewportStateCreateInfo {
-        sType: VkStructureType::E_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_VIEWPORT_STATE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -6309,7 +6309,7 @@ impl VkPipelineRasterizationStateCreateInfo {
   pub fn new() -> VkPipelineRasterizationStateCreateInfo {
     unsafe {
       VkPipelineRasterizationStateCreateInfo {
-        sType: VkStructureType::E_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -6462,7 +6462,7 @@ impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
   pub fn new() -> VkPipelineMultisampleStateCreateInfo<'a> {
     unsafe {
       VkPipelineMultisampleStateCreateInfo {
-        sType: VkStructureType::E_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -6667,7 +6667,7 @@ impl VkPipelineDepthStencilStateCreateInfo {
   pub fn new() -> VkPipelineDepthStencilStateCreateInfo {
     unsafe {
       VkPipelineDepthStencilStateCreateInfo {
-        sType: VkStructureType::E_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -6920,7 +6920,7 @@ impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
   pub fn new() -> VkPipelineColorBlendStateCreateInfo<'a> {
     unsafe {
       VkPipelineColorBlendStateCreateInfo {
-        sType: VkStructureType::E_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -7016,7 +7016,7 @@ impl<'a> VkPipelineDynamicStateCreateInfo<'a> {
   pub fn new() -> VkPipelineDynamicStateCreateInfo<'a> {
     unsafe {
       VkPipelineDynamicStateCreateInfo {
-        sType: VkStructureType::E_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_DYNAMIC_STATE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -7115,7 +7115,7 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
   pub fn new() -> VkGraphicsPipelineCreateInfo<'a> {
     unsafe {
       VkGraphicsPipelineCreateInfo {
-        sType: VkStructureType::E_GRAPHICS_PIPELINE_CREATE_INFO,
+        sType: VkStructureType::GRAPHICS_PIPELINE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -7310,7 +7310,7 @@ impl<'a> VkComputePipelineCreateInfo<'a> {
   pub fn new() -> VkComputePipelineCreateInfo<'a> {
     unsafe {
       VkComputePipelineCreateInfo {
-        sType: VkStructureType::E_COMPUTE_PIPELINE_CREATE_INFO,
+        sType: VkStructureType::COMPUTE_PIPELINE_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -7465,7 +7465,7 @@ impl<'a> VkPipelineLayoutCreateInfo<'a> {
   pub fn new() -> VkPipelineLayoutCreateInfo<'a> {
     unsafe {
       VkPipelineLayoutCreateInfo {
-        sType: VkStructureType::E_PIPELINE_LAYOUT_CREATE_INFO,
+        sType: VkStructureType::PIPELINE_LAYOUT_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -7557,7 +7557,7 @@ impl VkSamplerCreateInfo {
   pub fn new() -> VkSamplerCreateInfo {
     unsafe {
       VkSamplerCreateInfo {
-        sType: VkStructureType::E_SAMPLER_CREATE_INFO,
+        sType: VkStructureType::SAMPLER_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -7827,7 +7827,7 @@ impl<'a> VkDescriptorSetLayoutCreateInfo<'a> {
   pub fn new() -> VkDescriptorSetLayoutCreateInfo<'a> {
     unsafe {
       VkDescriptorSetLayoutCreateInfo {
-        sType: VkStructureType::E_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+        sType: VkStructureType::DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -7941,7 +7941,7 @@ impl<'a> VkDescriptorPoolCreateInfo<'a> {
   pub fn new() -> VkDescriptorPoolCreateInfo<'a> {
     unsafe {
       VkDescriptorPoolCreateInfo {
-        sType: VkStructureType::E_DESCRIPTOR_POOL_CREATE_INFO,
+        sType: VkStructureType::DESCRIPTOR_POOL_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -8024,7 +8024,7 @@ impl<'a> VkDescriptorSetAllocateInfo<'a> {
   pub fn new() -> VkDescriptorSetAllocateInfo<'a> {
     unsafe {
       VkDescriptorSetAllocateInfo {
-        sType: VkStructureType::E_DESCRIPTOR_SET_ALLOCATE_INFO,
+        sType: VkStructureType::DESCRIPTOR_SET_ALLOCATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -8213,7 +8213,7 @@ impl<'a> VkWriteDescriptorSet<'a> {
   pub fn new() -> VkWriteDescriptorSet<'a> {
     unsafe {
       VkWriteDescriptorSet {
-        sType: VkStructureType::E_WRITE_DESCRIPTOR_SET,
+        sType: VkStructureType::WRITE_DESCRIPTOR_SET,
         ..::std::mem::zeroed()
       }
     }
@@ -8300,7 +8300,7 @@ impl VkCopyDescriptorSet {
   pub fn new() -> VkCopyDescriptorSet {
     unsafe {
       VkCopyDescriptorSet {
-        sType: VkStructureType::E_COPY_DESCRIPTOR_SET,
+        sType: VkStructureType::COPY_DESCRIPTOR_SET,
         ..::std::mem::zeroed()
       }
     }
@@ -8411,7 +8411,7 @@ impl<'a> VkFramebufferCreateInfo<'a> {
   pub fn new() -> VkFramebufferCreateInfo<'a> {
     unsafe {
       VkFramebufferCreateInfo {
-        sType: VkStructureType::E_FRAMEBUFFER_CREATE_INFO,
+        sType: VkStructureType::FRAMEBUFFER_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -8867,7 +8867,7 @@ impl<'a> VkRenderPassCreateInfo<'a> {
   pub fn new() -> VkRenderPassCreateInfo<'a> {
     unsafe {
       VkRenderPassCreateInfo {
-        sType: VkStructureType::E_RENDER_PASS_CREATE_INFO,
+        sType: VkStructureType::RENDER_PASS_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -8954,7 +8954,7 @@ impl VkCommandPoolCreateInfo {
   pub fn new() -> VkCommandPoolCreateInfo {
     unsafe {
       VkCommandPoolCreateInfo {
-        sType: VkStructureType::E_COMMAND_POOL_CREATE_INFO,
+        sType: VkStructureType::COMMAND_POOL_CREATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -9021,7 +9021,7 @@ impl VkCommandBufferAllocateInfo {
   pub fn new() -> VkCommandBufferAllocateInfo {
     unsafe {
       VkCommandBufferAllocateInfo {
-        sType: VkStructureType::E_COMMAND_BUFFER_ALLOCATE_INFO,
+        sType: VkStructureType::COMMAND_BUFFER_ALLOCATE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -9097,7 +9097,7 @@ impl VkCommandBufferInheritanceInfo {
   pub fn new() -> VkCommandBufferInheritanceInfo {
     unsafe {
       VkCommandBufferInheritanceInfo {
-        sType: VkStructureType::E_COMMAND_BUFFER_INHERITANCE_INFO,
+        sType: VkStructureType::COMMAND_BUFFER_INHERITANCE_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -9197,7 +9197,7 @@ impl<'a> VkCommandBufferBeginInfo<'a> {
   pub fn new() -> VkCommandBufferBeginInfo<'a> {
     unsafe {
       VkCommandBufferBeginInfo {
-        sType: VkStructureType::E_COMMAND_BUFFER_BEGIN_INFO,
+        sType: VkStructureType::COMMAND_BUFFER_BEGIN_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -9878,7 +9878,7 @@ impl<'a> VkRenderPassBeginInfo<'a> {
   pub fn new() -> VkRenderPassBeginInfo<'a> {
     unsafe {
       VkRenderPassBeginInfo {
-        sType: VkStructureType::E_RENDER_PASS_BEGIN_INFO,
+        sType: VkStructureType::RENDER_PASS_BEGIN_INFO,
         ..::std::mem::zeroed()
       }
     }
@@ -10179,7 +10179,7 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
   pub fn new() -> VkSwapchainCreateInfoKHR<'a> {
     unsafe {
       VkSwapchainCreateInfoKHR {
-        sType: VkStructureType::E_SWAPCHAIN_CREATE_INFO_KHR,
+        sType: VkStructureType::SWAPCHAIN_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -10373,7 +10373,7 @@ impl<'a> VkPresentInfoKHR<'a> {
   pub fn new() -> VkPresentInfoKHR<'a> {
     unsafe {
       VkPresentInfoKHR {
-        sType: VkStructureType::E_PRESENT_INFO_KHR,
+        sType: VkStructureType::PRESENT_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -10665,7 +10665,7 @@ impl VkDisplayModeCreateInfoKHR {
   pub fn new() -> VkDisplayModeCreateInfoKHR {
     unsafe {
       VkDisplayModeCreateInfoKHR {
-        sType: VkStructureType::E_DISPLAY_MODE_CREATE_INFO_KHR,
+        sType: VkStructureType::DISPLAY_MODE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -10915,7 +10915,7 @@ impl VkDisplaySurfaceCreateInfoKHR {
   pub fn new() -> VkDisplaySurfaceCreateInfoKHR {
     unsafe {
       VkDisplaySurfaceCreateInfoKHR {
-        sType: VkStructureType::E_DISPLAY_SURFACE_CREATE_INFO_KHR,
+        sType: VkStructureType::DISPLAY_SURFACE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -11040,7 +11040,7 @@ impl VkDisplayPresentInfoKHR {
   pub fn new() -> VkDisplayPresentInfoKHR {
     unsafe {
       VkDisplayPresentInfoKHR {
-        sType: VkStructureType::E_DISPLAY_PRESENT_INFO_KHR,
+        sType: VkStructureType::DISPLAY_PRESENT_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -11120,7 +11120,7 @@ impl VkXlibSurfaceCreateInfoKHR {
   pub fn new() -> VkXlibSurfaceCreateInfoKHR {
     unsafe {
       VkXlibSurfaceCreateInfoKHR {
-        sType: VkStructureType::E_XLIB_SURFACE_CREATE_INFO_KHR,
+        sType: VkStructureType::XLIB_SURFACE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -11205,7 +11205,7 @@ impl VkXcbSurfaceCreateInfoKHR {
   pub fn new() -> VkXcbSurfaceCreateInfoKHR {
     unsafe {
       VkXcbSurfaceCreateInfoKHR {
-        sType: VkStructureType::E_XCB_SURFACE_CREATE_INFO_KHR,
+        sType: VkStructureType::XCB_SURFACE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -11290,7 +11290,7 @@ impl VkWaylandSurfaceCreateInfoKHR {
   pub fn new() -> VkWaylandSurfaceCreateInfoKHR {
     unsafe {
       VkWaylandSurfaceCreateInfoKHR {
-        sType: VkStructureType::E_WAYLAND_SURFACE_CREATE_INFO_KHR,
+        sType: VkStructureType::WAYLAND_SURFACE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -11375,7 +11375,7 @@ impl VkMirSurfaceCreateInfoKHR {
   pub fn new() -> VkMirSurfaceCreateInfoKHR {
     unsafe {
       VkMirSurfaceCreateInfoKHR {
-        sType: VkStructureType::E_MIR_SURFACE_CREATE_INFO_KHR,
+        sType: VkStructureType::MIR_SURFACE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -11459,7 +11459,7 @@ impl VkAndroidSurfaceCreateInfoKHR {
   pub fn new() -> VkAndroidSurfaceCreateInfoKHR {
     unsafe {
       VkAndroidSurfaceCreateInfoKHR {
-        sType: VkStructureType::E_ANDROID_SURFACE_CREATE_INFO_KHR,
+        sType: VkStructureType::ANDROID_SURFACE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -11535,7 +11535,7 @@ impl VkWin32SurfaceCreateInfoKHR {
   pub fn new() -> VkWin32SurfaceCreateInfoKHR {
     unsafe {
       VkWin32SurfaceCreateInfoKHR {
-        sType: VkStructureType::E_WIN32_SURFACE_CREATE_INFO_KHR,
+        sType: VkStructureType::WIN32_SURFACE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -11622,7 +11622,7 @@ impl VkDebugReportCallbackCreateInfoEXT {
   pub fn new() -> VkDebugReportCallbackCreateInfoEXT {
     unsafe {
       VkDebugReportCallbackCreateInfoEXT {
-        sType: VkStructureType::E_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
+        sType: VkStructureType::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -11703,7 +11703,7 @@ impl VkPipelineRasterizationStateRasterizationOrderAMD {
   pub fn new() -> VkPipelineRasterizationStateRasterizationOrderAMD {
     unsafe {
       VkPipelineRasterizationStateRasterizationOrderAMD {
-        sType: VkStructureType::E_PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD,
+        sType: VkStructureType::PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD,
         ..::std::mem::zeroed()
       }
     }
@@ -11766,7 +11766,7 @@ impl<'a> VkDebugMarkerObjectNameInfoEXT<'a> {
   pub fn new() -> VkDebugMarkerObjectNameInfoEXT<'a> {
     unsafe {
       VkDebugMarkerObjectNameInfoEXT {
-        sType: VkStructureType::E_DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
+        sType: VkStructureType::DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -11849,7 +11849,7 @@ impl<'a> VkDebugMarkerObjectTagInfoEXT<'a> {
   pub fn new() -> VkDebugMarkerObjectTagInfoEXT<'a> {
     unsafe {
       VkDebugMarkerObjectTagInfoEXT {
-        sType: VkStructureType::E_DEBUG_MARKER_OBJECT_TAG_INFO_EXT,
+        sType: VkStructureType::DEBUG_MARKER_OBJECT_TAG_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -11939,7 +11939,7 @@ impl<'a> VkDebugMarkerMarkerInfoEXT<'a> {
   pub fn new() -> VkDebugMarkerMarkerInfoEXT<'a> {
     unsafe {
       VkDebugMarkerMarkerInfoEXT {
-        sType: VkStructureType::E_DEBUG_MARKER_MARKER_INFO_EXT,
+        sType: VkStructureType::DEBUG_MARKER_MARKER_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -12010,7 +12010,7 @@ impl VkDedicatedAllocationImageCreateInfoNV {
   pub fn new() -> VkDedicatedAllocationImageCreateInfoNV {
     unsafe {
       VkDedicatedAllocationImageCreateInfoNV {
-        sType: VkStructureType::E_DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV,
+        sType: VkStructureType::DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -12069,7 +12069,7 @@ impl VkDedicatedAllocationBufferCreateInfoNV {
   pub fn new() -> VkDedicatedAllocationBufferCreateInfoNV {
     unsafe {
       VkDedicatedAllocationBufferCreateInfoNV {
-        sType: VkStructureType::E_DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV,
+        sType: VkStructureType::DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -12129,7 +12129,7 @@ impl VkDedicatedAllocationMemoryAllocateInfoNV {
   pub fn new() -> VkDedicatedAllocationMemoryAllocateInfoNV {
     unsafe {
       VkDedicatedAllocationMemoryAllocateInfoNV {
-        sType: VkStructureType::E_DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV,
+        sType: VkStructureType::DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -12199,7 +12199,7 @@ impl VkPhysicalDeviceFeatures2KHR {
   pub fn new() -> VkPhysicalDeviceFeatures2KHR {
     unsafe {
       VkPhysicalDeviceFeatures2KHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_FEATURES_2_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_FEATURES_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -12257,7 +12257,7 @@ impl VkPhysicalDeviceProperties2KHR {
   pub fn new() -> VkPhysicalDeviceProperties2KHR {
     unsafe {
       VkPhysicalDeviceProperties2KHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_PROPERTIES_2_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_PROPERTIES_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -12315,7 +12315,7 @@ impl VkFormatProperties2KHR {
   pub fn new() -> VkFormatProperties2KHR {
     unsafe {
       VkFormatProperties2KHR {
-        sType: VkStructureType::E_FORMAT_PROPERTIES_2_KHR,
+        sType: VkStructureType::FORMAT_PROPERTIES_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -12370,7 +12370,7 @@ impl VkImageFormatProperties2KHR {
   pub fn new() -> VkImageFormatProperties2KHR {
     unsafe {
       VkImageFormatProperties2KHR {
-        sType: VkStructureType::E_IMAGE_FORMAT_PROPERTIES_2_KHR,
+        sType: VkStructureType::IMAGE_FORMAT_PROPERTIES_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -12432,7 +12432,7 @@ impl VkPhysicalDeviceImageFormatInfo2KHR {
   pub fn new() -> VkPhysicalDeviceImageFormatInfo2KHR {
     unsafe {
       VkPhysicalDeviceImageFormatInfo2KHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -12526,7 +12526,7 @@ impl VkQueueFamilyProperties2KHR {
   pub fn new() -> VkQueueFamilyProperties2KHR {
     unsafe {
       VkQueueFamilyProperties2KHR {
-        sType: VkStructureType::E_QUEUE_FAMILY_PROPERTIES_2_KHR,
+        sType: VkStructureType::QUEUE_FAMILY_PROPERTIES_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -12584,7 +12584,7 @@ impl VkPhysicalDeviceMemoryProperties2KHR {
   pub fn new() -> VkPhysicalDeviceMemoryProperties2KHR {
     unsafe {
       VkPhysicalDeviceMemoryProperties2KHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_MEMORY_PROPERTIES_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -12642,7 +12642,7 @@ impl VkSparseImageFormatProperties2KHR {
   pub fn new() -> VkSparseImageFormatProperties2KHR {
     unsafe {
       VkSparseImageFormatProperties2KHR {
-        sType: VkStructureType::E_SPARSE_IMAGE_FORMAT_PROPERTIES_2_KHR,
+        sType: VkStructureType::SPARSE_IMAGE_FORMAT_PROPERTIES_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -12704,7 +12704,7 @@ impl VkPhysicalDeviceSparseImageFormatInfo2KHR {
   pub fn new() -> VkPhysicalDeviceSparseImageFormatInfo2KHR {
     unsafe {
       VkPhysicalDeviceSparseImageFormatInfo2KHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -12801,7 +12801,7 @@ impl VkTextureLODGatherFormatPropertiesAMD {
   pub fn new() -> VkTextureLODGatherFormatPropertiesAMD {
     unsafe {
       VkTextureLODGatherFormatPropertiesAMD {
-        sType: VkStructureType::E_TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
+        sType: VkStructureType::TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
         ..::std::mem::zeroed()
       }
     }
@@ -13056,7 +13056,7 @@ impl<'a> VkRenderPassMultiviewCreateInfoKHX<'a> {
   pub fn new() -> VkRenderPassMultiviewCreateInfoKHX<'a> {
     unsafe {
       VkRenderPassMultiviewCreateInfoKHX {
-        sType: VkStructureType::E_RENDER_PASS_MULTIVIEW_CREATE_INFO_KHX,
+        sType: VkStructureType::RENDER_PASS_MULTIVIEW_CREATE_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -13144,7 +13144,7 @@ impl VkPhysicalDeviceMultiviewFeaturesKHX {
   pub fn new() -> VkPhysicalDeviceMultiviewFeaturesKHX {
     unsafe {
       VkPhysicalDeviceMultiviewFeaturesKHX {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_MULTIVIEW_FEATURES_KHX,
+        sType: VkStructureType::PHYSICAL_DEVICE_MULTIVIEW_FEATURES_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -13224,7 +13224,7 @@ impl VkPhysicalDeviceMultiviewPropertiesKHX {
   pub fn new() -> VkPhysicalDeviceMultiviewPropertiesKHX {
     unsafe {
       VkPhysicalDeviceMultiviewPropertiesKHX {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHX,
+        sType: VkStructureType::PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -13368,7 +13368,7 @@ impl VkExternalMemoryImageCreateInfoNV {
   pub fn new() -> VkExternalMemoryImageCreateInfoNV {
     unsafe {
       VkExternalMemoryImageCreateInfoNV {
-        sType: VkStructureType::E_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV,
+        sType: VkStructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -13426,7 +13426,7 @@ impl VkExportMemoryAllocateInfoNV {
   pub fn new() -> VkExportMemoryAllocateInfoNV {
     unsafe {
       VkExportMemoryAllocateInfoNV {
-        sType: VkStructureType::E_EXPORT_MEMORY_ALLOCATE_INFO_NV,
+        sType: VkStructureType::EXPORT_MEMORY_ALLOCATE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -13489,7 +13489,7 @@ impl VkImportMemoryWin32HandleInfoNV {
   pub fn new() -> VkImportMemoryWin32HandleInfoNV {
     unsafe {
       VkImportMemoryWin32HandleInfoNV {
-        sType: VkStructureType::E_IMPORT_MEMORY_WIN32_HANDLE_INFO_NV,
+        sType: VkStructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -13562,7 +13562,7 @@ impl VkExportMemoryWin32HandleInfoNV {
   pub fn new() -> VkExportMemoryWin32HandleInfoNV {
     unsafe {
       VkExportMemoryWin32HandleInfoNV {
-        sType: VkStructureType::E_EXPORT_MEMORY_WIN32_HANDLE_INFO_NV,
+        sType: VkStructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -13643,7 +13643,7 @@ impl<'a> VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
   pub fn new() -> VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
     unsafe {
       VkWin32KeyedMutexAcquireReleaseInfoNV {
-        sType: VkStructureType::E_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV,
+        sType: VkStructureType::WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -13707,7 +13707,7 @@ impl VkPhysicalDeviceGroupPropertiesKHX {
   pub fn new() -> VkPhysicalDeviceGroupPropertiesKHX {
     unsafe {
       VkPhysicalDeviceGroupPropertiesKHX {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_GROUP_PROPERTIES_KHX,
+        sType: VkStructureType::PHYSICAL_DEVICE_GROUP_PROPERTIES_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -13789,7 +13789,7 @@ impl<'a> VkDeviceGroupDeviceCreateInfoKHX<'a> {
   pub fn new() -> VkDeviceGroupDeviceCreateInfoKHX<'a> {
     unsafe {
       VkDeviceGroupDeviceCreateInfoKHX {
-        sType: VkStructureType::E_DEVICE_GROUP_DEVICE_CREATE_INFO_KHX,
+        sType: VkStructureType::DEVICE_GROUP_DEVICE_CREATE_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -13853,7 +13853,7 @@ impl VkMemoryAllocateFlagsInfoKHX {
   pub fn new() -> VkMemoryAllocateFlagsInfoKHX {
     unsafe {
       VkMemoryAllocateFlagsInfoKHX {
-        sType: VkStructureType::E_MEMORY_ALLOCATE_FLAGS_INFO_KHX,
+        sType: VkStructureType::MEMORY_ALLOCATE_FLAGS_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -13923,7 +13923,7 @@ impl<'a> VkDeviceGroupRenderPassBeginInfoKHX<'a> {
   pub fn new() -> VkDeviceGroupRenderPassBeginInfoKHX<'a> {
     unsafe {
       VkDeviceGroupRenderPassBeginInfoKHX {
-        sType: VkStructureType::E_DEVICE_GROUP_RENDER_PASS_BEGIN_INFO_KHX,
+        sType: VkStructureType::DEVICE_GROUP_RENDER_PASS_BEGIN_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -13993,7 +13993,7 @@ impl VkDeviceGroupCommandBufferBeginInfoKHX {
   pub fn new() -> VkDeviceGroupCommandBufferBeginInfoKHX {
     unsafe {
       VkDeviceGroupCommandBufferBeginInfoKHX {
-        sType: VkStructureType::E_DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO_KHX,
+        sType: VkStructureType::DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14058,7 +14058,7 @@ impl<'a> VkDeviceGroupSubmitInfoKHX<'a> {
   pub fn new() -> VkDeviceGroupSubmitInfoKHX<'a> {
     unsafe {
       VkDeviceGroupSubmitInfoKHX {
-        sType: VkStructureType::E_DEVICE_GROUP_SUBMIT_INFO_KHX,
+        sType: VkStructureType::DEVICE_GROUP_SUBMIT_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14144,7 +14144,7 @@ impl VkDeviceGroupBindSparseInfoKHX {
   pub fn new() -> VkDeviceGroupBindSparseInfoKHX {
     unsafe {
       VkDeviceGroupBindSparseInfoKHX {
-        sType: VkStructureType::E_DEVICE_GROUP_BIND_SPARSE_INFO_KHX,
+        sType: VkStructureType::DEVICE_GROUP_BIND_SPARSE_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14213,7 +14213,7 @@ impl<'a> VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
   pub fn new() -> VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
     unsafe {
       VkBindBufferMemoryDeviceGroupInfoKHX {
-        sType: VkStructureType::E_BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO_KHX,
+        sType: VkStructureType::BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14278,7 +14278,7 @@ impl<'a> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
   pub fn new() -> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
     unsafe {
       VkBindImageMemoryDeviceGroupInfoKHX {
-        sType: VkStructureType::E_BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO_KHX,
+        sType: VkStructureType::BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14352,7 +14352,7 @@ impl VkDeviceGroupPresentCapabilitiesKHX {
   pub fn new() -> VkDeviceGroupPresentCapabilitiesKHX {
     unsafe {
       VkDeviceGroupPresentCapabilitiesKHX {
-        sType: VkStructureType::E_DEVICE_GROUP_PRESENT_CAPABILITIES_KHX,
+        sType: VkStructureType::DEVICE_GROUP_PRESENT_CAPABILITIES_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14419,7 +14419,7 @@ impl VkImageSwapchainCreateInfoKHX {
   pub fn new() -> VkImageSwapchainCreateInfoKHX {
     unsafe {
       VkImageSwapchainCreateInfoKHX {
-        sType: VkStructureType::E_IMAGE_SWAPCHAIN_CREATE_INFO_KHX,
+        sType: VkStructureType::IMAGE_SWAPCHAIN_CREATE_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14478,7 +14478,7 @@ impl VkBindImageMemorySwapchainInfoKHX {
   pub fn new() -> VkBindImageMemorySwapchainInfoKHX {
     unsafe {
       VkBindImageMemorySwapchainInfoKHX {
-        sType: VkStructureType::E_BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHX,
+        sType: VkStructureType::BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14549,7 +14549,7 @@ impl VkAcquireNextImageInfoKHX {
   pub fn new() -> VkAcquireNextImageInfoKHX {
     unsafe {
       VkAcquireNextImageInfoKHX {
-        sType: VkStructureType::E_ACQUIRE_NEXT_IMAGE_INFO_KHX,
+        sType: VkStructureType::ACQUIRE_NEXT_IMAGE_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14646,7 +14646,7 @@ impl<'a> VkDeviceGroupPresentInfoKHX<'a> {
   pub fn new() -> VkDeviceGroupPresentInfoKHX<'a> {
     unsafe {
       VkDeviceGroupPresentInfoKHX {
-        sType: VkStructureType::E_DEVICE_GROUP_PRESENT_INFO_KHX,
+        sType: VkStructureType::DEVICE_GROUP_PRESENT_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14716,7 +14716,7 @@ impl VkDeviceGroupSwapchainCreateInfoKHX {
   pub fn new() -> VkDeviceGroupSwapchainCreateInfoKHX {
     unsafe {
       VkDeviceGroupSwapchainCreateInfoKHX {
-        sType: VkStructureType::E_DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHX,
+        sType: VkStructureType::DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHX,
         ..::std::mem::zeroed()
       }
     }
@@ -14778,7 +14778,7 @@ impl<'a> VkValidationFlagsEXT<'a> {
   pub fn new() -> VkValidationFlagsEXT<'a> {
     unsafe {
       VkValidationFlagsEXT {
-        sType: VkStructureType::E_VALIDATION_FLAGS_EXT,
+        sType: VkStructureType::VALIDATION_FLAGS_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -14841,7 +14841,7 @@ impl VkViSurfaceCreateInfoNN {
   pub fn new() -> VkViSurfaceCreateInfoNN {
     unsafe {
       VkViSurfaceCreateInfoNN {
-        sType: VkStructureType::E_VI_SURFACE_CREATE_INFO_NN,
+        sType: VkStructureType::VI_SURFACE_CREATE_INFO_NN,
         ..::std::mem::zeroed()
       }
     }
@@ -14968,7 +14968,7 @@ impl VkPhysicalDeviceExternalImageFormatInfoKHR {
   pub fn new() -> VkPhysicalDeviceExternalImageFormatInfoKHR {
     unsafe {
       VkPhysicalDeviceExternalImageFormatInfoKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15026,7 +15026,7 @@ impl VkExternalImageFormatPropertiesKHR {
   pub fn new() -> VkExternalImageFormatPropertiesKHR {
     unsafe {
       VkExternalImageFormatPropertiesKHR {
-        sType: VkStructureType::E_EXTERNAL_IMAGE_FORMAT_PROPERTIES_KHR,
+        sType: VkStructureType::EXTERNAL_IMAGE_FORMAT_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15086,7 +15086,7 @@ impl VkPhysicalDeviceExternalBufferInfoKHR {
   pub fn new() -> VkPhysicalDeviceExternalBufferInfoKHR {
     unsafe {
       VkPhysicalDeviceExternalBufferInfoKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15162,7 +15162,7 @@ impl VkExternalBufferPropertiesKHR {
   pub fn new() -> VkExternalBufferPropertiesKHR {
     unsafe {
       VkExternalBufferPropertiesKHR {
-        sType: VkStructureType::E_EXTERNAL_BUFFER_PROPERTIES_KHR,
+        sType: VkStructureType::EXTERNAL_BUFFER_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15224,7 +15224,7 @@ impl VkPhysicalDeviceIDPropertiesKHR {
   pub fn new() -> VkPhysicalDeviceIDPropertiesKHR {
     unsafe {
       VkPhysicalDeviceIDPropertiesKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_ID_PROPERTIES_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_ID_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15321,7 +15321,7 @@ impl VkExternalMemoryImageCreateInfoKHR {
   pub fn new() -> VkExternalMemoryImageCreateInfoKHR {
     unsafe {
       VkExternalMemoryImageCreateInfoKHR {
-        sType: VkStructureType::E_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHR,
+        sType: VkStructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15379,7 +15379,7 @@ impl VkExternalMemoryBufferCreateInfoKHR {
   pub fn new() -> VkExternalMemoryBufferCreateInfoKHR {
     unsafe {
       VkExternalMemoryBufferCreateInfoKHR {
-        sType: VkStructureType::E_EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHR,
+        sType: VkStructureType::EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15437,7 +15437,7 @@ impl VkExportMemoryAllocateInfoKHR {
   pub fn new() -> VkExportMemoryAllocateInfoKHR {
     unsafe {
       VkExportMemoryAllocateInfoKHR {
-        sType: VkStructureType::E_EXPORT_MEMORY_ALLOCATE_INFO_KHR,
+        sType: VkStructureType::EXPORT_MEMORY_ALLOCATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15501,7 +15501,7 @@ impl VkImportMemoryWin32HandleInfoKHR {
   pub fn new() -> VkImportMemoryWin32HandleInfoKHR {
     unsafe {
       VkImportMemoryWin32HandleInfoKHR {
-        sType: VkStructureType::E_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
+        sType: VkStructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15585,7 +15585,7 @@ impl VkExportMemoryWin32HandleInfoKHR {
   pub fn new() -> VkExportMemoryWin32HandleInfoKHR {
     unsafe {
       VkExportMemoryWin32HandleInfoKHR {
-        sType: VkStructureType::E_EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
+        sType: VkStructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15666,7 +15666,7 @@ impl VkMemoryWin32HandlePropertiesKHR {
   pub fn new() -> VkMemoryWin32HandlePropertiesKHR {
     unsafe {
       VkMemoryWin32HandlePropertiesKHR {
-        sType: VkStructureType::E_MEMORY_WIN32_HANDLE_PROPERTIES_KHR,
+        sType: VkStructureType::MEMORY_WIN32_HANDLE_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15730,7 +15730,7 @@ impl VkMemoryGetWin32HandleInfoKHR {
   pub fn new() -> VkMemoryGetWin32HandleInfoKHR {
     unsafe {
       VkMemoryGetWin32HandleInfoKHR {
-        sType: VkStructureType::E_MEMORY_GET_WIN32_HANDLE_INFO_KHR,
+        sType: VkStructureType::MEMORY_GET_WIN32_HANDLE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15803,7 +15803,7 @@ impl VkImportMemoryFdInfoKHR {
   pub fn new() -> VkImportMemoryFdInfoKHR {
     unsafe {
       VkImportMemoryFdInfoKHR {
-        sType: VkStructureType::E_IMPORT_MEMORY_FD_INFO_KHR,
+        sType: VkStructureType::IMPORT_MEMORY_FD_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15867,7 +15867,7 @@ impl VkMemoryFdPropertiesKHR {
   pub fn new() -> VkMemoryFdPropertiesKHR {
     unsafe {
       VkMemoryFdPropertiesKHR {
-        sType: VkStructureType::E_MEMORY_FD_PROPERTIES_KHR,
+        sType: VkStructureType::MEMORY_FD_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15923,7 +15923,7 @@ impl VkMemoryGetFdInfoKHR {
   pub fn new() -> VkMemoryGetFdInfoKHR {
     unsafe {
       VkMemoryGetFdInfoKHR {
-        sType: VkStructureType::E_MEMORY_GET_FD_INFO_KHR,
+        sType: VkStructureType::MEMORY_GET_FD_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -15998,7 +15998,7 @@ impl<'a> VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
   pub fn new() -> VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
     unsafe {
       VkWin32KeyedMutexAcquireReleaseInfoKHR {
-        sType: VkStructureType::E_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR,
+        sType: VkStructureType::WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16060,7 +16060,7 @@ impl VkPhysicalDeviceExternalSemaphoreInfoKHR {
   pub fn new() -> VkPhysicalDeviceExternalSemaphoreInfoKHR {
     unsafe {
       VkPhysicalDeviceExternalSemaphoreInfoKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16120,7 +16120,7 @@ impl VkExternalSemaphorePropertiesKHR {
   pub fn new() -> VkExternalSemaphorePropertiesKHR {
     unsafe {
       VkExternalSemaphorePropertiesKHR {
-        sType: VkStructureType::E_EXTERNAL_SEMAPHORE_PROPERTIES_KHR,
+        sType: VkStructureType::EXTERNAL_SEMAPHORE_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16198,7 +16198,7 @@ impl VkExportSemaphoreCreateInfoKHR {
   pub fn new() -> VkExportSemaphoreCreateInfoKHR {
     unsafe {
       VkExportSemaphoreCreateInfoKHR {
-        sType: VkStructureType::E_EXPORT_SEMAPHORE_CREATE_INFO_KHR,
+        sType: VkStructureType::EXPORT_SEMAPHORE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16264,7 +16264,7 @@ impl VkImportSemaphoreWin32HandleInfoKHR {
   pub fn new() -> VkImportSemaphoreWin32HandleInfoKHR {
     unsafe {
       VkImportSemaphoreWin32HandleInfoKHR {
-        sType: VkStructureType::E_IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
+        sType: VkStructureType::IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16366,7 +16366,7 @@ impl VkExportSemaphoreWin32HandleInfoKHR {
   pub fn new() -> VkExportSemaphoreWin32HandleInfoKHR {
     unsafe {
       VkExportSemaphoreWin32HandleInfoKHR {
-        sType: VkStructureType::E_EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
+        sType: VkStructureType::EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16451,7 +16451,7 @@ impl<'a> VkD3D12FenceSubmitInfoKHR<'a> {
   pub fn new() -> VkD3D12FenceSubmitInfoKHR<'a> {
     unsafe {
       VkD3D12FenceSubmitInfoKHR {
-        sType: VkStructureType::E_D3D12_FENCE_SUBMIT_INFO_KHR,
+        sType: VkStructureType::D3D12_FENCE_SUBMIT_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16530,7 +16530,7 @@ impl VkSemaphoreGetWin32HandleInfoKHR {
   pub fn new() -> VkSemaphoreGetWin32HandleInfoKHR {
     unsafe {
       VkSemaphoreGetWin32HandleInfoKHR {
-        sType: VkStructureType::E_SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR,
+        sType: VkStructureType::SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16605,7 +16605,7 @@ impl VkImportSemaphoreFdInfoKHR {
   pub fn new() -> VkImportSemaphoreFdInfoKHR {
     unsafe {
       VkImportSemaphoreFdInfoKHR {
-        sType: VkStructureType::E_IMPORT_SEMAPHORE_FD_INFO_KHR,
+        sType: VkStructureType::IMPORT_SEMAPHORE_FD_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16691,7 +16691,7 @@ impl VkSemaphoreGetFdInfoKHR {
   pub fn new() -> VkSemaphoreGetFdInfoKHR {
     unsafe {
       VkSemaphoreGetFdInfoKHR {
-        sType: VkStructureType::E_SEMAPHORE_GET_FD_INFO_KHR,
+        sType: VkStructureType::SEMAPHORE_GET_FD_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16758,7 +16758,7 @@ impl VkPhysicalDevicePushDescriptorPropertiesKHR {
   pub fn new() -> VkPhysicalDevicePushDescriptorPropertiesKHR {
     unsafe {
       VkPhysicalDevicePushDescriptorPropertiesKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -16819,7 +16819,7 @@ impl VkPhysicalDevice16BitStorageFeaturesKHR {
   pub fn new() -> VkPhysicalDevice16BitStorageFeaturesKHR {
     unsafe {
       VkPhysicalDevice16BitStorageFeaturesKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -17019,7 +17019,7 @@ impl<'a> VkPresentRegionsKHR<'a> {
   pub fn new() -> VkPresentRegionsKHR<'a> {
     unsafe {
       VkPresentRegionsKHR {
-        sType: VkStructureType::E_PRESENT_REGIONS_KHR,
+        sType: VkStructureType::PRESENT_REGIONS_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -17188,7 +17188,7 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
   pub fn new() -> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
     unsafe {
       VkDescriptorUpdateTemplateCreateInfoKHR {
-        sType: VkStructureType::E_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR,
+        sType: VkStructureType::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -17321,7 +17321,7 @@ impl VkDeviceGeneratedCommandsFeaturesNVX {
   pub fn new() -> VkDeviceGeneratedCommandsFeaturesNVX {
     unsafe {
       VkDeviceGeneratedCommandsFeaturesNVX {
-        sType: VkStructureType::E_DEVICE_GENERATED_COMMANDS_FEATURES_NVX,
+        sType: VkStructureType::DEVICE_GENERATED_COMMANDS_FEATURES_NVX,
         ..::std::mem::zeroed()
       }
     }
@@ -17384,7 +17384,7 @@ impl VkDeviceGeneratedCommandsLimitsNVX {
   pub fn new() -> VkDeviceGeneratedCommandsLimitsNVX {
     unsafe {
       VkDeviceGeneratedCommandsLimitsNVX {
-        sType: VkStructureType::E_DEVICE_GENERATED_COMMANDS_LIMITS_NVX,
+        sType: VkStructureType::DEVICE_GENERATED_COMMANDS_LIMITS_NVX,
         ..::std::mem::zeroed()
       }
     }
@@ -17619,7 +17619,7 @@ impl<'a> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
   pub fn new() -> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
     unsafe {
       VkIndirectCommandsLayoutCreateInfoNVX {
-        sType: VkStructureType::E_INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX,
+        sType: VkStructureType::INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX,
         ..::std::mem::zeroed()
       }
     }
@@ -17708,7 +17708,7 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
   pub fn new() -> VkCmdProcessCommandsInfoNVX<'a> {
     unsafe {
       VkCmdProcessCommandsInfoNVX {
-        sType: VkStructureType::E_CMD_PROCESS_COMMANDS_INFO_NVX,
+        sType: VkStructureType::CMD_PROCESS_COMMANDS_INFO_NVX,
         ..::std::mem::zeroed()
       }
     }
@@ -17843,7 +17843,7 @@ impl VkCmdReserveSpaceForCommandsInfoNVX {
   pub fn new() -> VkCmdReserveSpaceForCommandsInfoNVX {
     unsafe {
       VkCmdReserveSpaceForCommandsInfoNVX {
-        sType: VkStructureType::E_CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX,
+        sType: VkStructureType::CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX,
         ..::std::mem::zeroed()
       }
     }
@@ -17928,7 +17928,7 @@ impl<'a> VkObjectTableCreateInfoNVX<'a> {
   pub fn new() -> VkObjectTableCreateInfoNVX<'a> {
     unsafe {
       VkObjectTableCreateInfoNVX {
-        sType: VkStructureType::E_OBJECT_TABLE_CREATE_INFO_NVX,
+        sType: VkStructureType::OBJECT_TABLE_CREATE_INFO_NVX,
         ..::std::mem::zeroed()
       }
     }
@@ -18477,7 +18477,7 @@ impl<'a> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
   pub fn new() -> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
     unsafe {
       VkPipelineViewportWScalingStateCreateInfoNV {
-        sType: VkStructureType::E_PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV,
+        sType: VkStructureType::PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -18560,7 +18560,7 @@ impl VkSurfaceCapabilities2EXT {
   pub fn new() -> VkSurfaceCapabilities2EXT {
     unsafe {
       VkSurfaceCapabilities2EXT {
-        sType: VkStructureType::E_SURFACE_CAPABILITIES_2_EXT,
+        sType: VkStructureType::SURFACE_CAPABILITIES_2_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -18710,7 +18710,7 @@ impl VkDisplayPowerInfoEXT {
   pub fn new() -> VkDisplayPowerInfoEXT {
     unsafe {
       VkDisplayPowerInfoEXT {
-        sType: VkStructureType::E_DISPLAY_POWER_INFO_EXT,
+        sType: VkStructureType::DISPLAY_POWER_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -18765,7 +18765,7 @@ impl VkDeviceEventInfoEXT {
   pub fn new() -> VkDeviceEventInfoEXT {
     unsafe {
       VkDeviceEventInfoEXT {
-        sType: VkStructureType::E_DEVICE_EVENT_INFO_EXT,
+        sType: VkStructureType::DEVICE_EVENT_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -18820,7 +18820,7 @@ impl VkDisplayEventInfoEXT {
   pub fn new() -> VkDisplayEventInfoEXT {
     unsafe {
       VkDisplayEventInfoEXT {
-        sType: VkStructureType::E_DISPLAY_EVENT_INFO_EXT,
+        sType: VkStructureType::DISPLAY_EVENT_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -18875,7 +18875,7 @@ impl VkSwapchainCounterCreateInfoEXT {
   pub fn new() -> VkSwapchainCounterCreateInfoEXT {
     unsafe {
       VkSwapchainCounterCreateInfoEXT {
-        sType: VkStructureType::E_SWAPCHAIN_COUNTER_CREATE_INFO_EXT,
+        sType: VkStructureType::SWAPCHAIN_COUNTER_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -19113,7 +19113,7 @@ impl<'a> VkPresentTimesInfoGOOGLE<'a> {
   pub fn new() -> VkPresentTimesInfoGOOGLE<'a> {
     unsafe {
       VkPresentTimesInfoGOOGLE {
-        sType: VkStructureType::E_PRESENT_TIMES_INFO_GOOGLE,
+        sType: VkStructureType::PRESENT_TIMES_INFO_GOOGLE,
         ..::std::mem::zeroed()
       }
     }
@@ -19176,7 +19176,7 @@ impl VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
   pub fn new() -> VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
     unsafe {
       VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX,
+        sType: VkStructureType::PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX,
         ..::std::mem::zeroed()
       }
     }
@@ -19310,7 +19310,7 @@ impl<'a> VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
   pub fn new() -> VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
     unsafe {
       VkPipelineViewportSwizzleStateCreateInfoNV {
-        sType: VkStructureType::E_PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV,
+        sType: VkStructureType::PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -19383,7 +19383,7 @@ impl VkPhysicalDeviceDiscardRectanglePropertiesEXT {
   pub fn new() -> VkPhysicalDeviceDiscardRectanglePropertiesEXT {
     unsafe {
       VkPhysicalDeviceDiscardRectanglePropertiesEXT {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT,
+        sType: VkStructureType::PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -19445,7 +19445,7 @@ impl<'a> VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
   pub fn new() -> VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
     unsafe {
       VkPipelineDiscardRectangleStateCreateInfoEXT {
-        sType: VkStructureType::E_PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT,
+        sType: VkStructureType::PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -19535,7 +19535,7 @@ impl VkPhysicalDeviceConservativeRasterizationPropertiesEXT {
   pub fn new() -> VkPhysicalDeviceConservativeRasterizationPropertiesEXT {
     unsafe {
       VkPhysicalDeviceConservativeRasterizationPropertiesEXT {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT,
+        sType: VkStructureType::PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -19673,7 +19673,7 @@ impl VkPipelineRasterizationConservativeStateCreateInfoEXT {
   pub fn new() -> VkPipelineRasterizationConservativeStateCreateInfoEXT {
     unsafe {
       VkPipelineRasterizationConservativeStateCreateInfoEXT {
-        sType: VkStructureType::E_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT,
+        sType: VkStructureType::PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -19808,7 +19808,7 @@ impl VkHdrMetadataEXT {
   pub fn new() -> VkHdrMetadataEXT {
     unsafe {
       VkHdrMetadataEXT {
-        sType: VkStructureType::E_HDR_METADATA_EXT,
+        sType: VkStructureType::HDR_METADATA_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -19928,7 +19928,7 @@ impl VkPhysicalDeviceSurfaceInfo2KHR {
   pub fn new() -> VkPhysicalDeviceSurfaceInfo2KHR {
     unsafe {
       VkPhysicalDeviceSurfaceInfo2KHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -19986,7 +19986,7 @@ impl VkSurfaceCapabilities2KHR {
   pub fn new() -> VkSurfaceCapabilities2KHR {
     unsafe {
       VkSurfaceCapabilities2KHR {
-        sType: VkStructureType::E_SURFACE_CAPABILITIES_2_KHR,
+        sType: VkStructureType::SURFACE_CAPABILITIES_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20044,7 +20044,7 @@ impl VkSurfaceFormat2KHR {
   pub fn new() -> VkSurfaceFormat2KHR {
     unsafe {
       VkSurfaceFormat2KHR {
-        sType: VkStructureType::E_SURFACE_FORMAT_2_KHR,
+        sType: VkStructureType::SURFACE_FORMAT_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20101,7 +20101,7 @@ impl VkSharedPresentSurfaceCapabilitiesKHR {
   pub fn new() -> VkSharedPresentSurfaceCapabilitiesKHR {
     unsafe {
       VkSharedPresentSurfaceCapabilitiesKHR {
-        sType: VkStructureType::E_SHARED_PRESENT_SURFACE_CAPABILITIES_KHR,
+        sType: VkStructureType::SHARED_PRESENT_SURFACE_CAPABILITIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20161,7 +20161,7 @@ impl VkPhysicalDeviceExternalFenceInfoKHR {
   pub fn new() -> VkPhysicalDeviceExternalFenceInfoKHR {
     unsafe {
       VkPhysicalDeviceExternalFenceInfoKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20221,7 +20221,7 @@ impl VkExternalFencePropertiesKHR {
   pub fn new() -> VkExternalFencePropertiesKHR {
     unsafe {
       VkExternalFencePropertiesKHR {
-        sType: VkStructureType::E_EXTERNAL_FENCE_PROPERTIES_KHR,
+        sType: VkStructureType::EXTERNAL_FENCE_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20299,7 +20299,7 @@ impl VkExportFenceCreateInfoKHR {
   pub fn new() -> VkExportFenceCreateInfoKHR {
     unsafe {
       VkExportFenceCreateInfoKHR {
-        sType: VkStructureType::E_EXPORT_FENCE_CREATE_INFO_KHR,
+        sType: VkStructureType::EXPORT_FENCE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20365,7 +20365,7 @@ impl VkImportFenceWin32HandleInfoKHR {
   pub fn new() -> VkImportFenceWin32HandleInfoKHR {
     unsafe {
       VkImportFenceWin32HandleInfoKHR {
-        sType: VkStructureType::E_IMPORT_FENCE_WIN32_HANDLE_INFO_KHR,
+        sType: VkStructureType::IMPORT_FENCE_WIN32_HANDLE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20467,7 +20467,7 @@ impl VkExportFenceWin32HandleInfoKHR {
   pub fn new() -> VkExportFenceWin32HandleInfoKHR {
     unsafe {
       VkExportFenceWin32HandleInfoKHR {
-        sType: VkStructureType::E_EXPORT_FENCE_WIN32_HANDLE_INFO_KHR,
+        sType: VkStructureType::EXPORT_FENCE_WIN32_HANDLE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20549,7 +20549,7 @@ impl VkFenceGetWin32HandleInfoKHR {
   pub fn new() -> VkFenceGetWin32HandleInfoKHR {
     unsafe {
       VkFenceGetWin32HandleInfoKHR {
-        sType: VkStructureType::E_FENCE_GET_WIN32_HANDLE_INFO_KHR,
+        sType: VkStructureType::FENCE_GET_WIN32_HANDLE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20624,7 +20624,7 @@ impl VkImportFenceFdInfoKHR {
   pub fn new() -> VkImportFenceFdInfoKHR {
     unsafe {
       VkImportFenceFdInfoKHR {
-        sType: VkStructureType::E_IMPORT_FENCE_FD_INFO_KHR,
+        sType: VkStructureType::IMPORT_FENCE_FD_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20707,7 +20707,7 @@ impl VkFenceGetFdInfoKHR {
   pub fn new() -> VkFenceGetFdInfoKHR {
     unsafe {
       VkFenceGetFdInfoKHR {
-        sType: VkStructureType::E_FENCE_GET_FD_INFO_KHR,
+        sType: VkStructureType::FENCE_GET_FD_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20773,7 +20773,7 @@ impl VkPhysicalDevicePointClippingPropertiesKHR {
   pub fn new() -> VkPhysicalDevicePointClippingPropertiesKHR {
     unsafe {
       VkPhysicalDevicePointClippingPropertiesKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20898,7 +20898,7 @@ impl<'a> VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
   pub fn new() -> VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
     unsafe {
       VkRenderPassInputAttachmentAspectCreateInfoKHR {
-        sType: VkStructureType::E_RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO_KHR,
+        sType: VkStructureType::RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -20959,7 +20959,7 @@ impl VkImageViewUsageCreateInfoKHR {
   pub fn new() -> VkImageViewUsageCreateInfoKHR {
     unsafe {
       VkImageViewUsageCreateInfoKHR {
-        sType: VkStructureType::E_IMAGE_VIEW_USAGE_CREATE_INFO_KHR,
+        sType: VkStructureType::IMAGE_VIEW_USAGE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21017,7 +21017,7 @@ impl VkPipelineTessellationDomainOriginStateCreateInfoKHR {
   pub fn new() -> VkPipelineTessellationDomainOriginStateCreateInfoKHR {
     unsafe {
       VkPipelineTessellationDomainOriginStateCreateInfoKHR {
-        sType: VkStructureType::E_PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO_KHR,
+        sType: VkStructureType::PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21079,7 +21079,7 @@ impl VkPhysicalDeviceVariablePointerFeaturesKHR {
   pub fn new() -> VkPhysicalDeviceVariablePointerFeaturesKHR {
     unsafe {
       VkPhysicalDeviceVariablePointerFeaturesKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21153,7 +21153,7 @@ impl VkIOSSurfaceCreateInfoMVK {
   pub fn new() -> VkIOSSurfaceCreateInfoMVK {
     unsafe {
       VkIOSSurfaceCreateInfoMVK {
-        sType: VkStructureType::E_IOS_SURFACE_CREATE_INFO_MVK,
+        sType: VkStructureType::IOS_SURFACE_CREATE_INFO_MVK,
         ..::std::mem::zeroed()
       }
     }
@@ -21223,7 +21223,7 @@ impl VkMacOSSurfaceCreateInfoMVK {
   pub fn new() -> VkMacOSSurfaceCreateInfoMVK {
     unsafe {
       VkMacOSSurfaceCreateInfoMVK {
-        sType: VkStructureType::E_MACOS_SURFACE_CREATE_INFO_MVK,
+        sType: VkStructureType::MACOS_SURFACE_CREATE_INFO_MVK,
         ..::std::mem::zeroed()
       }
     }
@@ -21290,7 +21290,7 @@ impl VkBufferMemoryRequirementsInfo2KHR {
   pub fn new() -> VkBufferMemoryRequirementsInfo2KHR {
     unsafe {
       VkBufferMemoryRequirementsInfo2KHR {
-        sType: VkStructureType::E_BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR,
+        sType: VkStructureType::BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21348,7 +21348,7 @@ impl VkImageMemoryRequirementsInfo2KHR {
   pub fn new() -> VkImageMemoryRequirementsInfo2KHR {
     unsafe {
       VkImageMemoryRequirementsInfo2KHR {
-        sType: VkStructureType::E_IMAGE_MEMORY_REQUIREMENTS_INFO_2_KHR,
+        sType: VkStructureType::IMAGE_MEMORY_REQUIREMENTS_INFO_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21404,7 +21404,7 @@ impl VkImageSparseMemoryRequirementsInfo2KHR {
   pub fn new() -> VkImageSparseMemoryRequirementsInfo2KHR {
     unsafe {
       VkImageSparseMemoryRequirementsInfo2KHR {
-        sType: VkStructureType::E_IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2_KHR,
+        sType: VkStructureType::IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21462,7 +21462,7 @@ impl VkMemoryRequirements2KHR {
   pub fn new() -> VkMemoryRequirements2KHR {
     unsafe {
       VkMemoryRequirements2KHR {
-        sType: VkStructureType::E_MEMORY_REQUIREMENTS_2_KHR,
+        sType: VkStructureType::MEMORY_REQUIREMENTS_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21518,7 +21518,7 @@ impl VkSparseImageMemoryRequirements2KHR {
   pub fn new() -> VkSparseImageMemoryRequirements2KHR {
     unsafe {
       VkSparseImageMemoryRequirements2KHR {
-        sType: VkStructureType::E_SPARSE_IMAGE_MEMORY_REQUIREMENTS_2_KHR,
+        sType: VkStructureType::SPARSE_IMAGE_MEMORY_REQUIREMENTS_2_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21580,7 +21580,7 @@ impl VkMemoryDedicatedRequirementsKHR {
   pub fn new() -> VkMemoryDedicatedRequirementsKHR {
     unsafe {
       VkMemoryDedicatedRequirementsKHR {
-        sType: VkStructureType::E_MEMORY_DEDICATED_REQUIREMENTS_KHR,
+        sType: VkStructureType::MEMORY_DEDICATED_REQUIREMENTS_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21650,7 +21650,7 @@ impl VkMemoryDedicatedAllocateInfoKHR {
   pub fn new() -> VkMemoryDedicatedAllocateInfoKHR {
     unsafe {
       VkMemoryDedicatedAllocateInfoKHR {
-        sType: VkStructureType::E_MEMORY_DEDICATED_ALLOCATE_INFO_KHR,
+        sType: VkStructureType::MEMORY_DEDICATED_ALLOCATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -21719,7 +21719,7 @@ impl VkSamplerReductionModeCreateInfoEXT {
   pub fn new() -> VkSamplerReductionModeCreateInfoEXT {
     unsafe {
       VkSamplerReductionModeCreateInfoEXT {
-        sType: VkStructureType::E_SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT,
+        sType: VkStructureType::SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -21779,7 +21779,7 @@ impl VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
   pub fn new() -> VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
     unsafe {
       VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT,
+        sType: VkStructureType::PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -21904,7 +21904,7 @@ impl<'a> VkSampleLocationsInfoEXT<'a> {
   pub fn new() -> VkSampleLocationsInfoEXT<'a> {
     unsafe {
       VkSampleLocationsInfoEXT {
-        sType: VkStructureType::E_SAMPLE_LOCATIONS_INFO_EXT,
+        sType: VkStructureType::SAMPLE_LOCATIONS_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -22096,7 +22096,7 @@ impl<'a> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
   pub fn new() -> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
     unsafe {
       VkRenderPassSampleLocationsBeginInfoEXT {
-        sType: VkStructureType::E_RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT,
+        sType: VkStructureType::RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -22170,7 +22170,7 @@ impl<'a> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
   pub fn new() -> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
     unsafe {
       VkPipelineSampleLocationsStateCreateInfoEXT {
-        sType: VkStructureType::E_PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT,
+        sType: VkStructureType::PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -22243,7 +22243,7 @@ impl VkPhysicalDeviceSampleLocationsPropertiesEXT {
   pub fn new() -> VkPhysicalDeviceSampleLocationsPropertiesEXT {
     unsafe {
       VkPhysicalDeviceSampleLocationsPropertiesEXT {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT,
+        sType: VkStructureType::PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -22339,7 +22339,7 @@ impl VkMultisamplePropertiesEXT {
   pub fn new() -> VkMultisamplePropertiesEXT {
     unsafe {
       VkMultisamplePropertiesEXT {
-        sType: VkStructureType::E_MULTISAMPLE_PROPERTIES_EXT,
+        sType: VkStructureType::MULTISAMPLE_PROPERTIES_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -22401,7 +22401,7 @@ impl<'a> VkImageFormatListCreateInfoKHR<'a> {
   pub fn new() -> VkImageFormatListCreateInfoKHR<'a> {
     unsafe {
       VkImageFormatListCreateInfoKHR {
-        sType: VkStructureType::E_IMAGE_FORMAT_LIST_CREATE_INFO_KHR,
+        sType: VkStructureType::IMAGE_FORMAT_LIST_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -22465,7 +22465,7 @@ impl VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
   pub fn new() -> VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     unsafe {
       VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT,
+        sType: VkStructureType::PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -22530,7 +22530,7 @@ impl VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
   pub fn new() -> VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
     unsafe {
       VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT,
+        sType: VkStructureType::PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -22640,7 +22640,7 @@ impl VkPipelineColorBlendAdvancedStateCreateInfoEXT {
   pub fn new() -> VkPipelineColorBlendAdvancedStateCreateInfoEXT {
     unsafe {
       VkPipelineColorBlendAdvancedStateCreateInfoEXT {
-        sType: VkStructureType::E_PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT,
+        sType: VkStructureType::PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -22722,7 +22722,7 @@ impl VkPipelineCoverageToColorStateCreateInfoNV {
   pub fn new() -> VkPipelineCoverageToColorStateCreateInfoNV {
     unsafe {
       VkPipelineCoverageToColorStateCreateInfoNV {
-        sType: VkStructureType::E_PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV,
+        sType: VkStructureType::PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -22806,7 +22806,7 @@ impl<'a> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
   pub fn new() -> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
     unsafe {
       VkPipelineCoverageModulationStateCreateInfoNV {
-        sType: VkStructureType::E_PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV,
+        sType: VkStructureType::PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV,
         ..::std::mem::zeroed()
       }
     }
@@ -22899,7 +22899,7 @@ impl VkBindBufferMemoryInfoKHR {
   pub fn new() -> VkBindBufferMemoryInfoKHR {
     unsafe {
       VkBindBufferMemoryInfoKHR {
-        sType: VkStructureType::E_BIND_BUFFER_MEMORY_INFO_KHR,
+        sType: VkStructureType::BIND_BUFFER_MEMORY_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -22977,7 +22977,7 @@ impl VkBindImageMemoryInfoKHR {
   pub fn new() -> VkBindImageMemoryInfoKHR {
     unsafe {
       VkBindImageMemoryInfoKHR {
-        sType: VkStructureType::E_BIND_IMAGE_MEMORY_INFO_KHR,
+        sType: VkStructureType::BIND_IMAGE_MEMORY_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -23062,7 +23062,7 @@ impl VkSamplerYcbcrConversionCreateInfoKHR {
   pub fn new() -> VkSamplerYcbcrConversionCreateInfoKHR {
     unsafe {
       VkSamplerYcbcrConversionCreateInfoKHR {
-        sType: VkStructureType::E_SAMPLER_YCBCR_CONVERSION_CREATE_INFO_KHR,
+        sType: VkStructureType::SAMPLER_YCBCR_CONVERSION_CREATE_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -23191,7 +23191,7 @@ impl VkSamplerYcbcrConversionInfoKHR {
   pub fn new() -> VkSamplerYcbcrConversionInfoKHR {
     unsafe {
       VkSamplerYcbcrConversionInfoKHR {
-        sType: VkStructureType::E_SAMPLER_YCBCR_CONVERSION_INFO_KHR,
+        sType: VkStructureType::SAMPLER_YCBCR_CONVERSION_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -23249,7 +23249,7 @@ impl VkBindImagePlaneMemoryInfoKHR {
   pub fn new() -> VkBindImagePlaneMemoryInfoKHR {
     unsafe {
       VkBindImagePlaneMemoryInfoKHR {
-        sType: VkStructureType::E_BIND_IMAGE_PLANE_MEMORY_INFO_KHR,
+        sType: VkStructureType::BIND_IMAGE_PLANE_MEMORY_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -23307,7 +23307,7 @@ impl VkImagePlaneMemoryRequirementsInfoKHR {
   pub fn new() -> VkImagePlaneMemoryRequirementsInfoKHR {
     unsafe {
       VkImagePlaneMemoryRequirementsInfoKHR {
-        sType: VkStructureType::E_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO_KHR,
+        sType: VkStructureType::IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -23366,7 +23366,7 @@ impl VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
   pub fn new() -> VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
     unsafe {
       VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES_KHR,
+        sType: VkStructureType::PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -23426,7 +23426,7 @@ impl VkSamplerYcbcrConversionImageFormatPropertiesKHR {
   pub fn new() -> VkSamplerYcbcrConversionImageFormatPropertiesKHR {
     unsafe {
       VkSamplerYcbcrConversionImageFormatPropertiesKHR {
-        sType: VkStructureType::E_SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES_KHR,
+        sType: VkStructureType::SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES_KHR,
         ..::std::mem::zeroed()
       }
     }
@@ -23497,7 +23497,7 @@ impl<'a> VkValidationCacheCreateInfoEXT<'a> {
   pub fn new() -> VkValidationCacheCreateInfoEXT<'a> {
     unsafe {
       VkValidationCacheCreateInfoEXT {
-        sType: VkStructureType::E_VALIDATION_CACHE_CREATE_INFO_EXT,
+        sType: VkStructureType::VALIDATION_CACHE_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -23567,7 +23567,7 @@ impl VkShaderModuleValidationCacheCreateInfoEXT {
   pub fn new() -> VkShaderModuleValidationCacheCreateInfoEXT {
     unsafe {
       VkShaderModuleValidationCacheCreateInfoEXT {
-        sType: VkStructureType::E_SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT,
+        sType: VkStructureType::SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -23627,7 +23627,7 @@ impl VkDeviceQueueGlobalPriorityCreateInfoEXT {
   pub fn new() -> VkDeviceQueueGlobalPriorityCreateInfoEXT {
     unsafe {
       VkDeviceQueueGlobalPriorityCreateInfoEXT {
-        sType: VkStructureType::E_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
+        sType: VkStructureType::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -23688,7 +23688,7 @@ impl VkImportMemoryHostPointerInfoEXT {
   pub fn new() -> VkImportMemoryHostPointerInfoEXT {
     unsafe {
       VkImportMemoryHostPointerInfoEXT {
-        sType: VkStructureType::E_IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
+        sType: VkStructureType::IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -23750,7 +23750,7 @@ impl VkMemoryHostPointerPropertiesEXT {
   pub fn new() -> VkMemoryHostPointerPropertiesEXT {
     unsafe {
       VkMemoryHostPointerPropertiesEXT {
-        sType: VkStructureType::E_MEMORY_HOST_POINTER_PROPERTIES_EXT,
+        sType: VkStructureType::MEMORY_HOST_POINTER_PROPERTIES_EXT,
         ..::std::mem::zeroed()
       }
     }
@@ -23809,7 +23809,7 @@ impl VkPhysicalDeviceExternalMemoryHostPropertiesEXT {
   pub fn new() -> VkPhysicalDeviceExternalMemoryHostPropertiesEXT {
     unsafe {
       VkPhysicalDeviceExternalMemoryHostPropertiesEXT {
-        sType: VkStructureType::E_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
+        sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
         ..::std::mem::zeroed()
       }
     }

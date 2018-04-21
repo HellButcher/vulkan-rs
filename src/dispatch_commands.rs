@@ -23,7 +23,7 @@ pub fn vkCreateInstance(
         pAllocator.as_raw(),
         (&mut pInstance).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       VkInstanceDispatchTable::create(pCreateInfo, pAllocator, pInstance);
@@ -53,10 +53,10 @@ pub fn vkEnumeratePhysicalDevices(instance: VkInstance) -> Result<Vec<VkPhysical
         &mut pPhysicalDeviceCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPhysicalDeviceCount == 0 {
@@ -68,10 +68,10 @@ pub fn vkEnumeratePhysicalDevices(instance: VkInstance) -> Result<Vec<VkPhysical
         &mut pPhysicalDeviceCount,
         pPhysicalDevices.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pPhysicalDevices.set_len(pPhysicalDeviceCount as usize);
@@ -127,7 +127,7 @@ pub fn vkGetPhysicalDeviceImageFormatProperties(
         flags,
         (&mut pImageFormatProperties).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pImageFormatProperties);
@@ -198,7 +198,7 @@ pub fn vkCreateDevice(
         pAllocator.as_raw(),
         (&mut pDevice).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       VkDeviceDispatchTable::create(physicalDevice, pCreateInfo, pAllocator, pDevice);
@@ -230,10 +230,10 @@ pub fn vkEnumerateInstanceExtensionProperties(
         &mut pPropertyCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPropertyCount == 0 {
@@ -245,10 +245,10 @@ pub fn vkEnumerateInstanceExtensionProperties(
         &mut pPropertyCount,
         pProperties.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pProperties.set_len(pPropertyCount as usize);
@@ -272,10 +272,10 @@ pub fn vkEnumerateDeviceExtensionProperties(
         &mut pPropertyCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPropertyCount == 0 {
@@ -288,10 +288,10 @@ pub fn vkEnumerateDeviceExtensionProperties(
         &mut pPropertyCount,
         pProperties.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pProperties.set_len(pPropertyCount as usize);
@@ -307,10 +307,10 @@ pub fn vkEnumerateInstanceLayerProperties() -> Result<Vec<VkLayerProperties>, Vk
     let mut pProperties: Vec<VkLayerProperties> = Vec::new();
     VkLoaderDispatchTable::with(|_t| loop {
       let _r = _t.vkEnumerateInstanceLayerProperties.unwrap()(&mut pPropertyCount, ::std::ptr::null_mut());
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPropertyCount == 0 {
@@ -318,10 +318,10 @@ pub fn vkEnumerateInstanceLayerProperties() -> Result<Vec<VkLayerProperties>, Vk
       }
       pProperties = Vec::with_capacity(pPropertyCount as usize);
       let _r = _t.vkEnumerateInstanceLayerProperties.unwrap()(&mut pPropertyCount, pProperties.as_mut_ptr().as_raw());
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pProperties.set_len(pPropertyCount as usize);
@@ -341,10 +341,10 @@ pub fn vkEnumerateDeviceLayerProperties(physicalDevice: VkPhysicalDevice) -> Res
         &mut pPropertyCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPropertyCount == 0 {
@@ -356,10 +356,10 @@ pub fn vkEnumerateDeviceLayerProperties(physicalDevice: VkPhysicalDevice) -> Res
         &mut pPropertyCount,
         pProperties.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pProperties.set_len(pPropertyCount as usize);
@@ -424,7 +424,7 @@ pub fn vkAllocateMemory(
         pAllocator.as_raw(),
         (&mut pMemory).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pMemory);
@@ -460,7 +460,7 @@ pub fn vkMapMemory(
         flags,
         &mut ppData,
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(ppData);
@@ -681,7 +681,7 @@ pub fn vkCreateFence(
         pAllocator.as_raw(),
         (&mut pFence).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pFence);
@@ -748,7 +748,7 @@ pub fn vkCreateSemaphore(
         pAllocator.as_raw(),
         (&mut pSemaphore).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSemaphore);
@@ -784,7 +784,7 @@ pub fn vkCreateEvent(
         pAllocator.as_raw(),
         (&mut pEvent).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pEvent);
@@ -843,7 +843,7 @@ pub fn vkCreateQueryPool(
         pAllocator.as_raw(),
         (&mut pQueryPool).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pQueryPool);
@@ -906,7 +906,7 @@ pub fn vkCreateBuffer(
         pAllocator.as_raw(),
         (&mut pBuffer).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pBuffer);
@@ -938,7 +938,7 @@ pub fn vkCreateBufferView(
         pAllocator.as_raw(),
         (&mut pView).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pView);
@@ -974,7 +974,7 @@ pub fn vkCreateImage(
         pAllocator.as_raw(),
         (&mut pImage).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pImage);
@@ -1026,7 +1026,7 @@ pub fn vkCreateImageView(
         pAllocator.as_raw(),
         (&mut pView).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pView);
@@ -1062,7 +1062,7 @@ pub fn vkCreateShaderModule(
         pAllocator.as_raw(),
         (&mut pShaderModule).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pShaderModule);
@@ -1098,7 +1098,7 @@ pub fn vkCreatePipelineCache(
         pAllocator.as_raw(),
         (&mut pPipelineCache).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pPipelineCache);
@@ -1131,10 +1131,10 @@ pub fn vkGetPipelineCacheData(device: VkDevice, pipelineCache: VkPipelineCache) 
         &mut pDataSize,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pDataSize == 0 {
@@ -1147,10 +1147,10 @@ pub fn vkGetPipelineCacheData(device: VkDevice, pipelineCache: VkPipelineCache) 
         &mut pDataSize,
         pData.as_mut_ptr().as_raw() as *mut c_void,
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pData.set_len(pDataSize as usize);
@@ -1246,7 +1246,7 @@ pub fn vkCreatePipelineLayout(
         pAllocator.as_raw(),
         (&mut pPipelineLayout).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pPipelineLayout);
@@ -1286,7 +1286,7 @@ pub fn vkCreateSampler(
         pAllocator.as_raw(),
         (&mut pSampler).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSampler);
@@ -1318,7 +1318,7 @@ pub fn vkCreateDescriptorSetLayout(
         pAllocator.as_raw(),
         (&mut pSetLayout).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSetLayout);
@@ -1358,7 +1358,7 @@ pub fn vkCreateDescriptorPool(
         pAllocator.as_raw(),
         (&mut pDescriptorPool).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pDescriptorPool);
@@ -1410,7 +1410,7 @@ pub fn vkAllocateDescriptorSets(
         pAllocateInfo.as_raw(),
         pDescriptorSets.as_mut_ptr().as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pDescriptorSets.set_len(pAllocateInfo.get_descriptor_set_count() as usize);
@@ -1474,7 +1474,7 @@ pub fn vkCreateFramebuffer(
         pAllocator.as_raw(),
         (&mut pFramebuffer).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pFramebuffer);
@@ -1510,7 +1510,7 @@ pub fn vkCreateRenderPass(
         pAllocator.as_raw(),
         (&mut pRenderPass).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pRenderPass);
@@ -1561,7 +1561,7 @@ pub fn vkCreateCommandPool(
         pAllocator.as_raw(),
         (&mut pCommandPool).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pCommandPool);
@@ -1605,7 +1605,7 @@ pub fn vkAllocateCommandBuffers(
         pAllocateInfo.as_raw(),
         pCommandBuffers.as_mut_ptr().as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pCommandBuffers.set_len(pAllocateInfo.get_command_buffer_count() as usize);
@@ -2448,7 +2448,7 @@ pub fn vkGetPhysicalDeviceSurfaceSupportKHR(
         surface.as_raw(),
         &mut pSupported,
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSupported != 0);
@@ -2470,7 +2470,7 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
         surface.as_raw(),
         (&mut pSurfaceCapabilities).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurfaceCapabilities);
@@ -2494,10 +2494,10 @@ pub fn vkGetPhysicalDeviceSurfaceFormatsKHR(
         &mut pSurfaceFormatCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pSurfaceFormatCount == 0 {
@@ -2510,10 +2510,10 @@ pub fn vkGetPhysicalDeviceSurfaceFormatsKHR(
         &mut pSurfaceFormatCount,
         pSurfaceFormats.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pSurfaceFormats.set_len(pSurfaceFormatCount as usize);
@@ -2538,10 +2538,10 @@ pub fn vkGetPhysicalDeviceSurfacePresentModesKHR(
         &mut pPresentModeCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPresentModeCount == 0 {
@@ -2554,10 +2554,10 @@ pub fn vkGetPhysicalDeviceSurfacePresentModesKHR(
         &mut pPresentModeCount,
         pPresentModes.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pPresentModes.set_len(pPresentModeCount as usize);
@@ -2584,7 +2584,7 @@ pub fn vkCreateSwapchainKHR(
         pAllocator.as_raw(),
         (&mut pSwapchain).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSwapchain);
@@ -2619,10 +2619,10 @@ pub fn vkGetSwapchainImagesKHR(device: VkDevice, swapchain: VkSwapchainKHR) -> R
         &mut pSwapchainImageCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pSwapchainImageCount == 0 {
@@ -2635,10 +2635,10 @@ pub fn vkGetSwapchainImagesKHR(device: VkDevice, swapchain: VkSwapchainKHR) -> R
         &mut pSwapchainImageCount,
         pSwapchainImages.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pSwapchainImages.set_len(pSwapchainImageCount as usize);
@@ -2667,7 +2667,7 @@ pub fn vkAcquireNextImageKHR(
         fence.as_raw(),
         &mut pImageIndex,
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pImageIndex);
@@ -2701,10 +2701,10 @@ pub fn vkGetPhysicalDeviceDisplayPropertiesKHR(
         &mut pPropertyCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPropertyCount == 0 {
@@ -2716,10 +2716,10 @@ pub fn vkGetPhysicalDeviceDisplayPropertiesKHR(
         &mut pPropertyCount,
         pProperties.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pProperties.set_len(pPropertyCount as usize);
@@ -2742,10 +2742,10 @@ pub fn vkGetPhysicalDeviceDisplayPlanePropertiesKHR(
         &mut pPropertyCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPropertyCount == 0 {
@@ -2757,10 +2757,10 @@ pub fn vkGetPhysicalDeviceDisplayPlanePropertiesKHR(
         &mut pPropertyCount,
         pProperties.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pProperties.set_len(pPropertyCount as usize);
@@ -2785,10 +2785,10 @@ pub fn vkGetDisplayPlaneSupportedDisplaysKHR(
         &mut pDisplayCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pDisplayCount == 0 {
@@ -2801,10 +2801,10 @@ pub fn vkGetDisplayPlaneSupportedDisplaysKHR(
         &mut pDisplayCount,
         pDisplays.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pDisplays.set_len(pDisplayCount as usize);
@@ -2829,10 +2829,10 @@ pub fn vkGetDisplayModePropertiesKHR(
         &mut pPropertyCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPropertyCount == 0 {
@@ -2845,10 +2845,10 @@ pub fn vkGetDisplayModePropertiesKHR(
         &mut pPropertyCount,
         pProperties.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pProperties.set_len(pPropertyCount as usize);
@@ -2875,7 +2875,7 @@ pub fn vkCreateDisplayModeKHR(
         pAllocator.as_raw(),
         (&mut pMode).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pMode);
@@ -2899,7 +2899,7 @@ pub fn vkGetDisplayPlaneCapabilitiesKHR(
         planeIndex,
         (&mut pCapabilities).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pCapabilities);
@@ -2923,7 +2923,7 @@ pub fn vkCreateDisplayPlaneSurfaceKHR(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -2976,7 +2976,7 @@ pub fn vkCreateXlibSurfaceKHR(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -3025,7 +3025,7 @@ pub fn vkCreateXcbSurfaceKHR(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -3073,7 +3073,7 @@ pub fn vkCreateWaylandSurfaceKHR(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -3115,7 +3115,7 @@ pub fn vkCreateMirSurfaceKHR(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -3157,7 +3157,7 @@ pub fn vkCreateAndroidSurfaceKHR(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -3184,7 +3184,7 @@ pub fn vkCreateWin32SurfaceKHR(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -3221,7 +3221,7 @@ pub fn vkCreateDebugReportCallbackEXT(
         pAllocator.as_raw(),
         (&mut pCallback).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pCallback);
@@ -3436,7 +3436,7 @@ pub fn vkGetPhysicalDeviceImageFormatProperties2KHR(
         pImageFormatInfo.as_raw(),
         (&mut pImageFormatProperties).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pImageFormatProperties);
@@ -3543,10 +3543,10 @@ pub fn vkGetShaderInfoAMD(
         &mut pInfoSize,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pInfoSize == 0 {
@@ -3561,10 +3561,10 @@ pub fn vkGetShaderInfoAMD(
         &mut pInfoSize,
         pInfo.as_mut_ptr().as_raw() as *mut c_void,
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pInfo.set_len(pInfoSize as usize);
@@ -3600,7 +3600,7 @@ pub fn vkGetPhysicalDeviceExternalImageFormatPropertiesNV(
         externalHandleType,
         (&mut pExternalImageFormatProperties).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pExternalImageFormatProperties);
@@ -3622,7 +3622,7 @@ pub fn vkGetMemoryWin32HandleNV(
     let mut pHandle: wsi::win32::HANDLE = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkGetMemoryWin32HandleNV.unwrap()(device.as_raw(), memory.as_raw(), handleType, &mut pHandle);
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pHandle);
@@ -3647,10 +3647,10 @@ pub fn vkEnumeratePhysicalDeviceGroupsKHX(
         &mut pPhysicalDeviceGroupCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPhysicalDeviceGroupCount == 0 {
@@ -3662,10 +3662,10 @@ pub fn vkEnumeratePhysicalDeviceGroupsKHX(
         &mut pPhysicalDeviceGroupCount,
         pPhysicalDeviceGroupProperties.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pPhysicalDeviceGroupProperties.set_len(pPhysicalDeviceGroupCount as usize);
@@ -3747,7 +3747,7 @@ pub fn vkGetDeviceGroupPresentCapabilitiesKHX(
         device.as_raw(),
         (&mut pDeviceGroupPresentCapabilities).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pDeviceGroupPresentCapabilities);
@@ -3765,7 +3765,7 @@ pub fn vkGetDeviceGroupSurfacePresentModesKHX(
     let mut pModes: VkDeviceGroupPresentModeFlagsKHX = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkGetDeviceGroupSurfacePresentModesKHX.unwrap()(device.as_raw(), surface.as_raw(), &mut pModes);
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pModes);
@@ -3789,10 +3789,10 @@ pub fn vkGetPhysicalDevicePresentRectanglesKHX(
         &mut pRectCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pRectCount == 0 {
@@ -3805,10 +3805,10 @@ pub fn vkGetPhysicalDevicePresentRectanglesKHX(
         &mut pRectCount,
         pRects.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pRects.set_len(pRectCount as usize);
@@ -3824,7 +3824,7 @@ pub fn vkAcquireNextImage2KHX(device: VkDevice, pAcquireInfo: &VkAcquireNextImag
     let mut pImageIndex: u32 = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkAcquireNextImage2KHX.unwrap()(device.as_raw(), pAcquireInfo.as_raw(), &mut pImageIndex);
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pImageIndex);
@@ -3851,7 +3851,7 @@ pub fn vkCreateViSurfaceNN(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -3905,7 +3905,7 @@ pub fn vkGetMemoryWin32HandleKHR(
     let mut pHandle: wsi::win32::HANDLE = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkGetMemoryWin32HandleKHR.unwrap()(device.as_raw(), pGetWin32HandleInfo.as_raw(), &mut pHandle);
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pHandle);
@@ -3930,7 +3930,7 @@ pub fn vkGetMemoryWin32HandlePropertiesKHR(
         handle,
         (&mut pMemoryWin32HandleProperties).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pMemoryWin32HandleProperties);
@@ -3947,7 +3947,7 @@ pub fn vkGetMemoryFdKHR(device: VkDevice, pGetFdInfo: &VkMemoryGetFdInfoKHR) -> 
     let mut pFd: c_int = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkGetMemoryFdKHR.unwrap()(device.as_raw(), pGetFdInfo.as_raw(), &mut pFd);
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pFd);
@@ -3971,7 +3971,7 @@ pub fn vkGetMemoryFdPropertiesKHR(
         fd,
         (&mut pMemoryFdProperties).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pMemoryFdProperties);
@@ -4028,7 +4028,7 @@ pub fn vkGetSemaphoreWin32HandleKHR(
     let mut pHandle: wsi::win32::HANDLE = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkGetSemaphoreWin32HandleKHR.unwrap()(device.as_raw(), pGetWin32HandleInfo.as_raw(), &mut pHandle);
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pHandle);
@@ -4055,7 +4055,7 @@ pub fn vkGetSemaphoreFdKHR(device: VkDevice, pGetFdInfo: &VkSemaphoreGetFdInfoKH
     let mut pFd: c_int = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkGetSemaphoreFdKHR.unwrap()(device.as_raw(), pGetFdInfo.as_raw(), &mut pFd);
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pFd);
@@ -4107,7 +4107,7 @@ pub fn vkCreateDescriptorUpdateTemplateKHR(
         pAllocator.as_raw(),
         (&mut pDescriptorUpdateTemplate).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pDescriptorUpdateTemplate);
@@ -4217,7 +4217,7 @@ pub fn vkCreateIndirectCommandsLayoutNVX(
         pAllocator.as_raw(),
         (&mut pIndirectCommandsLayout).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pIndirectCommandsLayout);
@@ -4259,7 +4259,7 @@ pub fn vkCreateObjectTableNVX(
         pAllocator.as_raw(),
         (&mut pObjectTable).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pObjectTable);
@@ -4415,7 +4415,7 @@ pub fn vkGetRandROutputDisplayEXT(
         rrOutput,
         (&mut pDisplay).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pDisplay);
@@ -4439,7 +4439,7 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilities2EXT(
         surface.as_raw(),
         (&mut pSurfaceCapabilities).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurfaceCapabilities);
@@ -4483,7 +4483,7 @@ pub fn vkRegisterDeviceEventEXT(
         pAllocator.as_raw(),
         (&mut pFence).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pFence);
@@ -4509,7 +4509,7 @@ pub fn vkRegisterDisplayEventEXT(
         pAllocator.as_raw(),
         (&mut pFence).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pFence);
@@ -4533,7 +4533,7 @@ pub fn vkGetSwapchainCounterEXT(
         counter,
         &mut pCounterValue,
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pCounterValue);
@@ -4557,7 +4557,7 @@ pub fn vkGetRefreshCycleDurationGOOGLE(
         swapchain.as_raw(),
         (&mut pDisplayTimingProperties).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pDisplayTimingProperties);
@@ -4581,10 +4581,10 @@ pub fn vkGetPastPresentationTimingGOOGLE(
         &mut pPresentationTimingCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pPresentationTimingCount == 0 {
@@ -4597,10 +4597,10 @@ pub fn vkGetPastPresentationTimingGOOGLE(
         &mut pPresentationTimingCount,
         pPresentationTimings.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pPresentationTimings.set_len(pPresentationTimingCount as usize);
@@ -4666,7 +4666,7 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilities2KHR(
         pSurfaceInfo.as_raw(),
         (&mut pSurfaceCapabilities).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurfaceCapabilities);
@@ -4690,10 +4690,10 @@ pub fn vkGetPhysicalDeviceSurfaceFormats2KHR(
         &mut pSurfaceFormatCount,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pSurfaceFormatCount == 0 {
@@ -4706,10 +4706,10 @@ pub fn vkGetPhysicalDeviceSurfaceFormats2KHR(
         &mut pSurfaceFormatCount,
         pSurfaceFormats.as_mut_ptr().as_raw(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pSurfaceFormats.set_len(pSurfaceFormatCount as usize);
@@ -4778,7 +4778,7 @@ pub fn vkGetFenceWin32HandleKHR(
     let mut pHandle: wsi::win32::HANDLE = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkGetFenceWin32HandleKHR.unwrap()(device.as_raw(), pGetWin32HandleInfo.as_raw(), &mut pHandle);
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pHandle);
@@ -4805,7 +4805,7 @@ pub fn vkGetFenceFdKHR(device: VkDevice, pGetFdInfo: &VkFenceGetFdInfoKHR) -> Re
     let mut pFd: c_int = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkGetFenceFdKHR.unwrap()(device.as_raw(), pGetFdInfo.as_raw(), &mut pFd);
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pFd);
@@ -4832,7 +4832,7 @@ pub fn vkCreateIOSSurfaceMVK(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -4859,7 +4859,7 @@ pub fn vkCreateMacOSSurfaceMVK(
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pSurface);
@@ -5010,7 +5010,7 @@ pub fn vkCreateSamplerYcbcrConversionKHR(
         pAllocator.as_raw(),
         (&mut pYcbcrConversion).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pYcbcrConversion);
@@ -5054,7 +5054,7 @@ pub fn vkCreateValidationCacheEXT(
         pAllocator.as_raw(),
         (&mut pValidationCache).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pValidationCache);
@@ -5116,10 +5116,10 @@ pub fn vkGetValidationCacheDataEXT(
         &mut pDataSize,
         ::std::ptr::null_mut(),
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       if pDataSize == 0 {
@@ -5132,10 +5132,10 @@ pub fn vkGetValidationCacheDataEXT(
         &mut pDataSize,
         pData.as_mut_ptr().as_raw() as *mut c_void,
       );
-      if _r == VkResult::E_INCOMPLETE {
+      if _r == VkResult::INCOMPLETE {
         continue;
       }
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       pData.set_len(pDataSize as usize);
@@ -5162,7 +5162,7 @@ pub fn vkGetMemoryHostPointerPropertiesEXT(
         pHostPointer,
         (&mut pMemoryHostPointerProperties).as_raw(),
       );
-      if _r != VkResult::E_SUCCESS {
+      if _r != VkResult::SUCCESS {
         return Err(_r);
       }
       return Ok(pMemoryHostPointerProperties);
