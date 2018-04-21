@@ -34,7 +34,7 @@ fn create_instance(app_name: &str, _exts: &[&str]) -> Result<VkInstance, VkResul
 }
 
 fn main() {
-  env_logger::init().unwrap();
+  env_logger::init_from_env(env_logger::Env::new().filter_or(env_logger::DEFAULT_FILTER_ENV, "info"));
 
   let instance = create_instance("example create_instance", &[]).unwrap();
 

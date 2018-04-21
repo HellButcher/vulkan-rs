@@ -288,6 +288,9 @@ class RustGenerator:
             if ty.__class__ == BaseTypeElem.PROVIDED or ty.name == 'void':
                 no_ref = True
                 as_raw_conv = False
+            elif ty.name == 'VkBool32':
+                no_ref = True
+                as_raw_conv = False
             else:
                 if lifetime:
                     lt_param = '\'%s' % lifetime
@@ -650,25 +653,31 @@ class RustGenerator:
                 m = mem['obj']
                 if m.len_for or m.values:
                     continue
-                if  mem['typename'].startswith('*'): # TODO
-                    if m.name != 'pNext':
-                        print('unable to handle setter for %s::%s (1)' % (ty.name, m.name))
-                    continue
-                if m.type.__class__ == TypeRef.POINTER and m.type.arg.__class__ == TypeRef.CONST:
-                    arg = m.type.arg.arg
-                    if arg.__class__ == TypeRef.POINTER and arg.arg.__class__ == TypeRef.CONST and arg.arg.arg == TypeRef.CHAR: #TODO
-                        print('unable to handle setter for %s::%s (2)' % (ty.name, m.name))
+                if not self.is_public(m):
+                    if  mem['typename'].startswith('*'): # TODO
+                        if m.name != 'pNext':
+                            print('unable to handle setter for %s::%s (1)' % (ty.name, m.name))
                         continue
-                if m.len and m.len != 'null-terminated':
-                    if m.len not in ty.members: #TODO
-                        print('unable to handle setter for %s::%s (3)' % (ty.name, m.name))
-                        continue
-                    if len(ty.members[m.len].len_for) != 1: #TODO
-                        print('unable to handle setter for %s::%s (4)' % (ty.name, m.name))
-                        continue
+                    if m.type.__class__ == TypeRef.POINTER and m.type.arg.__class__ == TypeRef.CONST:
+                        arg = m.type.arg.arg
+                        if arg.__class__ == TypeRef.POINTER and arg.arg.__class__ == TypeRef.CONST and arg.arg.arg == TypeRef.CHAR: #TODO
+                            print('unable to handle setter for %s::%s (2)' % (ty.name, m.name))
+                            continue
+                    if m.len and m.len != 'null-terminated':
+                        if m.len not in ty.members: #TODO
+                            print('unable to handle setter for %s::%s (3)' % (ty.name, m.name))
+                            continue
+                        if len(ty.members[m.len].len_for) != 1: #TODO
+                            print('unable to handle setter for %s::%s (4)' % (ty.name, m.name))
+                            continue
                 gen('#[inline]').nl()
-                gen('pub fn set_', mem['fname'], '(mut self, value: ', mem['typename'], ') -> Self {').nl()
+                valuetype = mem['typename']
+                if valuetype == 'VkBool32':
+                    valuetype = 'bool'
+                gen('pub fn set_', mem['fname'], '(mut self, value: ', valuetype, ') -> Self {').nl()
                 with gen.open_indention():
+                    if valuetype == 'bool':
+                        gen('let value : VkBool32 = if value { 1 } else { 0 };')
                     if m.len and m.len != 'null-terminated':
                         len_param = ty.members[m.len]
                         gen('self. ', self.rust_param_name(len_param), ' = value.len() as ', self.rust_type(len_param), ';').nl()
@@ -691,6 +700,8 @@ class RustGenerator:
             for mem in members:
                 m = mem['obj']
                 rettype = mem['typename']
+                if rettype == 'VkBool32':
+                    rettype = 'bool'
                 if m.len == 'null-terminated':
                     rettype = '&\'a CStr'
                 elif m.len:
@@ -698,19 +709,25 @@ class RustGenerator:
                 #elif m.len and m.len not in ty.members:
                 #    continue # TODO
                 gen('#[inline]').nl()
-                gen('pub fn get_', mem['fname'], '(&self) -> ', rettype,' {').nl()
-                with gen.open_indention():
-                    if m.len == 'null-terminated':
-                        gen('unsafe { ::std::ffi::CStr::from_ptr(self.', mem['name'],') }').nl()
-                    #elif m.len:
-                    #    len_param = self.rust_param_name(ty.members[m.len])
-                    #    m_param = mem['name']
-                    #    if 'types_raw::' in mem['raw_typename']:
-                    #        m_param = '%s as %s' % (m_param, mem['raw_typename'].replace('types_raw::',''))
-                    #    gen('unsafe { ::std::slice::from_raw_parts(self.', m_param,', self.', len_param,' as usize) }').nl()
-                    else:
-                        gen('self.', mem['name']).nl()
-                gen('}').nl()
+                if rettype == 'bool':
+                    gen('pub fn is_', mem['fname'], '(&self) -> bool {').nl()
+                    with gen.open_indention():
+                        gen('self.', mem['name'], ' != 0').nl()
+                    gen('}').nl()
+                else:
+                    gen('pub fn get_', mem['fname'], '(&self) -> ', rettype,' {').nl()
+                    with gen.open_indention():
+                        if m.len == 'null-terminated':
+                            gen('unsafe { ::std::ffi::CStr::from_ptr(self.', mem['name'],') }').nl()
+                        #elif m.len:
+                        #    len_param = self.rust_param_name(ty.members[m.len])
+                        #    m_param = mem['name']
+                        #    if 'types_raw::' in mem['raw_typename']:
+                        #        m_param = '%s as %s' % (m_param, mem['raw_typename'].replace('types_raw::',''))
+                        #    gen('unsafe { ::std::slice::from_raw_parts(self.', m_param,', self.', len_param,' as usize) }').nl()
+                        else:
+                            gen('self.', mem['name']).nl()
+                    gen('}').nl()
 
         gen('}').nl()
         self._generate_feature_protect(ty.requiering_feature, gen)
@@ -1016,23 +1033,32 @@ class RustGenerator:
 
         out_param = command.out_param
         out_typename = None
+        out_typename_return = None
+        out_convert = ''
         if out_param:
             out_typename = self.rust_safe_type(command.out_param.type.arg)
             if out_param.len:
                 if out_param.type.arg == TypeRef.VOID:
                     out_typename = 'u8'
                 out_typename = 'Vec<%s>' % out_typename
-                
+            out_typename_return = out_typename
+            if command.out_param.type.arg == TypeRef.BOOL:
+                out_typename_return = 'bool'
+                out_convert = ' != 0'
         self._generate_docs(command, gen)
         self._generate_feature_protect(command.requiering_feature, gen)
         gen('pub fn ', command.name)
         self._generate_command_signature(command, gen, safe=True, with_return=False)
+        result_convert = ''
         if out_param and command.returns == TypeRef.RESULT:
-            gen(' -> Result<', out_typename,', VkResult>')
+            gen(' -> Result<', out_typename_return,', VkResult>')
+        elif command.returns == TypeRef.BOOL:
+            gen(' -> bool')
+            result_convert = ' != 0'
         elif command.returns != TypeRef.VOID:
             gen(' -> ', self.rust_safe_type(command.returns, optional=True))
         elif out_param:
-            gen(' -> ', out_typename)
+            gen(' -> ', out_typename_return)
 
         gen(' {').nl()
         with gen.open_indention():
@@ -1091,9 +1117,9 @@ class RustGenerator:
                         gen('if ', self.rust_param_name(enumerate_len_param) ,' == 0 {').nl()
                         with gen.open_indention():
                             if is_check_result:
-                                gen('return Ok(', out_paramname, ');').nl()
+                                gen('return Ok(', out_paramname, out_convert, ');').nl()
                             else:
-                                gen('return ', out_paramname, ';').nl()
+                                gen('return ', out_paramname, out_convert, ';').nl()
                         gen('}').nl()
                         gen(self.rust_param_name(out_param) ,' = Vec::with_capacity(', out_len_expr,' as usize);').nl()
 
@@ -1125,16 +1151,16 @@ class RustGenerator:
                     
                     if out_param:
                         if is_check_result:
-                            gen('return Ok(', out_paramname,');').nl()
+                            gen('return Ok(', out_paramname, out_convert, ');').nl()
                         else:
-                            gen('return ', out_paramname,';').nl()
+                            gen('return ', out_paramname, out_convert, ';').nl()
                         if enumerate_with_incomplete:
                             gen.o()
                             gen('}').nl()
                     elif is_create and is_check_result:
                         gen('_r').nl()
 
-                gen('})')
+                gen('})', result_convert)
                 if is_destroy:
                     gen(';').nl()
                     if is_check_result:

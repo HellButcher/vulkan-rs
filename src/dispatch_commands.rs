@@ -2164,7 +2164,7 @@ pub fn vkGetPhysicalDeviceSurfaceSupportKHR(
   physicalDevice: VkPhysicalDevice,
   queueFamilyIndex: u32,
   surface: VkSurfaceKHR,
-) -> Result<VkBool32, VkResult> {
+) -> Result<bool, VkResult> {
   unsafe {
     let mut pSupported: VkBool32 = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
@@ -2177,7 +2177,7 @@ pub fn vkGetPhysicalDeviceSurfaceSupportKHR(
       if _r != VkResult::E_SUCCESS {
         return Err(_r);
       }
-      return Ok(pSupported);
+      return Ok(pSupported != 0);
     })
   }
 }
@@ -2681,7 +2681,7 @@ pub fn vkGetPhysicalDeviceXlibPresentationSupportKHR(
   queueFamilyIndex: u32,
   dpy: *mut wsi::xlib::Display,
   visualID: wsi::xlib::VisualID,
-) -> VkBool32 {
+) -> bool {
   unsafe {
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkGetPhysicalDeviceXlibPresentationSupportKHR.unwrap()(
@@ -2690,7 +2690,7 @@ pub fn vkGetPhysicalDeviceXlibPresentationSupportKHR(
         dpy,
         visualID,
       )
-    })
+    }) != 0
   }
 }
 
@@ -2725,7 +2725,7 @@ pub fn vkGetPhysicalDeviceXcbPresentationSupportKHR(
   queueFamilyIndex: u32,
   connection: *mut wsi::xcb::xcb_connection_t,
   visual_id: wsi::xcb::xcb_visualid_t,
-) -> VkBool32 {
+) -> bool {
   unsafe {
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkGetPhysicalDeviceXcbPresentationSupportKHR.unwrap()(
@@ -2734,7 +2734,7 @@ pub fn vkGetPhysicalDeviceXcbPresentationSupportKHR(
         connection,
         visual_id,
       )
-    })
+    }) != 0
   }
 }
 
@@ -2768,11 +2768,11 @@ pub fn vkGetPhysicalDeviceWaylandPresentationSupportKHR(
   physicalDevice: VkPhysicalDevice,
   queueFamilyIndex: u32,
   display: *mut wsi::wayland::wl_display,
-) -> VkBool32 {
+) -> bool {
   unsafe {
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkGetPhysicalDeviceWaylandPresentationSupportKHR.unwrap()(physicalDevice.as_raw(), queueFamilyIndex, display)
-    })
+    }) != 0
   }
 }
 
@@ -2806,11 +2806,11 @@ pub fn vkGetPhysicalDeviceMirPresentationSupportKHR(
   physicalDevice: VkPhysicalDevice,
   queueFamilyIndex: u32,
   connection: *mut wsi::mir::MirConnection,
-) -> VkBool32 {
+) -> bool {
   unsafe {
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkGetPhysicalDeviceMirPresentationSupportKHR.unwrap()(physicalDevice.as_raw(), queueFamilyIndex, connection)
-    })
+    }) != 0
   }
 }
 
@@ -2865,14 +2865,11 @@ pub fn vkCreateWin32SurfaceKHR(
 }
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub fn vkGetPhysicalDeviceWin32PresentationSupportKHR(
-  physicalDevice: VkPhysicalDevice,
-  queueFamilyIndex: u32,
-) -> VkBool32 {
+pub fn vkGetPhysicalDeviceWin32PresentationSupportKHR(physicalDevice: VkPhysicalDevice, queueFamilyIndex: u32) -> bool {
   unsafe {
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkGetPhysicalDeviceWin32PresentationSupportKHR.unwrap()(physicalDevice.as_raw(), queueFamilyIndex)
-    })
+    }) != 0
   }
 }
 

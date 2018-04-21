@@ -212,3 +212,20 @@ impl<T> AsRaw for VkNonDispatchableHandle<T> {
     self.value()
   }
 }
+
+#[inline]
+pub fn cstr_from_bytes_until_nul<'a, T: AsRef<[u8]> + ?Sized>(s: &'a T) -> ::std::borrow::Cow<'a, ::std::ffi::CStr> {
+  use std::borrow::Cow;
+  use std::ffi::{CStr, CString};
+  let s = s.as_ref();
+  unsafe {
+    for (i, &c) in s.into_iter().enumerate() {
+      if c == 0 {
+        return Cow::Borrowed(CStr::from_bytes_with_nul_unchecked(&s[0..i]));
+      }
+    }
+    let mut owned = Vec::<u8>::new();
+    owned.extend_from_slice(s);
+    Cow::Owned(CString::from_vec_unchecked(owned))
+  }
+}

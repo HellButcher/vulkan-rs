@@ -891,499 +891,554 @@ impl VkPhysicalDeviceFeatures {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_robust_buffer_access(mut self, value: VkBool32) -> Self {
+  pub fn set_robust_buffer_access(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.robustBufferAccess = value;
     self
   }
   #[inline]
-  pub fn set_full_draw_index_uint32(mut self, value: VkBool32) -> Self {
+  pub fn set_full_draw_index_uint32(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.fullDrawIndexUint32 = value;
     self
   }
   #[inline]
-  pub fn set_image_cube_array(mut self, value: VkBool32) -> Self {
+  pub fn set_image_cube_array(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.imageCubeArray = value;
     self
   }
   #[inline]
-  pub fn set_independent_blend(mut self, value: VkBool32) -> Self {
+  pub fn set_independent_blend(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.independentBlend = value;
     self
   }
   #[inline]
-  pub fn set_geometry_shader(mut self, value: VkBool32) -> Self {
+  pub fn set_geometry_shader(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.geometryShader = value;
     self
   }
   #[inline]
-  pub fn set_tessellation_shader(mut self, value: VkBool32) -> Self {
+  pub fn set_tessellation_shader(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.tessellationShader = value;
     self
   }
   #[inline]
-  pub fn set_sample_rate_shading(mut self, value: VkBool32) -> Self {
+  pub fn set_sample_rate_shading(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sampleRateShading = value;
     self
   }
   #[inline]
-  pub fn set_dual_src_blend(mut self, value: VkBool32) -> Self {
+  pub fn set_dual_src_blend(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.dualSrcBlend = value;
     self
   }
   #[inline]
-  pub fn set_logic_op(mut self, value: VkBool32) -> Self {
+  pub fn set_logic_op(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.logicOp = value;
     self
   }
   #[inline]
-  pub fn set_multi_draw_indirect(mut self, value: VkBool32) -> Self {
+  pub fn set_multi_draw_indirect(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.multiDrawIndirect = value;
     self
   }
   #[inline]
-  pub fn set_draw_indirect_first_instance(mut self, value: VkBool32) -> Self {
+  pub fn set_draw_indirect_first_instance(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.drawIndirectFirstInstance = value;
     self
   }
   #[inline]
-  pub fn set_depth_clamp(mut self, value: VkBool32) -> Self {
+  pub fn set_depth_clamp(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.depthClamp = value;
     self
   }
   #[inline]
-  pub fn set_depth_bias_clamp(mut self, value: VkBool32) -> Self {
+  pub fn set_depth_bias_clamp(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.depthBiasClamp = value;
     self
   }
   #[inline]
-  pub fn set_fill_mode_non_solid(mut self, value: VkBool32) -> Self {
+  pub fn set_fill_mode_non_solid(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.fillModeNonSolid = value;
     self
   }
   #[inline]
-  pub fn set_depth_bounds(mut self, value: VkBool32) -> Self {
+  pub fn set_depth_bounds(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.depthBounds = value;
     self
   }
   #[inline]
-  pub fn set_wide_lines(mut self, value: VkBool32) -> Self {
+  pub fn set_wide_lines(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.wideLines = value;
     self
   }
   #[inline]
-  pub fn set_large_points(mut self, value: VkBool32) -> Self {
+  pub fn set_large_points(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.largePoints = value;
     self
   }
   #[inline]
-  pub fn set_alpha_to_one(mut self, value: VkBool32) -> Self {
+  pub fn set_alpha_to_one(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.alphaToOne = value;
     self
   }
   #[inline]
-  pub fn set_multi_viewport(mut self, value: VkBool32) -> Self {
+  pub fn set_multi_viewport(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.multiViewport = value;
     self
   }
   #[inline]
-  pub fn set_sampler_anisotropy(mut self, value: VkBool32) -> Self {
+  pub fn set_sampler_anisotropy(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.samplerAnisotropy = value;
     self
   }
   #[inline]
-  pub fn set_texture_compression_etc2(mut self, value: VkBool32) -> Self {
+  pub fn set_texture_compression_etc2(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.textureCompressionETC2 = value;
     self
   }
   #[inline]
-  pub fn set_texture_compression_astc_ldr(mut self, value: VkBool32) -> Self {
+  pub fn set_texture_compression_astc_ldr(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.textureCompressionASTC_LDR = value;
     self
   }
   #[inline]
-  pub fn set_texture_compression_bc(mut self, value: VkBool32) -> Self {
+  pub fn set_texture_compression_bc(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.textureCompressionBC = value;
     self
   }
   #[inline]
-  pub fn set_occlusion_query_precise(mut self, value: VkBool32) -> Self {
+  pub fn set_occlusion_query_precise(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.occlusionQueryPrecise = value;
     self
   }
   #[inline]
-  pub fn set_pipeline_statistics_query(mut self, value: VkBool32) -> Self {
+  pub fn set_pipeline_statistics_query(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.pipelineStatisticsQuery = value;
     self
   }
   #[inline]
-  pub fn set_vertex_pipeline_stores_and_atomics(mut self, value: VkBool32) -> Self {
+  pub fn set_vertex_pipeline_stores_and_atomics(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.vertexPipelineStoresAndAtomics = value;
     self
   }
   #[inline]
-  pub fn set_fragment_stores_and_atomics(mut self, value: VkBool32) -> Self {
+  pub fn set_fragment_stores_and_atomics(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.fragmentStoresAndAtomics = value;
     self
   }
   #[inline]
-  pub fn set_shader_tessellation_and_geometry_point_size(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_tessellation_and_geometry_point_size(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderTessellationAndGeometryPointSize = value;
     self
   }
   #[inline]
-  pub fn set_shader_image_gather_extended(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_image_gather_extended(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderImageGatherExtended = value;
     self
   }
   #[inline]
-  pub fn set_shader_storage_image_extended_formats(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_storage_image_extended_formats(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderStorageImageExtendedFormats = value;
     self
   }
   #[inline]
-  pub fn set_shader_storage_image_multisample(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_storage_image_multisample(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderStorageImageMultisample = value;
     self
   }
   #[inline]
-  pub fn set_shader_storage_image_read_without_format(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_storage_image_read_without_format(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderStorageImageReadWithoutFormat = value;
     self
   }
   #[inline]
-  pub fn set_shader_storage_image_write_without_format(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_storage_image_write_without_format(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderStorageImageWriteWithoutFormat = value;
     self
   }
   #[inline]
-  pub fn set_shader_uniform_buffer_array_dynamic_indexing(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_uniform_buffer_array_dynamic_indexing(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderUniformBufferArrayDynamicIndexing = value;
     self
   }
   #[inline]
-  pub fn set_shader_sampled_image_array_dynamic_indexing(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_sampled_image_array_dynamic_indexing(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderSampledImageArrayDynamicIndexing = value;
     self
   }
   #[inline]
-  pub fn set_shader_storage_buffer_array_dynamic_indexing(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_storage_buffer_array_dynamic_indexing(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderStorageBufferArrayDynamicIndexing = value;
     self
   }
   #[inline]
-  pub fn set_shader_storage_image_array_dynamic_indexing(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_storage_image_array_dynamic_indexing(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderStorageImageArrayDynamicIndexing = value;
     self
   }
   #[inline]
-  pub fn set_shader_clip_distance(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_clip_distance(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderClipDistance = value;
     self
   }
   #[inline]
-  pub fn set_shader_cull_distance(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_cull_distance(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderCullDistance = value;
     self
   }
   #[inline]
-  pub fn set_shader_float64(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_float64(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderFloat64 = value;
     self
   }
   #[inline]
-  pub fn set_shader_int64(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_int64(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderInt64 = value;
     self
   }
   #[inline]
-  pub fn set_shader_int16(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_int16(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderInt16 = value;
     self
   }
   #[inline]
-  pub fn set_shader_resource_residency(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_resource_residency(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderResourceResidency = value;
     self
   }
   #[inline]
-  pub fn set_shader_resource_min_lod(mut self, value: VkBool32) -> Self {
+  pub fn set_shader_resource_min_lod(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.shaderResourceMinLod = value;
     self
   }
   #[inline]
-  pub fn set_sparse_binding(mut self, value: VkBool32) -> Self {
+  pub fn set_sparse_binding(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sparseBinding = value;
     self
   }
   #[inline]
-  pub fn set_sparse_residency_buffer(mut self, value: VkBool32) -> Self {
+  pub fn set_sparse_residency_buffer(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sparseResidencyBuffer = value;
     self
   }
   #[inline]
-  pub fn set_sparse_residency_image2_d(mut self, value: VkBool32) -> Self {
+  pub fn set_sparse_residency_image2_d(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sparseResidencyImage2D = value;
     self
   }
   #[inline]
-  pub fn set_sparse_residency_image3_d(mut self, value: VkBool32) -> Self {
+  pub fn set_sparse_residency_image3_d(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sparseResidencyImage3D = value;
     self
   }
   #[inline]
-  pub fn set_sparse_residency2_samples(mut self, value: VkBool32) -> Self {
+  pub fn set_sparse_residency2_samples(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sparseResidency2Samples = value;
     self
   }
   #[inline]
-  pub fn set_sparse_residency4_samples(mut self, value: VkBool32) -> Self {
+  pub fn set_sparse_residency4_samples(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sparseResidency4Samples = value;
     self
   }
   #[inline]
-  pub fn set_sparse_residency8_samples(mut self, value: VkBool32) -> Self {
+  pub fn set_sparse_residency8_samples(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sparseResidency8Samples = value;
     self
   }
   #[inline]
-  pub fn set_sparse_residency16_samples(mut self, value: VkBool32) -> Self {
+  pub fn set_sparse_residency16_samples(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sparseResidency16Samples = value;
     self
   }
   #[inline]
-  pub fn set_sparse_residency_aliased(mut self, value: VkBool32) -> Self {
+  pub fn set_sparse_residency_aliased(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sparseResidencyAliased = value;
     self
   }
   #[inline]
-  pub fn set_variable_multisample_rate(mut self, value: VkBool32) -> Self {
+  pub fn set_variable_multisample_rate(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.variableMultisampleRate = value;
     self
   }
   #[inline]
-  pub fn set_inherited_queries(mut self, value: VkBool32) -> Self {
+  pub fn set_inherited_queries(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.inheritedQueries = value;
     self
   }
   #[inline]
-  pub fn get_robust_buffer_access(&self) -> VkBool32 {
-    self.robustBufferAccess
+  pub fn is_robust_buffer_access(&self) -> bool {
+    self.robustBufferAccess != 0
   }
   #[inline]
-  pub fn get_full_draw_index_uint32(&self) -> VkBool32 {
-    self.fullDrawIndexUint32
+  pub fn is_full_draw_index_uint32(&self) -> bool {
+    self.fullDrawIndexUint32 != 0
   }
   #[inline]
-  pub fn get_image_cube_array(&self) -> VkBool32 {
-    self.imageCubeArray
+  pub fn is_image_cube_array(&self) -> bool {
+    self.imageCubeArray != 0
   }
   #[inline]
-  pub fn get_independent_blend(&self) -> VkBool32 {
-    self.independentBlend
+  pub fn is_independent_blend(&self) -> bool {
+    self.independentBlend != 0
   }
   #[inline]
-  pub fn get_geometry_shader(&self) -> VkBool32 {
-    self.geometryShader
+  pub fn is_geometry_shader(&self) -> bool {
+    self.geometryShader != 0
   }
   #[inline]
-  pub fn get_tessellation_shader(&self) -> VkBool32 {
-    self.tessellationShader
+  pub fn is_tessellation_shader(&self) -> bool {
+    self.tessellationShader != 0
   }
   #[inline]
-  pub fn get_sample_rate_shading(&self) -> VkBool32 {
-    self.sampleRateShading
+  pub fn is_sample_rate_shading(&self) -> bool {
+    self.sampleRateShading != 0
   }
   #[inline]
-  pub fn get_dual_src_blend(&self) -> VkBool32 {
-    self.dualSrcBlend
+  pub fn is_dual_src_blend(&self) -> bool {
+    self.dualSrcBlend != 0
   }
   #[inline]
-  pub fn get_logic_op(&self) -> VkBool32 {
-    self.logicOp
+  pub fn is_logic_op(&self) -> bool {
+    self.logicOp != 0
   }
   #[inline]
-  pub fn get_multi_draw_indirect(&self) -> VkBool32 {
-    self.multiDrawIndirect
+  pub fn is_multi_draw_indirect(&self) -> bool {
+    self.multiDrawIndirect != 0
   }
   #[inline]
-  pub fn get_draw_indirect_first_instance(&self) -> VkBool32 {
-    self.drawIndirectFirstInstance
+  pub fn is_draw_indirect_first_instance(&self) -> bool {
+    self.drawIndirectFirstInstance != 0
   }
   #[inline]
-  pub fn get_depth_clamp(&self) -> VkBool32 {
-    self.depthClamp
+  pub fn is_depth_clamp(&self) -> bool {
+    self.depthClamp != 0
   }
   #[inline]
-  pub fn get_depth_bias_clamp(&self) -> VkBool32 {
-    self.depthBiasClamp
+  pub fn is_depth_bias_clamp(&self) -> bool {
+    self.depthBiasClamp != 0
   }
   #[inline]
-  pub fn get_fill_mode_non_solid(&self) -> VkBool32 {
-    self.fillModeNonSolid
+  pub fn is_fill_mode_non_solid(&self) -> bool {
+    self.fillModeNonSolid != 0
   }
   #[inline]
-  pub fn get_depth_bounds(&self) -> VkBool32 {
-    self.depthBounds
+  pub fn is_depth_bounds(&self) -> bool {
+    self.depthBounds != 0
   }
   #[inline]
-  pub fn get_wide_lines(&self) -> VkBool32 {
-    self.wideLines
+  pub fn is_wide_lines(&self) -> bool {
+    self.wideLines != 0
   }
   #[inline]
-  pub fn get_large_points(&self) -> VkBool32 {
-    self.largePoints
+  pub fn is_large_points(&self) -> bool {
+    self.largePoints != 0
   }
   #[inline]
-  pub fn get_alpha_to_one(&self) -> VkBool32 {
-    self.alphaToOne
+  pub fn is_alpha_to_one(&self) -> bool {
+    self.alphaToOne != 0
   }
   #[inline]
-  pub fn get_multi_viewport(&self) -> VkBool32 {
-    self.multiViewport
+  pub fn is_multi_viewport(&self) -> bool {
+    self.multiViewport != 0
   }
   #[inline]
-  pub fn get_sampler_anisotropy(&self) -> VkBool32 {
-    self.samplerAnisotropy
+  pub fn is_sampler_anisotropy(&self) -> bool {
+    self.samplerAnisotropy != 0
   }
   #[inline]
-  pub fn get_texture_compression_etc2(&self) -> VkBool32 {
-    self.textureCompressionETC2
+  pub fn is_texture_compression_etc2(&self) -> bool {
+    self.textureCompressionETC2 != 0
   }
   #[inline]
-  pub fn get_texture_compression_astc_ldr(&self) -> VkBool32 {
-    self.textureCompressionASTC_LDR
+  pub fn is_texture_compression_astc_ldr(&self) -> bool {
+    self.textureCompressionASTC_LDR != 0
   }
   #[inline]
-  pub fn get_texture_compression_bc(&self) -> VkBool32 {
-    self.textureCompressionBC
+  pub fn is_texture_compression_bc(&self) -> bool {
+    self.textureCompressionBC != 0
   }
   #[inline]
-  pub fn get_occlusion_query_precise(&self) -> VkBool32 {
-    self.occlusionQueryPrecise
+  pub fn is_occlusion_query_precise(&self) -> bool {
+    self.occlusionQueryPrecise != 0
   }
   #[inline]
-  pub fn get_pipeline_statistics_query(&self) -> VkBool32 {
-    self.pipelineStatisticsQuery
+  pub fn is_pipeline_statistics_query(&self) -> bool {
+    self.pipelineStatisticsQuery != 0
   }
   #[inline]
-  pub fn get_vertex_pipeline_stores_and_atomics(&self) -> VkBool32 {
-    self.vertexPipelineStoresAndAtomics
+  pub fn is_vertex_pipeline_stores_and_atomics(&self) -> bool {
+    self.vertexPipelineStoresAndAtomics != 0
   }
   #[inline]
-  pub fn get_fragment_stores_and_atomics(&self) -> VkBool32 {
-    self.fragmentStoresAndAtomics
+  pub fn is_fragment_stores_and_atomics(&self) -> bool {
+    self.fragmentStoresAndAtomics != 0
   }
   #[inline]
-  pub fn get_shader_tessellation_and_geometry_point_size(&self) -> VkBool32 {
-    self.shaderTessellationAndGeometryPointSize
+  pub fn is_shader_tessellation_and_geometry_point_size(&self) -> bool {
+    self.shaderTessellationAndGeometryPointSize != 0
   }
   #[inline]
-  pub fn get_shader_image_gather_extended(&self) -> VkBool32 {
-    self.shaderImageGatherExtended
+  pub fn is_shader_image_gather_extended(&self) -> bool {
+    self.shaderImageGatherExtended != 0
   }
   #[inline]
-  pub fn get_shader_storage_image_extended_formats(&self) -> VkBool32 {
-    self.shaderStorageImageExtendedFormats
+  pub fn is_shader_storage_image_extended_formats(&self) -> bool {
+    self.shaderStorageImageExtendedFormats != 0
   }
   #[inline]
-  pub fn get_shader_storage_image_multisample(&self) -> VkBool32 {
-    self.shaderStorageImageMultisample
+  pub fn is_shader_storage_image_multisample(&self) -> bool {
+    self.shaderStorageImageMultisample != 0
   }
   #[inline]
-  pub fn get_shader_storage_image_read_without_format(&self) -> VkBool32 {
-    self.shaderStorageImageReadWithoutFormat
+  pub fn is_shader_storage_image_read_without_format(&self) -> bool {
+    self.shaderStorageImageReadWithoutFormat != 0
   }
   #[inline]
-  pub fn get_shader_storage_image_write_without_format(&self) -> VkBool32 {
-    self.shaderStorageImageWriteWithoutFormat
+  pub fn is_shader_storage_image_write_without_format(&self) -> bool {
+    self.shaderStorageImageWriteWithoutFormat != 0
   }
   #[inline]
-  pub fn get_shader_uniform_buffer_array_dynamic_indexing(&self) -> VkBool32 {
-    self.shaderUniformBufferArrayDynamicIndexing
+  pub fn is_shader_uniform_buffer_array_dynamic_indexing(&self) -> bool {
+    self.shaderUniformBufferArrayDynamicIndexing != 0
   }
   #[inline]
-  pub fn get_shader_sampled_image_array_dynamic_indexing(&self) -> VkBool32 {
-    self.shaderSampledImageArrayDynamicIndexing
+  pub fn is_shader_sampled_image_array_dynamic_indexing(&self) -> bool {
+    self.shaderSampledImageArrayDynamicIndexing != 0
   }
   #[inline]
-  pub fn get_shader_storage_buffer_array_dynamic_indexing(&self) -> VkBool32 {
-    self.shaderStorageBufferArrayDynamicIndexing
+  pub fn is_shader_storage_buffer_array_dynamic_indexing(&self) -> bool {
+    self.shaderStorageBufferArrayDynamicIndexing != 0
   }
   #[inline]
-  pub fn get_shader_storage_image_array_dynamic_indexing(&self) -> VkBool32 {
-    self.shaderStorageImageArrayDynamicIndexing
+  pub fn is_shader_storage_image_array_dynamic_indexing(&self) -> bool {
+    self.shaderStorageImageArrayDynamicIndexing != 0
   }
   #[inline]
-  pub fn get_shader_clip_distance(&self) -> VkBool32 {
-    self.shaderClipDistance
+  pub fn is_shader_clip_distance(&self) -> bool {
+    self.shaderClipDistance != 0
   }
   #[inline]
-  pub fn get_shader_cull_distance(&self) -> VkBool32 {
-    self.shaderCullDistance
+  pub fn is_shader_cull_distance(&self) -> bool {
+    self.shaderCullDistance != 0
   }
   #[inline]
-  pub fn get_shader_float64(&self) -> VkBool32 {
-    self.shaderFloat64
+  pub fn is_shader_float64(&self) -> bool {
+    self.shaderFloat64 != 0
   }
   #[inline]
-  pub fn get_shader_int64(&self) -> VkBool32 {
-    self.shaderInt64
+  pub fn is_shader_int64(&self) -> bool {
+    self.shaderInt64 != 0
   }
   #[inline]
-  pub fn get_shader_int16(&self) -> VkBool32 {
-    self.shaderInt16
+  pub fn is_shader_int16(&self) -> bool {
+    self.shaderInt16 != 0
   }
   #[inline]
-  pub fn get_shader_resource_residency(&self) -> VkBool32 {
-    self.shaderResourceResidency
+  pub fn is_shader_resource_residency(&self) -> bool {
+    self.shaderResourceResidency != 0
   }
   #[inline]
-  pub fn get_shader_resource_min_lod(&self) -> VkBool32 {
-    self.shaderResourceMinLod
+  pub fn is_shader_resource_min_lod(&self) -> bool {
+    self.shaderResourceMinLod != 0
   }
   #[inline]
-  pub fn get_sparse_binding(&self) -> VkBool32 {
-    self.sparseBinding
+  pub fn is_sparse_binding(&self) -> bool {
+    self.sparseBinding != 0
   }
   #[inline]
-  pub fn get_sparse_residency_buffer(&self) -> VkBool32 {
-    self.sparseResidencyBuffer
+  pub fn is_sparse_residency_buffer(&self) -> bool {
+    self.sparseResidencyBuffer != 0
   }
   #[inline]
-  pub fn get_sparse_residency_image2_d(&self) -> VkBool32 {
-    self.sparseResidencyImage2D
+  pub fn is_sparse_residency_image2_d(&self) -> bool {
+    self.sparseResidencyImage2D != 0
   }
   #[inline]
-  pub fn get_sparse_residency_image3_d(&self) -> VkBool32 {
-    self.sparseResidencyImage3D
+  pub fn is_sparse_residency_image3_d(&self) -> bool {
+    self.sparseResidencyImage3D != 0
   }
   #[inline]
-  pub fn get_sparse_residency2_samples(&self) -> VkBool32 {
-    self.sparseResidency2Samples
+  pub fn is_sparse_residency2_samples(&self) -> bool {
+    self.sparseResidency2Samples != 0
   }
   #[inline]
-  pub fn get_sparse_residency4_samples(&self) -> VkBool32 {
-    self.sparseResidency4Samples
+  pub fn is_sparse_residency4_samples(&self) -> bool {
+    self.sparseResidency4Samples != 0
   }
   #[inline]
-  pub fn get_sparse_residency8_samples(&self) -> VkBool32 {
-    self.sparseResidency8Samples
+  pub fn is_sparse_residency8_samples(&self) -> bool {
+    self.sparseResidency8Samples != 0
   }
   #[inline]
-  pub fn get_sparse_residency16_samples(&self) -> VkBool32 {
-    self.sparseResidency16Samples
+  pub fn is_sparse_residency16_samples(&self) -> bool {
+    self.sparseResidency16Samples != 0
   }
   #[inline]
-  pub fn get_sparse_residency_aliased(&self) -> VkBool32 {
-    self.sparseResidencyAliased
+  pub fn is_sparse_residency_aliased(&self) -> bool {
+    self.sparseResidencyAliased != 0
   }
   #[inline]
-  pub fn get_variable_multisample_rate(&self) -> VkBool32 {
-    self.variableMultisampleRate
+  pub fn is_variable_multisample_rate(&self) -> bool {
+    self.variableMultisampleRate != 0
   }
   #[inline]
-  pub fn get_inherited_queries(&self) -> VkBool32 {
-    self.inheritedQueries
+  pub fn is_inherited_queries(&self) -> bool {
+    self.inheritedQueries != 0
   }
 }
 impl Default for VkPhysicalDeviceFeatures {
@@ -2152,7 +2207,8 @@ impl VkPhysicalDeviceLimits {
     self
   }
   #[inline]
-  pub fn set_timestamp_compute_and_graphics(mut self, value: VkBool32) -> Self {
+  pub fn set_timestamp_compute_and_graphics(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.timestampComputeAndGraphics = value;
     self
   }
@@ -2202,12 +2258,14 @@ impl VkPhysicalDeviceLimits {
     self
   }
   #[inline]
-  pub fn set_strict_lines(mut self, value: VkBool32) -> Self {
+  pub fn set_strict_lines(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.strictLines = value;
     self
   }
   #[inline]
-  pub fn set_standard_sample_locations(mut self, value: VkBool32) -> Self {
+  pub fn set_standard_sample_locations(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.standardSampleLocations = value;
     self
   }
@@ -2591,8 +2649,8 @@ impl VkPhysicalDeviceLimits {
     self.maxSampleMaskWords
   }
   #[inline]
-  pub fn get_timestamp_compute_and_graphics(&self) -> VkBool32 {
-    self.timestampComputeAndGraphics
+  pub fn is_timestamp_compute_and_graphics(&self) -> bool {
+    self.timestampComputeAndGraphics != 0
   }
   #[inline]
   pub fn get_timestamp_period(&self) -> f32 {
@@ -2631,12 +2689,12 @@ impl VkPhysicalDeviceLimits {
     self.lineWidthGranularity
   }
   #[inline]
-  pub fn get_strict_lines(&self) -> VkBool32 {
-    self.strictLines
+  pub fn is_strict_lines(&self) -> bool {
+    self.strictLines != 0
   }
   #[inline]
-  pub fn get_standard_sample_locations(&self) -> VkBool32 {
-    self.standardSampleLocations
+  pub fn is_standard_sample_locations(&self) -> bool {
+    self.standardSampleLocations != 0
   }
   #[inline]
   pub fn get_optimal_buffer_copy_offset_alignment(&self) -> VkDeviceSize {
@@ -2679,49 +2737,54 @@ impl VkPhysicalDeviceSparseProperties {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_residency_standard2_d_block_shape(mut self, value: VkBool32) -> Self {
+  pub fn set_residency_standard2_d_block_shape(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.residencyStandard2DBlockShape = value;
     self
   }
   #[inline]
-  pub fn set_residency_standard2_d_multisample_block_shape(mut self, value: VkBool32) -> Self {
+  pub fn set_residency_standard2_d_multisample_block_shape(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.residencyStandard2DMultisampleBlockShape = value;
     self
   }
   #[inline]
-  pub fn set_residency_standard3_d_block_shape(mut self, value: VkBool32) -> Self {
+  pub fn set_residency_standard3_d_block_shape(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.residencyStandard3DBlockShape = value;
     self
   }
   #[inline]
-  pub fn set_residency_aligned_mip_size(mut self, value: VkBool32) -> Self {
+  pub fn set_residency_aligned_mip_size(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.residencyAlignedMipSize = value;
     self
   }
   #[inline]
-  pub fn set_residency_non_resident_strict(mut self, value: VkBool32) -> Self {
+  pub fn set_residency_non_resident_strict(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.residencyNonResidentStrict = value;
     self
   }
   #[inline]
-  pub fn get_residency_standard2_d_block_shape(&self) -> VkBool32 {
-    self.residencyStandard2DBlockShape
+  pub fn is_residency_standard2_d_block_shape(&self) -> bool {
+    self.residencyStandard2DBlockShape != 0
   }
   #[inline]
-  pub fn get_residency_standard2_d_multisample_block_shape(&self) -> VkBool32 {
-    self.residencyStandard2DMultisampleBlockShape
+  pub fn is_residency_standard2_d_multisample_block_shape(&self) -> bool {
+    self.residencyStandard2DMultisampleBlockShape != 0
   }
   #[inline]
-  pub fn get_residency_standard3_d_block_shape(&self) -> VkBool32 {
-    self.residencyStandard3DBlockShape
+  pub fn is_residency_standard3_d_block_shape(&self) -> bool {
+    self.residencyStandard3DBlockShape != 0
   }
   #[inline]
-  pub fn get_residency_aligned_mip_size(&self) -> VkBool32 {
-    self.residencyAlignedMipSize
+  pub fn is_residency_aligned_mip_size(&self) -> bool {
+    self.residencyAlignedMipSize != 0
   }
   #[inline]
-  pub fn get_residency_non_resident_strict(&self) -> VkBool32 {
-    self.residencyNonResidentStrict
+  pub fn is_residency_non_resident_strict(&self) -> bool {
+    self.residencyNonResidentStrict != 0
   }
 }
 impl Default for VkPhysicalDeviceSparseProperties {
@@ -5654,7 +5717,8 @@ impl VkPipelineInputAssemblyStateCreateInfo {
     self
   }
   #[inline]
-  pub fn set_primitive_restart_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_primitive_restart_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.primitiveRestartEnable = value;
     self
   }
@@ -5675,8 +5739,8 @@ impl VkPipelineInputAssemblyStateCreateInfo {
     self.topology
   }
   #[inline]
-  pub fn get_primitive_restart_enable(&self) -> VkBool32 {
-    self.primitiveRestartEnable
+  pub fn is_primitive_restart_enable(&self) -> bool {
+    self.primitiveRestartEnable != 0
   }
 }
 impl Default for VkPipelineInputAssemblyStateCreateInfo {
@@ -6081,12 +6145,14 @@ impl VkPipelineRasterizationStateCreateInfo {
     self
   }
   #[inline]
-  pub fn set_depth_clamp_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_depth_clamp_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.depthClampEnable = value;
     self
   }
   #[inline]
-  pub fn set_rasterizer_discard_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_rasterizer_discard_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.rasterizerDiscardEnable = value;
     self
   }
@@ -6106,7 +6172,8 @@ impl VkPipelineRasterizationStateCreateInfo {
     self
   }
   #[inline]
-  pub fn set_depth_bias_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_depth_bias_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.depthBiasEnable = value;
     self
   }
@@ -6143,12 +6210,12 @@ impl VkPipelineRasterizationStateCreateInfo {
     self.flags
   }
   #[inline]
-  pub fn get_depth_clamp_enable(&self) -> VkBool32 {
-    self.depthClampEnable
+  pub fn is_depth_clamp_enable(&self) -> bool {
+    self.depthClampEnable != 0
   }
   #[inline]
-  pub fn get_rasterizer_discard_enable(&self) -> VkBool32 {
-    self.rasterizerDiscardEnable
+  pub fn is_rasterizer_discard_enable(&self) -> bool {
+    self.rasterizerDiscardEnable != 0
   }
   #[inline]
   pub fn get_polygon_mode(&self) -> VkPolygonMode {
@@ -6163,8 +6230,8 @@ impl VkPipelineRasterizationStateCreateInfo {
     self.frontFace
   }
   #[inline]
-  pub fn get_depth_bias_enable(&self) -> VkBool32 {
-    self.depthBiasEnable
+  pub fn is_depth_bias_enable(&self) -> bool {
+    self.depthBiasEnable != 0
   }
   #[inline]
   pub fn get_depth_bias_constant_factor(&self) -> f32 {
@@ -6234,7 +6301,8 @@ impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_sample_shading_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_sample_shading_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sampleShadingEnable = value;
     self
   }
@@ -6244,12 +6312,14 @@ impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_alpha_to_coverage_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_alpha_to_coverage_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.alphaToCoverageEnable = value;
     self
   }
   #[inline]
-  pub fn set_alpha_to_one_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_alpha_to_one_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.alphaToOneEnable = value;
     self
   }
@@ -6270,20 +6340,20 @@ impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
     self.rasterizationSamples
   }
   #[inline]
-  pub fn get_sample_shading_enable(&self) -> VkBool32 {
-    self.sampleShadingEnable
+  pub fn is_sample_shading_enable(&self) -> bool {
+    self.sampleShadingEnable != 0
   }
   #[inline]
   pub fn get_min_sample_shading(&self) -> f32 {
     self.minSampleShading
   }
   #[inline]
-  pub fn get_alpha_to_coverage_enable(&self) -> VkBool32 {
-    self.alphaToCoverageEnable
+  pub fn is_alpha_to_coverage_enable(&self) -> bool {
+    self.alphaToCoverageEnable != 0
   }
   #[inline]
-  pub fn get_alpha_to_one_enable(&self) -> VkBool32 {
-    self.alphaToOneEnable
+  pub fn is_alpha_to_one_enable(&self) -> bool {
+    self.alphaToOneEnable != 0
   }
 }
 impl<'a> Default for VkPipelineMultisampleStateCreateInfo<'a> {
@@ -6427,12 +6497,14 @@ impl VkPipelineDepthStencilStateCreateInfo {
     self
   }
   #[inline]
-  pub fn set_depth_test_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_depth_test_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.depthTestEnable = value;
     self
   }
   #[inline]
-  pub fn set_depth_write_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_depth_write_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.depthWriteEnable = value;
     self
   }
@@ -6442,12 +6514,14 @@ impl VkPipelineDepthStencilStateCreateInfo {
     self
   }
   #[inline]
-  pub fn set_depth_bounds_test_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_depth_bounds_test_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.depthBoundsTestEnable = value;
     self
   }
   #[inline]
-  pub fn set_stencil_test_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_stencil_test_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.stencilTestEnable = value;
     self
   }
@@ -6484,24 +6558,24 @@ impl VkPipelineDepthStencilStateCreateInfo {
     self.flags
   }
   #[inline]
-  pub fn get_depth_test_enable(&self) -> VkBool32 {
-    self.depthTestEnable
+  pub fn is_depth_test_enable(&self) -> bool {
+    self.depthTestEnable != 0
   }
   #[inline]
-  pub fn get_depth_write_enable(&self) -> VkBool32 {
-    self.depthWriteEnable
+  pub fn is_depth_write_enable(&self) -> bool {
+    self.depthWriteEnable != 0
   }
   #[inline]
   pub fn get_depth_compare_op(&self) -> VkCompareOp {
     self.depthCompareOp
   }
   #[inline]
-  pub fn get_depth_bounds_test_enable(&self) -> VkBool32 {
-    self.depthBoundsTestEnable
+  pub fn is_depth_bounds_test_enable(&self) -> bool {
+    self.depthBoundsTestEnable != 0
   }
   #[inline]
-  pub fn get_stencil_test_enable(&self) -> VkBool32 {
-    self.stencilTestEnable
+  pub fn is_stencil_test_enable(&self) -> bool {
+    self.stencilTestEnable != 0
   }
   #[inline]
   pub fn get_front(&self) -> VkStencilOpState {
@@ -6554,7 +6628,8 @@ impl VkPipelineColorBlendAttachmentState {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_blend_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_blend_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.blendEnable = value;
     self
   }
@@ -6594,8 +6669,8 @@ impl VkPipelineColorBlendAttachmentState {
     self
   }
   #[inline]
-  pub fn get_blend_enable(&self) -> VkBool32 {
-    self.blendEnable
+  pub fn is_blend_enable(&self) -> bool {
+    self.blendEnable != 0
   }
   #[inline]
   pub fn get_src_color_blend_factor(&self) -> VkBlendFactor {
@@ -6671,7 +6746,8 @@ impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_logic_op_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_logic_op_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.logicOpEnable = value;
     self
   }
@@ -6706,8 +6782,8 @@ impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
     self.flags
   }
   #[inline]
-  pub fn get_logic_op_enable(&self) -> VkBool32 {
-    self.logicOpEnable
+  pub fn is_logic_op_enable(&self) -> bool {
+    self.logicOpEnable != 0
   }
   #[inline]
   pub fn get_logic_op(&self) -> VkLogicOp {
@@ -7322,7 +7398,8 @@ impl VkSamplerCreateInfo {
     self
   }
   #[inline]
-  pub fn set_anisotropy_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_anisotropy_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.anisotropyEnable = value;
     self
   }
@@ -7332,7 +7409,8 @@ impl VkSamplerCreateInfo {
     self
   }
   #[inline]
-  pub fn set_compare_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_compare_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.compareEnable = value;
     self
   }
@@ -7357,7 +7435,8 @@ impl VkSamplerCreateInfo {
     self
   }
   #[inline]
-  pub fn set_unnormalized_coordinates(mut self, value: VkBool32) -> Self {
+  pub fn set_unnormalized_coordinates(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.unnormalizedCoordinates = value;
     self
   }
@@ -7402,16 +7481,16 @@ impl VkSamplerCreateInfo {
     self.mipLodBias
   }
   #[inline]
-  pub fn get_anisotropy_enable(&self) -> VkBool32 {
-    self.anisotropyEnable
+  pub fn is_anisotropy_enable(&self) -> bool {
+    self.anisotropyEnable != 0
   }
   #[inline]
   pub fn get_max_anisotropy(&self) -> f32 {
     self.maxAnisotropy
   }
   #[inline]
-  pub fn get_compare_enable(&self) -> VkBool32 {
-    self.compareEnable
+  pub fn is_compare_enable(&self) -> bool {
+    self.compareEnable != 0
   }
   #[inline]
   pub fn get_compare_op(&self) -> VkCompareOp {
@@ -7430,8 +7509,8 @@ impl VkSamplerCreateInfo {
     self.borderColor
   }
   #[inline]
-  pub fn get_unnormalized_coordinates(&self) -> VkBool32 {
-    self.unnormalizedCoordinates
+  pub fn is_unnormalized_coordinates(&self) -> bool {
+    self.unnormalizedCoordinates != 0
   }
 }
 impl Default for VkSamplerCreateInfo {
@@ -8788,7 +8867,8 @@ impl VkCommandBufferInheritanceInfo {
     self
   }
   #[inline]
-  pub fn set_occlusion_query_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_occlusion_query_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.occlusionQueryEnable = value;
     self
   }
@@ -8823,8 +8903,8 @@ impl VkCommandBufferInheritanceInfo {
     self.framebuffer
   }
   #[inline]
-  pub fn get_occlusion_query_enable(&self) -> VkBool32 {
-    self.occlusionQueryEnable
+  pub fn is_occlusion_query_enable(&self) -> bool {
+    self.occlusionQueryEnable != 0
   }
   #[inline]
   pub fn get_query_flags(&self) -> VkQueryControlFlags {
@@ -9886,7 +9966,8 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_clipped(mut self, value: VkBool32) -> Self {
+  pub fn set_clipped(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.clipped = value;
     self
   }
@@ -9956,8 +10037,8 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self.presentMode
   }
   #[inline]
-  pub fn get_clipped(&self) -> VkBool32 {
-    self.clipped
+  pub fn is_clipped(&self) -> bool {
+    self.clipped != 0
   }
   #[inline]
   pub fn get_old_swapchain(&self) -> Option<VkSwapchainKHR> {
@@ -10104,12 +10185,14 @@ impl<'a> VkDisplayPropertiesKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_plane_reorder_possible(mut self, value: VkBool32) -> Self {
+  pub fn set_plane_reorder_possible(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.planeReorderPossible = value;
     self
   }
   #[inline]
-  pub fn set_persistent_content(mut self, value: VkBool32) -> Self {
+  pub fn set_persistent_content(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.persistentContent = value;
     self
   }
@@ -10134,12 +10217,12 @@ impl<'a> VkDisplayPropertiesKHR<'a> {
     self.supportedTransforms
   }
   #[inline]
-  pub fn get_plane_reorder_possible(&self) -> VkBool32 {
-    self.planeReorderPossible
+  pub fn is_plane_reorder_possible(&self) -> bool {
+    self.planeReorderPossible != 0
   }
   #[inline]
-  pub fn get_persistent_content(&self) -> VkBool32 {
-    self.persistentContent
+  pub fn is_persistent_content(&self) -> bool {
+    self.persistentContent != 0
   }
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -10664,7 +10747,8 @@ impl VkDisplayPresentInfoKHR {
     self
   }
   #[inline]
-  pub fn set_persistent(mut self, value: VkBool32) -> Self {
+  pub fn set_persistent(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.persistent = value;
     self
   }
@@ -10685,8 +10769,8 @@ impl VkDisplayPresentInfoKHR {
     self.dstRect
   }
   #[inline]
-  pub fn get_persistent(&self) -> VkBool32 {
-    self.persistent
+  pub fn is_persistent(&self) -> bool {
+    self.persistent != 0
   }
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
@@ -10733,6 +10817,11 @@ impl VkXlibSurfaceCreateInfoKHR {
   #[inline]
   pub fn set_flags(mut self, value: VkXlibSurfaceCreateFlagsKHR) -> Self {
     self.flags = value;
+    self
+  }
+  #[inline]
+  pub fn set_dpy(mut self, value: *mut wsi::xlib::Display) -> Self {
+    self.dpy = value;
     self
   }
   #[inline]
@@ -10814,6 +10903,11 @@ impl VkXcbSurfaceCreateInfoKHR {
     self
   }
   #[inline]
+  pub fn set_connection(mut self, value: *mut wsi::xcb::xcb_connection_t) -> Self {
+    self.connection = value;
+    self
+  }
+  #[inline]
   pub fn set_window(mut self, value: wsi::xcb::xcb_window_t) -> Self {
     self.window = value;
     self
@@ -10892,6 +10986,16 @@ impl VkWaylandSurfaceCreateInfoKHR {
     self
   }
   #[inline]
+  pub fn set_display(mut self, value: *mut wsi::wayland::wl_display) -> Self {
+    self.display = value;
+    self
+  }
+  #[inline]
+  pub fn set_surface(mut self, value: *mut wsi::wayland::wl_surface) -> Self {
+    self.surface = value;
+    self
+  }
+  #[inline]
   pub fn get_s_type(&self) -> VkStructureType {
     self.sType
   }
@@ -10965,6 +11069,16 @@ impl VkMirSurfaceCreateInfoKHR {
     self
   }
   #[inline]
+  pub fn set_connection(mut self, value: *mut wsi::mir::MirConnection) -> Self {
+    self.connection = value;
+    self
+  }
+  #[inline]
+  pub fn set_mir_surface(mut self, value: *mut wsi::mir::MirSurface) -> Self {
+    self.mirSurface = value;
+    self
+  }
+  #[inline]
   pub fn get_s_type(&self) -> VkStructureType {
     self.sType
   }
@@ -11034,6 +11148,11 @@ impl VkAndroidSurfaceCreateInfoKHR {
   #[inline]
   pub fn set_flags(mut self, value: VkAndroidSurfaceCreateFlagsKHR) -> Self {
     self.flags = value;
+    self
+  }
+  #[inline]
+  pub fn set_window(mut self, value: *mut wsi::android::ANativeWindow) -> Self {
+    self.window = value;
     self
   }
   #[inline]
@@ -11560,7 +11679,8 @@ impl VkDedicatedAllocationImageCreateInfoNV {
     }
   }
   #[inline]
-  pub fn set_dedicated_allocation(mut self, value: VkBool32) -> Self {
+  pub fn set_dedicated_allocation(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.dedicatedAllocation = value;
     self
   }
@@ -11573,8 +11693,8 @@ impl VkDedicatedAllocationImageCreateInfoNV {
     self.pNext
   }
   #[inline]
-  pub fn get_dedicated_allocation(&self) -> VkBool32 {
-    self.dedicatedAllocation
+  pub fn is_dedicated_allocation(&self) -> bool {
+    self.dedicatedAllocation != 0
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
@@ -11616,7 +11736,8 @@ impl VkDedicatedAllocationBufferCreateInfoNV {
     }
   }
   #[inline]
-  pub fn set_dedicated_allocation(mut self, value: VkBool32) -> Self {
+  pub fn set_dedicated_allocation(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.dedicatedAllocation = value;
     self
   }
@@ -11629,8 +11750,8 @@ impl VkDedicatedAllocationBufferCreateInfoNV {
     self.pNext
   }
   #[inline]
-  pub fn get_dedicated_allocation(&self) -> VkBool32 {
-    self.dedicatedAllocation
+  pub fn is_dedicated_allocation(&self) -> bool {
+    self.dedicatedAllocation != 0
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
@@ -12323,7 +12444,8 @@ impl VkTextureLODGatherFormatPropertiesAMD {
     }
   }
   #[inline]
-  pub fn set_supports_texture_gather_lod_bias_amd(mut self, value: VkBool32) -> Self {
+  pub fn set_supports_texture_gather_lod_bias_amd(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.supportsTextureGatherLODBiasAMD = value;
     self
   }
@@ -12336,8 +12458,8 @@ impl VkTextureLODGatherFormatPropertiesAMD {
     self.pNext
   }
   #[inline]
-  pub fn get_supports_texture_gather_lod_bias_amd(&self) -> VkBool32 {
-    self.supportsTextureGatherLODBiasAMD
+  pub fn is_supports_texture_gather_lod_bias_amd(&self) -> bool {
+    self.supportsTextureGatherLODBiasAMD != 0
   }
 }
 #[cfg(feature = "VK_AMD_texture_gather_bias_lod")]
@@ -12656,17 +12778,20 @@ impl VkPhysicalDeviceMultiviewFeaturesKHX {
     }
   }
   #[inline]
-  pub fn set_multiview(mut self, value: VkBool32) -> Self {
+  pub fn set_multiview(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.multiview = value;
     self
   }
   #[inline]
-  pub fn set_multiview_geometry_shader(mut self, value: VkBool32) -> Self {
+  pub fn set_multiview_geometry_shader(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.multiviewGeometryShader = value;
     self
   }
   #[inline]
-  pub fn set_multiview_tessellation_shader(mut self, value: VkBool32) -> Self {
+  pub fn set_multiview_tessellation_shader(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.multiviewTessellationShader = value;
     self
   }
@@ -12679,16 +12804,16 @@ impl VkPhysicalDeviceMultiviewFeaturesKHX {
     self.pNext
   }
   #[inline]
-  pub fn get_multiview(&self) -> VkBool32 {
-    self.multiview
+  pub fn is_multiview(&self) -> bool {
+    self.multiview != 0
   }
   #[inline]
-  pub fn get_multiview_geometry_shader(&self) -> VkBool32 {
-    self.multiviewGeometryShader
+  pub fn is_multiview_geometry_shader(&self) -> bool {
+    self.multiviewGeometryShader != 0
   }
   #[inline]
-  pub fn get_multiview_tessellation_shader(&self) -> VkBool32 {
-    self.multiviewTessellationShader
+  pub fn is_multiview_tessellation_shader(&self) -> bool {
+    self.multiviewTessellationShader != 0
   }
 }
 #[cfg(feature = "VK_KHX_multiview")]
@@ -13059,6 +13184,11 @@ impl VkExportMemoryWin32HandleInfoNV {
     }
   }
   #[inline]
+  pub fn set_attributes(mut self, value: *const wsi::win32::SECURITY_ATTRIBUTES) -> Self {
+    self.pAttributes = value;
+    self
+  }
+  #[inline]
   pub fn set_dw_access(mut self, value: wsi::win32::DWORD) -> Self {
     self.dwAccess = value;
     self
@@ -13208,7 +13338,8 @@ impl VkPhysicalDeviceGroupPropertiesKHX {
     self
   }
   #[inline]
-  pub fn set_subset_allocation(mut self, value: VkBool32) -> Self {
+  pub fn set_subset_allocation(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.subsetAllocation = value;
     self
   }
@@ -13229,8 +13360,8 @@ impl VkPhysicalDeviceGroupPropertiesKHX {
     self.physicalDevices
   }
   #[inline]
-  pub fn get_subset_allocation(&self) -> VkBool32 {
-    self.subsetAllocation
+  pub fn is_subset_allocation(&self) -> bool {
+    self.subsetAllocation != 0
   }
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
@@ -14686,7 +14817,8 @@ impl VkPhysicalDeviceIDPropertiesKHR {
     self
   }
   #[inline]
-  pub fn set_device_luid_valid(mut self, value: VkBool32) -> Self {
+  pub fn set_device_luid_valid(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.deviceLUIDValid = value;
     self
   }
@@ -14715,8 +14847,8 @@ impl VkPhysicalDeviceIDPropertiesKHR {
     self.deviceNodeMask
   }
   #[inline]
-  pub fn get_device_luid_valid(&self) -> VkBool32 {
-    self.deviceLUIDValid
+  pub fn is_device_luid_valid(&self) -> bool {
+    self.deviceLUIDValid != 0
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -15013,6 +15145,11 @@ impl VkExportMemoryWin32HandleInfoKHR {
         ..::std::mem::zeroed()
       }
     }
+  }
+  #[inline]
+  pub fn set_attributes(mut self, value: *const wsi::win32::SECURITY_ATTRIBUTES) -> Self {
+    self.pAttributes = value;
+    self
   }
   #[inline]
   pub fn set_dw_access(mut self, value: wsi::win32::DWORD) -> Self {
@@ -15768,6 +15905,11 @@ impl VkExportSemaphoreWin32HandleInfoKHR {
     }
   }
   #[inline]
+  pub fn set_attributes(mut self, value: *const wsi::win32::SECURITY_ATTRIBUTES) -> Self {
+    self.pAttributes = value;
+    self
+  }
+  #[inline]
   pub fn set_dw_access(mut self, value: wsi::win32::DWORD) -> Self {
     self.dwAccess = value;
     self
@@ -16205,22 +16347,26 @@ impl VkPhysicalDevice16BitStorageFeaturesKHR {
     }
   }
   #[inline]
-  pub fn set_storage_buffer16_bit_access(mut self, value: VkBool32) -> Self {
+  pub fn set_storage_buffer16_bit_access(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.storageBuffer16BitAccess = value;
     self
   }
   #[inline]
-  pub fn set_uniform_and_storage_buffer16_bit_access(mut self, value: VkBool32) -> Self {
+  pub fn set_uniform_and_storage_buffer16_bit_access(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.uniformAndStorageBuffer16BitAccess = value;
     self
   }
   #[inline]
-  pub fn set_storage_push_constant16(mut self, value: VkBool32) -> Self {
+  pub fn set_storage_push_constant16(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.storagePushConstant16 = value;
     self
   }
   #[inline]
-  pub fn set_storage_input_output16(mut self, value: VkBool32) -> Self {
+  pub fn set_storage_input_output16(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.storageInputOutput16 = value;
     self
   }
@@ -16233,20 +16379,20 @@ impl VkPhysicalDevice16BitStorageFeaturesKHR {
     self.pNext
   }
   #[inline]
-  pub fn get_storage_buffer16_bit_access(&self) -> VkBool32 {
-    self.storageBuffer16BitAccess
+  pub fn is_storage_buffer16_bit_access(&self) -> bool {
+    self.storageBuffer16BitAccess != 0
   }
   #[inline]
-  pub fn get_uniform_and_storage_buffer16_bit_access(&self) -> VkBool32 {
-    self.uniformAndStorageBuffer16BitAccess
+  pub fn is_uniform_and_storage_buffer16_bit_access(&self) -> bool {
+    self.uniformAndStorageBuffer16BitAccess != 0
   }
   #[inline]
-  pub fn get_storage_push_constant16(&self) -> VkBool32 {
-    self.storagePushConstant16
+  pub fn is_storage_push_constant16(&self) -> bool {
+    self.storagePushConstant16 != 0
   }
   #[inline]
-  pub fn get_storage_input_output16(&self) -> VkBool32 {
-    self.storageInputOutput16
+  pub fn is_storage_input_output16(&self) -> bool {
+    self.storageInputOutput16 != 0
   }
 }
 #[cfg(feature = "VK_KHR_16bit_storage")]
@@ -16683,7 +16829,8 @@ impl VkDeviceGeneratedCommandsFeaturesNVX {
     }
   }
   #[inline]
-  pub fn set_compute_binding_point_support(mut self, value: VkBool32) -> Self {
+  pub fn set_compute_binding_point_support(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.computeBindingPointSupport = value;
     self
   }
@@ -16696,8 +16843,8 @@ impl VkDeviceGeneratedCommandsFeaturesNVX {
     self.pNext
   }
   #[inline]
-  pub fn get_compute_binding_point_support(&self) -> VkBool32 {
-    self.computeBindingPointSupport
+  pub fn is_compute_binding_point_support(&self) -> bool {
+    self.computeBindingPointSupport != 0
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -17806,7 +17953,8 @@ impl<'a> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
     }
   }
   #[inline]
-  pub fn set_viewport_w_scaling_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_viewport_w_scaling_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.viewportWScalingEnable = value;
     self
   }
@@ -17827,8 +17975,8 @@ impl<'a> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
     self.pNext
   }
   #[inline]
-  pub fn get_viewport_w_scaling_enable(&self) -> VkBool32 {
-    self.viewportWScalingEnable
+  pub fn is_viewport_w_scaling_enable(&self) -> bool {
+    self.viewportWScalingEnable != 0
   }
   #[inline]
   pub fn get_viewport_count(&self) -> u32 {
@@ -18484,7 +18632,8 @@ impl VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
     }
   }
   #[inline]
-  pub fn set_per_view_position_all_components(mut self, value: VkBool32) -> Self {
+  pub fn set_per_view_position_all_components(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.perViewPositionAllComponents = value;
     self
   }
@@ -18497,8 +18646,8 @@ impl VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
     self.pNext
   }
   #[inline]
-  pub fn get_per_view_position_all_components(&self) -> VkBool32 {
-    self.perViewPositionAllComponents
+  pub fn is_per_view_position_all_components(&self) -> bool {
+    self.perViewPositionAllComponents != 0
   }
 }
 #[cfg(feature = "VK_NVX_multiview_per_view_attributes")]
@@ -18845,32 +18994,38 @@ impl VkPhysicalDeviceConservativeRasterizationPropertiesEXT {
     self
   }
   #[inline]
-  pub fn set_primitive_underestimation(mut self, value: VkBool32) -> Self {
+  pub fn set_primitive_underestimation(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.primitiveUnderestimation = value;
     self
   }
   #[inline]
-  pub fn set_conservative_point_and_line_rasterization(mut self, value: VkBool32) -> Self {
+  pub fn set_conservative_point_and_line_rasterization(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.conservativePointAndLineRasterization = value;
     self
   }
   #[inline]
-  pub fn set_degenerate_triangles_rasterized(mut self, value: VkBool32) -> Self {
+  pub fn set_degenerate_triangles_rasterized(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.degenerateTrianglesRasterized = value;
     self
   }
   #[inline]
-  pub fn set_degenerate_lines_rasterized(mut self, value: VkBool32) -> Self {
+  pub fn set_degenerate_lines_rasterized(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.degenerateLinesRasterized = value;
     self
   }
   #[inline]
-  pub fn set_fully_covered_fragment_shader_input_variable(mut self, value: VkBool32) -> Self {
+  pub fn set_fully_covered_fragment_shader_input_variable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.fullyCoveredFragmentShaderInputVariable = value;
     self
   }
   #[inline]
-  pub fn set_conservative_rasterization_post_depth_coverage(mut self, value: VkBool32) -> Self {
+  pub fn set_conservative_rasterization_post_depth_coverage(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.conservativeRasterizationPostDepthCoverage = value;
     self
   }
@@ -18895,28 +19050,28 @@ impl VkPhysicalDeviceConservativeRasterizationPropertiesEXT {
     self.extraPrimitiveOverestimationSizeGranularity
   }
   #[inline]
-  pub fn get_primitive_underestimation(&self) -> VkBool32 {
-    self.primitiveUnderestimation
+  pub fn is_primitive_underestimation(&self) -> bool {
+    self.primitiveUnderestimation != 0
   }
   #[inline]
-  pub fn get_conservative_point_and_line_rasterization(&self) -> VkBool32 {
-    self.conservativePointAndLineRasterization
+  pub fn is_conservative_point_and_line_rasterization(&self) -> bool {
+    self.conservativePointAndLineRasterization != 0
   }
   #[inline]
-  pub fn get_degenerate_triangles_rasterized(&self) -> VkBool32 {
-    self.degenerateTrianglesRasterized
+  pub fn is_degenerate_triangles_rasterized(&self) -> bool {
+    self.degenerateTrianglesRasterized != 0
   }
   #[inline]
-  pub fn get_degenerate_lines_rasterized(&self) -> VkBool32 {
-    self.degenerateLinesRasterized
+  pub fn is_degenerate_lines_rasterized(&self) -> bool {
+    self.degenerateLinesRasterized != 0
   }
   #[inline]
-  pub fn get_fully_covered_fragment_shader_input_variable(&self) -> VkBool32 {
-    self.fullyCoveredFragmentShaderInputVariable
+  pub fn is_fully_covered_fragment_shader_input_variable(&self) -> bool {
+    self.fullyCoveredFragmentShaderInputVariable != 0
   }
   #[inline]
-  pub fn get_conservative_rasterization_post_depth_coverage(&self) -> VkBool32 {
-    self.conservativeRasterizationPostDepthCoverage
+  pub fn is_conservative_rasterization_post_depth_coverage(&self) -> bool {
+    self.conservativeRasterizationPostDepthCoverage != 0
   }
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
@@ -19731,6 +19886,11 @@ impl VkExportFenceWin32HandleInfoKHR {
     }
   }
   #[inline]
+  pub fn set_attributes(mut self, value: *const wsi::win32::SECURITY_ATTRIBUTES) -> Self {
+    self.pAttributes = value;
+    self
+  }
+  #[inline]
   pub fn set_dw_access(mut self, value: wsi::win32::DWORD) -> Self {
     self.dwAccess = value;
     self
@@ -20317,12 +20477,14 @@ impl VkPhysicalDeviceVariablePointerFeaturesKHR {
     }
   }
   #[inline]
-  pub fn set_variable_pointers_storage_buffer(mut self, value: VkBool32) -> Self {
+  pub fn set_variable_pointers_storage_buffer(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.variablePointersStorageBuffer = value;
     self
   }
   #[inline]
-  pub fn set_variable_pointers(mut self, value: VkBool32) -> Self {
+  pub fn set_variable_pointers(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.variablePointers = value;
     self
   }
@@ -20335,12 +20497,12 @@ impl VkPhysicalDeviceVariablePointerFeaturesKHR {
     self.pNext
   }
   #[inline]
-  pub fn get_variable_pointers_storage_buffer(&self) -> VkBool32 {
-    self.variablePointersStorageBuffer
+  pub fn is_variable_pointers_storage_buffer(&self) -> bool {
+    self.variablePointersStorageBuffer != 0
   }
   #[inline]
-  pub fn get_variable_pointers(&self) -> VkBool32 {
-    self.variablePointers
+  pub fn is_variable_pointers(&self) -> bool {
+    self.variablePointers != 0
   }
 }
 #[cfg(feature = "VK_KHR_variable_pointers")]
@@ -20803,12 +20965,14 @@ impl VkMemoryDedicatedRequirementsKHR {
     }
   }
   #[inline]
-  pub fn set_prefers_dedicated_allocation(mut self, value: VkBool32) -> Self {
+  pub fn set_prefers_dedicated_allocation(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.prefersDedicatedAllocation = value;
     self
   }
   #[inline]
-  pub fn set_requires_dedicated_allocation(mut self, value: VkBool32) -> Self {
+  pub fn set_requires_dedicated_allocation(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.requiresDedicatedAllocation = value;
     self
   }
@@ -20821,12 +20985,12 @@ impl VkMemoryDedicatedRequirementsKHR {
     self.pNext
   }
   #[inline]
-  pub fn get_prefers_dedicated_allocation(&self) -> VkBool32 {
-    self.prefersDedicatedAllocation
+  pub fn is_prefers_dedicated_allocation(&self) -> bool {
+    self.prefersDedicatedAllocation != 0
   }
   #[inline]
-  pub fn get_requires_dedicated_allocation(&self) -> VkBool32 {
-    self.requiresDedicatedAllocation
+  pub fn is_requires_dedicated_allocation(&self) -> bool {
+    self.requiresDedicatedAllocation != 0
   }
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
@@ -20993,12 +21157,14 @@ impl VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
     }
   }
   #[inline]
-  pub fn set_filter_minmax_single_component_formats(mut self, value: VkBool32) -> Self {
+  pub fn set_filter_minmax_single_component_formats(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.filterMinmaxSingleComponentFormats = value;
     self
   }
   #[inline]
-  pub fn set_filter_minmax_image_component_mapping(mut self, value: VkBool32) -> Self {
+  pub fn set_filter_minmax_image_component_mapping(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.filterMinmaxImageComponentMapping = value;
     self
   }
@@ -21011,12 +21177,12 @@ impl VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
     self.pNext
   }
   #[inline]
-  pub fn get_filter_minmax_single_component_formats(&self) -> VkBool32 {
-    self.filterMinmaxSingleComponentFormats
+  pub fn is_filter_minmax_single_component_formats(&self) -> bool {
+    self.filterMinmaxSingleComponentFormats != 0
   }
   #[inline]
-  pub fn get_filter_minmax_image_component_mapping(&self) -> VkBool32 {
-    self.filterMinmaxImageComponentMapping
+  pub fn is_filter_minmax_image_component_mapping(&self) -> bool {
+    self.filterMinmaxImageComponentMapping != 0
   }
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
@@ -21367,7 +21533,8 @@ impl<'a> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
     }
   }
   #[inline]
-  pub fn set_sample_locations_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_sample_locations_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.sampleLocationsEnable = value;
     self
   }
@@ -21385,8 +21552,8 @@ impl<'a> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
     self.pNext
   }
   #[inline]
-  pub fn get_sample_locations_enable(&self) -> VkBool32 {
-    self.sampleLocationsEnable
+  pub fn is_sample_locations_enable(&self) -> bool {
+    self.sampleLocationsEnable != 0
   }
   #[inline]
   pub fn get_sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
@@ -21456,7 +21623,8 @@ impl VkPhysicalDeviceSampleLocationsPropertiesEXT {
     self
   }
   #[inline]
-  pub fn set_variable_sample_locations(mut self, value: VkBool32) -> Self {
+  pub fn set_variable_sample_locations(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.variableSampleLocations = value;
     self
   }
@@ -21485,8 +21653,8 @@ impl VkPhysicalDeviceSampleLocationsPropertiesEXT {
     self.sampleLocationSubPixelBits
   }
   #[inline]
-  pub fn get_variable_sample_locations(&self) -> VkBool32 {
-    self.variableSampleLocations
+  pub fn is_variable_sample_locations(&self) -> bool {
+    self.variableSampleLocations != 0
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -21649,7 +21817,8 @@ impl VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     }
   }
   #[inline]
-  pub fn set_advanced_blend_coherent_operations(mut self, value: VkBool32) -> Self {
+  pub fn set_advanced_blend_coherent_operations(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.advancedBlendCoherentOperations = value;
     self
   }
@@ -21662,8 +21831,8 @@ impl VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     self.pNext
   }
   #[inline]
-  pub fn get_advanced_blend_coherent_operations(&self) -> VkBool32 {
-    self.advancedBlendCoherentOperations
+  pub fn is_advanced_blend_coherent_operations(&self) -> bool {
+    self.advancedBlendCoherentOperations != 0
   }
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
@@ -21715,27 +21884,32 @@ impl VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
     self
   }
   #[inline]
-  pub fn set_advanced_blend_independent_blend(mut self, value: VkBool32) -> Self {
+  pub fn set_advanced_blend_independent_blend(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.advancedBlendIndependentBlend = value;
     self
   }
   #[inline]
-  pub fn set_advanced_blend_non_premultiplied_src_color(mut self, value: VkBool32) -> Self {
+  pub fn set_advanced_blend_non_premultiplied_src_color(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.advancedBlendNonPremultipliedSrcColor = value;
     self
   }
   #[inline]
-  pub fn set_advanced_blend_non_premultiplied_dst_color(mut self, value: VkBool32) -> Self {
+  pub fn set_advanced_blend_non_premultiplied_dst_color(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.advancedBlendNonPremultipliedDstColor = value;
     self
   }
   #[inline]
-  pub fn set_advanced_blend_correlated_overlap(mut self, value: VkBool32) -> Self {
+  pub fn set_advanced_blend_correlated_overlap(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.advancedBlendCorrelatedOverlap = value;
     self
   }
   #[inline]
-  pub fn set_advanced_blend_all_operations(mut self, value: VkBool32) -> Self {
+  pub fn set_advanced_blend_all_operations(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.advancedBlendAllOperations = value;
     self
   }
@@ -21752,24 +21926,24 @@ impl VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
     self.advancedBlendMaxColorAttachments
   }
   #[inline]
-  pub fn get_advanced_blend_independent_blend(&self) -> VkBool32 {
-    self.advancedBlendIndependentBlend
+  pub fn is_advanced_blend_independent_blend(&self) -> bool {
+    self.advancedBlendIndependentBlend != 0
   }
   #[inline]
-  pub fn get_advanced_blend_non_premultiplied_src_color(&self) -> VkBool32 {
-    self.advancedBlendNonPremultipliedSrcColor
+  pub fn is_advanced_blend_non_premultiplied_src_color(&self) -> bool {
+    self.advancedBlendNonPremultipliedSrcColor != 0
   }
   #[inline]
-  pub fn get_advanced_blend_non_premultiplied_dst_color(&self) -> VkBool32 {
-    self.advancedBlendNonPremultipliedDstColor
+  pub fn is_advanced_blend_non_premultiplied_dst_color(&self) -> bool {
+    self.advancedBlendNonPremultipliedDstColor != 0
   }
   #[inline]
-  pub fn get_advanced_blend_correlated_overlap(&self) -> VkBool32 {
-    self.advancedBlendCorrelatedOverlap
+  pub fn is_advanced_blend_correlated_overlap(&self) -> bool {
+    self.advancedBlendCorrelatedOverlap != 0
   }
   #[inline]
-  pub fn get_advanced_blend_all_operations(&self) -> VkBool32 {
-    self.advancedBlendAllOperations
+  pub fn is_advanced_blend_all_operations(&self) -> bool {
+    self.advancedBlendAllOperations != 0
   }
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
@@ -21813,12 +21987,14 @@ impl VkPipelineColorBlendAdvancedStateCreateInfoEXT {
     }
   }
   #[inline]
-  pub fn set_src_premultiplied(mut self, value: VkBool32) -> Self {
+  pub fn set_src_premultiplied(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.srcPremultiplied = value;
     self
   }
   #[inline]
-  pub fn set_dst_premultiplied(mut self, value: VkBool32) -> Self {
+  pub fn set_dst_premultiplied(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.dstPremultiplied = value;
     self
   }
@@ -21836,12 +22012,12 @@ impl VkPipelineColorBlendAdvancedStateCreateInfoEXT {
     self.pNext
   }
   #[inline]
-  pub fn get_src_premultiplied(&self) -> VkBool32 {
-    self.srcPremultiplied
+  pub fn is_src_premultiplied(&self) -> bool {
+    self.srcPremultiplied != 0
   }
   #[inline]
-  pub fn get_dst_premultiplied(&self) -> VkBool32 {
-    self.dstPremultiplied
+  pub fn is_dst_premultiplied(&self) -> bool {
+    self.dstPremultiplied != 0
   }
   #[inline]
   pub fn get_blend_overlap(&self) -> VkBlendOverlapEXT {
@@ -21896,7 +22072,8 @@ impl VkPipelineCoverageToColorStateCreateInfoNV {
     self
   }
   #[inline]
-  pub fn set_coverage_to_color_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_coverage_to_color_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.coverageToColorEnable = value;
     self
   }
@@ -21918,8 +22095,8 @@ impl VkPipelineCoverageToColorStateCreateInfoNV {
     self.flags
   }
   #[inline]
-  pub fn get_coverage_to_color_enable(&self) -> VkBool32 {
-    self.coverageToColorEnable
+  pub fn is_coverage_to_color_enable(&self) -> bool {
+    self.coverageToColorEnable != 0
   }
   #[inline]
   pub fn get_coverage_to_color_location(&self) -> u32 {
@@ -21982,7 +22159,8 @@ impl<'a> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn set_coverage_modulation_table_enable(mut self, value: VkBool32) -> Self {
+  pub fn set_coverage_modulation_table_enable(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.coverageModulationTableEnable = value;
     self
   }
@@ -22011,8 +22189,8 @@ impl<'a> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
     self.coverageModulationMode
   }
   #[inline]
-  pub fn get_coverage_modulation_table_enable(&self) -> VkBool32 {
-    self.coverageModulationTableEnable
+  pub fn is_coverage_modulation_table_enable(&self) -> bool {
+    self.coverageModulationTableEnable != 0
   }
   #[inline]
   pub fn get_coverage_modulation_table_count(&self) -> u32 {
@@ -22256,7 +22434,8 @@ impl VkSamplerYcbcrConversionCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn set_force_explicit_reconstruction(mut self, value: VkBool32) -> Self {
+  pub fn set_force_explicit_reconstruction(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.forceExplicitReconstruction = value;
     self
   }
@@ -22297,8 +22476,8 @@ impl VkSamplerYcbcrConversionCreateInfoKHR {
     self.chromaFilter
   }
   #[inline]
-  pub fn get_force_explicit_reconstruction(&self) -> VkBool32 {
-    self.forceExplicitReconstruction
+  pub fn is_force_explicit_reconstruction(&self) -> bool {
+    self.forceExplicitReconstruction != 0
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -22514,7 +22693,8 @@ impl VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
     }
   }
   #[inline]
-  pub fn set_sampler_ycbcr_conversion(mut self, value: VkBool32) -> Self {
+  pub fn set_sampler_ycbcr_conversion(mut self, value: bool) -> Self {
+    let value: VkBool32 = if value { 1 } else { 0 };
     self.samplerYcbcrConversion = value;
     self
   }
@@ -22527,8 +22707,8 @@ impl VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
     self.pNext
   }
   #[inline]
-  pub fn get_sampler_ycbcr_conversion(&self) -> VkBool32 {
-    self.samplerYcbcrConversion
+  pub fn is_sampler_ycbcr_conversion(&self) -> bool {
+    self.samplerYcbcrConversion != 0
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]

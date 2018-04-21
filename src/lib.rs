@@ -278,7 +278,7 @@ where
   type Output = *mut T::Raw;
   #[inline]
   unsafe fn as_raw(self) -> *mut T::Raw {
-    RawStruct::as_raw_mut(&mut(*self))
+    RawStruct::as_raw_mut(&mut (*self))
   }
 }
 
@@ -287,5 +287,41 @@ impl<'a> AsRaw for &'a AsRef<CStr> {
   #[inline]
   unsafe fn as_raw(self) -> *const c_char {
     self.as_ref().as_ptr()
+  }
+}
+
+// manual functions
+
+impl<'a> types::VkInstanceCreateInfo<'a> {
+  pub fn set_enabled_extension_names(mut self, value: &[*const c_char]) -> Self {
+    unsafe {
+      self.as_raw_mut().enabledExtensionCount = value.len() as u32;
+      self.as_raw_mut().ppEnabledExtensionNames = value.as_ptr();
+      self
+    }
+  }
+  pub fn set_enabled_layer_names(mut self, value: &[*const c_char]) -> Self {
+    unsafe {
+      self.as_raw_mut().enabledLayerCount = value.len() as u32;
+      self.as_raw_mut().ppEnabledLayerNames = value.as_ptr();
+      self
+    }
+  }
+}
+
+impl<'a> types::VkDeviceCreateInfo<'a> {
+  pub fn set_enabled_extension_names(mut self, value: &[*const c_char]) -> Self {
+    unsafe {
+      self.as_raw_mut().enabledExtensionCount = value.len() as u32;
+      self.as_raw_mut().ppEnabledExtensionNames = value.as_ptr();
+      self
+    }
+  }
+  pub fn set_enabled_layer_names(mut self, value: &[*const c_char]) -> Self {
+    unsafe {
+      self.as_raw_mut().enabledLayerCount = value.len() as u32;
+      self.as_raw_mut().ppEnabledLayerNames = value.as_ptr();
+      self
+    }
   }
 }
