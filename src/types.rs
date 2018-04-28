@@ -5,8 +5,10 @@
 pub use types_base::*;
 use AsRaw;
 use RawStruct;
+use StructExtends;
 use enums;
 use platform::*;
+use std::cell::Cell;
 use types_raw;
 use utils::VkDispatchableHandle;
 use utils::VkNonDispatchableHandle;
@@ -21,10 +23,9 @@ pub type VkBuffer = VkNonDispatchableHandle<VkBuffer__>;
 
 /// Structure specifying a buffer memory barrier
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkBufferMemoryBarrier {
+pub struct VkBufferMemoryBarrier<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub srcAccessMask: VkAccessFlags,
   pub dstAccessMask: VkAccessFlags,
   pub srcQueueFamilyIndex: u32,
@@ -32,10 +33,11 @@ pub struct VkBufferMemoryBarrier {
   pub buffer: VkBuffer,
   pub offset: VkDeviceSize,
   pub size: VkDeviceSize,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkBufferMemoryBarrier {
+impl<'a> VkBufferMemoryBarrier<'a> {
   #[inline]
-  pub fn new() -> VkBufferMemoryBarrier {
+  pub fn new() -> VkBufferMemoryBarrier<'a> {
     unsafe {
       VkBufferMemoryBarrier {
         sType: VkStructureType::BUFFER_MEMORY_BARRIER,
@@ -79,14 +81,6 @@ impl VkBufferMemoryBarrier {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn src_access_mask(&self) -> VkAccessFlags {
     self.srcAccessMask
   }
@@ -114,13 +108,21 @@ impl VkBufferMemoryBarrier {
   pub fn size(&self) -> VkDeviceSize {
     self.size
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkBufferMemoryBarrier {
-  fn default() -> VkBufferMemoryBarrier {
+impl<'a> Default for VkBufferMemoryBarrier<'a> {
+  fn default() -> VkBufferMemoryBarrier<'a> {
     VkBufferMemoryBarrier::new()
   }
 }
-unsafe impl RawStruct for VkBufferMemoryBarrier {
+unsafe impl<'a> RawStruct for VkBufferMemoryBarrier<'a> {
   type Raw = types_raw::VkBufferMemoryBarrier;
 }
 #[cfg(test)]
@@ -413,10 +415,9 @@ fn test_struct_size_vk_image_subresource_range() {
 
 /// Structure specifying the parameters of an image memory barrier
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkImageMemoryBarrier {
+pub struct VkImageMemoryBarrier<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub srcAccessMask: VkAccessFlags,
   pub dstAccessMask: VkAccessFlags,
   pub oldLayout: VkImageLayout,
@@ -425,10 +426,11 @@ pub struct VkImageMemoryBarrier {
   pub dstQueueFamilyIndex: u32,
   pub image: VkImage,
   pub subresourceRange: VkImageSubresourceRange,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkImageMemoryBarrier {
+impl<'a> VkImageMemoryBarrier<'a> {
   #[inline]
-  pub fn new() -> VkImageMemoryBarrier {
+  pub fn new() -> VkImageMemoryBarrier<'a> {
     unsafe {
       VkImageMemoryBarrier {
         sType: VkStructureType::IMAGE_MEMORY_BARRIER,
@@ -477,14 +479,6 @@ impl VkImageMemoryBarrier {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn src_access_mask(&self) -> VkAccessFlags {
     self.srcAccessMask
   }
@@ -513,16 +507,24 @@ impl VkImageMemoryBarrier {
     self.image
   }
   #[inline]
-  pub fn subresource_range(&self) -> VkImageSubresourceRange {
-    self.subresourceRange
+  pub fn subresource_range(&self) -> &VkImageSubresourceRange {
+    &self.subresourceRange
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
-impl Default for VkImageMemoryBarrier {
-  fn default() -> VkImageMemoryBarrier {
+impl<'a> Default for VkImageMemoryBarrier<'a> {
+  fn default() -> VkImageMemoryBarrier<'a> {
     VkImageMemoryBarrier::new()
   }
 }
-unsafe impl RawStruct for VkImageMemoryBarrier {
+unsafe impl<'a> RawStruct for VkImageMemoryBarrier<'a> {
   type Raw = types_raw::VkImageMemoryBarrier;
 }
 #[cfg(test)]
@@ -533,16 +535,16 @@ fn test_struct_size_vk_image_memory_barrier() {
 
 /// Structure specifying a global memory barrier
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkMemoryBarrier {
+pub struct VkMemoryBarrier<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub srcAccessMask: VkAccessFlags,
   pub dstAccessMask: VkAccessFlags,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkMemoryBarrier {
+impl<'a> VkMemoryBarrier<'a> {
   #[inline]
-  pub fn new() -> VkMemoryBarrier {
+  pub fn new() -> VkMemoryBarrier<'a> {
     unsafe {
       VkMemoryBarrier {
         sType: VkStructureType::MEMORY_BARRIER,
@@ -561,14 +563,6 @@ impl VkMemoryBarrier {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn src_access_mask(&self) -> VkAccessFlags {
     self.srcAccessMask
   }
@@ -576,13 +570,21 @@ impl VkMemoryBarrier {
   pub fn dst_access_mask(&self) -> VkAccessFlags {
     self.dstAccessMask
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkMemoryBarrier {
-  fn default() -> VkMemoryBarrier {
+impl<'a> Default for VkMemoryBarrier<'a> {
+  fn default() -> VkMemoryBarrier<'a> {
     VkMemoryBarrier::new()
   }
 }
-unsafe impl RawStruct for VkMemoryBarrier {
+unsafe impl<'a> RawStruct for VkMemoryBarrier<'a> {
   type Raw = types_raw::VkMemoryBarrier;
 }
 #[cfg(test)]
@@ -593,10 +595,9 @@ fn test_struct_size_vk_memory_barrier() {
 
 /// Structure specifying application info
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkApplicationInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pApplicationName: *const c_char,
   pub applicationVersion: u32,
   pEngineName: *const c_char,
@@ -644,15 +645,7 @@ impl<'a> VkApplicationInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
-  pub fn application_name(&self) -> &'a CStr {
+  pub fn application_name(&self) -> &CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pApplicationName) }
   }
   #[inline]
@@ -660,7 +653,7 @@ impl<'a> VkApplicationInfo<'a> {
     self.applicationVersion
   }
   #[inline]
-  pub fn engine_name(&self) -> &'a CStr {
+  pub fn engine_name(&self) -> &CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pEngineName) }
   }
   #[inline]
@@ -670,6 +663,14 @@ impl<'a> VkApplicationInfo<'a> {
   #[inline]
   pub fn api_version(&self) -> u32 {
     self.apiVersion
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkApplicationInfo<'a> {
@@ -688,10 +689,9 @@ fn test_struct_size_vk_application_info() {
 
 /// Structure specifying parameters of a newly created instance
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkInstanceCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkInstanceCreateFlags,
   pub pApplicationInfo: Option<&'a VkApplicationInfo<'a>>,
   enabledLayerCount: u32,
@@ -720,14 +720,6 @@ impl<'a> VkInstanceCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkInstanceCreateFlags {
     self.flags
   }
@@ -742,6 +734,14 @@ impl<'a> VkInstanceCreateInfo<'a> {
   #[inline]
   pub fn enabled_extension_count(&self) -> u32 {
     self.enabledExtensionCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkInstanceCreateInfo<'a> {
@@ -788,6 +788,11 @@ impl VkAllocationCallbacks {
   #[inline]
   pub fn new() -> VkAllocationCallbacks {
     unsafe { ::std::mem::zeroed() }
+  }
+  #[inline]
+  pub fn set_user_data(mut self, value: *mut c_void) -> Self {
+    self.pUserData = value;
+    self
   }
   #[inline]
   pub fn set_pfn_allocation(mut self, value: PFN_vkAllocationFunction) -> Self {
@@ -1597,8 +1602,8 @@ pub struct VkImageFormatProperties {
 }
 impl VkImageFormatProperties {
   #[inline]
-  pub fn max_extent(&self) -> VkExtent3D {
-    self.maxExtent
+  pub fn max_extent(&self) -> &VkExtent3D {
+    &self.maxExtent
   }
   #[inline]
   pub fn max_mip_levels(&self) -> u32 {
@@ -2260,12 +2265,12 @@ impl VkPhysicalDeviceProperties {
     self.pipelineCacheUUID
   }
   #[inline]
-  pub fn limits(&self) -> VkPhysicalDeviceLimits {
-    self.limits
+  pub fn limits(&self) -> &VkPhysicalDeviceLimits {
+    &self.limits
   }
   #[inline]
-  pub fn sparse_properties(&self) -> VkPhysicalDeviceSparseProperties {
-    self.sparseProperties
+  pub fn sparse_properties(&self) -> &VkPhysicalDeviceSparseProperties {
+    &self.sparseProperties
   }
 }
 unsafe impl RawStruct for VkPhysicalDeviceProperties {
@@ -2303,8 +2308,8 @@ impl VkQueueFamilyProperties {
     self.timestampValidBits
   }
   #[inline]
-  pub fn min_image_transfer_granularity(&self) -> VkExtent3D {
-    self.minImageTransferGranularity
+  pub fn min_image_transfer_granularity(&self) -> &VkExtent3D {
+    &self.minImageTransferGranularity
   }
 }
 unsafe impl RawStruct for VkQueueFamilyProperties {
@@ -2418,10 +2423,9 @@ pub type VkDevice = VkDispatchableHandle<VkDevice__>;
 
 /// Structure specifying parameters of a newly created device queue
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkDeviceQueueCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkDeviceQueueCreateFlags,
   pub queueFamilyIndex: u32,
   queueCount: u32,
@@ -2457,14 +2461,6 @@ impl<'a> VkDeviceQueueCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkDeviceQueueCreateFlags {
     self.flags
   }
@@ -2475,6 +2471,14 @@ impl<'a> VkDeviceQueueCreateInfo<'a> {
   #[inline]
   pub fn queue_count(&self) -> u32 {
     self.queueCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkDeviceQueueCreateInfo<'a> {
@@ -2493,10 +2497,9 @@ fn test_struct_size_vk_device_queue_create_info() {
 
 /// Structure specifying parameters of a newly created device
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkDeviceCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkDeviceCreateFlags,
   queueCreateInfoCount: u32,
   pQueueCreateInfos: *const types_raw::VkDeviceQueueCreateInfo,
@@ -2535,14 +2538,6 @@ impl<'a> VkDeviceCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkDeviceCreateFlags {
     self.flags
   }
@@ -2561,6 +2556,14 @@ impl<'a> VkDeviceCreateInfo<'a> {
   #[inline]
   pub fn enabled_features(&self) -> Option<&'a VkPhysicalDeviceFeatures> {
     self.pEnabledFeatures
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkDeviceCreateInfo<'a> {
@@ -2659,10 +2662,9 @@ pub type VkCommandBuffer = VkDispatchableHandle<VkCommandBuffer__>;
 
 /// Structure specifying a queue submit operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkSubmitInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   waitSemaphoreCount: u32,
   pWaitSemaphores: *const types_raw::VkSemaphore,
   pWaitDstStageMask: *const VkPipelineStageFlags,
@@ -2699,14 +2701,6 @@ impl<'a> VkSubmitInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn wait_semaphore_count(&self) -> u32 {
     self.waitSemaphoreCount
   }
@@ -2717,6 +2711,14 @@ impl<'a> VkSubmitInfo<'a> {
   #[inline]
   pub fn signal_semaphore_count(&self) -> u32 {
     self.signalSemaphoreCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkSubmitInfo<'a> {
@@ -2741,16 +2743,16 @@ pub type VkFence = VkNonDispatchableHandle<VkFence__>;
 
 /// Structure containing parameters of a memory allocation
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkMemoryAllocateInfo {
+pub struct VkMemoryAllocateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub allocationSize: VkDeviceSize,
   pub memoryTypeIndex: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkMemoryAllocateInfo {
+impl<'a> VkMemoryAllocateInfo<'a> {
   #[inline]
-  pub fn new() -> VkMemoryAllocateInfo {
+  pub fn new() -> VkMemoryAllocateInfo<'a> {
     unsafe {
       VkMemoryAllocateInfo {
         sType: VkStructureType::MEMORY_ALLOCATE_INFO,
@@ -2769,14 +2771,6 @@ impl VkMemoryAllocateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn allocation_size(&self) -> VkDeviceSize {
     self.allocationSize
   }
@@ -2784,13 +2778,21 @@ impl VkMemoryAllocateInfo {
   pub fn memory_type_index(&self) -> u32 {
     self.memoryTypeIndex
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkMemoryAllocateInfo {
-  fn default() -> VkMemoryAllocateInfo {
+impl<'a> Default for VkMemoryAllocateInfo<'a> {
+  fn default() -> VkMemoryAllocateInfo<'a> {
     VkMemoryAllocateInfo::new()
   }
 }
-unsafe impl RawStruct for VkMemoryAllocateInfo {
+unsafe impl<'a> RawStruct for VkMemoryAllocateInfo<'a> {
   type Raw = types_raw::VkMemoryAllocateInfo;
 }
 #[cfg(test)]
@@ -2807,17 +2809,17 @@ pub type VkDeviceMemory = VkNonDispatchableHandle<VkDeviceMemory__>;
 
 /// Structure specifying a mapped memory range
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkMappedMemoryRange {
+pub struct VkMappedMemoryRange<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub memory: VkDeviceMemory,
   pub offset: VkDeviceSize,
   pub size: VkDeviceSize,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkMappedMemoryRange {
+impl<'a> VkMappedMemoryRange<'a> {
   #[inline]
-  pub fn new() -> VkMappedMemoryRange {
+  pub fn new() -> VkMappedMemoryRange<'a> {
     unsafe {
       VkMappedMemoryRange {
         sType: VkStructureType::MAPPED_MEMORY_RANGE,
@@ -2841,14 +2843,6 @@ impl VkMappedMemoryRange {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn memory(&self) -> VkDeviceMemory {
     self.memory
   }
@@ -2860,13 +2854,21 @@ impl VkMappedMemoryRange {
   pub fn size(&self) -> VkDeviceSize {
     self.size
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkMappedMemoryRange {
-  fn default() -> VkMappedMemoryRange {
+impl<'a> Default for VkMappedMemoryRange<'a> {
+  fn default() -> VkMappedMemoryRange<'a> {
     VkMappedMemoryRange::new()
   }
 }
-unsafe impl RawStruct for VkMappedMemoryRange {
+unsafe impl<'a> RawStruct for VkMappedMemoryRange<'a> {
   type Raw = types_raw::VkMappedMemoryRange;
 }
 #[cfg(test)]
@@ -2920,8 +2922,8 @@ impl VkSparseImageFormatProperties {
     self.aspectMask
   }
   #[inline]
-  pub fn image_granularity(&self) -> VkExtent3D {
-    self.imageGranularity
+  pub fn image_granularity(&self) -> &VkExtent3D {
+    &self.imageGranularity
   }
   #[inline]
   pub fn flags(&self) -> VkSparseImageFormatFlags {
@@ -2952,8 +2954,8 @@ pub struct VkSparseImageMemoryRequirements {
 }
 impl VkSparseImageMemoryRequirements {
   #[inline]
-  pub fn format_properties(&self) -> VkSparseImageFormatProperties {
-    self.formatProperties
+  pub fn format_properties(&self) -> &VkSparseImageFormatProperties {
+    &self.formatProperties
   }
   #[inline]
   pub fn image_mip_tail_first_lod(&self) -> u32 {
@@ -3061,7 +3063,6 @@ fn test_struct_size_vk_sparse_memory_bind() {
 
 /// Structure specifying a sparse buffer memory bind operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkSparseBufferMemoryBindInfo<'a> {
   pub buffer: VkBuffer,
   bindCount: u32,
@@ -3114,7 +3115,6 @@ fn test_struct_size_vk_sparse_buffer_memory_bind_info() {
 
 /// Structure specifying sparse image opaque memory bind info
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkSparseImageOpaqueMemoryBindInfo<'a> {
   pub image: VkImage,
   bindCount: u32,
@@ -3322,16 +3322,16 @@ impl VkSparseImageMemoryBind {
     self
   }
   #[inline]
-  pub fn subresource(&self) -> VkImageSubresource {
-    self.subresource
+  pub fn subresource(&self) -> &VkImageSubresource {
+    &self.subresource
   }
   #[inline]
-  pub fn offset(&self) -> VkOffset3D {
-    self.offset
+  pub fn offset(&self) -> &VkOffset3D {
+    &self.offset
   }
   #[inline]
-  pub fn extent(&self) -> VkExtent3D {
-    self.extent
+  pub fn extent(&self) -> &VkExtent3D {
+    &self.extent
   }
   #[inline]
   pub fn memory(&self) -> Option<VkDeviceMemory> {
@@ -3362,7 +3362,6 @@ fn test_struct_size_vk_sparse_image_memory_bind() {
 
 /// Structure specifying sparse image memory bind info
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkSparseImageMemoryBindInfo<'a> {
   pub image: VkImage,
   bindCount: u32,
@@ -3415,10 +3414,9 @@ fn test_struct_size_vk_sparse_image_memory_bind_info() {
 
 /// Structure specifying a sparse binding operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkBindSparseInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   waitSemaphoreCount: u32,
   pWaitSemaphores: *const types_raw::VkSemaphore,
   bufferBindCount: u32,
@@ -3482,14 +3480,6 @@ impl<'a> VkBindSparseInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn wait_semaphore_count(&self) -> u32 {
     self.waitSemaphoreCount
   }
@@ -3509,6 +3499,14 @@ impl<'a> VkBindSparseInfo<'a> {
   pub fn signal_semaphore_count(&self) -> u32 {
     self.signalSemaphoreCount
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 impl<'a> Default for VkBindSparseInfo<'a> {
   fn default() -> VkBindSparseInfo<'a> {
@@ -3526,15 +3524,15 @@ fn test_struct_size_vk_bind_sparse_info() {
 
 /// Structure specifying parameters of a newly created fence
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkFenceCreateInfo {
+pub struct VkFenceCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkFenceCreateFlags,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkFenceCreateInfo {
+impl<'a> VkFenceCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkFenceCreateInfo {
+  pub fn new() -> VkFenceCreateInfo<'a> {
     unsafe {
       VkFenceCreateInfo {
         sType: VkStructureType::FENCE_CREATE_INFO,
@@ -3548,24 +3546,24 @@ impl VkFenceCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkFenceCreateFlags {
     self.flags
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkFenceCreateInfo {
-  fn default() -> VkFenceCreateInfo {
+impl<'a> Default for VkFenceCreateInfo<'a> {
+  fn default() -> VkFenceCreateInfo<'a> {
     VkFenceCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkFenceCreateInfo {
+unsafe impl<'a> RawStruct for VkFenceCreateInfo<'a> {
   type Raw = types_raw::VkFenceCreateInfo;
 }
 #[cfg(test)]
@@ -3576,15 +3574,15 @@ fn test_struct_size_vk_fence_create_info() {
 
 /// Structure specifying parameters of a newly created semaphore
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkSemaphoreCreateInfo {
+pub struct VkSemaphoreCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkSemaphoreCreateFlags,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkSemaphoreCreateInfo {
+impl<'a> VkSemaphoreCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkSemaphoreCreateInfo {
+  pub fn new() -> VkSemaphoreCreateInfo<'a> {
     unsafe {
       VkSemaphoreCreateInfo {
         sType: VkStructureType::SEMAPHORE_CREATE_INFO,
@@ -3598,24 +3596,24 @@ impl VkSemaphoreCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkSemaphoreCreateFlags {
     self.flags
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkSemaphoreCreateInfo {
-  fn default() -> VkSemaphoreCreateInfo {
+impl<'a> Default for VkSemaphoreCreateInfo<'a> {
+  fn default() -> VkSemaphoreCreateInfo<'a> {
     VkSemaphoreCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkSemaphoreCreateInfo {
+unsafe impl<'a> RawStruct for VkSemaphoreCreateInfo<'a> {
   type Raw = types_raw::VkSemaphoreCreateInfo;
 }
 #[cfg(test)]
@@ -3626,15 +3624,15 @@ fn test_struct_size_vk_semaphore_create_info() {
 
 /// Structure specifying parameters of a newly created event
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkEventCreateInfo {
+pub struct VkEventCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkEventCreateFlags,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkEventCreateInfo {
+impl<'a> VkEventCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkEventCreateInfo {
+  pub fn new() -> VkEventCreateInfo<'a> {
     unsafe {
       VkEventCreateInfo {
         sType: VkStructureType::EVENT_CREATE_INFO,
@@ -3648,24 +3646,24 @@ impl VkEventCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkEventCreateFlags {
     self.flags
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkEventCreateInfo {
-  fn default() -> VkEventCreateInfo {
+impl<'a> Default for VkEventCreateInfo<'a> {
+  fn default() -> VkEventCreateInfo<'a> {
     VkEventCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkEventCreateInfo {
+unsafe impl<'a> RawStruct for VkEventCreateInfo<'a> {
   type Raw = types_raw::VkEventCreateInfo;
 }
 #[cfg(test)]
@@ -3682,18 +3680,18 @@ pub type VkEvent = VkNonDispatchableHandle<VkEvent__>;
 
 /// Structure specifying parameters of a newly created query pool
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkQueryPoolCreateInfo {
+pub struct VkQueryPoolCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkQueryPoolCreateFlags,
   pub queryType: VkQueryType,
   pub queryCount: u32,
   pub pipelineStatistics: VkQueryPipelineStatisticFlags,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkQueryPoolCreateInfo {
+impl<'a> VkQueryPoolCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkQueryPoolCreateInfo {
+  pub fn new() -> VkQueryPoolCreateInfo<'a> {
     unsafe {
       VkQueryPoolCreateInfo {
         sType: VkStructureType::QUERY_POOL_CREATE_INFO,
@@ -3722,14 +3720,6 @@ impl VkQueryPoolCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkQueryPoolCreateFlags {
     self.flags
   }
@@ -3745,13 +3735,21 @@ impl VkQueryPoolCreateInfo {
   pub fn pipeline_statistics(&self) -> VkQueryPipelineStatisticFlags {
     self.pipelineStatistics
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkQueryPoolCreateInfo {
-  fn default() -> VkQueryPoolCreateInfo {
+impl<'a> Default for VkQueryPoolCreateInfo<'a> {
+  fn default() -> VkQueryPoolCreateInfo<'a> {
     VkQueryPoolCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkQueryPoolCreateInfo {
+unsafe impl<'a> RawStruct for VkQueryPoolCreateInfo<'a> {
   type Raw = types_raw::VkQueryPoolCreateInfo;
 }
 #[cfg(test)]
@@ -3768,10 +3766,9 @@ pub type VkQueryPool = VkNonDispatchableHandle<VkQueryPool__>;
 
 /// Structure specifying the parameters of a newly created buffer object
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkBufferCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkBufferCreateFlags,
   pub size: VkDeviceSize,
   pub usage: VkBufferUsageFlags,
@@ -3819,14 +3816,6 @@ impl<'a> VkBufferCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkBufferCreateFlags {
     self.flags
   }
@@ -3846,6 +3835,14 @@ impl<'a> VkBufferCreateInfo<'a> {
   pub fn queue_family_index_count(&self) -> u32 {
     self.queueFamilyIndexCount
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 impl<'a> Default for VkBufferCreateInfo<'a> {
   fn default() -> VkBufferCreateInfo<'a> {
@@ -3863,19 +3860,19 @@ fn test_struct_size_vk_buffer_create_info() {
 
 /// Structure specifying parameters of a newly created buffer view
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkBufferViewCreateInfo {
+pub struct VkBufferViewCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkBufferViewCreateFlags,
   pub buffer: VkBuffer,
   pub format: VkFormat,
   pub offset: VkDeviceSize,
   pub range: VkDeviceSize,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkBufferViewCreateInfo {
+impl<'a> VkBufferViewCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkBufferViewCreateInfo {
+  pub fn new() -> VkBufferViewCreateInfo<'a> {
     unsafe {
       VkBufferViewCreateInfo {
         sType: VkStructureType::BUFFER_VIEW_CREATE_INFO,
@@ -3909,14 +3906,6 @@ impl VkBufferViewCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkBufferViewCreateFlags {
     self.flags
   }
@@ -3936,13 +3925,21 @@ impl VkBufferViewCreateInfo {
   pub fn range(&self) -> VkDeviceSize {
     self.range
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkBufferViewCreateInfo {
-  fn default() -> VkBufferViewCreateInfo {
+impl<'a> Default for VkBufferViewCreateInfo<'a> {
+  fn default() -> VkBufferViewCreateInfo<'a> {
     VkBufferViewCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkBufferViewCreateInfo {
+unsafe impl<'a> RawStruct for VkBufferViewCreateInfo<'a> {
   type Raw = types_raw::VkBufferViewCreateInfo;
 }
 #[cfg(test)]
@@ -3959,10 +3956,9 @@ pub type VkBufferView = VkNonDispatchableHandle<VkBufferView__>;
 
 /// Structure specifying the parameters of a newly created image object
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkImageCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkImageCreateFlags,
   pub imageType: VkImageType,
   pub format: VkFormat,
@@ -4052,14 +4048,6 @@ impl<'a> VkImageCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkImageCreateFlags {
     self.flags
   }
@@ -4072,8 +4060,8 @@ impl<'a> VkImageCreateInfo<'a> {
     self.format
   }
   #[inline]
-  pub fn extent(&self) -> VkExtent3D {
-    self.extent
+  pub fn extent(&self) -> &VkExtent3D {
+    &self.extent
   }
   #[inline]
   pub fn mip_levels(&self) -> u32 {
@@ -4106,6 +4094,14 @@ impl<'a> VkImageCreateInfo<'a> {
   #[inline]
   pub fn initial_layout(&self) -> VkImageLayout {
     self.initialLayout
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkImageCreateInfo<'a> {
@@ -4230,20 +4226,20 @@ fn test_struct_size_vk_component_mapping() {
 
 /// Structure specifying parameters of a newly created image view
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkImageViewCreateInfo {
+pub struct VkImageViewCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkImageViewCreateFlags,
   pub image: VkImage,
   pub viewType: VkImageViewType,
   pub format: VkFormat,
   pub components: VkComponentMapping,
   pub subresourceRange: VkImageSubresourceRange,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkImageViewCreateInfo {
+impl<'a> VkImageViewCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkImageViewCreateInfo {
+  pub fn new() -> VkImageViewCreateInfo<'a> {
     unsafe {
       VkImageViewCreateInfo {
         sType: VkStructureType::IMAGE_VIEW_CREATE_INFO,
@@ -4282,14 +4278,6 @@ impl VkImageViewCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkImageViewCreateFlags {
     self.flags
   }
@@ -4306,20 +4294,28 @@ impl VkImageViewCreateInfo {
     self.format
   }
   #[inline]
-  pub fn components(&self) -> VkComponentMapping {
-    self.components
+  pub fn components(&self) -> &VkComponentMapping {
+    &self.components
   }
   #[inline]
-  pub fn subresource_range(&self) -> VkImageSubresourceRange {
-    self.subresourceRange
+  pub fn subresource_range(&self) -> &VkImageSubresourceRange {
+    &self.subresourceRange
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
-impl Default for VkImageViewCreateInfo {
-  fn default() -> VkImageViewCreateInfo {
+impl<'a> Default for VkImageViewCreateInfo<'a> {
+  fn default() -> VkImageViewCreateInfo<'a> {
     VkImageViewCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkImageViewCreateInfo {
+unsafe impl<'a> RawStruct for VkImageViewCreateInfo<'a> {
   type Raw = types_raw::VkImageViewCreateInfo;
 }
 #[cfg(test)]
@@ -4336,10 +4332,9 @@ pub type VkImageView = VkNonDispatchableHandle<VkImageView__>;
 
 /// Structure specifying parameters of a newly created shader module
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkShaderModuleCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkShaderModuleCreateFlags,
   pub codeSize: usize,
   pCode: *const u32,
@@ -4366,20 +4361,20 @@ impl<'a> VkShaderModuleCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkShaderModuleCreateFlags {
     self.flags
   }
   #[inline]
   pub fn code_size(&self) -> usize {
     self.codeSize
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkShaderModuleCreateInfo<'a> {
@@ -4407,10 +4402,9 @@ pub type VkShaderModule = VkNonDispatchableHandle<VkShaderModule__>;
 
 /// Structure specifying parameters of a newly created pipeline cache
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkPipelineCacheCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineCacheCreateFlags,
   initialDataSize: usize,
   pInitialData: *const c_void,
@@ -4440,20 +4434,20 @@ impl<'a> VkPipelineCacheCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineCacheCreateFlags {
     self.flags
   }
   #[inline]
   pub fn initial_data_size(&self) -> usize {
     self.initialDataSize
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkPipelineCacheCreateInfo<'a> {
@@ -4539,7 +4533,6 @@ fn test_struct_size_vk_specialization_map_entry() {
 
 /// Structure specifying specialization info
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkSpecializationInfo<'a> {
   mapEntryCount: u32,
   pMapEntries: *const types_raw::VkSpecializationMapEntry,
@@ -4593,10 +4586,9 @@ fn test_struct_size_vk_specialization_info() {
 
 /// Structure specifying parameters of a newly created pipeline shader stage
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkPipelineShaderStageCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineShaderStageCreateFlags,
   pub stage: VkShaderStageFlagBits,
   pub module: VkShaderModule,
@@ -4641,14 +4633,6 @@ impl<'a> VkPipelineShaderStageCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineShaderStageCreateFlags {
     self.flags
   }
@@ -4661,12 +4645,20 @@ impl<'a> VkPipelineShaderStageCreateInfo<'a> {
     self.module
   }
   #[inline]
-  pub fn name(&self) -> &'a CStr {
+  pub fn name(&self) -> &CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pName) }
   }
   #[inline]
   pub fn specialization_info(&self) -> Option<&'a VkSpecializationInfo<'a>> {
     self.pSpecializationInfo
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkPipelineShaderStageCreateInfo<'a> {
@@ -4814,10 +4806,9 @@ fn test_struct_size_vk_vertex_input_attribute_description() {
 
 /// Structure specifying parameters of a newly created pipeline vertex input state
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkPipelineVertexInputStateCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineVertexInputStateCreateFlags,
   vertexBindingDescriptionCount: u32,
   pVertexBindingDescriptions: *const types_raw::VkVertexInputBindingDescription,
@@ -4857,14 +4848,6 @@ impl<'a> VkPipelineVertexInputStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineVertexInputStateCreateFlags {
     self.flags
   }
@@ -4875,6 +4858,14 @@ impl<'a> VkPipelineVertexInputStateCreateInfo<'a> {
   #[inline]
   pub fn vertex_attribute_description_count(&self) -> u32 {
     self.vertexAttributeDescriptionCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkPipelineVertexInputStateCreateInfo<'a> {
@@ -4896,17 +4887,17 @@ fn test_struct_size_vk_pipeline_vertex_input_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline input assembly state
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkPipelineInputAssemblyStateCreateInfo {
+pub struct VkPipelineInputAssemblyStateCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineInputAssemblyStateCreateFlags,
   pub topology: VkPrimitiveTopology,
   pub primitiveRestartEnable: VkBool32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkPipelineInputAssemblyStateCreateInfo {
+impl<'a> VkPipelineInputAssemblyStateCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkPipelineInputAssemblyStateCreateInfo {
+  pub fn new() -> VkPipelineInputAssemblyStateCreateInfo<'a> {
     unsafe {
       VkPipelineInputAssemblyStateCreateInfo {
         sType: VkStructureType::PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
@@ -4931,14 +4922,6 @@ impl VkPipelineInputAssemblyStateCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineInputAssemblyStateCreateFlags {
     self.flags
   }
@@ -4950,13 +4933,21 @@ impl VkPipelineInputAssemblyStateCreateInfo {
   pub fn is_primitive_restart_enable(&self) -> bool {
     self.primitiveRestartEnable != 0
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkPipelineInputAssemblyStateCreateInfo {
-  fn default() -> VkPipelineInputAssemblyStateCreateInfo {
+impl<'a> Default for VkPipelineInputAssemblyStateCreateInfo<'a> {
+  fn default() -> VkPipelineInputAssemblyStateCreateInfo<'a> {
     VkPipelineInputAssemblyStateCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkPipelineInputAssemblyStateCreateInfo {
+unsafe impl<'a> RawStruct for VkPipelineInputAssemblyStateCreateInfo<'a> {
   type Raw = types_raw::VkPipelineInputAssemblyStateCreateInfo;
 }
 #[cfg(test)]
@@ -4970,16 +4961,16 @@ fn test_struct_size_vk_pipeline_input_assembly_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline tessellation state
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkPipelineTessellationStateCreateInfo {
+pub struct VkPipelineTessellationStateCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineTessellationStateCreateFlags,
   pub patchControlPoints: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkPipelineTessellationStateCreateInfo {
+impl<'a> VkPipelineTessellationStateCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkPipelineTessellationStateCreateInfo {
+  pub fn new() -> VkPipelineTessellationStateCreateInfo<'a> {
     unsafe {
       VkPipelineTessellationStateCreateInfo {
         sType: VkStructureType::PIPELINE_TESSELLATION_STATE_CREATE_INFO,
@@ -4998,14 +4989,6 @@ impl VkPipelineTessellationStateCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineTessellationStateCreateFlags {
     self.flags
   }
@@ -5013,13 +4996,21 @@ impl VkPipelineTessellationStateCreateInfo {
   pub fn patch_control_points(&self) -> u32 {
     self.patchControlPoints
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkPipelineTessellationStateCreateInfo {
-  fn default() -> VkPipelineTessellationStateCreateInfo {
+impl<'a> Default for VkPipelineTessellationStateCreateInfo<'a> {
+  fn default() -> VkPipelineTessellationStateCreateInfo<'a> {
     VkPipelineTessellationStateCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkPipelineTessellationStateCreateInfo {
+unsafe impl<'a> RawStruct for VkPipelineTessellationStateCreateInfo<'a> {
   type Raw = types_raw::VkPipelineTessellationStateCreateInfo;
 }
 #[cfg(test)]
@@ -5229,12 +5220,12 @@ impl VkRect2D {
     self
   }
   #[inline]
-  pub fn offset(&self) -> VkOffset2D {
-    self.offset
+  pub fn offset(&self) -> &VkOffset2D {
+    &self.offset
   }
   #[inline]
-  pub fn extent(&self) -> VkExtent2D {
-    self.extent
+  pub fn extent(&self) -> &VkExtent2D {
+    &self.extent
   }
 }
 impl Default for VkRect2D {
@@ -5253,10 +5244,9 @@ fn test_struct_size_vk_rect2_d() {
 
 /// Structure specifying parameters of a newly created pipeline viewport state
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkPipelineViewportStateCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineViewportStateCreateFlags,
   viewportCount: u32,
   pViewports: *const types_raw::VkViewport,
@@ -5296,14 +5286,6 @@ impl<'a> VkPipelineViewportStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineViewportStateCreateFlags {
     self.flags
   }
@@ -5314,6 +5296,14 @@ impl<'a> VkPipelineViewportStateCreateInfo<'a> {
   #[inline]
   pub fn scissor_count(&self) -> u32 {
     self.scissorCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkPipelineViewportStateCreateInfo<'a> {
@@ -5335,10 +5325,9 @@ fn test_struct_size_vk_pipeline_viewport_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline rasterization state
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkPipelineRasterizationStateCreateInfo {
+pub struct VkPipelineRasterizationStateCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineRasterizationStateCreateFlags,
   pub depthClampEnable: VkBool32,
   pub rasterizerDiscardEnable: VkBool32,
@@ -5350,10 +5339,11 @@ pub struct VkPipelineRasterizationStateCreateInfo {
   pub depthBiasClamp: f32,
   pub depthBiasSlopeFactor: f32,
   pub lineWidth: f32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkPipelineRasterizationStateCreateInfo {
+impl<'a> VkPipelineRasterizationStateCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkPipelineRasterizationStateCreateInfo {
+  pub fn new() -> VkPipelineRasterizationStateCreateInfo<'a> {
     unsafe {
       VkPipelineRasterizationStateCreateInfo {
         sType: VkStructureType::PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
@@ -5420,14 +5410,6 @@ impl VkPipelineRasterizationStateCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineRasterizationStateCreateFlags {
     self.flags
   }
@@ -5471,13 +5453,21 @@ impl VkPipelineRasterizationStateCreateInfo {
   pub fn line_width(&self) -> f32 {
     self.lineWidth
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkPipelineRasterizationStateCreateInfo {
-  fn default() -> VkPipelineRasterizationStateCreateInfo {
+impl<'a> Default for VkPipelineRasterizationStateCreateInfo<'a> {
+  fn default() -> VkPipelineRasterizationStateCreateInfo<'a> {
     VkPipelineRasterizationStateCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkPipelineRasterizationStateCreateInfo {
+unsafe impl<'a> RawStruct for VkPipelineRasterizationStateCreateInfo<'a> {
   type Raw = types_raw::VkPipelineRasterizationStateCreateInfo;
 }
 #[cfg(test)]
@@ -5491,10 +5481,9 @@ fn test_struct_size_vk_pipeline_rasterization_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline multisample state
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkPipelineMultisampleStateCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineMultisampleStateCreateFlags,
   pub rasterizationSamples: VkSampleCountFlagBits,
   pub sampleShadingEnable: VkBool32,
@@ -5548,14 +5537,6 @@ impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineMultisampleStateCreateFlags {
     self.flags
   }
@@ -5578,6 +5559,14 @@ impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
   #[inline]
   pub fn is_alpha_to_one_enable(&self) -> bool {
     self.alphaToOneEnable != 0
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkPipelineMultisampleStateCreateInfo<'a> {
@@ -5694,10 +5683,9 @@ fn test_struct_size_vk_stencil_op_state() {
 
 /// Structure specifying parameters of a newly created pipeline depth stencil state
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkPipelineDepthStencilStateCreateInfo {
+pub struct VkPipelineDepthStencilStateCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineDepthStencilStateCreateFlags,
   pub depthTestEnable: VkBool32,
   pub depthWriteEnable: VkBool32,
@@ -5708,10 +5696,11 @@ pub struct VkPipelineDepthStencilStateCreateInfo {
   pub back: VkStencilOpState,
   pub minDepthBounds: f32,
   pub maxDepthBounds: f32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkPipelineDepthStencilStateCreateInfo {
+impl<'a> VkPipelineDepthStencilStateCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkPipelineDepthStencilStateCreateInfo {
+  pub fn new() -> VkPipelineDepthStencilStateCreateInfo<'a> {
     unsafe {
       VkPipelineDepthStencilStateCreateInfo {
         sType: VkStructureType::PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
@@ -5774,14 +5763,6 @@ impl VkPipelineDepthStencilStateCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineDepthStencilStateCreateFlags {
     self.flags
   }
@@ -5806,12 +5787,12 @@ impl VkPipelineDepthStencilStateCreateInfo {
     self.stencilTestEnable != 0
   }
   #[inline]
-  pub fn front(&self) -> VkStencilOpState {
-    self.front
+  pub fn front(&self) -> &VkStencilOpState {
+    &self.front
   }
   #[inline]
-  pub fn back(&self) -> VkStencilOpState {
-    self.back
+  pub fn back(&self) -> &VkStencilOpState {
+    &self.back
   }
   #[inline]
   pub fn min_depth_bounds(&self) -> f32 {
@@ -5821,13 +5802,21 @@ impl VkPipelineDepthStencilStateCreateInfo {
   pub fn max_depth_bounds(&self) -> f32 {
     self.maxDepthBounds
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkPipelineDepthStencilStateCreateInfo {
-  fn default() -> VkPipelineDepthStencilStateCreateInfo {
+impl<'a> Default for VkPipelineDepthStencilStateCreateInfo<'a> {
+  fn default() -> VkPipelineDepthStencilStateCreateInfo<'a> {
     VkPipelineDepthStencilStateCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkPipelineDepthStencilStateCreateInfo {
+unsafe impl<'a> RawStruct for VkPipelineDepthStencilStateCreateInfo<'a> {
   type Raw = types_raw::VkPipelineDepthStencilStateCreateInfo;
 }
 #[cfg(test)]
@@ -5950,10 +5939,9 @@ fn test_struct_size_vk_pipeline_color_blend_attachment_state() {
 
 /// Structure specifying parameters of a newly created pipeline color blend state
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkPipelineColorBlendStateCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineColorBlendStateCreateFlags,
   pub logicOpEnable: VkBool32,
   pub logicOp: VkLogicOp,
@@ -6002,14 +5990,6 @@ impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineColorBlendStateCreateFlags {
     self.flags
   }
@@ -6028,6 +6008,14 @@ impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
   #[inline]
   pub fn blend_constants(&self) -> [f32; 4] {
     self.blendConstants
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkPipelineColorBlendStateCreateInfo<'a> {
@@ -6049,10 +6037,9 @@ fn test_struct_size_vk_pipeline_color_blend_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline dynamic state
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkPipelineDynamicStateCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineDynamicStateCreateFlags,
   dynamicStateCount: u32,
   pDynamicStates: *const VkDynamicState,
@@ -6082,20 +6069,20 @@ impl<'a> VkPipelineDynamicStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineDynamicStateCreateFlags {
     self.flags
   }
   #[inline]
   pub fn dynamic_state_count(&self) -> u32 {
     self.dynamicStateCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkPipelineDynamicStateCreateInfo<'a> {
@@ -6135,20 +6122,19 @@ pub type VkPipeline = VkNonDispatchableHandle<VkPipeline__>;
 
 /// Structure specifying parameters of a newly created graphics pipeline
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkGraphicsPipelineCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineCreateFlags,
   stageCount: u32,
   pStages: *const types_raw::VkPipelineShaderStageCreateInfo,
   pub pVertexInputState: &'a VkPipelineVertexInputStateCreateInfo<'a>,
-  pub pInputAssemblyState: &'a VkPipelineInputAssemblyStateCreateInfo,
-  pub pTessellationState: Option<&'a VkPipelineTessellationStateCreateInfo>,
+  pub pInputAssemblyState: &'a VkPipelineInputAssemblyStateCreateInfo<'a>,
+  pub pTessellationState: Option<&'a VkPipelineTessellationStateCreateInfo<'a>>,
   pub pViewportState: Option<&'a VkPipelineViewportStateCreateInfo<'a>>,
-  pub pRasterizationState: &'a VkPipelineRasterizationStateCreateInfo,
+  pub pRasterizationState: &'a VkPipelineRasterizationStateCreateInfo<'a>,
   pub pMultisampleState: Option<&'a VkPipelineMultisampleStateCreateInfo<'a>>,
-  pub pDepthStencilState: Option<&'a VkPipelineDepthStencilStateCreateInfo>,
+  pub pDepthStencilState: Option<&'a VkPipelineDepthStencilStateCreateInfo<'a>>,
   pub pColorBlendState: Option<&'a VkPipelineColorBlendStateCreateInfo<'a>>,
   pub pDynamicState: Option<&'a VkPipelineDynamicStateCreateInfo<'a>>,
   pub layout: VkPipelineLayout,
@@ -6186,12 +6172,12 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_input_assembly_state(mut self, value: &'a VkPipelineInputAssemblyStateCreateInfo) -> Self {
+  pub fn set_input_assembly_state(mut self, value: &'a VkPipelineInputAssemblyStateCreateInfo<'a>) -> Self {
     self.pInputAssemblyState = value;
     self
   }
   #[inline]
-  pub fn set_tessellation_state(mut self, value: Option<&'a VkPipelineTessellationStateCreateInfo>) -> Self {
+  pub fn set_tessellation_state(mut self, value: Option<&'a VkPipelineTessellationStateCreateInfo<'a>>) -> Self {
     self.pTessellationState = value;
     self
   }
@@ -6201,7 +6187,7 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_rasterization_state(mut self, value: &'a VkPipelineRasterizationStateCreateInfo) -> Self {
+  pub fn set_rasterization_state(mut self, value: &'a VkPipelineRasterizationStateCreateInfo<'a>) -> Self {
     self.pRasterizationState = value;
     self
   }
@@ -6211,7 +6197,7 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_depth_stencil_state(mut self, value: Option<&'a VkPipelineDepthStencilStateCreateInfo>) -> Self {
+  pub fn set_depth_stencil_state(mut self, value: Option<&'a VkPipelineDepthStencilStateCreateInfo<'a>>) -> Self {
     self.pDepthStencilState = value;
     self
   }
@@ -6251,14 +6237,6 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineCreateFlags {
     self.flags
   }
@@ -6271,11 +6249,11 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self.pVertexInputState
   }
   #[inline]
-  pub fn input_assembly_state(&self) -> &'a VkPipelineInputAssemblyStateCreateInfo {
+  pub fn input_assembly_state(&self) -> &'a VkPipelineInputAssemblyStateCreateInfo<'a> {
     self.pInputAssemblyState
   }
   #[inline]
-  pub fn tessellation_state(&self) -> Option<&'a VkPipelineTessellationStateCreateInfo> {
+  pub fn tessellation_state(&self) -> Option<&'a VkPipelineTessellationStateCreateInfo<'a>> {
     self.pTessellationState
   }
   #[inline]
@@ -6283,7 +6261,7 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self.pViewportState
   }
   #[inline]
-  pub fn rasterization_state(&self) -> &'a VkPipelineRasterizationStateCreateInfo {
+  pub fn rasterization_state(&self) -> &'a VkPipelineRasterizationStateCreateInfo<'a> {
     self.pRasterizationState
   }
   #[inline]
@@ -6291,7 +6269,7 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self.pMultisampleState
   }
   #[inline]
-  pub fn depth_stencil_state(&self) -> Option<&'a VkPipelineDepthStencilStateCreateInfo> {
+  pub fn depth_stencil_state(&self) -> Option<&'a VkPipelineDepthStencilStateCreateInfo<'a>> {
     self.pDepthStencilState
   }
   #[inline]
@@ -6322,6 +6300,14 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
   pub fn base_pipeline_index(&self) -> i32 {
     self.basePipelineIndex
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 impl<'a> Default for VkGraphicsPipelineCreateInfo<'a> {
   fn default() -> VkGraphicsPipelineCreateInfo<'a> {
@@ -6342,10 +6328,9 @@ fn test_struct_size_vk_graphics_pipeline_create_info() {
 
 /// Structure specifying parameters of a newly created compute pipeline
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkComputePipelineCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineCreateFlags,
   pub stage: VkPipelineShaderStageCreateInfo<'a>,
   pub layout: VkPipelineLayout,
@@ -6388,20 +6373,12 @@ impl<'a> VkComputePipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn stage(&self) -> VkPipelineShaderStageCreateInfo<'a> {
-    self.stage
+  pub fn stage(&self) -> &VkPipelineShaderStageCreateInfo<'a> {
+    &self.stage
   }
   #[inline]
   pub fn layout(&self) -> VkPipelineLayout {
@@ -6414,6 +6391,14 @@ impl<'a> VkComputePipelineCreateInfo<'a> {
   #[inline]
   pub fn base_pipeline_index(&self) -> i32 {
     self.basePipelineIndex
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkComputePipelineCreateInfo<'a> {
@@ -6496,10 +6481,9 @@ fn test_struct_size_vk_push_constant_range() {
 
 /// Structure specifying the parameters of a newly created pipeline layout object
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkPipelineLayoutCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineLayoutCreateFlags,
   setLayoutCount: u32,
   pSetLayouts: *const types_raw::VkDescriptorSetLayout,
@@ -6539,14 +6523,6 @@ impl<'a> VkPipelineLayoutCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineLayoutCreateFlags {
     self.flags
   }
@@ -6557,6 +6533,14 @@ impl<'a> VkPipelineLayoutCreateInfo<'a> {
   #[inline]
   pub fn push_constant_range_count(&self) -> u32 {
     self.pushConstantRangeCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkPipelineLayoutCreateInfo<'a> {
@@ -6578,10 +6562,9 @@ fn test_struct_size_vk_pipeline_layout_create_info() {
 
 /// Structure specifying parameters of a newly created sampler
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkSamplerCreateInfo {
+pub struct VkSamplerCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkSamplerCreateFlags,
   pub magFilter: VkFilter,
   pub minFilter: VkFilter,
@@ -6598,10 +6581,11 @@ pub struct VkSamplerCreateInfo {
   pub maxLod: f32,
   pub borderColor: VkBorderColor,
   pub unnormalizedCoordinates: VkBool32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkSamplerCreateInfo {
+impl<'a> VkSamplerCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkSamplerCreateInfo {
+  pub fn new() -> VkSamplerCreateInfo<'a> {
     unsafe {
       VkSamplerCreateInfo {
         sType: VkStructureType::SAMPLER_CREATE_INFO,
@@ -6693,14 +6677,6 @@ impl VkSamplerCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkSamplerCreateFlags {
     self.flags
   }
@@ -6764,13 +6740,21 @@ impl VkSamplerCreateInfo {
   pub fn is_unnormalized_coordinates(&self) -> bool {
     self.unnormalizedCoordinates != 0
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkSamplerCreateInfo {
-  fn default() -> VkSamplerCreateInfo {
+impl<'a> Default for VkSamplerCreateInfo<'a> {
+  fn default() -> VkSamplerCreateInfo<'a> {
     VkSamplerCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkSamplerCreateInfo {
+unsafe impl<'a> RawStruct for VkSamplerCreateInfo<'a> {
   type Raw = types_raw::VkSamplerCreateInfo;
 }
 #[cfg(test)]
@@ -6787,7 +6771,6 @@ pub type VkSampler = VkNonDispatchableHandle<VkSampler__>;
 
 /// Structure specifying a descriptor set layout binding
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkDescriptorSetLayoutBinding<'a> {
   pub binding: u32,
   pub descriptorType: VkDescriptorType,
@@ -6860,10 +6843,9 @@ fn test_struct_size_vk_descriptor_set_layout_binding() {
 
 /// Structure specifying parameters of a newly created descriptor set layout
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkDescriptorSetLayoutCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkDescriptorSetLayoutCreateFlags,
   bindingCount: u32,
   pBindings: *const types_raw::VkDescriptorSetLayoutBinding,
@@ -6893,20 +6875,20 @@ impl<'a> VkDescriptorSetLayoutCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkDescriptorSetLayoutCreateFlags {
     self.flags
   }
   #[inline]
   pub fn binding_count(&self) -> u32 {
     self.bindingCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkDescriptorSetLayoutCreateInfo<'a> {
@@ -6973,10 +6955,9 @@ fn test_struct_size_vk_descriptor_pool_size() {
 
 /// Structure specifying parameters of a newly created descriptor pool
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkDescriptorPoolCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkDescriptorPoolCreateFlags,
   pub maxSets: u32,
   poolSizeCount: u32,
@@ -7012,14 +6993,6 @@ impl<'a> VkDescriptorPoolCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkDescriptorPoolCreateFlags {
     self.flags
   }
@@ -7030,6 +7003,14 @@ impl<'a> VkDescriptorPoolCreateInfo<'a> {
   #[inline]
   pub fn pool_size_count(&self) -> u32 {
     self.poolSizeCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkDescriptorPoolCreateInfo<'a> {
@@ -7057,10 +7038,9 @@ pub type VkDescriptorPool = VkNonDispatchableHandle<VkDescriptorPool__>;
 
 /// Structure specifying the allocation parameters for descriptor sets
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkDescriptorSetAllocateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub descriptorPool: VkDescriptorPool,
   descriptorSetCount: u32,
   pSetLayouts: *const types_raw::VkDescriptorSetLayout,
@@ -7090,20 +7070,20 @@ impl<'a> VkDescriptorSetAllocateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn descriptor_pool(&self) -> VkDescriptorPool {
     self.descriptorPool
   }
   #[inline]
   pub fn descriptor_set_count(&self) -> u32 {
     self.descriptorSetCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkDescriptorSetAllocateInfo<'a> {
@@ -7241,10 +7221,9 @@ fn test_struct_size_vk_descriptor_buffer_info() {
 
 /// Structure specifying the parameters of a descriptor set write operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkWriteDescriptorSet<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub dstSet: VkDescriptorSet,
   pub dstBinding: u32,
   pub dstArrayElement: u32,
@@ -7286,14 +7265,6 @@ impl<'a> VkWriteDescriptorSet<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn dst_set(&self) -> VkDescriptorSet {
     self.dstSet
   }
@@ -7313,6 +7284,14 @@ impl<'a> VkWriteDescriptorSet<'a> {
   pub fn descriptor_type(&self) -> VkDescriptorType {
     self.descriptorType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 impl<'a> Default for VkWriteDescriptorSet<'a> {
   fn default() -> VkWriteDescriptorSet<'a> {
@@ -7330,10 +7309,9 @@ fn test_struct_size_vk_write_descriptor_set() {
 
 /// Structure specifying a copy descriptor set operation
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkCopyDescriptorSet {
+pub struct VkCopyDescriptorSet<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub srcSet: VkDescriptorSet,
   pub srcBinding: u32,
   pub srcArrayElement: u32,
@@ -7341,10 +7319,11 @@ pub struct VkCopyDescriptorSet {
   pub dstBinding: u32,
   pub dstArrayElement: u32,
   pub descriptorCount: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkCopyDescriptorSet {
+impl<'a> VkCopyDescriptorSet<'a> {
   #[inline]
-  pub fn new() -> VkCopyDescriptorSet {
+  pub fn new() -> VkCopyDescriptorSet<'a> {
     unsafe {
       VkCopyDescriptorSet {
         sType: VkStructureType::COPY_DESCRIPTOR_SET,
@@ -7388,14 +7367,6 @@ impl VkCopyDescriptorSet {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn src_set(&self) -> VkDescriptorSet {
     self.srcSet
   }
@@ -7423,13 +7394,21 @@ impl VkCopyDescriptorSet {
   pub fn descriptor_count(&self) -> u32 {
     self.descriptorCount
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkCopyDescriptorSet {
-  fn default() -> VkCopyDescriptorSet {
+impl<'a> Default for VkCopyDescriptorSet<'a> {
+  fn default() -> VkCopyDescriptorSet<'a> {
     VkCopyDescriptorSet::new()
   }
 }
-unsafe impl RawStruct for VkCopyDescriptorSet {
+unsafe impl<'a> RawStruct for VkCopyDescriptorSet<'a> {
   type Raw = types_raw::VkCopyDescriptorSet;
 }
 #[cfg(test)]
@@ -7440,10 +7419,9 @@ fn test_struct_size_vk_copy_descriptor_set() {
 
 /// Structure specifying parameters of a newly created framebuffer
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkFramebufferCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkFramebufferCreateFlags,
   pub renderPass: VkRenderPass,
   attachmentCount: u32,
@@ -7497,14 +7475,6 @@ impl<'a> VkFramebufferCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkFramebufferCreateFlags {
     self.flags
   }
@@ -7527,6 +7497,14 @@ impl<'a> VkFramebufferCreateInfo<'a> {
   #[inline]
   pub fn layers(&self) -> u32 {
     self.layers
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkFramebufferCreateInfo<'a> {
@@ -7711,7 +7689,6 @@ fn test_struct_size_vk_attachment_reference() {
 
 /// Structure specifying a subpass description
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkSubpassDescription<'a> {
   pub flags: VkSubpassDescriptionFlags,
   pub pipelineBindPoint: VkPipelineBindPoint,
@@ -7896,10 +7873,9 @@ fn test_struct_size_vk_subpass_dependency() {
 
 /// Structure specifying parameters of a newly created render pass
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkRenderPassCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkRenderPassCreateFlags,
   attachmentCount: u32,
   pAttachments: *const types_raw::VkAttachmentDescription,
@@ -7949,14 +7925,6 @@ impl<'a> VkRenderPassCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkRenderPassCreateFlags {
     self.flags
   }
@@ -7971,6 +7939,14 @@ impl<'a> VkRenderPassCreateInfo<'a> {
   #[inline]
   pub fn dependency_count(&self) -> u32 {
     self.dependencyCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkRenderPassCreateInfo<'a> {
@@ -7989,16 +7965,16 @@ fn test_struct_size_vk_render_pass_create_info() {
 
 /// Structure specifying parameters of a newly created command pool
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkCommandPoolCreateInfo {
+pub struct VkCommandPoolCreateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkCommandPoolCreateFlags,
   pub queueFamilyIndex: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkCommandPoolCreateInfo {
+impl<'a> VkCommandPoolCreateInfo<'a> {
   #[inline]
-  pub fn new() -> VkCommandPoolCreateInfo {
+  pub fn new() -> VkCommandPoolCreateInfo<'a> {
     unsafe {
       VkCommandPoolCreateInfo {
         sType: VkStructureType::COMMAND_POOL_CREATE_INFO,
@@ -8017,14 +7993,6 @@ impl VkCommandPoolCreateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkCommandPoolCreateFlags {
     self.flags
   }
@@ -8032,13 +8000,21 @@ impl VkCommandPoolCreateInfo {
   pub fn queue_family_index(&self) -> u32 {
     self.queueFamilyIndex
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkCommandPoolCreateInfo {
-  fn default() -> VkCommandPoolCreateInfo {
+impl<'a> Default for VkCommandPoolCreateInfo<'a> {
+  fn default() -> VkCommandPoolCreateInfo<'a> {
     VkCommandPoolCreateInfo::new()
   }
 }
-unsafe impl RawStruct for VkCommandPoolCreateInfo {
+unsafe impl<'a> RawStruct for VkCommandPoolCreateInfo<'a> {
   type Raw = types_raw::VkCommandPoolCreateInfo;
 }
 #[cfg(test)]
@@ -8055,17 +8031,17 @@ pub type VkCommandPool = VkNonDispatchableHandle<VkCommandPool__>;
 
 /// Structure specifying the allocation parameters for command buffer object
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkCommandBufferAllocateInfo {
+pub struct VkCommandBufferAllocateInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub commandPool: VkCommandPool,
   pub level: VkCommandBufferLevel,
   pub commandBufferCount: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkCommandBufferAllocateInfo {
+impl<'a> VkCommandBufferAllocateInfo<'a> {
   #[inline]
-  pub fn new() -> VkCommandBufferAllocateInfo {
+  pub fn new() -> VkCommandBufferAllocateInfo<'a> {
     unsafe {
       VkCommandBufferAllocateInfo {
         sType: VkStructureType::COMMAND_BUFFER_ALLOCATE_INFO,
@@ -8089,14 +8065,6 @@ impl VkCommandBufferAllocateInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn command_pool(&self) -> VkCommandPool {
     self.commandPool
   }
@@ -8108,13 +8076,21 @@ impl VkCommandBufferAllocateInfo {
   pub fn command_buffer_count(&self) -> u32 {
     self.commandBufferCount
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkCommandBufferAllocateInfo {
-  fn default() -> VkCommandBufferAllocateInfo {
+impl<'a> Default for VkCommandBufferAllocateInfo<'a> {
+  fn default() -> VkCommandBufferAllocateInfo<'a> {
     VkCommandBufferAllocateInfo::new()
   }
 }
-unsafe impl RawStruct for VkCommandBufferAllocateInfo {
+unsafe impl<'a> RawStruct for VkCommandBufferAllocateInfo<'a> {
   type Raw = types_raw::VkCommandBufferAllocateInfo;
 }
 #[cfg(test)]
@@ -8128,20 +8104,20 @@ fn test_struct_size_vk_command_buffer_allocate_info() {
 
 /// Structure specifying command buffer inheritance info
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkCommandBufferInheritanceInfo {
+pub struct VkCommandBufferInheritanceInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub renderPass: Option<VkRenderPass>,
   pub subpass: u32,
   pub framebuffer: Option<VkFramebuffer>,
   pub occlusionQueryEnable: VkBool32,
   pub queryFlags: VkQueryControlFlags,
   pub pipelineStatistics: VkQueryPipelineStatisticFlags,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
-impl VkCommandBufferInheritanceInfo {
+impl<'a> VkCommandBufferInheritanceInfo<'a> {
   #[inline]
-  pub fn new() -> VkCommandBufferInheritanceInfo {
+  pub fn new() -> VkCommandBufferInheritanceInfo<'a> {
     unsafe {
       VkCommandBufferInheritanceInfo {
         sType: VkStructureType::COMMAND_BUFFER_INHERITANCE_INFO,
@@ -8181,14 +8157,6 @@ impl VkCommandBufferInheritanceInfo {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn render_pass(&self) -> Option<VkRenderPass> {
     self.renderPass
   }
@@ -8212,13 +8180,21 @@ impl VkCommandBufferInheritanceInfo {
   pub fn pipeline_statistics(&self) -> VkQueryPipelineStatisticFlags {
     self.pipelineStatistics
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
-impl Default for VkCommandBufferInheritanceInfo {
-  fn default() -> VkCommandBufferInheritanceInfo {
+impl<'a> Default for VkCommandBufferInheritanceInfo<'a> {
+  fn default() -> VkCommandBufferInheritanceInfo<'a> {
     VkCommandBufferInheritanceInfo::new()
   }
 }
-unsafe impl RawStruct for VkCommandBufferInheritanceInfo {
+unsafe impl<'a> RawStruct for VkCommandBufferInheritanceInfo<'a> {
   type Raw = types_raw::VkCommandBufferInheritanceInfo;
 }
 #[cfg(test)]
@@ -8232,12 +8208,11 @@ fn test_struct_size_vk_command_buffer_inheritance_info() {
 
 /// Structure specifying a command buffer begin operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkCommandBufferBeginInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkCommandBufferUsageFlags,
-  pub pInheritanceInfo: Option<&'a VkCommandBufferInheritanceInfo>,
+  pub pInheritanceInfo: Option<&'a VkCommandBufferInheritanceInfo<'a>>,
 }
 impl<'a> VkCommandBufferBeginInfo<'a> {
   #[inline]
@@ -8255,25 +8230,25 @@ impl<'a> VkCommandBufferBeginInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_inheritance_info(mut self, value: Option<&'a VkCommandBufferInheritanceInfo>) -> Self {
+  pub fn set_inheritance_info(mut self, value: Option<&'a VkCommandBufferInheritanceInfo<'a>>) -> Self {
     self.pInheritanceInfo = value;
     self
-  }
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
   }
   #[inline]
   pub fn flags(&self) -> VkCommandBufferUsageFlags {
     self.flags
   }
   #[inline]
-  pub fn inheritance_info(&self) -> Option<&'a VkCommandBufferInheritanceInfo> {
+  pub fn inheritance_info(&self) -> Option<&'a VkCommandBufferInheritanceInfo<'a>> {
     self.pInheritanceInfo
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkCommandBufferBeginInfo<'a> {
@@ -8457,24 +8432,24 @@ impl VkImageCopy {
     self
   }
   #[inline]
-  pub fn src_subresource(&self) -> VkImageSubresourceLayers {
-    self.srcSubresource
+  pub fn src_subresource(&self) -> &VkImageSubresourceLayers {
+    &self.srcSubresource
   }
   #[inline]
-  pub fn src_offset(&self) -> VkOffset3D {
-    self.srcOffset
+  pub fn src_offset(&self) -> &VkOffset3D {
+    &self.srcOffset
   }
   #[inline]
-  pub fn dst_subresource(&self) -> VkImageSubresourceLayers {
-    self.dstSubresource
+  pub fn dst_subresource(&self) -> &VkImageSubresourceLayers {
+    &self.dstSubresource
   }
   #[inline]
-  pub fn dst_offset(&self) -> VkOffset3D {
-    self.dstOffset
+  pub fn dst_offset(&self) -> &VkOffset3D {
+    &self.dstOffset
   }
   #[inline]
-  pub fn extent(&self) -> VkExtent3D {
-    self.extent
+  pub fn extent(&self) -> &VkExtent3D {
+    &self.extent
   }
 }
 impl Default for VkImageCopy {
@@ -8526,16 +8501,16 @@ impl VkImageBlit {
     self
   }
   #[inline]
-  pub fn src_subresource(&self) -> VkImageSubresourceLayers {
-    self.srcSubresource
+  pub fn src_subresource(&self) -> &VkImageSubresourceLayers {
+    &self.srcSubresource
   }
   #[inline]
   pub fn src_offsets(&self) -> [VkOffset3D; 2] {
     self.srcOffsets
   }
   #[inline]
-  pub fn dst_subresource(&self) -> VkImageSubresourceLayers {
-    self.dstSubresource
+  pub fn dst_subresource(&self) -> &VkImageSubresourceLayers {
+    &self.dstSubresource
   }
   #[inline]
   pub fn dst_offsets(&self) -> [VkOffset3D; 2] {
@@ -8615,16 +8590,16 @@ impl VkBufferImageCopy {
     self.bufferImageHeight
   }
   #[inline]
-  pub fn image_subresource(&self) -> VkImageSubresourceLayers {
-    self.imageSubresource
+  pub fn image_subresource(&self) -> &VkImageSubresourceLayers {
+    &self.imageSubresource
   }
   #[inline]
-  pub fn image_offset(&self) -> VkOffset3D {
-    self.imageOffset
+  pub fn image_offset(&self) -> &VkOffset3D {
+    &self.imageOffset
   }
   #[inline]
-  pub fn image_extent(&self) -> VkExtent3D {
-    self.imageExtent
+  pub fn image_extent(&self) -> &VkExtent3D {
+    &self.imageExtent
   }
 }
 impl Default for VkBufferImageCopy {
@@ -8759,8 +8734,8 @@ impl VkClearAttachment {
     self.colorAttachment
   }
   #[inline]
-  pub fn clear_value(&self) -> VkClearValue {
-    self.clearValue
+  pub fn clear_value(&self) -> &VkClearValue {
+    &self.clearValue
   }
 }
 impl Default for VkClearAttachment {
@@ -8806,8 +8781,8 @@ impl VkClearRect {
     self
   }
   #[inline]
-  pub fn rect(&self) -> VkRect2D {
-    self.rect
+  pub fn rect(&self) -> &VkRect2D {
+    &self.rect
   }
   #[inline]
   pub fn base_array_layer(&self) -> u32 {
@@ -8873,24 +8848,24 @@ impl VkImageResolve {
     self
   }
   #[inline]
-  pub fn src_subresource(&self) -> VkImageSubresourceLayers {
-    self.srcSubresource
+  pub fn src_subresource(&self) -> &VkImageSubresourceLayers {
+    &self.srcSubresource
   }
   #[inline]
-  pub fn src_offset(&self) -> VkOffset3D {
-    self.srcOffset
+  pub fn src_offset(&self) -> &VkOffset3D {
+    &self.srcOffset
   }
   #[inline]
-  pub fn dst_subresource(&self) -> VkImageSubresourceLayers {
-    self.dstSubresource
+  pub fn dst_subresource(&self) -> &VkImageSubresourceLayers {
+    &self.dstSubresource
   }
   #[inline]
-  pub fn dst_offset(&self) -> VkOffset3D {
-    self.dstOffset
+  pub fn dst_offset(&self) -> &VkOffset3D {
+    &self.dstOffset
   }
   #[inline]
-  pub fn extent(&self) -> VkExtent3D {
-    self.extent
+  pub fn extent(&self) -> &VkExtent3D {
+    &self.extent
   }
 }
 impl Default for VkImageResolve {
@@ -8909,10 +8884,9 @@ fn test_struct_size_vk_image_resolve() {
 
 /// Structure specifying render pass begin info
 #[repr(C)]
-#[derive(Copy, Clone)]
 pub struct VkRenderPassBeginInfo<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub renderPass: VkRenderPass,
   pub framebuffer: VkFramebuffer,
   pub renderArea: VkRect2D,
@@ -8954,14 +8928,6 @@ impl<'a> VkRenderPassBeginInfo<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn render_pass(&self) -> VkRenderPass {
     self.renderPass
   }
@@ -8970,12 +8936,20 @@ impl<'a> VkRenderPassBeginInfo<'a> {
     self.framebuffer
   }
   #[inline]
-  pub fn render_area(&self) -> VkRect2D {
-    self.renderArea
+  pub fn render_area(&self) -> &VkRect2D {
+    &self.renderArea
   }
   #[inline]
   pub fn clear_value_count(&self) -> u32 {
     self.clearValueCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 impl<'a> Default for VkRenderPassBeginInfo<'a> {
@@ -9029,16 +9003,16 @@ impl VkSurfaceCapabilitiesKHR {
     self.maxImageCount
   }
   #[inline]
-  pub fn current_extent(&self) -> VkExtent2D {
-    self.currentExtent
+  pub fn current_extent(&self) -> &VkExtent2D {
+    &self.currentExtent
   }
   #[inline]
-  pub fn min_image_extent(&self) -> VkExtent2D {
-    self.minImageExtent
+  pub fn min_image_extent(&self) -> &VkExtent2D {
+    &self.minImageExtent
   }
   #[inline]
-  pub fn max_image_extent(&self) -> VkExtent2D {
-    self.maxImageExtent
+  pub fn max_image_extent(&self) -> &VkExtent2D {
+    &self.maxImageExtent
   }
   #[inline]
   pub fn max_image_array_layers(&self) -> u32 {
@@ -9117,11 +9091,10 @@ pub type VkSwapchainKHR = VkNonDispatchableHandle<VkSwapchainKHR__>;
 
 /// Structure specifying parameters of a newly created swapchain object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_swapchain")]
 pub struct VkSwapchainCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkSwapchainCreateFlagsKHR,
   pub surface: VkSurfaceKHR,
   pub minImageCount: u32,
@@ -9231,14 +9204,6 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkSwapchainCreateFlagsKHR {
     self.flags
   }
@@ -9259,8 +9224,8 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self.imageColorSpace
   }
   #[inline]
-  pub fn image_extent(&self) -> VkExtent2D {
-    self.imageExtent
+  pub fn image_extent(&self) -> &VkExtent2D {
+    &self.imageExtent
   }
   #[inline]
   pub fn image_array_layers(&self) -> u32 {
@@ -9298,6 +9263,14 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
   pub fn old_swapchain(&self) -> Option<VkSwapchainKHR> {
     self.oldSwapchain
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_swapchain")]
 impl<'a> Default for VkSwapchainCreateInfoKHR<'a> {
@@ -9321,11 +9294,10 @@ fn test_struct_size_vk_swapchain_create_info_khr() {
 
 /// Structure describing parameters of a queue presentation
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_swapchain")]
 pub struct VkPresentInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   waitSemaphoreCount: u32,
   pWaitSemaphores: *const types_raw::VkSemaphore,
   swapchainCount: u32,
@@ -9354,20 +9326,20 @@ impl<'a> VkPresentInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn wait_semaphore_count(&self) -> u32 {
     self.waitSemaphoreCount
   }
   #[inline]
   pub fn swapchain_count(&self) -> u32 {
     self.swapchainCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 #[cfg(feature = "VK_KHR_swapchain")]
@@ -9399,7 +9371,6 @@ pub type VkDisplayKHR = VkNonDispatchableHandle<VkDisplayKHR__>;
 
 /// Structure describing an available display device
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
 pub struct VkDisplayPropertiesKHR<'a> {
   pub display: VkDisplayKHR,
@@ -9418,16 +9389,16 @@ impl<'a> VkDisplayPropertiesKHR<'a> {
     self.display
   }
   #[inline]
-  pub fn display_name(&self) -> &'a CStr {
+  pub fn display_name(&self) -> &CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.displayName) }
   }
   #[inline]
-  pub fn physical_dimensions(&self) -> VkExtent2D {
-    self.physicalDimensions
+  pub fn physical_dimensions(&self) -> &VkExtent2D {
+    &self.physicalDimensions
   }
   #[inline]
-  pub fn physical_resolution(&self) -> VkExtent2D {
-    self.physicalResolution
+  pub fn physical_resolution(&self) -> &VkExtent2D {
+    &self.physicalResolution
   }
   #[inline]
   pub fn supported_transforms(&self) -> VkSurfaceTransformFlagsKHR {
@@ -9478,8 +9449,8 @@ impl VkDisplayModeParametersKHR {
     self
   }
   #[inline]
-  pub fn visible_region(&self) -> VkExtent2D {
-    self.visibleRegion
+  pub fn visible_region(&self) -> &VkExtent2D {
+    &self.visibleRegion
   }
   #[inline]
   pub fn refresh_rate(&self) -> u32 {
@@ -9529,8 +9500,8 @@ impl VkDisplayModePropertiesKHR {
     self.displayMode
   }
   #[inline]
-  pub fn parameters(&self) -> VkDisplayModeParametersKHR {
-    self.parameters
+  pub fn parameters(&self) -> &VkDisplayModeParametersKHR {
+    &self.parameters
   }
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -9549,18 +9520,18 @@ fn test_struct_size_vk_display_mode_properties_khr() {
 
 /// Structure specifying parameters of a newly created display mode object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
-pub struct VkDisplayModeCreateInfoKHR {
+pub struct VkDisplayModeCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkDisplayModeCreateFlagsKHR,
   pub parameters: VkDisplayModeParametersKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_display")]
-impl VkDisplayModeCreateInfoKHR {
+impl<'a> VkDisplayModeCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkDisplayModeCreateInfoKHR {
+  pub fn new() -> VkDisplayModeCreateInfoKHR<'a> {
     unsafe {
       VkDisplayModeCreateInfoKHR {
         sType: VkStructureType::DISPLAY_MODE_CREATE_INFO_KHR,
@@ -9579,30 +9550,30 @@ impl VkDisplayModeCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkDisplayModeCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn parameters(&self) -> VkDisplayModeParametersKHR {
-    self.parameters
+  pub fn parameters(&self) -> &VkDisplayModeParametersKHR {
+    &self.parameters
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-impl Default for VkDisplayModeCreateInfoKHR {
-  fn default() -> VkDisplayModeCreateInfoKHR {
+impl<'a> Default for VkDisplayModeCreateInfoKHR<'a> {
+  fn default() -> VkDisplayModeCreateInfoKHR<'a> {
     VkDisplayModeCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-unsafe impl RawStruct for VkDisplayModeCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkDisplayModeCreateInfoKHR<'a> {
   type Raw = types_raw::VkDisplayModeCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -9637,36 +9608,36 @@ impl VkDisplayPlaneCapabilitiesKHR {
     self.supportedAlpha
   }
   #[inline]
-  pub fn min_src_position(&self) -> VkOffset2D {
-    self.minSrcPosition
+  pub fn min_src_position(&self) -> &VkOffset2D {
+    &self.minSrcPosition
   }
   #[inline]
-  pub fn max_src_position(&self) -> VkOffset2D {
-    self.maxSrcPosition
+  pub fn max_src_position(&self) -> &VkOffset2D {
+    &self.maxSrcPosition
   }
   #[inline]
-  pub fn min_src_extent(&self) -> VkExtent2D {
-    self.minSrcExtent
+  pub fn min_src_extent(&self) -> &VkExtent2D {
+    &self.minSrcExtent
   }
   #[inline]
-  pub fn max_src_extent(&self) -> VkExtent2D {
-    self.maxSrcExtent
+  pub fn max_src_extent(&self) -> &VkExtent2D {
+    &self.maxSrcExtent
   }
   #[inline]
-  pub fn min_dst_position(&self) -> VkOffset2D {
-    self.minDstPosition
+  pub fn min_dst_position(&self) -> &VkOffset2D {
+    &self.minDstPosition
   }
   #[inline]
-  pub fn max_dst_position(&self) -> VkOffset2D {
-    self.maxDstPosition
+  pub fn max_dst_position(&self) -> &VkOffset2D {
+    &self.maxDstPosition
   }
   #[inline]
-  pub fn min_dst_extent(&self) -> VkExtent2D {
-    self.minDstExtent
+  pub fn min_dst_extent(&self) -> &VkExtent2D {
+    &self.minDstExtent
   }
   #[inline]
-  pub fn max_dst_extent(&self) -> VkExtent2D {
-    self.maxDstExtent
+  pub fn max_dst_extent(&self) -> &VkExtent2D {
+    &self.maxDstExtent
   }
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -9718,11 +9689,10 @@ fn test_struct_size_vk_display_plane_properties_khr() {
 
 /// Structure specifying parameters of a newly created display plane surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
-pub struct VkDisplaySurfaceCreateInfoKHR {
+pub struct VkDisplaySurfaceCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkDisplaySurfaceCreateFlagsKHR,
   pub displayMode: VkDisplayModeKHR,
   pub planeIndex: u32,
@@ -9731,11 +9701,12 @@ pub struct VkDisplaySurfaceCreateInfoKHR {
   pub globalAlpha: f32,
   pub alphaMode: VkDisplayPlaneAlphaFlagBitsKHR,
   pub imageExtent: VkExtent2D,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_display")]
-impl VkDisplaySurfaceCreateInfoKHR {
+impl<'a> VkDisplaySurfaceCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkDisplaySurfaceCreateInfoKHR {
+  pub fn new() -> VkDisplaySurfaceCreateInfoKHR<'a> {
     unsafe {
       VkDisplaySurfaceCreateInfoKHR {
         sType: VkStructureType::DISPLAY_SURFACE_CREATE_INFO_KHR,
@@ -9784,14 +9755,6 @@ impl VkDisplaySurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkDisplaySurfaceCreateFlagsKHR {
     self.flags
   }
@@ -9820,18 +9783,26 @@ impl VkDisplaySurfaceCreateInfoKHR {
     self.alphaMode
   }
   #[inline]
-  pub fn image_extent(&self) -> VkExtent2D {
-    self.imageExtent
+  pub fn image_extent(&self) -> &VkExtent2D {
+    &self.imageExtent
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-impl Default for VkDisplaySurfaceCreateInfoKHR {
-  fn default() -> VkDisplaySurfaceCreateInfoKHR {
+impl<'a> Default for VkDisplaySurfaceCreateInfoKHR<'a> {
+  fn default() -> VkDisplaySurfaceCreateInfoKHR<'a> {
     VkDisplaySurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-unsafe impl RawStruct for VkDisplaySurfaceCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkDisplaySurfaceCreateInfoKHR<'a> {
   type Raw = types_raw::VkDisplaySurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -9848,19 +9819,19 @@ fn test_struct_size_vk_display_surface_create_info_khr() {
 
 /// Structure describing parameters of a queue presentation to a swapchain
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display_swapchain")]
-pub struct VkDisplayPresentInfoKHR {
+pub struct VkDisplayPresentInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub srcRect: VkRect2D,
   pub dstRect: VkRect2D,
   pub persistent: VkBool32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
-impl VkDisplayPresentInfoKHR {
+impl<'a> VkDisplayPresentInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkDisplayPresentInfoKHR {
+  pub fn new() -> VkDisplayPresentInfoKHR<'a> {
     unsafe {
       VkDisplayPresentInfoKHR {
         sType: VkStructureType::DISPLAY_PRESENT_INFO_KHR,
@@ -9885,20 +9856,12 @@ impl VkDisplayPresentInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
+  pub fn src_rect(&self) -> &VkRect2D {
+    &self.srcRect
   }
   #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
-  pub fn src_rect(&self) -> VkRect2D {
-    self.srcRect
-  }
-  #[inline]
-  pub fn dst_rect(&self) -> VkRect2D {
-    self.dstRect
+  pub fn dst_rect(&self) -> &VkRect2D {
+    &self.dstRect
   }
   #[inline]
   pub fn is_persistent(&self) -> bool {
@@ -9906,14 +9869,23 @@ impl VkDisplayPresentInfoKHR {
   }
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
-impl Default for VkDisplayPresentInfoKHR {
-  fn default() -> VkDisplayPresentInfoKHR {
+impl<'a> Default for VkDisplayPresentInfoKHR<'a> {
+  fn default() -> VkDisplayPresentInfoKHR<'a> {
     VkDisplayPresentInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
-unsafe impl RawStruct for VkDisplayPresentInfoKHR {
+unsafe impl<'a> RawStruct for VkDisplayPresentInfoKHR<'a> {
   type Raw = types_raw::VkDisplayPresentInfoKHR;
+}
+#[cfg(feature = "VK_KHR_display_swapchain")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkDisplayPresentInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDisplayPresentInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
 #[cfg(test)]
@@ -9926,21 +9898,21 @@ fn test_struct_size_vk_display_present_info_khr() {
 
 /// Structure specifying parameters of a newly created Xlib surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-pub struct VkXlibSurfaceCreateInfoKHR {
+pub struct VkXlibSurfaceCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkXlibSurfaceCreateFlagsKHR,
   pub dpy: *mut wsi::xlib::Display,
   pub window: wsi::xlib::Window,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-impl VkXlibSurfaceCreateInfoKHR {
+impl<'a> VkXlibSurfaceCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkXlibSurfaceCreateInfoKHR {
+  pub fn new() -> VkXlibSurfaceCreateInfoKHR<'a> {
     unsafe {
       VkXlibSurfaceCreateInfoKHR {
         sType: VkStructureType::XLIB_SURFACE_CREATE_INFO_KHR,
@@ -9964,14 +9936,6 @@ impl VkXlibSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkXlibSurfaceCreateFlagsKHR {
     self.flags
   }
@@ -9983,17 +9947,25 @@ impl VkXlibSurfaceCreateInfoKHR {
   pub fn window(&self) -> wsi::xlib::Window {
     self.window
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-impl Default for VkXlibSurfaceCreateInfoKHR {
-  fn default() -> VkXlibSurfaceCreateInfoKHR {
+impl<'a> Default for VkXlibSurfaceCreateInfoKHR<'a> {
+  fn default() -> VkXlibSurfaceCreateInfoKHR<'a> {
     VkXlibSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-unsafe impl RawStruct for VkXlibSurfaceCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkXlibSurfaceCreateInfoKHR<'a> {
   type Raw = types_raw::VkXlibSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_xlib_surface")]
@@ -10011,21 +9983,21 @@ fn test_struct_size_vk_xlib_surface_create_info_khr() {
 
 /// Structure specifying parameters of a newly created Xcb surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-pub struct VkXcbSurfaceCreateInfoKHR {
+pub struct VkXcbSurfaceCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkXcbSurfaceCreateFlagsKHR,
   pub connection: *mut wsi::xcb::xcb_connection_t,
   pub window: wsi::xcb::xcb_window_t,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-impl VkXcbSurfaceCreateInfoKHR {
+impl<'a> VkXcbSurfaceCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkXcbSurfaceCreateInfoKHR {
+  pub fn new() -> VkXcbSurfaceCreateInfoKHR<'a> {
     unsafe {
       VkXcbSurfaceCreateInfoKHR {
         sType: VkStructureType::XCB_SURFACE_CREATE_INFO_KHR,
@@ -10049,14 +10021,6 @@ impl VkXcbSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkXcbSurfaceCreateFlagsKHR {
     self.flags
   }
@@ -10068,17 +10032,25 @@ impl VkXcbSurfaceCreateInfoKHR {
   pub fn window(&self) -> wsi::xcb::xcb_window_t {
     self.window
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-impl Default for VkXcbSurfaceCreateInfoKHR {
-  fn default() -> VkXcbSurfaceCreateInfoKHR {
+impl<'a> Default for VkXcbSurfaceCreateInfoKHR<'a> {
+  fn default() -> VkXcbSurfaceCreateInfoKHR<'a> {
     VkXcbSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-unsafe impl RawStruct for VkXcbSurfaceCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkXcbSurfaceCreateInfoKHR<'a> {
   type Raw = types_raw::VkXcbSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_xcb_surface")]
@@ -10096,21 +10068,21 @@ fn test_struct_size_vk_xcb_surface_create_info_khr() {
 
 /// Structure specifying parameters of a newly created Wayland surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-pub struct VkWaylandSurfaceCreateInfoKHR {
+pub struct VkWaylandSurfaceCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkWaylandSurfaceCreateFlagsKHR,
   pub display: *mut wsi::wayland::wl_display,
   pub surface: *mut wsi::wayland::wl_surface,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-impl VkWaylandSurfaceCreateInfoKHR {
+impl<'a> VkWaylandSurfaceCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkWaylandSurfaceCreateInfoKHR {
+  pub fn new() -> VkWaylandSurfaceCreateInfoKHR<'a> {
     unsafe {
       VkWaylandSurfaceCreateInfoKHR {
         sType: VkStructureType::WAYLAND_SURFACE_CREATE_INFO_KHR,
@@ -10134,14 +10106,6 @@ impl VkWaylandSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkWaylandSurfaceCreateFlagsKHR {
     self.flags
   }
@@ -10153,17 +10117,25 @@ impl VkWaylandSurfaceCreateInfoKHR {
   pub fn surface(&self) -> *mut wsi::wayland::wl_surface {
     self.surface
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-impl Default for VkWaylandSurfaceCreateInfoKHR {
-  fn default() -> VkWaylandSurfaceCreateInfoKHR {
+impl<'a> Default for VkWaylandSurfaceCreateInfoKHR<'a> {
+  fn default() -> VkWaylandSurfaceCreateInfoKHR<'a> {
     VkWaylandSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-unsafe impl RawStruct for VkWaylandSurfaceCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkWaylandSurfaceCreateInfoKHR<'a> {
   type Raw = types_raw::VkWaylandSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_wayland_surface")]
@@ -10181,21 +10153,21 @@ fn test_struct_size_vk_wayland_surface_create_info_khr() {
 
 /// Structure specifying parameters of a newly created Mir surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-pub struct VkMirSurfaceCreateInfoKHR {
+pub struct VkMirSurfaceCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkMirSurfaceCreateFlagsKHR,
   pub connection: *mut wsi::mir::MirConnection,
   pub mirSurface: *mut wsi::mir::MirSurface,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-impl VkMirSurfaceCreateInfoKHR {
+impl<'a> VkMirSurfaceCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkMirSurfaceCreateInfoKHR {
+  pub fn new() -> VkMirSurfaceCreateInfoKHR<'a> {
     unsafe {
       VkMirSurfaceCreateInfoKHR {
         sType: VkStructureType::MIR_SURFACE_CREATE_INFO_KHR,
@@ -10219,14 +10191,6 @@ impl VkMirSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkMirSurfaceCreateFlagsKHR {
     self.flags
   }
@@ -10238,17 +10202,25 @@ impl VkMirSurfaceCreateInfoKHR {
   pub fn mir_surface(&self) -> *mut wsi::mir::MirSurface {
     self.mirSurface
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-impl Default for VkMirSurfaceCreateInfoKHR {
-  fn default() -> VkMirSurfaceCreateInfoKHR {
+impl<'a> Default for VkMirSurfaceCreateInfoKHR<'a> {
+  fn default() -> VkMirSurfaceCreateInfoKHR<'a> {
     VkMirSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-unsafe impl RawStruct for VkMirSurfaceCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkMirSurfaceCreateInfoKHR<'a> {
   type Raw = types_raw::VkMirSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_mir_surface")]
@@ -10266,20 +10238,20 @@ fn test_struct_size_vk_mir_surface_create_info_khr() {
 
 /// Structure specifying parameters of a newly created Android surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-pub struct VkAndroidSurfaceCreateInfoKHR {
+pub struct VkAndroidSurfaceCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkAndroidSurfaceCreateFlagsKHR,
   pub window: *mut wsi::android::ANativeWindow,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-impl VkAndroidSurfaceCreateInfoKHR {
+impl<'a> VkAndroidSurfaceCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkAndroidSurfaceCreateInfoKHR {
+  pub fn new() -> VkAndroidSurfaceCreateInfoKHR<'a> {
     unsafe {
       VkAndroidSurfaceCreateInfoKHR {
         sType: VkStructureType::ANDROID_SURFACE_CREATE_INFO_KHR,
@@ -10298,14 +10270,6 @@ impl VkAndroidSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkAndroidSurfaceCreateFlagsKHR {
     self.flags
   }
@@ -10313,17 +10277,25 @@ impl VkAndroidSurfaceCreateInfoKHR {
   pub fn window(&self) -> *mut wsi::android::ANativeWindow {
     self.window
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-impl Default for VkAndroidSurfaceCreateInfoKHR {
-  fn default() -> VkAndroidSurfaceCreateInfoKHR {
+impl<'a> Default for VkAndroidSurfaceCreateInfoKHR<'a> {
+  fn default() -> VkAndroidSurfaceCreateInfoKHR<'a> {
     VkAndroidSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-unsafe impl RawStruct for VkAndroidSurfaceCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkAndroidSurfaceCreateInfoKHR<'a> {
   type Raw = types_raw::VkAndroidSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_android_surface")]
@@ -10341,21 +10313,21 @@ fn test_struct_size_vk_android_surface_create_info_khr() {
 
 /// Structure specifying parameters of a newly created Win32 surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkWin32SurfaceCreateInfoKHR {
+pub struct VkWin32SurfaceCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkWin32SurfaceCreateFlagsKHR,
   pub hinstance: wsi::win32::HINSTANCE,
   pub hwnd: wsi::win32::HWND,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkWin32SurfaceCreateInfoKHR {
+impl<'a> VkWin32SurfaceCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkWin32SurfaceCreateInfoKHR {
+  pub fn new() -> VkWin32SurfaceCreateInfoKHR<'a> {
     unsafe {
       VkWin32SurfaceCreateInfoKHR {
         sType: VkStructureType::WIN32_SURFACE_CREATE_INFO_KHR,
@@ -10379,14 +10351,6 @@ impl VkWin32SurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkWin32SurfaceCreateFlagsKHR {
     self.flags
   }
@@ -10398,17 +10362,25 @@ impl VkWin32SurfaceCreateInfoKHR {
   pub fn hwnd(&self) -> wsi::win32::HWND {
     self.hwnd
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkWin32SurfaceCreateInfoKHR {
-  fn default() -> VkWin32SurfaceCreateInfoKHR {
+impl<'a> Default for VkWin32SurfaceCreateInfoKHR<'a> {
+  fn default() -> VkWin32SurfaceCreateInfoKHR<'a> {
     VkWin32SurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkWin32SurfaceCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkWin32SurfaceCreateInfoKHR<'a> {
   type Raw = types_raw::VkWin32SurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_win32_surface")]
@@ -10430,19 +10402,19 @@ pub use types_raw::PFN_vkDebugReportCallbackEXT;
 
 /// Structure specifying parameters of a newly created debug report callback
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_debug_report")]
-pub struct VkDebugReportCallbackCreateInfoEXT {
+pub struct VkDebugReportCallbackCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkDebugReportFlagsEXT,
   pub pfnCallback: PFN_vkDebugReportCallbackEXT,
   pUserData: *mut c_void,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_debug_report")]
-impl VkDebugReportCallbackCreateInfoEXT {
+impl<'a> VkDebugReportCallbackCreateInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkDebugReportCallbackCreateInfoEXT {
+  pub fn new() -> VkDebugReportCallbackCreateInfoEXT<'a> {
     unsafe {
       VkDebugReportCallbackCreateInfoEXT {
         sType: VkStructureType::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
@@ -10461,12 +10433,9 @@ impl VkDebugReportCallbackCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
+  pub fn set_user_data(mut self, value: *mut c_void) -> Self {
+    self.pUserData = value;
+    self
   }
   #[inline]
   pub fn flags(&self) -> VkDebugReportFlagsEXT {
@@ -10482,14 +10451,23 @@ impl VkDebugReportCallbackCreateInfoEXT {
   }
 }
 #[cfg(feature = "VK_EXT_debug_report")]
-impl Default for VkDebugReportCallbackCreateInfoEXT {
-  fn default() -> VkDebugReportCallbackCreateInfoEXT {
+impl<'a> Default for VkDebugReportCallbackCreateInfoEXT<'a> {
+  fn default() -> VkDebugReportCallbackCreateInfoEXT<'a> {
     VkDebugReportCallbackCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_debug_report")]
-unsafe impl RawStruct for VkDebugReportCallbackCreateInfoEXT {
+unsafe impl<'a> RawStruct for VkDebugReportCallbackCreateInfoEXT<'a> {
   type Raw = types_raw::VkDebugReportCallbackCreateInfoEXT;
+}
+#[cfg(feature = "VK_EXT_debug_report")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkInstanceCreateInfo<'b>> for VkDebugReportCallbackCreateInfoEXT<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDebugReportCallbackCreateInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_debug_report")]
 #[cfg(test)]
@@ -10513,17 +10491,17 @@ pub type VkDebugReportCallbackEXT = VkNonDispatchableHandle<VkDebugReportCallbac
 
 /// Structure defining rasterization order for a graphics pipeline
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_AMD_rasterization_order")]
-pub struct VkPipelineRasterizationStateRasterizationOrderAMD {
+pub struct VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub rasterizationOrder: VkRasterizationOrderAMD,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_AMD_rasterization_order")]
-impl VkPipelineRasterizationStateRasterizationOrderAMD {
+impl<'a> VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
   #[inline]
-  pub fn new() -> VkPipelineRasterizationStateRasterizationOrderAMD {
+  pub fn new() -> VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
     unsafe {
       VkPipelineRasterizationStateRasterizationOrderAMD {
         sType: VkStructureType::PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD,
@@ -10537,27 +10515,30 @@ impl VkPipelineRasterizationStateRasterizationOrderAMD {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn rasterization_order(&self) -> VkRasterizationOrderAMD {
     self.rasterizationOrder
   }
 }
 #[cfg(feature = "VK_AMD_rasterization_order")]
-impl Default for VkPipelineRasterizationStateRasterizationOrderAMD {
-  fn default() -> VkPipelineRasterizationStateRasterizationOrderAMD {
+impl<'a> Default for VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
+  fn default() -> VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
     VkPipelineRasterizationStateRasterizationOrderAMD::new()
   }
 }
 #[cfg(feature = "VK_AMD_rasterization_order")]
-unsafe impl RawStruct for VkPipelineRasterizationStateRasterizationOrderAMD {
+unsafe impl<'a> RawStruct for VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
   type Raw = types_raw::VkPipelineRasterizationStateRasterizationOrderAMD;
+}
+#[cfg(feature = "VK_AMD_rasterization_order")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineRasterizationStateCreateInfo<'b>>
+  for VkPipelineRasterizationStateRasterizationOrderAMD<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineRasterizationStateRasterizationOrderAMD as *const c_void
+  }
 }
 #[cfg(feature = "VK_AMD_rasterization_order")]
 #[cfg(test)]
@@ -10573,11 +10554,10 @@ fn test_struct_size_vk_pipeline_rasterization_state_rasterization_order_amd() {
 
 /// Specify parameters of a name to give to an object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_debug_marker")]
 pub struct VkDebugMarkerObjectNameInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub objectType: VkDebugReportObjectTypeEXT,
   pub object: u64,
   pObjectName: *const c_char,
@@ -10612,14 +10592,6 @@ impl<'a> VkDebugMarkerObjectNameInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn object_type(&self) -> VkDebugReportObjectTypeEXT {
     self.objectType
   }
@@ -10628,8 +10600,16 @@ impl<'a> VkDebugMarkerObjectNameInfoEXT<'a> {
     self.object
   }
   #[inline]
-  pub fn object_name(&self) -> &'a CStr {
+  pub fn object_name(&self) -> &CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pObjectName) }
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
@@ -10654,11 +10634,10 @@ fn test_struct_size_vk_debug_marker_object_name_info_ext() {
 
 /// Specify parameters of a tag to attach to an object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_debug_marker")]
 pub struct VkDebugMarkerObjectTagInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub objectType: VkDebugReportObjectTypeEXT,
   pub object: u64,
   pub tagName: u64,
@@ -10701,14 +10680,6 @@ impl<'a> VkDebugMarkerObjectTagInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn object_type(&self) -> VkDebugReportObjectTypeEXT {
     self.objectType
   }
@@ -10723,6 +10694,14 @@ impl<'a> VkDebugMarkerObjectTagInfoEXT<'a> {
   #[inline]
   pub fn tag_size(&self) -> usize {
     self.tagSize
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
@@ -10747,11 +10726,10 @@ fn test_struct_size_vk_debug_marker_object_tag_info_ext() {
 
 /// Specify parameters of a command buffer marker region
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_debug_marker")]
 pub struct VkDebugMarkerMarkerInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pMarkerName: *const c_char,
   pub color: [f32; 4],
   _p: ::std::marker::PhantomData<&'a u8>,
@@ -10780,20 +10758,20 @@ impl<'a> VkDebugMarkerMarkerInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
-  pub fn marker_name(&self) -> &'a CStr {
+  pub fn marker_name(&self) -> &CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pMarkerName) }
   }
   #[inline]
   pub fn color(&self) -> [f32; 4] {
     self.color
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
@@ -10820,17 +10798,17 @@ fn test_struct_size_vk_debug_marker_marker_info_ext() {
 
 /// Specify that an image is bound to a dedicated memory resource
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-pub struct VkDedicatedAllocationImageCreateInfoNV {
+pub struct VkDedicatedAllocationImageCreateInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub dedicatedAllocation: VkBool32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl VkDedicatedAllocationImageCreateInfoNV {
+impl<'a> VkDedicatedAllocationImageCreateInfoNV<'a> {
   #[inline]
-  pub fn new() -> VkDedicatedAllocationImageCreateInfoNV {
+  pub fn new() -> VkDedicatedAllocationImageCreateInfoNV<'a> {
     unsafe {
       VkDedicatedAllocationImageCreateInfoNV {
         sType: VkStructureType::DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV,
@@ -10845,27 +10823,28 @@ impl VkDedicatedAllocationImageCreateInfoNV {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn is_dedicated_allocation(&self) -> bool {
     self.dedicatedAllocation != 0
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl Default for VkDedicatedAllocationImageCreateInfoNV {
-  fn default() -> VkDedicatedAllocationImageCreateInfoNV {
+impl<'a> Default for VkDedicatedAllocationImageCreateInfoNV<'a> {
+  fn default() -> VkDedicatedAllocationImageCreateInfoNV<'a> {
     VkDedicatedAllocationImageCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl RawStruct for VkDedicatedAllocationImageCreateInfoNV {
+unsafe impl<'a> RawStruct for VkDedicatedAllocationImageCreateInfoNV<'a> {
   type Raw = types_raw::VkDedicatedAllocationImageCreateInfoNV;
+}
+#[cfg(feature = "VK_NV_dedicated_allocation")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkDedicatedAllocationImageCreateInfoNV<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDedicatedAllocationImageCreateInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
 #[cfg(test)]
@@ -10879,17 +10858,17 @@ fn test_struct_size_vk_dedicated_allocation_image_create_info_nv() {
 
 /// Specify that a buffer is bound to a dedicated memory resource
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-pub struct VkDedicatedAllocationBufferCreateInfoNV {
+pub struct VkDedicatedAllocationBufferCreateInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub dedicatedAllocation: VkBool32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl VkDedicatedAllocationBufferCreateInfoNV {
+impl<'a> VkDedicatedAllocationBufferCreateInfoNV<'a> {
   #[inline]
-  pub fn new() -> VkDedicatedAllocationBufferCreateInfoNV {
+  pub fn new() -> VkDedicatedAllocationBufferCreateInfoNV<'a> {
     unsafe {
       VkDedicatedAllocationBufferCreateInfoNV {
         sType: VkStructureType::DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV,
@@ -10904,27 +10883,28 @@ impl VkDedicatedAllocationBufferCreateInfoNV {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn is_dedicated_allocation(&self) -> bool {
     self.dedicatedAllocation != 0
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl Default for VkDedicatedAllocationBufferCreateInfoNV {
-  fn default() -> VkDedicatedAllocationBufferCreateInfoNV {
+impl<'a> Default for VkDedicatedAllocationBufferCreateInfoNV<'a> {
+  fn default() -> VkDedicatedAllocationBufferCreateInfoNV<'a> {
     VkDedicatedAllocationBufferCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl RawStruct for VkDedicatedAllocationBufferCreateInfoNV {
+unsafe impl<'a> RawStruct for VkDedicatedAllocationBufferCreateInfoNV<'a> {
   type Raw = types_raw::VkDedicatedAllocationBufferCreateInfoNV;
+}
+#[cfg(feature = "VK_NV_dedicated_allocation")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkBufferCreateInfo<'b>> for VkDedicatedAllocationBufferCreateInfoNV<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDedicatedAllocationBufferCreateInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
 #[cfg(test)]
@@ -10938,18 +10918,18 @@ fn test_struct_size_vk_dedicated_allocation_buffer_create_info_nv() {
 
 /// Specify a dedicated memory allocation resource
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-pub struct VkDedicatedAllocationMemoryAllocateInfoNV {
+pub struct VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub image: Option<VkImage>,
   pub buffer: Option<VkBuffer>,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl VkDedicatedAllocationMemoryAllocateInfoNV {
+impl<'a> VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
   #[inline]
-  pub fn new() -> VkDedicatedAllocationMemoryAllocateInfoNV {
+  pub fn new() -> VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
     unsafe {
       VkDedicatedAllocationMemoryAllocateInfoNV {
         sType: VkStructureType::DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV,
@@ -10968,14 +10948,6 @@ impl VkDedicatedAllocationMemoryAllocateInfoNV {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn image(&self) -> Option<VkImage> {
     self.image
   }
@@ -10985,14 +10957,23 @@ impl VkDedicatedAllocationMemoryAllocateInfoNV {
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl Default for VkDedicatedAllocationMemoryAllocateInfoNV {
-  fn default() -> VkDedicatedAllocationMemoryAllocateInfoNV {
+impl<'a> Default for VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
+  fn default() -> VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
     VkDedicatedAllocationMemoryAllocateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl RawStruct for VkDedicatedAllocationMemoryAllocateInfoNV {
+unsafe impl<'a> RawStruct for VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
   type Raw = types_raw::VkDedicatedAllocationMemoryAllocateInfoNV;
+}
+#[cfg(feature = "VK_NV_dedicated_allocation")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDedicatedAllocationMemoryAllocateInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
 #[cfg(test)]
@@ -11028,21 +11009,22 @@ impl VkPhysicalDeviceFeatures2KHR {
     }
   }
   #[inline]
-  pub fn set_features(mut self, value: VkPhysicalDeviceFeatures) -> Self {
-    self.features = value;
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
+  pub fn set_features(mut self, value: VkPhysicalDeviceFeatures) -> Self {
+    self.features = value;
+    self
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn features(&self) -> VkPhysicalDeviceFeatures {
-    self.features
+  pub fn features(&self) -> &VkPhysicalDeviceFeatures {
+    &self.features
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11054,6 +11036,15 @@ impl Default for VkPhysicalDeviceFeatures2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 unsafe impl RawStruct for VkPhysicalDeviceFeatures2KHR {
   type Raw = types_raw::VkPhysicalDeviceFeatures2KHR;
+}
+#[cfg(feature = "VK_KHR_get_physical_device_properties2")]
+unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDeviceFeatures2KHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceFeatures2KHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 #[cfg(test)]
@@ -11077,16 +11068,12 @@ pub struct VkPhysicalDeviceProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkPhysicalDeviceProperties2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn properties(&self) -> VkPhysicalDeviceProperties {
-    self.properties
+  pub fn properties(&self) -> &VkPhysicalDeviceProperties {
+    &self.properties
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11115,16 +11102,12 @@ pub struct VkFormatProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkFormatProperties2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn format_properties(&self) -> VkFormatProperties {
-    self.formatProperties
+  pub fn format_properties(&self) -> &VkFormatProperties {
+    &self.formatProperties
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11150,16 +11133,12 @@ pub struct VkImageFormatProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkImageFormatProperties2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn image_format_properties(&self) -> VkImageFormatProperties {
-    self.imageFormatProperties
+  pub fn image_format_properties(&self) -> &VkImageFormatProperties {
+    &self.imageFormatProperties
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11178,21 +11157,21 @@ fn test_struct_size_vk_image_format_properties2_khr() {
 
 /// Structure specifying image creation parameters
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-pub struct VkPhysicalDeviceImageFormatInfo2KHR {
+pub struct VkPhysicalDeviceImageFormatInfo2KHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub format: VkFormat,
   pub eType: VkImageType,
   pub tiling: VkImageTiling,
   pub usage: VkImageUsageFlags,
   pub flags: VkImageCreateFlags,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl VkPhysicalDeviceImageFormatInfo2KHR {
+impl<'a> VkPhysicalDeviceImageFormatInfo2KHR<'a> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceImageFormatInfo2KHR {
+  pub fn new() -> VkPhysicalDeviceImageFormatInfo2KHR<'a> {
     unsafe {
       VkPhysicalDeviceImageFormatInfo2KHR {
         sType: VkStructureType::PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2_KHR,
@@ -11226,14 +11205,6 @@ impl VkPhysicalDeviceImageFormatInfo2KHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn format(&self) -> VkFormat {
     self.format
   }
@@ -11253,15 +11224,23 @@ impl VkPhysicalDeviceImageFormatInfo2KHR {
   pub fn flags(&self) -> VkImageCreateFlags {
     self.flags
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl Default for VkPhysicalDeviceImageFormatInfo2KHR {
-  fn default() -> VkPhysicalDeviceImageFormatInfo2KHR {
+impl<'a> Default for VkPhysicalDeviceImageFormatInfo2KHR<'a> {
+  fn default() -> VkPhysicalDeviceImageFormatInfo2KHR<'a> {
     VkPhysicalDeviceImageFormatInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-unsafe impl RawStruct for VkPhysicalDeviceImageFormatInfo2KHR {
+unsafe impl<'a> RawStruct for VkPhysicalDeviceImageFormatInfo2KHR<'a> {
   type Raw = types_raw::VkPhysicalDeviceImageFormatInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11286,16 +11265,12 @@ pub struct VkQueueFamilyProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkQueueFamilyProperties2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn queue_family_properties(&self) -> VkQueueFamilyProperties {
-    self.queueFamilyProperties
+  pub fn queue_family_properties(&self) -> &VkQueueFamilyProperties {
+    &self.queueFamilyProperties
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11324,16 +11299,12 @@ pub struct VkPhysicalDeviceMemoryProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkPhysicalDeviceMemoryProperties2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn memory_properties(&self) -> VkPhysicalDeviceMemoryProperties {
-    self.memoryProperties
+  pub fn memory_properties(&self) -> &VkPhysicalDeviceMemoryProperties {
+    &self.memoryProperties
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11362,16 +11333,12 @@ pub struct VkSparseImageFormatProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkSparseImageFormatProperties2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn properties(&self) -> VkSparseImageFormatProperties {
-    self.properties
+  pub fn properties(&self) -> &VkSparseImageFormatProperties {
+    &self.properties
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11390,21 +11357,21 @@ fn test_struct_size_vk_sparse_image_format_properties2_khr() {
 
 /// Structure specifying sparse image format inputs
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-pub struct VkPhysicalDeviceSparseImageFormatInfo2KHR {
+pub struct VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub format: VkFormat,
   pub eType: VkImageType,
   pub samples: VkSampleCountFlagBits,
   pub usage: VkImageUsageFlags,
   pub tiling: VkImageTiling,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl VkPhysicalDeviceSparseImageFormatInfo2KHR {
+impl<'a> VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceSparseImageFormatInfo2KHR {
+  pub fn new() -> VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
     unsafe {
       VkPhysicalDeviceSparseImageFormatInfo2KHR {
         sType: VkStructureType::PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2_KHR,
@@ -11438,14 +11405,6 @@ impl VkPhysicalDeviceSparseImageFormatInfo2KHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn format(&self) -> VkFormat {
     self.format
   }
@@ -11465,15 +11424,23 @@ impl VkPhysicalDeviceSparseImageFormatInfo2KHR {
   pub fn tiling(&self) -> VkImageTiling {
     self.tiling
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl Default for VkPhysicalDeviceSparseImageFormatInfo2KHR {
-  fn default() -> VkPhysicalDeviceSparseImageFormatInfo2KHR {
+impl<'a> Default for VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
+  fn default() -> VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
     VkPhysicalDeviceSparseImageFormatInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-unsafe impl RawStruct for VkPhysicalDeviceSparseImageFormatInfo2KHR {
+unsafe impl<'a> RawStruct for VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
   type Raw = types_raw::VkPhysicalDeviceSparseImageFormatInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11501,10 +11468,6 @@ pub struct VkTextureLODGatherFormatPropertiesAMD {
 #[cfg(feature = "VK_AMD_texture_gather_bias_lod")]
 impl VkTextureLODGatherFormatPropertiesAMD {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -11516,6 +11479,15 @@ impl VkTextureLODGatherFormatPropertiesAMD {
 #[cfg(feature = "VK_AMD_texture_gather_bias_lod")]
 unsafe impl RawStruct for VkTextureLODGatherFormatPropertiesAMD {
   type Raw = types_raw::VkTextureLODGatherFormatPropertiesAMD;
+}
+#[cfg(feature = "VK_AMD_texture_gather_bias_lod")]
+unsafe impl StructExtends<VkImageFormatProperties2KHR> for VkTextureLODGatherFormatPropertiesAMD {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkTextureLODGatherFormatPropertiesAMD as *const c_void
+  }
 }
 #[cfg(feature = "VK_AMD_texture_gather_bias_lod")]
 #[cfg(test)]
@@ -11597,8 +11569,8 @@ impl VkShaderStatisticsInfoAMD {
     self.shaderStageMask
   }
   #[inline]
-  pub fn resource_usage(&self) -> VkShaderResourceUsageAMD {
-    self.resourceUsage
+  pub fn resource_usage(&self) -> &VkShaderResourceUsageAMD {
+    &self.resourceUsage
   }
   #[inline]
   pub fn num_physical_vgprs(&self) -> u32 {
@@ -11639,11 +11611,10 @@ fn test_struct_size_vk_shader_statistics_info_amd() {
 
 /// Structure containing multiview info for all subpasses
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_multiview")]
 pub struct VkRenderPassMultiviewCreateInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   subpassCount: u32,
   pViewMasks: *const u32,
   dependencyCount: u32,
@@ -11688,14 +11659,6 @@ impl<'a> VkRenderPassMultiviewCreateInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn subpass_count(&self) -> u32 {
     self.subpassCount
   }
@@ -11717,6 +11680,15 @@ impl<'a> Default for VkRenderPassMultiviewCreateInfoKHX<'a> {
 #[cfg(feature = "VK_KHX_multiview")]
 unsafe impl<'a> RawStruct for VkRenderPassMultiviewCreateInfoKHX<'a> {
   type Raw = types_raw::VkRenderPassMultiviewCreateInfoKHX;
+}
+#[cfg(feature = "VK_KHX_multiview")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkRenderPassCreateInfo<'b>> for VkRenderPassMultiviewCreateInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkRenderPassMultiviewCreateInfoKHX as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHX_multiview")]
 #[cfg(test)]
@@ -11752,6 +11724,11 @@ impl VkPhysicalDeviceMultiviewFeaturesKHX {
     }
   }
   #[inline]
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
+    self
+  }
+  #[inline]
   pub fn set_multiview(mut self, value: bool) -> Self {
     let value: VkBool32 = if value { 1 } else { 0 };
     self.multiview = value;
@@ -11768,10 +11745,6 @@ impl VkPhysicalDeviceMultiviewFeaturesKHX {
     let value: VkBool32 = if value { 1 } else { 0 };
     self.multiviewTessellationShader = value;
     self
-  }
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -11801,6 +11774,24 @@ unsafe impl RawStruct for VkPhysicalDeviceMultiviewFeaturesKHX {
   type Raw = types_raw::VkPhysicalDeviceMultiviewFeaturesKHX;
 }
 #[cfg(feature = "VK_KHX_multiview")]
+unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceMultiviewFeaturesKHX {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceMultiviewFeaturesKHX as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHX_multiview")]
+unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDeviceMultiviewFeaturesKHX {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceMultiviewFeaturesKHX as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHX_multiview")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_physical_device_multiview_features_khx() {
@@ -11823,10 +11814,6 @@ pub struct VkPhysicalDeviceMultiviewPropertiesKHX {
 #[cfg(feature = "VK_KHX_multiview")]
 impl VkPhysicalDeviceMultiviewPropertiesKHX {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -11842,6 +11829,15 @@ impl VkPhysicalDeviceMultiviewPropertiesKHX {
 #[cfg(feature = "VK_KHX_multiview")]
 unsafe impl RawStruct for VkPhysicalDeviceMultiviewPropertiesKHX {
   type Raw = types_raw::VkPhysicalDeviceMultiviewPropertiesKHX;
+}
+#[cfg(feature = "VK_KHX_multiview")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDeviceMultiviewPropertiesKHX {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceMultiviewPropertiesKHX as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHX_multiview")]
 #[cfg(test)]
@@ -11868,8 +11864,8 @@ pub struct VkExternalImageFormatPropertiesNV {
 #[cfg(feature = "VK_NV_external_memory_capabilities")]
 impl VkExternalImageFormatPropertiesNV {
   #[inline]
-  pub fn image_format_properties(&self) -> VkImageFormatProperties {
-    self.imageFormatProperties
+  pub fn image_format_properties(&self) -> &VkImageFormatProperties {
+    &self.imageFormatProperties
   }
   #[inline]
   pub fn external_memory_features(&self) -> VkExternalMemoryFeatureFlagsNV {
@@ -11902,17 +11898,17 @@ fn test_struct_size_vk_external_image_format_properties_nv() {
 
 /// Specify that an image may be backed by external memory
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_external_memory")]
-pub struct VkExternalMemoryImageCreateInfoNV {
+pub struct VkExternalMemoryImageCreateInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsNV,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NV_external_memory")]
-impl VkExternalMemoryImageCreateInfoNV {
+impl<'a> VkExternalMemoryImageCreateInfoNV<'a> {
   #[inline]
-  pub fn new() -> VkExternalMemoryImageCreateInfoNV {
+  pub fn new() -> VkExternalMemoryImageCreateInfoNV<'a> {
     unsafe {
       VkExternalMemoryImageCreateInfoNV {
         sType: VkStructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV,
@@ -11926,27 +11922,28 @@ impl VkExternalMemoryImageCreateInfoNV {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
     self.handleTypes
   }
 }
 #[cfg(feature = "VK_NV_external_memory")]
-impl Default for VkExternalMemoryImageCreateInfoNV {
-  fn default() -> VkExternalMemoryImageCreateInfoNV {
+impl<'a> Default for VkExternalMemoryImageCreateInfoNV<'a> {
+  fn default() -> VkExternalMemoryImageCreateInfoNV<'a> {
     VkExternalMemoryImageCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_external_memory")]
-unsafe impl RawStruct for VkExternalMemoryImageCreateInfoNV {
+unsafe impl<'a> RawStruct for VkExternalMemoryImageCreateInfoNV<'a> {
   type Raw = types_raw::VkExternalMemoryImageCreateInfoNV;
+}
+#[cfg(feature = "VK_NV_external_memory")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkExternalMemoryImageCreateInfoNV<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExternalMemoryImageCreateInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_external_memory")]
 #[cfg(test)]
@@ -11960,17 +11957,17 @@ fn test_struct_size_vk_external_memory_image_create_info_nv() {
 
 /// Specify memory handle types that may be exported
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_external_memory")]
-pub struct VkExportMemoryAllocateInfoNV {
+pub struct VkExportMemoryAllocateInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsNV,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NV_external_memory")]
-impl VkExportMemoryAllocateInfoNV {
+impl<'a> VkExportMemoryAllocateInfoNV<'a> {
   #[inline]
-  pub fn new() -> VkExportMemoryAllocateInfoNV {
+  pub fn new() -> VkExportMemoryAllocateInfoNV<'a> {
     unsafe {
       VkExportMemoryAllocateInfoNV {
         sType: VkStructureType::EXPORT_MEMORY_ALLOCATE_INFO_NV,
@@ -11984,27 +11981,28 @@ impl VkExportMemoryAllocateInfoNV {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
     self.handleTypes
   }
 }
 #[cfg(feature = "VK_NV_external_memory")]
-impl Default for VkExportMemoryAllocateInfoNV {
-  fn default() -> VkExportMemoryAllocateInfoNV {
+impl<'a> Default for VkExportMemoryAllocateInfoNV<'a> {
+  fn default() -> VkExportMemoryAllocateInfoNV<'a> {
     VkExportMemoryAllocateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_external_memory")]
-unsafe impl RawStruct for VkExportMemoryAllocateInfoNV {
+unsafe impl<'a> RawStruct for VkExportMemoryAllocateInfoNV<'a> {
   type Raw = types_raw::VkExportMemoryAllocateInfoNV;
+}
+#[cfg(feature = "VK_NV_external_memory")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemoryAllocateInfoNV<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExportMemoryAllocateInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_external_memory")]
 #[cfg(test)]
@@ -12020,20 +12018,20 @@ fn test_struct_size_vk_export_memory_allocate_info_nv() {
 
 /// import Win32 memory created on the same physical device
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkImportMemoryWin32HandleInfoNV {
+pub struct VkImportMemoryWin32HandleInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagsNV,
   pub handle: wsi::win32::HANDLE,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkImportMemoryWin32HandleInfoNV {
+impl<'a> VkImportMemoryWin32HandleInfoNV<'a> {
   #[inline]
-  pub fn new() -> VkImportMemoryWin32HandleInfoNV {
+  pub fn new() -> VkImportMemoryWin32HandleInfoNV<'a> {
     unsafe {
       VkImportMemoryWin32HandleInfoNV {
         sType: VkStructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_NV,
@@ -12052,14 +12050,6 @@ impl VkImportMemoryWin32HandleInfoNV {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagsNV {
     self.handleType
   }
@@ -12070,15 +12060,25 @@ impl VkImportMemoryWin32HandleInfoNV {
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkImportMemoryWin32HandleInfoNV {
-  fn default() -> VkImportMemoryWin32HandleInfoNV {
+impl<'a> Default for VkImportMemoryWin32HandleInfoNV<'a> {
+  fn default() -> VkImportMemoryWin32HandleInfoNV<'a> {
     VkImportMemoryWin32HandleInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkImportMemoryWin32HandleInfoNV {
+unsafe impl<'a> RawStruct for VkImportMemoryWin32HandleInfoNV<'a> {
   type Raw = types_raw::VkImportMemoryWin32HandleInfoNV;
+}
+#[cfg(feature = "VK_NV_external_memory_win32")]
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkImportMemoryWin32HandleInfoNV<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkImportMemoryWin32HandleInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
@@ -12093,20 +12093,20 @@ fn test_struct_size_vk_import_memory_win32_handle_info_nv() {
 
 /// specify security attributes and access rights for Win32 memory handles
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkExportMemoryWin32HandleInfoNV {
+pub struct VkExportMemoryWin32HandleInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub pAttributes: *const wsi::win32::SECURITY_ATTRIBUTES,
   pub dwAccess: wsi::win32::DWORD,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkExportMemoryWin32HandleInfoNV {
+impl<'a> VkExportMemoryWin32HandleInfoNV<'a> {
   #[inline]
-  pub fn new() -> VkExportMemoryWin32HandleInfoNV {
+  pub fn new() -> VkExportMemoryWin32HandleInfoNV<'a> {
     unsafe {
       VkExportMemoryWin32HandleInfoNV {
         sType: VkStructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_NV,
@@ -12125,14 +12125,6 @@ impl VkExportMemoryWin32HandleInfoNV {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
     self.pAttributes
   }
@@ -12143,15 +12135,25 @@ impl VkExportMemoryWin32HandleInfoNV {
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkExportMemoryWin32HandleInfoNV {
-  fn default() -> VkExportMemoryWin32HandleInfoNV {
+impl<'a> Default for VkExportMemoryWin32HandleInfoNV<'a> {
+  fn default() -> VkExportMemoryWin32HandleInfoNV<'a> {
     VkExportMemoryWin32HandleInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkExportMemoryWin32HandleInfoNV {
+unsafe impl<'a> RawStruct for VkExportMemoryWin32HandleInfoNV<'a> {
   type Raw = types_raw::VkExportMemoryWin32HandleInfoNV;
+}
+#[cfg(feature = "VK_NV_external_memory_win32")]
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemoryWin32HandleInfoNV<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExportMemoryWin32HandleInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
@@ -12168,12 +12170,11 @@ fn test_struct_size_vk_export_memory_win32_handle_info_nv() {
 
 /// use Windows keyex mutex mechanism to synchronize work
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub struct VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   acquireCount: u32,
   pAcquireSyncs: *const types_raw::VkDeviceMemory,
   pAcquireKeys: *const u64,
@@ -12196,14 +12197,6 @@ impl<'a> VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
     }
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn acquire_count(&self) -> u32 {
     self.acquireCount
   }
@@ -12223,6 +12216,16 @@ impl<'a> Default for VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 unsafe impl<'a> RawStruct for VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
   type Raw = types_raw::VkWin32KeyedMutexAcquireReleaseInfoNV;
+}
+#[cfg(feature = "VK_NV_win32_keyed_mutex")]
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkWin32KeyedMutexAcquireReleaseInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
@@ -12250,10 +12253,6 @@ pub struct VkPhysicalDeviceGroupPropertiesKHX {
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
 impl VkPhysicalDeviceGroupPropertiesKHX {
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
   #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
@@ -12287,11 +12286,10 @@ fn test_struct_size_vk_physical_device_group_properties_khx() {
 
 /// Create a logical device from multiple physical devices
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group_creation")]
 pub struct VkDeviceGroupDeviceCreateInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   physicalDeviceCount: u32,
   pPhysicalDevices: *const types_raw::VkPhysicalDevice,
   _p: ::std::marker::PhantomData<&'a u8>,
@@ -12316,14 +12314,6 @@ impl<'a> VkDeviceGroupDeviceCreateInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn physical_device_count(&self) -> u32 {
     self.physicalDeviceCount
   }
@@ -12339,6 +12329,15 @@ unsafe impl<'a> RawStruct for VkDeviceGroupDeviceCreateInfoKHX<'a> {
   type Raw = types_raw::VkDeviceGroupDeviceCreateInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkDeviceCreateInfo<'b>> for VkDeviceGroupDeviceCreateInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDeviceGroupDeviceCreateInfoKHX as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHX_device_group_creation")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_device_group_device_create_info_khx() {
@@ -12352,18 +12351,18 @@ fn test_struct_size_vk_device_group_device_create_info_khx() {
 
 /// Structure controlling how many instances of memory will be allocated
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkMemoryAllocateFlagsInfoKHX {
+pub struct VkMemoryAllocateFlagsInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkMemoryAllocateFlagsKHX,
   pub deviceMask: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl VkMemoryAllocateFlagsInfoKHX {
+impl<'a> VkMemoryAllocateFlagsInfoKHX<'a> {
   #[inline]
-  pub fn new() -> VkMemoryAllocateFlagsInfoKHX {
+  pub fn new() -> VkMemoryAllocateFlagsInfoKHX<'a> {
     unsafe {
       VkMemoryAllocateFlagsInfoKHX {
         sType: VkStructureType::MEMORY_ALLOCATE_FLAGS_INFO_KHX,
@@ -12382,14 +12381,6 @@ impl VkMemoryAllocateFlagsInfoKHX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkMemoryAllocateFlagsKHX {
     self.flags
   }
@@ -12399,14 +12390,23 @@ impl VkMemoryAllocateFlagsInfoKHX {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl Default for VkMemoryAllocateFlagsInfoKHX {
-  fn default() -> VkMemoryAllocateFlagsInfoKHX {
+impl<'a> Default for VkMemoryAllocateFlagsInfoKHX<'a> {
+  fn default() -> VkMemoryAllocateFlagsInfoKHX<'a> {
     VkMemoryAllocateFlagsInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl RawStruct for VkMemoryAllocateFlagsInfoKHX {
+unsafe impl<'a> RawStruct for VkMemoryAllocateFlagsInfoKHX<'a> {
   type Raw = types_raw::VkMemoryAllocateFlagsInfoKHX;
+}
+#[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkMemoryAllocateFlagsInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkMemoryAllocateFlagsInfoKHX as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
@@ -12420,11 +12420,10 @@ fn test_struct_size_vk_memory_allocate_flags_info_khx() {
 
 /// Set the initial device mask and render areas for a render pass instance
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
 pub struct VkDeviceGroupRenderPassBeginInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub deviceMask: u32,
   deviceRenderAreaCount: u32,
   pDeviceRenderAreas: *const types_raw::VkRect2D,
@@ -12455,14 +12454,6 @@ impl<'a> VkDeviceGroupRenderPassBeginInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn device_mask(&self) -> u32 {
     self.deviceMask
   }
@@ -12482,6 +12473,15 @@ unsafe impl<'a> RawStruct for VkDeviceGroupRenderPassBeginInfoKHX<'a> {
   type Raw = types_raw::VkDeviceGroupRenderPassBeginInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkRenderPassBeginInfo<'b>> for VkDeviceGroupRenderPassBeginInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDeviceGroupRenderPassBeginInfoKHX as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_device_group_render_pass_begin_info_khx() {
@@ -12493,17 +12493,17 @@ fn test_struct_size_vk_device_group_render_pass_begin_info_khx() {
 
 /// Set the initial device mask for a command buffer
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupCommandBufferBeginInfoKHX {
+pub struct VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub deviceMask: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl VkDeviceGroupCommandBufferBeginInfoKHX {
+impl<'a> VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
   #[inline]
-  pub fn new() -> VkDeviceGroupCommandBufferBeginInfoKHX {
+  pub fn new() -> VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
     unsafe {
       VkDeviceGroupCommandBufferBeginInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO_KHX,
@@ -12517,27 +12517,28 @@ impl VkDeviceGroupCommandBufferBeginInfoKHX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn device_mask(&self) -> u32 {
     self.deviceMask
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl Default for VkDeviceGroupCommandBufferBeginInfoKHX {
-  fn default() -> VkDeviceGroupCommandBufferBeginInfoKHX {
+impl<'a> Default for VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
+  fn default() -> VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
     VkDeviceGroupCommandBufferBeginInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl RawStruct for VkDeviceGroupCommandBufferBeginInfoKHX {
+unsafe impl<'a> RawStruct for VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
   type Raw = types_raw::VkDeviceGroupCommandBufferBeginInfoKHX;
+}
+#[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkCommandBufferBeginInfo<'b>> for VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDeviceGroupCommandBufferBeginInfoKHX as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
@@ -12552,11 +12553,10 @@ fn test_struct_size_vk_device_group_command_buffer_begin_info_khx() {
 /// Structure indicating which physical devices execute semaphore operations and
 /// command buffers
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
 pub struct VkDeviceGroupSubmitInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   waitSemaphoreCount: u32,
   pWaitSemaphoreDeviceIndices: *const u32,
   commandBufferCount: u32,
@@ -12601,14 +12601,6 @@ impl<'a> VkDeviceGroupSubmitInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn wait_semaphore_count(&self) -> u32 {
     self.waitSemaphoreCount
   }
@@ -12632,6 +12624,15 @@ unsafe impl<'a> RawStruct for VkDeviceGroupSubmitInfoKHX<'a> {
   type Raw = types_raw::VkDeviceGroupSubmitInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkDeviceGroupSubmitInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDeviceGroupSubmitInfoKHX as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_device_group_submit_info_khx() {
@@ -12643,18 +12644,18 @@ fn test_struct_size_vk_device_group_submit_info_khx() {
 
 /// Structure indicating which instances are bound
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupBindSparseInfoKHX {
+pub struct VkDeviceGroupBindSparseInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub resourceDeviceIndex: u32,
   pub memoryDeviceIndex: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl VkDeviceGroupBindSparseInfoKHX {
+impl<'a> VkDeviceGroupBindSparseInfoKHX<'a> {
   #[inline]
-  pub fn new() -> VkDeviceGroupBindSparseInfoKHX {
+  pub fn new() -> VkDeviceGroupBindSparseInfoKHX<'a> {
     unsafe {
       VkDeviceGroupBindSparseInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_BIND_SPARSE_INFO_KHX,
@@ -12673,14 +12674,6 @@ impl VkDeviceGroupBindSparseInfoKHX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn resource_device_index(&self) -> u32 {
     self.resourceDeviceIndex
   }
@@ -12690,14 +12683,23 @@ impl VkDeviceGroupBindSparseInfoKHX {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl Default for VkDeviceGroupBindSparseInfoKHX {
-  fn default() -> VkDeviceGroupBindSparseInfoKHX {
+impl<'a> Default for VkDeviceGroupBindSparseInfoKHX<'a> {
+  fn default() -> VkDeviceGroupBindSparseInfoKHX<'a> {
     VkDeviceGroupBindSparseInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl RawStruct for VkDeviceGroupBindSparseInfoKHX {
+unsafe impl<'a> RawStruct for VkDeviceGroupBindSparseInfoKHX<'a> {
   type Raw = types_raw::VkDeviceGroupBindSparseInfoKHX;
+}
+#[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkBindSparseInfo<'b>> for VkDeviceGroupBindSparseInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDeviceGroupBindSparseInfoKHX as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
@@ -12711,11 +12713,10 @@ fn test_struct_size_vk_device_group_bind_sparse_info_khx() {
 
 /// Structure specifying device within a group to bind to
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
 pub struct VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   deviceIndexCount: u32,
   pDeviceIndices: *const u32,
   _p: ::std::marker::PhantomData<&'a u8>,
@@ -12740,14 +12741,6 @@ impl<'a> VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn device_index_count(&self) -> u32 {
     self.deviceIndexCount
   }
@@ -12763,6 +12756,15 @@ unsafe impl<'a> RawStruct for VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
   type Raw = types_raw::VkBindBufferMemoryDeviceGroupInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkBindBufferMemoryInfoKHR<'b>> for VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkBindBufferMemoryDeviceGroupInfoKHX as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_bind_buffer_memory_device_group_info_khx() {
@@ -12774,11 +12776,10 @@ fn test_struct_size_vk_bind_buffer_memory_device_group_info_khx() {
 
 /// Structure specifying device within a group to bind to
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
 pub struct VkBindImageMemoryDeviceGroupInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   deviceIndexCount: u32,
   pDeviceIndices: *const u32,
   SFRRectCount: u32,
@@ -12813,14 +12814,6 @@ impl<'a> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn device_index_count(&self) -> u32 {
     self.deviceIndexCount
   }
@@ -12840,6 +12833,15 @@ unsafe impl<'a> RawStruct for VkBindImageMemoryDeviceGroupInfoKHX<'a> {
   type Raw = types_raw::VkBindImageMemoryDeviceGroupInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkBindImageMemoryInfoKHR<'b>> for VkBindImageMemoryDeviceGroupInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkBindImageMemoryDeviceGroupInfoKHX as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_bind_image_memory_device_group_info_khx() {
@@ -12851,24 +12853,16 @@ fn test_struct_size_vk_bind_image_memory_device_group_info_khx() {
 
 /// Present capabilities from other physical devices
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupPresentCapabilitiesKHX {
+pub struct VkDeviceGroupPresentCapabilitiesKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub presentMask: [u32; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize],
   pub modes: VkDeviceGroupPresentModeFlagsKHX,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl VkDeviceGroupPresentCapabilitiesKHX {
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
+impl<'a> VkDeviceGroupPresentCapabilitiesKHX<'a> {
   #[inline]
   pub fn present_mask(&self) -> [u32; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize] {
     self.presentMask
@@ -12877,9 +12871,17 @@ impl VkDeviceGroupPresentCapabilitiesKHX {
   pub fn modes(&self) -> VkDeviceGroupPresentModeFlagsKHX {
     self.modes
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl RawStruct for VkDeviceGroupPresentCapabilitiesKHX {
+unsafe impl<'a> RawStruct for VkDeviceGroupPresentCapabilitiesKHX<'a> {
   type Raw = types_raw::VkDeviceGroupPresentCapabilitiesKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
@@ -12894,17 +12896,17 @@ fn test_struct_size_vk_device_group_present_capabilities_khx() {
 
 /// Specify that an image will be bound to swapchain memory
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkImageSwapchainCreateInfoKHX {
+pub struct VkImageSwapchainCreateInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub swapchain: Option<VkSwapchainKHR>,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl VkImageSwapchainCreateInfoKHX {
+impl<'a> VkImageSwapchainCreateInfoKHX<'a> {
   #[inline]
-  pub fn new() -> VkImageSwapchainCreateInfoKHX {
+  pub fn new() -> VkImageSwapchainCreateInfoKHX<'a> {
     unsafe {
       VkImageSwapchainCreateInfoKHX {
         sType: VkStructureType::IMAGE_SWAPCHAIN_CREATE_INFO_KHX,
@@ -12918,27 +12920,28 @@ impl VkImageSwapchainCreateInfoKHX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn swapchain(&self) -> Option<VkSwapchainKHR> {
     self.swapchain
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl Default for VkImageSwapchainCreateInfoKHX {
-  fn default() -> VkImageSwapchainCreateInfoKHX {
+impl<'a> Default for VkImageSwapchainCreateInfoKHX<'a> {
+  fn default() -> VkImageSwapchainCreateInfoKHX<'a> {
     VkImageSwapchainCreateInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl RawStruct for VkImageSwapchainCreateInfoKHX {
+unsafe impl<'a> RawStruct for VkImageSwapchainCreateInfoKHX<'a> {
   type Raw = types_raw::VkImageSwapchainCreateInfoKHX;
+}
+#[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkImageSwapchainCreateInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkImageSwapchainCreateInfoKHX as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
@@ -12952,18 +12955,18 @@ fn test_struct_size_vk_image_swapchain_create_info_khx() {
 
 /// Structure specifying swapchain image memory to bind to
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkBindImageMemorySwapchainInfoKHX {
+pub struct VkBindImageMemorySwapchainInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub swapchain: VkSwapchainKHR,
   pub imageIndex: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl VkBindImageMemorySwapchainInfoKHX {
+impl<'a> VkBindImageMemorySwapchainInfoKHX<'a> {
   #[inline]
-  pub fn new() -> VkBindImageMemorySwapchainInfoKHX {
+  pub fn new() -> VkBindImageMemorySwapchainInfoKHX<'a> {
     unsafe {
       VkBindImageMemorySwapchainInfoKHX {
         sType: VkStructureType::BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHX,
@@ -12982,14 +12985,6 @@ impl VkBindImageMemorySwapchainInfoKHX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn swapchain(&self) -> VkSwapchainKHR {
     self.swapchain
   }
@@ -12999,14 +12994,23 @@ impl VkBindImageMemorySwapchainInfoKHX {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl Default for VkBindImageMemorySwapchainInfoKHX {
-  fn default() -> VkBindImageMemorySwapchainInfoKHX {
+impl<'a> Default for VkBindImageMemorySwapchainInfoKHX<'a> {
+  fn default() -> VkBindImageMemorySwapchainInfoKHX<'a> {
     VkBindImageMemorySwapchainInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl RawStruct for VkBindImageMemorySwapchainInfoKHX {
+unsafe impl<'a> RawStruct for VkBindImageMemorySwapchainInfoKHX<'a> {
   type Raw = types_raw::VkBindImageMemorySwapchainInfoKHX;
+}
+#[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkBindImageMemoryInfoKHR<'b>> for VkBindImageMemorySwapchainInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkBindImageMemorySwapchainInfoKHX as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
@@ -13020,21 +13024,21 @@ fn test_struct_size_vk_bind_image_memory_swapchain_info_khx() {
 
 /// Structure specifying parameters of the acquire
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkAcquireNextImageInfoKHX {
+pub struct VkAcquireNextImageInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub swapchain: VkSwapchainKHR,
   pub timeout: u64,
   pub semaphore: Option<VkSemaphore>,
   pub fence: Option<VkFence>,
   pub deviceMask: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl VkAcquireNextImageInfoKHX {
+impl<'a> VkAcquireNextImageInfoKHX<'a> {
   #[inline]
-  pub fn new() -> VkAcquireNextImageInfoKHX {
+  pub fn new() -> VkAcquireNextImageInfoKHX<'a> {
     unsafe {
       VkAcquireNextImageInfoKHX {
         sType: VkStructureType::ACQUIRE_NEXT_IMAGE_INFO_KHX,
@@ -13068,14 +13072,6 @@ impl VkAcquireNextImageInfoKHX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn swapchain(&self) -> VkSwapchainKHR {
     self.swapchain
   }
@@ -13095,15 +13091,23 @@ impl VkAcquireNextImageInfoKHX {
   pub fn device_mask(&self) -> u32 {
     self.deviceMask
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl Default for VkAcquireNextImageInfoKHX {
-  fn default() -> VkAcquireNextImageInfoKHX {
+impl<'a> Default for VkAcquireNextImageInfoKHX<'a> {
+  fn default() -> VkAcquireNextImageInfoKHX<'a> {
     VkAcquireNextImageInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl RawStruct for VkAcquireNextImageInfoKHX {
+unsafe impl<'a> RawStruct for VkAcquireNextImageInfoKHX<'a> {
   type Raw = types_raw::VkAcquireNextImageInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
@@ -13118,11 +13122,10 @@ fn test_struct_size_vk_acquire_next_image_info_khx() {
 
 /// Mode and mask controlling which physical devices\' images are presented
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
 pub struct VkDeviceGroupPresentInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   swapchainCount: u32,
   pDeviceMasks: *const u32,
   pub mode: VkDeviceGroupPresentModeFlagBitsKHX,
@@ -13153,14 +13156,6 @@ impl<'a> VkDeviceGroupPresentInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn swapchain_count(&self) -> u32 {
     self.swapchainCount
   }
@@ -13180,6 +13175,15 @@ unsafe impl<'a> RawStruct for VkDeviceGroupPresentInfoKHX<'a> {
   type Raw = types_raw::VkDeviceGroupPresentInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkDeviceGroupPresentInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDeviceGroupPresentInfoKHX as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_device_group_present_info_khx() {
@@ -13191,17 +13195,17 @@ fn test_struct_size_vk_device_group_present_info_khx() {
 
 /// Structure specifying parameters of a newly created swapchain object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupSwapchainCreateInfoKHX {
+pub struct VkDeviceGroupSwapchainCreateInfoKHX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub modes: VkDeviceGroupPresentModeFlagsKHX,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl VkDeviceGroupSwapchainCreateInfoKHX {
+impl<'a> VkDeviceGroupSwapchainCreateInfoKHX<'a> {
   #[inline]
-  pub fn new() -> VkDeviceGroupSwapchainCreateInfoKHX {
+  pub fn new() -> VkDeviceGroupSwapchainCreateInfoKHX<'a> {
     unsafe {
       VkDeviceGroupSwapchainCreateInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHX,
@@ -13215,27 +13219,28 @@ impl VkDeviceGroupSwapchainCreateInfoKHX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn modes(&self) -> VkDeviceGroupPresentModeFlagsKHX {
     self.modes
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl Default for VkDeviceGroupSwapchainCreateInfoKHX {
-  fn default() -> VkDeviceGroupSwapchainCreateInfoKHX {
+impl<'a> Default for VkDeviceGroupSwapchainCreateInfoKHX<'a> {
+  fn default() -> VkDeviceGroupSwapchainCreateInfoKHX<'a> {
     VkDeviceGroupSwapchainCreateInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl RawStruct for VkDeviceGroupSwapchainCreateInfoKHX {
+unsafe impl<'a> RawStruct for VkDeviceGroupSwapchainCreateInfoKHX<'a> {
   type Raw = types_raw::VkDeviceGroupSwapchainCreateInfoKHX;
+}
+#[cfg(feature = "VK_KHX_device_group")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSwapchainCreateInfoKHR<'b>> for VkDeviceGroupSwapchainCreateInfoKHX<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDeviceGroupSwapchainCreateInfoKHX as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHX_device_group")]
 #[cfg(test)]
@@ -13251,11 +13256,10 @@ fn test_struct_size_vk_device_group_swapchain_create_info_khx() {
 
 /// Specify validation checks to disable for a Vulkan instance
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_validation_flags")]
 pub struct VkValidationFlagsEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   disabledValidationCheckCount: u32,
   pDisabledValidationChecks: *mut VkValidationCheckEXT,
   _p: ::std::marker::PhantomData<&'a u8>,
@@ -13280,14 +13284,6 @@ impl<'a> VkValidationFlagsEXT<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn disabled_validation_check_count(&self) -> u32 {
     self.disabledValidationCheckCount
   }
@@ -13303,6 +13299,15 @@ unsafe impl<'a> RawStruct for VkValidationFlagsEXT<'a> {
   type Raw = types_raw::VkValidationFlagsEXT;
 }
 #[cfg(feature = "VK_EXT_validation_flags")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkInstanceCreateInfo<'b>> for VkValidationFlagsEXT<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkValidationFlagsEXT as *const c_void
+  }
+}
+#[cfg(feature = "VK_EXT_validation_flags")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_validation_flags_ext() {
@@ -13313,20 +13318,20 @@ fn test_struct_size_vk_validation_flags_ext() {
 
 /// Structure specifying parameters of a newly created VI surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
-pub struct VkViSurfaceCreateInfoNN {
+pub struct VkViSurfaceCreateInfoNN<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkViSurfaceCreateFlagsNN,
   window: *mut c_void,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
-impl VkViSurfaceCreateInfoNN {
+impl<'a> VkViSurfaceCreateInfoNN<'a> {
   #[inline]
-  pub fn new() -> VkViSurfaceCreateInfoNN {
+  pub fn new() -> VkViSurfaceCreateInfoNN<'a> {
     unsafe {
       VkViSurfaceCreateInfoNN {
         sType: VkStructureType::VI_SURFACE_CREATE_INFO_NN,
@@ -13340,12 +13345,9 @@ impl VkViSurfaceCreateInfoNN {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
+  pub fn set_window(mut self, value: *mut c_void) -> Self {
+    self.window = value;
+    self
   }
   #[inline]
   pub fn flags(&self) -> VkViSurfaceCreateFlagsNN {
@@ -13355,17 +13357,25 @@ impl VkViSurfaceCreateInfoNN {
   pub fn window(&self) -> *mut c_void {
     self.window
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
-impl Default for VkViSurfaceCreateInfoNN {
-  fn default() -> VkViSurfaceCreateInfoNN {
+impl<'a> Default for VkViSurfaceCreateInfoNN<'a> {
+  fn default() -> VkViSurfaceCreateInfoNN<'a> {
     VkViSurfaceCreateInfoNN::new()
   }
 }
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
-unsafe impl RawStruct for VkViSurfaceCreateInfoNN {
+unsafe impl<'a> RawStruct for VkViSurfaceCreateInfoNN<'a> {
   type Raw = types_raw::VkViSurfaceCreateInfoNN;
 }
 #[cfg(feature = "VK_NN_vi_surface")]
@@ -13418,17 +13428,17 @@ fn test_struct_size_vk_external_memory_properties_khr() {
 
 /// Structure specifying external image creation parameters
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-pub struct VkPhysicalDeviceExternalImageFormatInfoKHR {
+pub struct VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl VkPhysicalDeviceExternalImageFormatInfoKHR {
+impl<'a> VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceExternalImageFormatInfoKHR {
+  pub fn new() -> VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
     unsafe {
       VkPhysicalDeviceExternalImageFormatInfoKHR {
         sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR,
@@ -13442,27 +13452,30 @@ impl VkPhysicalDeviceExternalImageFormatInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl Default for VkPhysicalDeviceExternalImageFormatInfoKHR {
-  fn default() -> VkPhysicalDeviceExternalImageFormatInfoKHR {
+impl<'a> Default for VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
+  fn default() -> VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
     VkPhysicalDeviceExternalImageFormatInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-unsafe impl RawStruct for VkPhysicalDeviceExternalImageFormatInfoKHR {
+unsafe impl<'a> RawStruct for VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
   type Raw = types_raw::VkPhysicalDeviceExternalImageFormatInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_memory_capabilities")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPhysicalDeviceImageFormatInfo2KHR<'b>>
+  for VkPhysicalDeviceExternalImageFormatInfoKHR<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceExternalImageFormatInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 #[cfg(test)]
@@ -13486,21 +13499,26 @@ pub struct VkExternalImageFormatPropertiesKHR {
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 impl VkExternalImageFormatPropertiesKHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn external_memory_properties(&self) -> VkExternalMemoryPropertiesKHR {
-    self.externalMemoryProperties
+  pub fn external_memory_properties(&self) -> &VkExternalMemoryPropertiesKHR {
+    &self.externalMemoryProperties
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 unsafe impl RawStruct for VkExternalImageFormatPropertiesKHR {
   type Raw = types_raw::VkExternalImageFormatPropertiesKHR;
+}
+#[cfg(feature = "VK_KHR_external_memory_capabilities")]
+unsafe impl StructExtends<VkImageFormatProperties2KHR> for VkExternalImageFormatPropertiesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExternalImageFormatPropertiesKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 #[cfg(test)]
@@ -13514,19 +13532,19 @@ fn test_struct_size_vk_external_image_format_properties_khr() {
 
 /// Structure specifying buffer creation parameters
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-pub struct VkPhysicalDeviceExternalBufferInfoKHR {
+pub struct VkPhysicalDeviceExternalBufferInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkBufferCreateFlags,
   pub usage: VkBufferUsageFlags,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl VkPhysicalDeviceExternalBufferInfoKHR {
+impl<'a> VkPhysicalDeviceExternalBufferInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceExternalBufferInfoKHR {
+  pub fn new() -> VkPhysicalDeviceExternalBufferInfoKHR<'a> {
     unsafe {
       VkPhysicalDeviceExternalBufferInfoKHR {
         sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHR,
@@ -13550,14 +13568,6 @@ impl VkPhysicalDeviceExternalBufferInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkBufferCreateFlags {
     self.flags
   }
@@ -13569,15 +13579,23 @@ impl VkPhysicalDeviceExternalBufferInfoKHR {
   pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl Default for VkPhysicalDeviceExternalBufferInfoKHR {
-  fn default() -> VkPhysicalDeviceExternalBufferInfoKHR {
+impl<'a> Default for VkPhysicalDeviceExternalBufferInfoKHR<'a> {
+  fn default() -> VkPhysicalDeviceExternalBufferInfoKHR<'a> {
     VkPhysicalDeviceExternalBufferInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-unsafe impl RawStruct for VkPhysicalDeviceExternalBufferInfoKHR {
+unsafe impl<'a> RawStruct for VkPhysicalDeviceExternalBufferInfoKHR<'a> {
   type Raw = types_raw::VkPhysicalDeviceExternalBufferInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -13602,16 +13620,12 @@ pub struct VkExternalBufferPropertiesKHR {
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 impl VkExternalBufferPropertiesKHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn external_memory_properties(&self) -> VkExternalMemoryPropertiesKHR {
-    self.externalMemoryProperties
+  pub fn external_memory_properties(&self) -> &VkExternalMemoryPropertiesKHR {
+    &self.externalMemoryProperties
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -13644,10 +13658,6 @@ pub struct VkPhysicalDeviceIDPropertiesKHR {
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 impl VkPhysicalDeviceIDPropertiesKHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -13677,6 +13687,15 @@ unsafe impl RawStruct for VkPhysicalDeviceIDPropertiesKHR {
   type Raw = types_raw::VkPhysicalDeviceIDPropertiesKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDeviceIDPropertiesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceIDPropertiesKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_external_memory_capabilities")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_physical_device_id_properties_khr() {
@@ -13690,17 +13709,17 @@ fn test_struct_size_vk_physical_device_id_properties_khr() {
 
 /// Specify that an image may be backed by external memory
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory")]
-pub struct VkExternalMemoryImageCreateInfoKHR {
+pub struct VkExternalMemoryImageCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl VkExternalMemoryImageCreateInfoKHR {
+impl<'a> VkExternalMemoryImageCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkExternalMemoryImageCreateInfoKHR {
+  pub fn new() -> VkExternalMemoryImageCreateInfoKHR<'a> {
     unsafe {
       VkExternalMemoryImageCreateInfoKHR {
         sType: VkStructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHR,
@@ -13714,27 +13733,28 @@ impl VkExternalMemoryImageCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl Default for VkExternalMemoryImageCreateInfoKHR {
-  fn default() -> VkExternalMemoryImageCreateInfoKHR {
+impl<'a> Default for VkExternalMemoryImageCreateInfoKHR<'a> {
+  fn default() -> VkExternalMemoryImageCreateInfoKHR<'a> {
     VkExternalMemoryImageCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl RawStruct for VkExternalMemoryImageCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkExternalMemoryImageCreateInfoKHR<'a> {
   type Raw = types_raw::VkExternalMemoryImageCreateInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_memory")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkExternalMemoryImageCreateInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExternalMemoryImageCreateInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
 #[cfg(test)]
@@ -13748,17 +13768,17 @@ fn test_struct_size_vk_external_memory_image_create_info_khr() {
 
 /// Specify that a buffer may be backed by external memory
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory")]
-pub struct VkExternalMemoryBufferCreateInfoKHR {
+pub struct VkExternalMemoryBufferCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl VkExternalMemoryBufferCreateInfoKHR {
+impl<'a> VkExternalMemoryBufferCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkExternalMemoryBufferCreateInfoKHR {
+  pub fn new() -> VkExternalMemoryBufferCreateInfoKHR<'a> {
     unsafe {
       VkExternalMemoryBufferCreateInfoKHR {
         sType: VkStructureType::EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHR,
@@ -13772,27 +13792,28 @@ impl VkExternalMemoryBufferCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl Default for VkExternalMemoryBufferCreateInfoKHR {
-  fn default() -> VkExternalMemoryBufferCreateInfoKHR {
+impl<'a> Default for VkExternalMemoryBufferCreateInfoKHR<'a> {
+  fn default() -> VkExternalMemoryBufferCreateInfoKHR<'a> {
     VkExternalMemoryBufferCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl RawStruct for VkExternalMemoryBufferCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkExternalMemoryBufferCreateInfoKHR<'a> {
   type Raw = types_raw::VkExternalMemoryBufferCreateInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_memory")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkBufferCreateInfo<'b>> for VkExternalMemoryBufferCreateInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExternalMemoryBufferCreateInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
 #[cfg(test)]
@@ -13806,17 +13827,17 @@ fn test_struct_size_vk_external_memory_buffer_create_info_khr() {
 
 /// Specify exportable handle types for a device memory object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory")]
-pub struct VkExportMemoryAllocateInfoKHR {
+pub struct VkExportMemoryAllocateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl VkExportMemoryAllocateInfoKHR {
+impl<'a> VkExportMemoryAllocateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkExportMemoryAllocateInfoKHR {
+  pub fn new() -> VkExportMemoryAllocateInfoKHR<'a> {
     unsafe {
       VkExportMemoryAllocateInfoKHR {
         sType: VkStructureType::EXPORT_MEMORY_ALLOCATE_INFO_KHR,
@@ -13830,27 +13851,28 @@ impl VkExportMemoryAllocateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl Default for VkExportMemoryAllocateInfoKHR {
-  fn default() -> VkExportMemoryAllocateInfoKHR {
+impl<'a> Default for VkExportMemoryAllocateInfoKHR<'a> {
+  fn default() -> VkExportMemoryAllocateInfoKHR<'a> {
     VkExportMemoryAllocateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl RawStruct for VkExportMemoryAllocateInfoKHR {
+unsafe impl<'a> RawStruct for VkExportMemoryAllocateInfoKHR<'a> {
   type Raw = types_raw::VkExportMemoryAllocateInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_memory")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemoryAllocateInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExportMemoryAllocateInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
 #[cfg(test)]
@@ -13866,21 +13888,21 @@ fn test_struct_size_vk_export_memory_allocate_info_khr() {
 
 /// import Win32 memory created on the same physical device
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkImportMemoryWin32HandleInfoKHR {
+pub struct VkImportMemoryWin32HandleInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
   pub handle: wsi::win32::HANDLE,
   pub name: wsi::win32::LPCWSTR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkImportMemoryWin32HandleInfoKHR {
+impl<'a> VkImportMemoryWin32HandleInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkImportMemoryWin32HandleInfoKHR {
+  pub fn new() -> VkImportMemoryWin32HandleInfoKHR<'a> {
     unsafe {
       VkImportMemoryWin32HandleInfoKHR {
         sType: VkStructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
@@ -13904,14 +13926,6 @@ impl VkImportMemoryWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
@@ -13926,15 +13940,25 @@ impl VkImportMemoryWin32HandleInfoKHR {
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkImportMemoryWin32HandleInfoKHR {
-  fn default() -> VkImportMemoryWin32HandleInfoKHR {
+impl<'a> Default for VkImportMemoryWin32HandleInfoKHR<'a> {
+  fn default() -> VkImportMemoryWin32HandleInfoKHR<'a> {
     VkImportMemoryWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkImportMemoryWin32HandleInfoKHR {
+unsafe impl<'a> RawStruct for VkImportMemoryWin32HandleInfoKHR<'a> {
   type Raw = types_raw::VkImportMemoryWin32HandleInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_memory_win32")]
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkImportMemoryWin32HandleInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkImportMemoryWin32HandleInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
@@ -13950,21 +13974,21 @@ fn test_struct_size_vk_import_memory_win32_handle_info_khr() {
 /// Structure specifying additional attributes of Windows handles exported from a
 /// memory
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkExportMemoryWin32HandleInfoKHR {
+pub struct VkExportMemoryWin32HandleInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub pAttributes: *const wsi::win32::SECURITY_ATTRIBUTES,
   pub dwAccess: wsi::win32::DWORD,
   pub name: wsi::win32::LPCWSTR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkExportMemoryWin32HandleInfoKHR {
+impl<'a> VkExportMemoryWin32HandleInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkExportMemoryWin32HandleInfoKHR {
+  pub fn new() -> VkExportMemoryWin32HandleInfoKHR<'a> {
     unsafe {
       VkExportMemoryWin32HandleInfoKHR {
         sType: VkStructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
@@ -13988,14 +14012,6 @@ impl VkExportMemoryWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
     self.pAttributes
   }
@@ -14010,15 +14026,25 @@ impl VkExportMemoryWin32HandleInfoKHR {
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkExportMemoryWin32HandleInfoKHR {
-  fn default() -> VkExportMemoryWin32HandleInfoKHR {
+impl<'a> Default for VkExportMemoryWin32HandleInfoKHR<'a> {
+  fn default() -> VkExportMemoryWin32HandleInfoKHR<'a> {
     VkExportMemoryWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkExportMemoryWin32HandleInfoKHR {
+unsafe impl<'a> RawStruct for VkExportMemoryWin32HandleInfoKHR<'a> {
   type Raw = types_raw::VkExportMemoryWin32HandleInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_memory_win32")]
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemoryWin32HandleInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExportMemoryWin32HandleInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
@@ -14044,10 +14070,6 @@ pub struct VkMemoryWin32HandlePropertiesKHR {
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 impl VkMemoryWin32HandlePropertiesKHR {
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
   #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
@@ -14075,20 +14097,20 @@ fn test_struct_size_vk_memory_win32_handle_properties_khr() {
 
 /// Structure describing a Win32 handle semaphore export operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkMemoryGetWin32HandleInfoKHR {
+pub struct VkMemoryGetWin32HandleInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub memory: VkDeviceMemory,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkMemoryGetWin32HandleInfoKHR {
+impl<'a> VkMemoryGetWin32HandleInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkMemoryGetWin32HandleInfoKHR {
+  pub fn new() -> VkMemoryGetWin32HandleInfoKHR<'a> {
     unsafe {
       VkMemoryGetWin32HandleInfoKHR {
         sType: VkStructureType::MEMORY_GET_WIN32_HANDLE_INFO_KHR,
@@ -14107,14 +14129,6 @@ impl VkMemoryGetWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn memory(&self) -> VkDeviceMemory {
     self.memory
   }
@@ -14122,17 +14136,25 @@ impl VkMemoryGetWin32HandleInfoKHR {
   pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkMemoryGetWin32HandleInfoKHR {
-  fn default() -> VkMemoryGetWin32HandleInfoKHR {
+impl<'a> Default for VkMemoryGetWin32HandleInfoKHR<'a> {
+  fn default() -> VkMemoryGetWin32HandleInfoKHR<'a> {
     VkMemoryGetWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkMemoryGetWin32HandleInfoKHR {
+unsafe impl<'a> RawStruct for VkMemoryGetWin32HandleInfoKHR<'a> {
   type Raw = types_raw::VkMemoryGetWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
@@ -14150,18 +14172,18 @@ fn test_struct_size_vk_memory_get_win32_handle_info_khr() {
 
 /// import memory created on the same physical device from a file descriptor
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-pub struct VkImportMemoryFdInfoKHR {
+pub struct VkImportMemoryFdInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
   pub fd: c_int,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-impl VkImportMemoryFdInfoKHR {
+impl<'a> VkImportMemoryFdInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkImportMemoryFdInfoKHR {
+  pub fn new() -> VkImportMemoryFdInfoKHR<'a> {
     unsafe {
       VkImportMemoryFdInfoKHR {
         sType: VkStructureType::IMPORT_MEMORY_FD_INFO_KHR,
@@ -14180,14 +14202,6 @@ impl VkImportMemoryFdInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
@@ -14197,14 +14211,23 @@ impl VkImportMemoryFdInfoKHR {
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-impl Default for VkImportMemoryFdInfoKHR {
-  fn default() -> VkImportMemoryFdInfoKHR {
+impl<'a> Default for VkImportMemoryFdInfoKHR<'a> {
+  fn default() -> VkImportMemoryFdInfoKHR<'a> {
     VkImportMemoryFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-unsafe impl RawStruct for VkImportMemoryFdInfoKHR {
+unsafe impl<'a> RawStruct for VkImportMemoryFdInfoKHR<'a> {
   type Raw = types_raw::VkImportMemoryFdInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_memory_fd")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkImportMemoryFdInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkImportMemoryFdInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
 #[cfg(test)]
@@ -14224,10 +14247,6 @@ pub struct VkMemoryFdPropertiesKHR {
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
 impl VkMemoryFdPropertiesKHR {
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
   #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
@@ -14250,18 +14269,18 @@ fn test_struct_size_vk_memory_fd_properties_khr() {
 
 /// Structure describing a POSIX FD semaphore export operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-pub struct VkMemoryGetFdInfoKHR {
+pub struct VkMemoryGetFdInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub memory: VkDeviceMemory,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-impl VkMemoryGetFdInfoKHR {
+impl<'a> VkMemoryGetFdInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkMemoryGetFdInfoKHR {
+  pub fn new() -> VkMemoryGetFdInfoKHR<'a> {
     unsafe {
       VkMemoryGetFdInfoKHR {
         sType: VkStructureType::MEMORY_GET_FD_INFO_KHR,
@@ -14280,14 +14299,6 @@ impl VkMemoryGetFdInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn memory(&self) -> VkDeviceMemory {
     self.memory
   }
@@ -14295,15 +14306,23 @@ impl VkMemoryGetFdInfoKHR {
   pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-impl Default for VkMemoryGetFdInfoKHR {
-  fn default() -> VkMemoryGetFdInfoKHR {
+impl<'a> Default for VkMemoryGetFdInfoKHR<'a> {
+  fn default() -> VkMemoryGetFdInfoKHR<'a> {
     VkMemoryGetFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-unsafe impl RawStruct for VkMemoryGetFdInfoKHR {
+unsafe impl<'a> RawStruct for VkMemoryGetFdInfoKHR<'a> {
   type Raw = types_raw::VkMemoryGetFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
@@ -14317,12 +14336,11 @@ fn test_struct_size_vk_memory_get_fd_info_khr() {
 
 /// Use the Windows keyed mutex mechanism to synchronize work
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub struct VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   acquireCount: u32,
   pAcquireSyncs: *const types_raw::VkDeviceMemory,
   pAcquireKeys: *const u64,
@@ -14343,14 +14361,6 @@ impl<'a> VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
         ..::std::mem::zeroed()
       }
     }
-  }
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
   }
   #[inline]
   pub fn acquire_count(&self) -> u32 {
@@ -14375,6 +14385,16 @@ unsafe impl<'a> RawStruct for VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkWin32KeyedMutexAcquireReleaseInfoKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_win32_keyed_mutex")]
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_win32_keyed_mutex_acquire_release_info_khr() {
@@ -14388,17 +14408,17 @@ fn test_struct_size_vk_win32_keyed_mutex_acquire_release_info_khr() {
 
 /// Structure specifying semaphore creation parameters.
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
-pub struct VkPhysicalDeviceExternalSemaphoreInfoKHR {
+pub struct VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
-impl VkPhysicalDeviceExternalSemaphoreInfoKHR {
+impl<'a> VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceExternalSemaphoreInfoKHR {
+  pub fn new() -> VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
     unsafe {
       VkPhysicalDeviceExternalSemaphoreInfoKHR {
         sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR,
@@ -14412,26 +14432,26 @@ impl VkPhysicalDeviceExternalSemaphoreInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
     self.handleType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
-impl Default for VkPhysicalDeviceExternalSemaphoreInfoKHR {
-  fn default() -> VkPhysicalDeviceExternalSemaphoreInfoKHR {
+impl<'a> Default for VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
+  fn default() -> VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
     VkPhysicalDeviceExternalSemaphoreInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
-unsafe impl RawStruct for VkPhysicalDeviceExternalSemaphoreInfoKHR {
+unsafe impl<'a> RawStruct for VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
   type Raw = types_raw::VkPhysicalDeviceExternalSemaphoreInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
@@ -14457,10 +14477,6 @@ pub struct VkExternalSemaphorePropertiesKHR {
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
 impl VkExternalSemaphorePropertiesKHR {
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
   #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
@@ -14496,17 +14512,17 @@ fn test_struct_size_vk_external_semaphore_properties_khr() {
 
 /// Structure specifying handle types that can be exported from a semaphore
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore")]
-pub struct VkExportSemaphoreCreateInfoKHR {
+pub struct VkExportSemaphoreCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalSemaphoreHandleTypeFlagsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore")]
-impl VkExportSemaphoreCreateInfoKHR {
+impl<'a> VkExportSemaphoreCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkExportSemaphoreCreateInfoKHR {
+  pub fn new() -> VkExportSemaphoreCreateInfoKHR<'a> {
     unsafe {
       VkExportSemaphoreCreateInfoKHR {
         sType: VkStructureType::EXPORT_SEMAPHORE_CREATE_INFO_KHR,
@@ -14520,27 +14536,28 @@ impl VkExportSemaphoreCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_types(&self) -> VkExternalSemaphoreHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore")]
-impl Default for VkExportSemaphoreCreateInfoKHR {
-  fn default() -> VkExportSemaphoreCreateInfoKHR {
+impl<'a> Default for VkExportSemaphoreCreateInfoKHR<'a> {
+  fn default() -> VkExportSemaphoreCreateInfoKHR<'a> {
     VkExportSemaphoreCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore")]
-unsafe impl RawStruct for VkExportSemaphoreCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkExportSemaphoreCreateInfoKHR<'a> {
   type Raw = types_raw::VkExportSemaphoreCreateInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_semaphore")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSemaphoreCreateInfo<'b>> for VkExportSemaphoreCreateInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExportSemaphoreCreateInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_semaphore")]
 #[cfg(test)]
@@ -14556,23 +14573,23 @@ fn test_struct_size_vk_export_semaphore_create_info_khr() {
 
 /// Structure specifying Windows handle to import to a semaphore
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkImportSemaphoreWin32HandleInfoKHR {
+pub struct VkImportSemaphoreWin32HandleInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub semaphore: VkSemaphore,
   pub flags: VkSemaphoreImportFlagsKHR,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
   pub handle: wsi::win32::HANDLE,
   pub name: wsi::win32::LPCWSTR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkImportSemaphoreWin32HandleInfoKHR {
+impl<'a> VkImportSemaphoreWin32HandleInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkImportSemaphoreWin32HandleInfoKHR {
+  pub fn new() -> VkImportSemaphoreWin32HandleInfoKHR<'a> {
     unsafe {
       VkImportSemaphoreWin32HandleInfoKHR {
         sType: VkStructureType::IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
@@ -14606,14 +14623,6 @@ impl VkImportSemaphoreWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn semaphore(&self) -> VkSemaphore {
     self.semaphore
   }
@@ -14633,17 +14642,25 @@ impl VkImportSemaphoreWin32HandleInfoKHR {
   pub fn name(&self) -> wsi::win32::LPCWSTR {
     self.name
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkImportSemaphoreWin32HandleInfoKHR {
-  fn default() -> VkImportSemaphoreWin32HandleInfoKHR {
+impl<'a> Default for VkImportSemaphoreWin32HandleInfoKHR<'a> {
+  fn default() -> VkImportSemaphoreWin32HandleInfoKHR<'a> {
     VkImportSemaphoreWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkImportSemaphoreWin32HandleInfoKHR {
+unsafe impl<'a> RawStruct for VkImportSemaphoreWin32HandleInfoKHR<'a> {
   type Raw = types_raw::VkImportSemaphoreWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
@@ -14660,21 +14677,21 @@ fn test_struct_size_vk_import_semaphore_win32_handle_info_khr() {
 /// Structure specifying additional attributes of Windows handles exported from a
 /// semaphore
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkExportSemaphoreWin32HandleInfoKHR {
+pub struct VkExportSemaphoreWin32HandleInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub pAttributes: *const wsi::win32::SECURITY_ATTRIBUTES,
   pub dwAccess: wsi::win32::DWORD,
   pub name: wsi::win32::LPCWSTR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkExportSemaphoreWin32HandleInfoKHR {
+impl<'a> VkExportSemaphoreWin32HandleInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkExportSemaphoreWin32HandleInfoKHR {
+  pub fn new() -> VkExportSemaphoreWin32HandleInfoKHR<'a> {
     unsafe {
       VkExportSemaphoreWin32HandleInfoKHR {
         sType: VkStructureType::EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
@@ -14698,14 +14715,6 @@ impl VkExportSemaphoreWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
     self.pAttributes
   }
@@ -14720,15 +14729,25 @@ impl VkExportSemaphoreWin32HandleInfoKHR {
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkExportSemaphoreWin32HandleInfoKHR {
-  fn default() -> VkExportSemaphoreWin32HandleInfoKHR {
+impl<'a> Default for VkExportSemaphoreWin32HandleInfoKHR<'a> {
+  fn default() -> VkExportSemaphoreWin32HandleInfoKHR<'a> {
     VkExportSemaphoreWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkExportSemaphoreWin32HandleInfoKHR {
+unsafe impl<'a> RawStruct for VkExportSemaphoreWin32HandleInfoKHR<'a> {
   type Raw = types_raw::VkExportSemaphoreWin32HandleInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_semaphore_win32")]
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSemaphoreCreateInfo<'b>> for VkExportSemaphoreWin32HandleInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExportSemaphoreWin32HandleInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
@@ -14743,12 +14762,11 @@ fn test_struct_size_vk_export_semaphore_win32_handle_info_khr() {
 
 /// Structure specifying values for Direct3D 12 fence-backed semaphores
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub struct VkD3D12FenceSubmitInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   waitSemaphoreValuesCount: u32,
   pWaitSemaphoreValues: *const u64,
   signalSemaphoreValuesCount: u32,
@@ -14784,14 +14802,6 @@ impl<'a> VkD3D12FenceSubmitInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn wait_semaphore_values_count(&self) -> u32 {
     self.waitSemaphoreValuesCount
   }
@@ -14814,6 +14824,16 @@ unsafe impl<'a> RawStruct for VkD3D12FenceSubmitInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkD3D12FenceSubmitInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkD3D12FenceSubmitInfoKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_external_semaphore_win32")]
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_d3_d12_fence_submit_info_khr() {
@@ -14825,20 +14845,20 @@ fn test_struct_size_vk_d3_d12_fence_submit_info_khr() {
 
 /// Structure describing a Win32 handle semaphore export operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkSemaphoreGetWin32HandleInfoKHR {
+pub struct VkSemaphoreGetWin32HandleInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub semaphore: VkSemaphore,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkSemaphoreGetWin32HandleInfoKHR {
+impl<'a> VkSemaphoreGetWin32HandleInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkSemaphoreGetWin32HandleInfoKHR {
+  pub fn new() -> VkSemaphoreGetWin32HandleInfoKHR<'a> {
     unsafe {
       VkSemaphoreGetWin32HandleInfoKHR {
         sType: VkStructureType::SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR,
@@ -14857,14 +14877,6 @@ impl VkSemaphoreGetWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn semaphore(&self) -> VkSemaphore {
     self.semaphore
   }
@@ -14872,17 +14884,25 @@ impl VkSemaphoreGetWin32HandleInfoKHR {
   pub fn handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
     self.handleType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkSemaphoreGetWin32HandleInfoKHR {
-  fn default() -> VkSemaphoreGetWin32HandleInfoKHR {
+impl<'a> Default for VkSemaphoreGetWin32HandleInfoKHR<'a> {
+  fn default() -> VkSemaphoreGetWin32HandleInfoKHR<'a> {
     VkSemaphoreGetWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkSemaphoreGetWin32HandleInfoKHR {
+unsafe impl<'a> RawStruct for VkSemaphoreGetWin32HandleInfoKHR<'a> {
   type Raw = types_raw::VkSemaphoreGetWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
@@ -14900,20 +14920,20 @@ fn test_struct_size_vk_semaphore_get_win32_handle_info_khr() {
 
 /// Structure specifying POSIX file descriptor to import to a semaphore
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-pub struct VkImportSemaphoreFdInfoKHR {
+pub struct VkImportSemaphoreFdInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub semaphore: VkSemaphore,
   pub flags: VkSemaphoreImportFlagsKHR,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
   pub fd: c_int,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-impl VkImportSemaphoreFdInfoKHR {
+impl<'a> VkImportSemaphoreFdInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkImportSemaphoreFdInfoKHR {
+  pub fn new() -> VkImportSemaphoreFdInfoKHR<'a> {
     unsafe {
       VkImportSemaphoreFdInfoKHR {
         sType: VkStructureType::IMPORT_SEMAPHORE_FD_INFO_KHR,
@@ -14942,14 +14962,6 @@ impl VkImportSemaphoreFdInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn semaphore(&self) -> VkSemaphore {
     self.semaphore
   }
@@ -14965,15 +14977,23 @@ impl VkImportSemaphoreFdInfoKHR {
   pub fn fd(&self) -> c_int {
     self.fd
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-impl Default for VkImportSemaphoreFdInfoKHR {
-  fn default() -> VkImportSemaphoreFdInfoKHR {
+impl<'a> Default for VkImportSemaphoreFdInfoKHR<'a> {
+  fn default() -> VkImportSemaphoreFdInfoKHR<'a> {
     VkImportSemaphoreFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-unsafe impl RawStruct for VkImportSemaphoreFdInfoKHR {
+unsafe impl<'a> RawStruct for VkImportSemaphoreFdInfoKHR<'a> {
   type Raw = types_raw::VkImportSemaphoreFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
@@ -14988,18 +15008,18 @@ fn test_struct_size_vk_import_semaphore_fd_info_khr() {
 
 /// Structure describing a POSIX FD semaphore export operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-pub struct VkSemaphoreGetFdInfoKHR {
+pub struct VkSemaphoreGetFdInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub semaphore: VkSemaphore,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-impl VkSemaphoreGetFdInfoKHR {
+impl<'a> VkSemaphoreGetFdInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkSemaphoreGetFdInfoKHR {
+  pub fn new() -> VkSemaphoreGetFdInfoKHR<'a> {
     unsafe {
       VkSemaphoreGetFdInfoKHR {
         sType: VkStructureType::SEMAPHORE_GET_FD_INFO_KHR,
@@ -15018,14 +15038,6 @@ impl VkSemaphoreGetFdInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn semaphore(&self) -> VkSemaphore {
     self.semaphore
   }
@@ -15033,15 +15045,23 @@ impl VkSemaphoreGetFdInfoKHR {
   pub fn handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
     self.handleType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-impl Default for VkSemaphoreGetFdInfoKHR {
-  fn default() -> VkSemaphoreGetFdInfoKHR {
+impl<'a> Default for VkSemaphoreGetFdInfoKHR<'a> {
+  fn default() -> VkSemaphoreGetFdInfoKHR<'a> {
     VkSemaphoreGetFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-unsafe impl RawStruct for VkSemaphoreGetFdInfoKHR {
+unsafe impl<'a> RawStruct for VkSemaphoreGetFdInfoKHR<'a> {
   type Raw = types_raw::VkSemaphoreGetFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
@@ -15075,13 +15095,14 @@ impl VkPhysicalDevicePushDescriptorPropertiesKHR {
     }
   }
   #[inline]
-  pub fn set_max_push_descriptors(mut self, value: u32) -> Self {
-    self.maxPushDescriptors = value;
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
+  pub fn set_max_push_descriptors(mut self, value: u32) -> Self {
+    self.maxPushDescriptors = value;
+    self
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -15101,6 +15122,15 @@ impl Default for VkPhysicalDevicePushDescriptorPropertiesKHR {
 #[cfg(feature = "VK_KHR_push_descriptor")]
 unsafe impl RawStruct for VkPhysicalDevicePushDescriptorPropertiesKHR {
   type Raw = types_raw::VkPhysicalDevicePushDescriptorPropertiesKHR;
+}
+#[cfg(feature = "VK_KHR_push_descriptor")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDevicePushDescriptorPropertiesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDevicePushDescriptorPropertiesKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_push_descriptor")]
 #[cfg(test)]
@@ -15136,6 +15166,11 @@ impl VkPhysicalDevice16BitStorageFeaturesKHR {
     }
   }
   #[inline]
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
+    self
+  }
+  #[inline]
   pub fn set_storage_buffer16_bit_access(mut self, value: bool) -> Self {
     let value: VkBool32 = if value { 1 } else { 0 };
     self.storageBuffer16BitAccess = value;
@@ -15158,10 +15193,6 @@ impl VkPhysicalDevice16BitStorageFeaturesKHR {
     let value: VkBool32 = if value { 1 } else { 0 };
     self.storageInputOutput16 = value;
     self
-  }
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -15193,6 +15224,24 @@ impl Default for VkPhysicalDevice16BitStorageFeaturesKHR {
 #[cfg(feature = "VK_KHR_16bit_storage")]
 unsafe impl RawStruct for VkPhysicalDevice16BitStorageFeaturesKHR {
   type Raw = types_raw::VkPhysicalDevice16BitStorageFeaturesKHR;
+}
+#[cfg(feature = "VK_KHR_16bit_storage")]
+unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDevice16BitStorageFeaturesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDevice16BitStorageFeaturesKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_16bit_storage")]
+unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDevice16BitStorageFeaturesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDevice16BitStorageFeaturesKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_16bit_storage")]
 #[cfg(test)]
@@ -15238,12 +15287,12 @@ impl VkRectLayerKHR {
     self
   }
   #[inline]
-  pub fn offset(&self) -> VkOffset2D {
-    self.offset
+  pub fn offset(&self) -> &VkOffset2D {
+    &self.offset
   }
   #[inline]
-  pub fn extent(&self) -> VkExtent2D {
-    self.extent
+  pub fn extent(&self) -> &VkExtent2D {
+    &self.extent
   }
   #[inline]
   pub fn layer(&self) -> u32 {
@@ -15270,7 +15319,6 @@ fn test_struct_size_vk_rect_layer_khr() {
 /// Structure containing rectangular region changed by vkQueuePresentKHR for a given
 /// VkImage
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_incremental_present")]
 pub struct VkPresentRegionKHR<'a> {
   rectangleCount: u32,
@@ -15315,11 +15363,10 @@ fn test_struct_size_vk_present_region_khr() {
 
 /// Structure hint of rectangular regions changed by vkQueuePresentKHR
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_incremental_present")]
 pub struct VkPresentRegionsKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   swapchainCount: u32,
   pRegions: *const types_raw::VkPresentRegionKHR,
   _p: ::std::marker::PhantomData<&'a u8>,
@@ -15344,14 +15391,6 @@ impl<'a> VkPresentRegionsKHR<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn swapchain_count(&self) -> u32 {
     self.swapchainCount
   }
@@ -15365,6 +15404,15 @@ impl<'a> Default for VkPresentRegionsKHR<'a> {
 #[cfg(feature = "VK_KHR_incremental_present")]
 unsafe impl<'a> RawStruct for VkPresentRegionsKHR<'a> {
   type Raw = types_raw::VkPresentRegionsKHR;
+}
+#[cfg(feature = "VK_KHR_incremental_present")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkPresentRegionsKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPresentRegionsKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
 #[cfg(test)]
@@ -15478,7 +15526,6 @@ fn test_struct_size_vk_descriptor_update_template_entry_khr() {
 
 /// Structure specifying parameters of a newly created descriptor update template
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub struct VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
   sType: VkStructureType,
@@ -15503,6 +15550,11 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
         ..::std::mem::zeroed()
       }
     }
+  }
+  #[inline]
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
+    self
   }
   #[inline]
   pub fn set_flags(mut self, value: VkDescriptorUpdateTemplateCreateFlagsKHR) -> Self {
@@ -15541,10 +15593,6 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
   pub fn set_set(mut self, value: u32) -> Self {
     self.set = value;
     self
-  }
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -15619,17 +15667,17 @@ pub type VkIndirectCommandsLayoutNVX = VkNonDispatchableHandle<VkIndirectCommand
 
 /// Structure specifying physical device support
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkDeviceGeneratedCommandsFeaturesNVX {
+pub struct VkDeviceGeneratedCommandsFeaturesNVX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub computeBindingPointSupport: VkBool32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl VkDeviceGeneratedCommandsFeaturesNVX {
+impl<'a> VkDeviceGeneratedCommandsFeaturesNVX<'a> {
   #[inline]
-  pub fn new() -> VkDeviceGeneratedCommandsFeaturesNVX {
+  pub fn new() -> VkDeviceGeneratedCommandsFeaturesNVX<'a> {
     unsafe {
       VkDeviceGeneratedCommandsFeaturesNVX {
         sType: VkStructureType::DEVICE_GENERATED_COMMANDS_FEATURES_NVX,
@@ -15644,26 +15692,26 @@ impl VkDeviceGeneratedCommandsFeaturesNVX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn is_compute_binding_point_support(&self) -> bool {
     self.computeBindingPointSupport != 0
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl Default for VkDeviceGeneratedCommandsFeaturesNVX {
-  fn default() -> VkDeviceGeneratedCommandsFeaturesNVX {
+impl<'a> Default for VkDeviceGeneratedCommandsFeaturesNVX<'a> {
+  fn default() -> VkDeviceGeneratedCommandsFeaturesNVX<'a> {
     VkDeviceGeneratedCommandsFeaturesNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl RawStruct for VkDeviceGeneratedCommandsFeaturesNVX {
+unsafe impl<'a> RawStruct for VkDeviceGeneratedCommandsFeaturesNVX<'a> {
   type Raw = types_raw::VkDeviceGeneratedCommandsFeaturesNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -15678,21 +15726,21 @@ fn test_struct_size_vk_device_generated_commands_features_nvx() {
 
 /// Structure specifying physical device limits
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkDeviceGeneratedCommandsLimitsNVX {
+pub struct VkDeviceGeneratedCommandsLimitsNVX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub maxIndirectCommandsLayoutTokenCount: u32,
   pub maxObjectEntryCounts: u32,
   pub minSequenceCountBufferOffsetAlignment: u32,
   pub minSequenceIndexBufferOffsetAlignment: u32,
   pub minCommandsTokenBufferOffsetAlignment: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl VkDeviceGeneratedCommandsLimitsNVX {
+impl<'a> VkDeviceGeneratedCommandsLimitsNVX<'a> {
   #[inline]
-  pub fn new() -> VkDeviceGeneratedCommandsLimitsNVX {
+  pub fn new() -> VkDeviceGeneratedCommandsLimitsNVX<'a> {
     unsafe {
       VkDeviceGeneratedCommandsLimitsNVX {
         sType: VkStructureType::DEVICE_GENERATED_COMMANDS_LIMITS_NVX,
@@ -15726,14 +15774,6 @@ impl VkDeviceGeneratedCommandsLimitsNVX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn max_indirect_commands_layout_token_count(&self) -> u32 {
     self.maxIndirectCommandsLayoutTokenCount
   }
@@ -15753,15 +15793,23 @@ impl VkDeviceGeneratedCommandsLimitsNVX {
   pub fn min_commands_token_buffer_offset_alignment(&self) -> u32 {
     self.minCommandsTokenBufferOffsetAlignment
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl Default for VkDeviceGeneratedCommandsLimitsNVX {
-  fn default() -> VkDeviceGeneratedCommandsLimitsNVX {
+impl<'a> Default for VkDeviceGeneratedCommandsLimitsNVX<'a> {
+  fn default() -> VkDeviceGeneratedCommandsLimitsNVX<'a> {
     VkDeviceGeneratedCommandsLimitsNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl RawStruct for VkDeviceGeneratedCommandsLimitsNVX {
+unsafe impl<'a> RawStruct for VkDeviceGeneratedCommandsLimitsNVX<'a> {
   type Raw = types_raw::VkDeviceGeneratedCommandsLimitsNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -15913,11 +15961,10 @@ fn test_struct_size_vk_indirect_commands_layout_token_nvx() {
 /// Structure specifying the parameters of a newly created indirect commands layout
 /// object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub struct VkIndirectCommandsLayoutCreateInfoNVX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub pipelineBindPoint: VkPipelineBindPoint,
   pub flags: VkIndirectCommandsLayoutUsageFlagsNVX,
   tokenCount: u32,
@@ -15954,14 +16001,6 @@ impl<'a> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn pipeline_bind_point(&self) -> VkPipelineBindPoint {
     self.pipelineBindPoint
   }
@@ -15972,6 +16011,14 @@ impl<'a> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
   #[inline]
   pub fn token_count(&self) -> u32 {
     self.tokenCount
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -15996,11 +16043,10 @@ fn test_struct_size_vk_indirect_commands_layout_create_info_nvx() {
 
 /// Structure specifying parameters for the generation of commands
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub struct VkCmdProcessCommandsInfoNVX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub objectTable: VkObjectTableNVX,
   pub indirectCommandsLayout: VkIndirectCommandsLayoutNVX,
   indirectCommandsTokenCount: u32,
@@ -16073,14 +16119,6 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn object_table(&self) -> VkObjectTableNVX {
     self.objectTable
   }
@@ -16116,6 +16154,14 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
   pub fn sequences_index_offset(&self) -> VkDeviceSize {
     self.sequencesIndexOffset
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 impl<'a> Default for VkCmdProcessCommandsInfoNVX<'a> {
@@ -16139,19 +16185,19 @@ fn test_struct_size_vk_cmd_process_commands_info_nvx() {
 
 /// Structure specifying parameters for the reservation of command buffer space
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkCmdReserveSpaceForCommandsInfoNVX {
+pub struct VkCmdReserveSpaceForCommandsInfoNVX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub objectTable: VkObjectTableNVX,
   pub indirectCommandsLayout: VkIndirectCommandsLayoutNVX,
   pub maxSequencesCount: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl VkCmdReserveSpaceForCommandsInfoNVX {
+impl<'a> VkCmdReserveSpaceForCommandsInfoNVX<'a> {
   #[inline]
-  pub fn new() -> VkCmdReserveSpaceForCommandsInfoNVX {
+  pub fn new() -> VkCmdReserveSpaceForCommandsInfoNVX<'a> {
     unsafe {
       VkCmdReserveSpaceForCommandsInfoNVX {
         sType: VkStructureType::CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX,
@@ -16175,14 +16221,6 @@ impl VkCmdReserveSpaceForCommandsInfoNVX {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn object_table(&self) -> VkObjectTableNVX {
     self.objectTable
   }
@@ -16194,15 +16232,23 @@ impl VkCmdReserveSpaceForCommandsInfoNVX {
   pub fn max_sequences_count(&self) -> u32 {
     self.maxSequencesCount
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl Default for VkCmdReserveSpaceForCommandsInfoNVX {
-  fn default() -> VkCmdReserveSpaceForCommandsInfoNVX {
+impl<'a> Default for VkCmdReserveSpaceForCommandsInfoNVX<'a> {
+  fn default() -> VkCmdReserveSpaceForCommandsInfoNVX<'a> {
     VkCmdReserveSpaceForCommandsInfoNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl RawStruct for VkCmdReserveSpaceForCommandsInfoNVX {
+unsafe impl<'a> RawStruct for VkCmdReserveSpaceForCommandsInfoNVX<'a> {
   type Raw = types_raw::VkCmdReserveSpaceForCommandsInfoNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16217,11 +16263,10 @@ fn test_struct_size_vk_cmd_reserve_space_for_commands_info_nvx() {
 
 /// Structure specifying the parameters of a newly created object table
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub struct VkObjectTableCreateInfoNVX<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   objectCount: u32,
   pObjectEntryTypes: *const VkObjectEntryTypeNVX,
   pObjectEntryCounts: *const u32,
@@ -16270,14 +16315,6 @@ impl<'a> VkObjectTableCreateInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn object_count(&self) -> u32 {
     self.objectCount
   }
@@ -16300,6 +16337,14 @@ impl<'a> VkObjectTableCreateInfoNVX<'a> {
   #[inline]
   pub fn max_pipeline_layouts(&self) -> u32 {
     self.maxPipelineLayouts
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16772,11 +16817,10 @@ fn test_struct_size_vk_viewport_w_scaling_nv() {
 /// Structure specifying parameters of a newly created pipeline viewport W scaling
 /// state
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
 pub struct VkPipelineViewportWScalingStateCreateInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub viewportWScalingEnable: VkBool32,
   viewportCount: u32,
   pViewportWScalings: *const types_raw::VkViewportWScalingNV,
@@ -16808,14 +16852,6 @@ impl<'a> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn is_viewport_w_scaling_enable(&self) -> bool {
     self.viewportWScalingEnable != 0
   }
@@ -16833,6 +16869,17 @@ impl<'a> Default for VkPipelineViewportWScalingStateCreateInfoNV<'a> {
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
 unsafe impl<'a> RawStruct for VkPipelineViewportWScalingStateCreateInfoNV<'a> {
   type Raw = types_raw::VkPipelineViewportWScalingStateCreateInfoNV;
+}
+#[cfg(feature = "VK_NV_clip_space_w_scaling")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineViewportStateCreateInfo<'b>>
+  for VkPipelineViewportWScalingStateCreateInfoNV<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineViewportWScalingStateCreateInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
 #[cfg(test)]
@@ -16868,10 +16915,6 @@ pub struct VkSurfaceCapabilities2EXT {
 #[cfg(feature = "VK_EXT_display_surface_counter")]
 impl VkSurfaceCapabilities2EXT {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -16884,16 +16927,16 @@ impl VkSurfaceCapabilities2EXT {
     self.maxImageCount
   }
   #[inline]
-  pub fn current_extent(&self) -> VkExtent2D {
-    self.currentExtent
+  pub fn current_extent(&self) -> &VkExtent2D {
+    &self.currentExtent
   }
   #[inline]
-  pub fn min_image_extent(&self) -> VkExtent2D {
-    self.minImageExtent
+  pub fn min_image_extent(&self) -> &VkExtent2D {
+    &self.minImageExtent
   }
   #[inline]
-  pub fn max_image_extent(&self) -> VkExtent2D {
-    self.maxImageExtent
+  pub fn max_image_extent(&self) -> &VkExtent2D {
+    &self.maxImageExtent
   }
   #[inline]
   pub fn max_image_array_layers(&self) -> u32 {
@@ -16938,17 +16981,17 @@ fn test_struct_size_vk_surface_capabilities2_ext() {
 
 /// Describe the power state of a display
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_display_control")]
-pub struct VkDisplayPowerInfoEXT {
+pub struct VkDisplayPowerInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub powerState: VkDisplayPowerStateEXT,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl VkDisplayPowerInfoEXT {
+impl<'a> VkDisplayPowerInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkDisplayPowerInfoEXT {
+  pub fn new() -> VkDisplayPowerInfoEXT<'a> {
     unsafe {
       VkDisplayPowerInfoEXT {
         sType: VkStructureType::DISPLAY_POWER_INFO_EXT,
@@ -16962,26 +17005,26 @@ impl VkDisplayPowerInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn power_state(&self) -> VkDisplayPowerStateEXT {
     self.powerState
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl Default for VkDisplayPowerInfoEXT {
-  fn default() -> VkDisplayPowerInfoEXT {
+impl<'a> Default for VkDisplayPowerInfoEXT<'a> {
+  fn default() -> VkDisplayPowerInfoEXT<'a> {
     VkDisplayPowerInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl RawStruct for VkDisplayPowerInfoEXT {
+unsafe impl<'a> RawStruct for VkDisplayPowerInfoEXT<'a> {
   type Raw = types_raw::VkDisplayPowerInfoEXT;
 }
 #[cfg(feature = "VK_EXT_display_control")]
@@ -16993,17 +17036,17 @@ fn test_struct_size_vk_display_power_info_ext() {
 
 /// Describe a device event to create
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_display_control")]
-pub struct VkDeviceEventInfoEXT {
+pub struct VkDeviceEventInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub deviceEvent: VkDeviceEventTypeEXT,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl VkDeviceEventInfoEXT {
+impl<'a> VkDeviceEventInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkDeviceEventInfoEXT {
+  pub fn new() -> VkDeviceEventInfoEXT<'a> {
     unsafe {
       VkDeviceEventInfoEXT {
         sType: VkStructureType::DEVICE_EVENT_INFO_EXT,
@@ -17017,26 +17060,26 @@ impl VkDeviceEventInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn device_event(&self) -> VkDeviceEventTypeEXT {
     self.deviceEvent
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl Default for VkDeviceEventInfoEXT {
-  fn default() -> VkDeviceEventInfoEXT {
+impl<'a> Default for VkDeviceEventInfoEXT<'a> {
+  fn default() -> VkDeviceEventInfoEXT<'a> {
     VkDeviceEventInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl RawStruct for VkDeviceEventInfoEXT {
+unsafe impl<'a> RawStruct for VkDeviceEventInfoEXT<'a> {
   type Raw = types_raw::VkDeviceEventInfoEXT;
 }
 #[cfg(feature = "VK_EXT_display_control")]
@@ -17048,17 +17091,17 @@ fn test_struct_size_vk_device_event_info_ext() {
 
 /// Describe a display event to create
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_display_control")]
-pub struct VkDisplayEventInfoEXT {
+pub struct VkDisplayEventInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub displayEvent: VkDisplayEventTypeEXT,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl VkDisplayEventInfoEXT {
+impl<'a> VkDisplayEventInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkDisplayEventInfoEXT {
+  pub fn new() -> VkDisplayEventInfoEXT<'a> {
     unsafe {
       VkDisplayEventInfoEXT {
         sType: VkStructureType::DISPLAY_EVENT_INFO_EXT,
@@ -17072,26 +17115,26 @@ impl VkDisplayEventInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn display_event(&self) -> VkDisplayEventTypeEXT {
     self.displayEvent
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl Default for VkDisplayEventInfoEXT {
-  fn default() -> VkDisplayEventInfoEXT {
+impl<'a> Default for VkDisplayEventInfoEXT<'a> {
+  fn default() -> VkDisplayEventInfoEXT<'a> {
     VkDisplayEventInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl RawStruct for VkDisplayEventInfoEXT {
+unsafe impl<'a> RawStruct for VkDisplayEventInfoEXT<'a> {
   type Raw = types_raw::VkDisplayEventInfoEXT;
 }
 #[cfg(feature = "VK_EXT_display_control")]
@@ -17103,17 +17146,17 @@ fn test_struct_size_vk_display_event_info_ext() {
 
 /// Specify the surface counters desired
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_display_control")]
-pub struct VkSwapchainCounterCreateInfoEXT {
+pub struct VkSwapchainCounterCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub surfaceCounters: VkSurfaceCounterFlagsEXT,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl VkSwapchainCounterCreateInfoEXT {
+impl<'a> VkSwapchainCounterCreateInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkSwapchainCounterCreateInfoEXT {
+  pub fn new() -> VkSwapchainCounterCreateInfoEXT<'a> {
     unsafe {
       VkSwapchainCounterCreateInfoEXT {
         sType: VkStructureType::SWAPCHAIN_COUNTER_CREATE_INFO_EXT,
@@ -17127,27 +17170,28 @@ impl VkSwapchainCounterCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn surface_counters(&self) -> VkSurfaceCounterFlagsEXT {
     self.surfaceCounters
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl Default for VkSwapchainCounterCreateInfoEXT {
-  fn default() -> VkSwapchainCounterCreateInfoEXT {
+impl<'a> Default for VkSwapchainCounterCreateInfoEXT<'a> {
+  fn default() -> VkSwapchainCounterCreateInfoEXT<'a> {
     VkSwapchainCounterCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl RawStruct for VkSwapchainCounterCreateInfoEXT {
+unsafe impl<'a> RawStruct for VkSwapchainCounterCreateInfoEXT<'a> {
   type Raw = types_raw::VkSwapchainCounterCreateInfoEXT;
+}
+#[cfg(feature = "VK_EXT_display_control")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSwapchainCreateInfoKHR<'b>> for VkSwapchainCounterCreateInfoEXT<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkSwapchainCounterCreateInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_display_control")]
 #[cfg(test)]
@@ -17339,11 +17383,10 @@ fn test_struct_size_vk_present_time_google() {
 
 /// The earliest time each image should be presented
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_GOOGLE_display_timing")]
 pub struct VkPresentTimesInfoGOOGLE<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   swapchainCount: u32,
   pTimes: *const types_raw::VkPresentTimeGOOGLE,
   _p: ::std::marker::PhantomData<&'a u8>,
@@ -17368,14 +17411,6 @@ impl<'a> VkPresentTimesInfoGOOGLE<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn swapchain_count(&self) -> u32 {
     self.swapchainCount
   }
@@ -17389,6 +17424,15 @@ impl<'a> Default for VkPresentTimesInfoGOOGLE<'a> {
 #[cfg(feature = "VK_GOOGLE_display_timing")]
 unsafe impl<'a> RawStruct for VkPresentTimesInfoGOOGLE<'a> {
   type Raw = types_raw::VkPresentTimesInfoGOOGLE;
+}
+#[cfg(feature = "VK_GOOGLE_display_timing")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkPresentTimesInfoGOOGLE<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPresentTimesInfoGOOGLE as *const c_void
+  }
 }
 #[cfg(feature = "VK_GOOGLE_display_timing")]
 #[cfg(test)]
@@ -17414,10 +17458,6 @@ pub struct VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
 #[cfg(feature = "VK_NVX_multiview_per_view_attributes")]
 impl VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -17429,6 +17469,15 @@ impl VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
 #[cfg(feature = "VK_NVX_multiview_per_view_attributes")]
 unsafe impl RawStruct for VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
   type Raw = types_raw::VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX;
+}
+#[cfg(feature = "VK_NVX_multiview_per_view_attributes")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX as *const c_void
+  }
 }
 #[cfg(feature = "VK_NVX_multiview_per_view_attributes")]
 #[cfg(test)]
@@ -17514,11 +17563,10 @@ fn test_struct_size_vk_viewport_swizzle_nv() {
 
 /// Structure specifying swizzle applied to primitive clip coordinates
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_viewport_swizzle")]
 pub struct VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineViewportSwizzleStateCreateFlagsNV,
   viewportCount: u32,
   pViewportSwizzles: *const types_raw::VkViewportSwizzleNV,
@@ -17549,14 +17597,6 @@ impl<'a> VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineViewportSwizzleStateCreateFlagsNV {
     self.flags
   }
@@ -17574,6 +17614,17 @@ impl<'a> Default for VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
 #[cfg(feature = "VK_NV_viewport_swizzle")]
 unsafe impl<'a> RawStruct for VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
   type Raw = types_raw::VkPipelineViewportSwizzleStateCreateInfoNV;
+}
+#[cfg(feature = "VK_NV_viewport_swizzle")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineViewportStateCreateInfo<'b>>
+  for VkPipelineViewportSwizzleStateCreateInfoNV<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineViewportSwizzleStateCreateInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_viewport_swizzle")]
 #[cfg(test)]
@@ -17609,13 +17660,14 @@ impl VkPhysicalDeviceDiscardRectanglePropertiesEXT {
     }
   }
   #[inline]
-  pub fn set_max_discard_rectangles(mut self, value: u32) -> Self {
-    self.maxDiscardRectangles = value;
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
+  pub fn set_max_discard_rectangles(mut self, value: u32) -> Self {
+    self.maxDiscardRectangles = value;
+    self
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -17637,6 +17689,15 @@ unsafe impl RawStruct for VkPhysicalDeviceDiscardRectanglePropertiesEXT {
   type Raw = types_raw::VkPhysicalDeviceDiscardRectanglePropertiesEXT;
 }
 #[cfg(feature = "VK_EXT_discard_rectangles")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDeviceDiscardRectanglePropertiesEXT {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceDiscardRectanglePropertiesEXT as *const c_void
+  }
+}
+#[cfg(feature = "VK_EXT_discard_rectangles")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_physical_device_discard_rectangle_properties_ext() {
@@ -17648,11 +17709,10 @@ fn test_struct_size_vk_physical_device_discard_rectangle_properties_ext() {
 
 /// Structure specifying discard rectangle
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_discard_rectangles")]
 pub struct VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineDiscardRectangleStateCreateFlagsEXT,
   pub discardRectangleMode: VkDiscardRectangleModeEXT,
   discardRectangleCount: u32,
@@ -17689,14 +17749,6 @@ impl<'a> VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineDiscardRectangleStateCreateFlagsEXT {
     self.flags
   }
@@ -17718,6 +17770,17 @@ impl<'a> Default for VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
 #[cfg(feature = "VK_EXT_discard_rectangles")]
 unsafe impl<'a> RawStruct for VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
   type Raw = types_raw::VkPipelineDiscardRectangleStateCreateInfoEXT;
+}
+#[cfg(feature = "VK_EXT_discard_rectangles")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkGraphicsPipelineCreateInfo<'b>>
+  for VkPipelineDiscardRectangleStateCreateInfoEXT<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineDiscardRectangleStateCreateInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_discard_rectangles")]
 #[cfg(test)]
@@ -17759,6 +17822,11 @@ impl VkPhysicalDeviceConservativeRasterizationPropertiesEXT {
         ..::std::mem::zeroed()
       }
     }
+  }
+  #[inline]
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
+    self
   }
   #[inline]
   pub fn set_primitive_overestimation_size(mut self, value: f32) -> Self {
@@ -17812,10 +17880,6 @@ impl VkPhysicalDeviceConservativeRasterizationPropertiesEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -17867,6 +17931,15 @@ unsafe impl RawStruct for VkPhysicalDeviceConservativeRasterizationPropertiesEXT
   type Raw = types_raw::VkPhysicalDeviceConservativeRasterizationPropertiesEXT;
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDeviceConservativeRasterizationPropertiesEXT {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceConservativeRasterizationPropertiesEXT as *const c_void
+  }
+}
+#[cfg(feature = "VK_EXT_conservative_rasterization")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_physical_device_conservative_rasterization_properties_ext() {
@@ -17878,19 +17951,19 @@ fn test_struct_size_vk_physical_device_conservative_rasterization_properties_ext
 
 /// Structure specifying conservative raster state
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-pub struct VkPipelineRasterizationConservativeStateCreateInfoEXT {
+pub struct VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineRasterizationConservativeStateCreateFlagsEXT,
   pub conservativeRasterizationMode: VkConservativeRasterizationModeEXT,
   pub extraPrimitiveOverestimationSize: f32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-impl VkPipelineRasterizationConservativeStateCreateInfoEXT {
+impl<'a> VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkPipelineRasterizationConservativeStateCreateInfoEXT {
+  pub fn new() -> VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
     unsafe {
       VkPipelineRasterizationConservativeStateCreateInfoEXT {
         sType: VkStructureType::PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT,
@@ -17914,14 +17987,6 @@ impl VkPipelineRasterizationConservativeStateCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineRasterizationConservativeStateCreateFlagsEXT {
     self.flags
   }
@@ -17935,14 +18000,25 @@ impl VkPipelineRasterizationConservativeStateCreateInfoEXT {
   }
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-impl Default for VkPipelineRasterizationConservativeStateCreateInfoEXT {
-  fn default() -> VkPipelineRasterizationConservativeStateCreateInfoEXT {
+impl<'a> Default for VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
+  fn default() -> VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
     VkPipelineRasterizationConservativeStateCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-unsafe impl RawStruct for VkPipelineRasterizationConservativeStateCreateInfoEXT {
+unsafe impl<'a> RawStruct for VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
   type Raw = types_raw::VkPipelineRasterizationConservativeStateCreateInfoEXT;
+}
+#[cfg(feature = "VK_EXT_conservative_rasterization")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineRasterizationStateCreateInfo<'b>>
+  for VkPipelineRasterizationConservativeStateCreateInfoEXT<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineRasterizationConservativeStateCreateInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
 #[cfg(test)]
@@ -18008,11 +18084,10 @@ fn test_struct_size_vk_xy_color_ext() {
 
 /// structure to specify Hdr metadata
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_hdr_metadata")]
-pub struct VkHdrMetadataEXT {
+pub struct VkHdrMetadataEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub displayPrimaryRed: VkXYColorEXT,
   pub displayPrimaryGreen: VkXYColorEXT,
   pub displayPrimaryBlue: VkXYColorEXT,
@@ -18021,11 +18096,12 @@ pub struct VkHdrMetadataEXT {
   pub minLuminance: f32,
   pub maxContentLightLevel: f32,
   pub maxFrameAverageLightLevel: f32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_hdr_metadata")]
-impl VkHdrMetadataEXT {
+impl<'a> VkHdrMetadataEXT<'a> {
   #[inline]
-  pub fn new() -> VkHdrMetadataEXT {
+  pub fn new() -> VkHdrMetadataEXT<'a> {
     unsafe {
       VkHdrMetadataEXT {
         sType: VkStructureType::HDR_METADATA_EXT,
@@ -18074,28 +18150,20 @@ impl VkHdrMetadataEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
+  pub fn display_primary_red(&self) -> &VkXYColorEXT {
+    &self.displayPrimaryRed
   }
   #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
+  pub fn display_primary_green(&self) -> &VkXYColorEXT {
+    &self.displayPrimaryGreen
   }
   #[inline]
-  pub fn display_primary_red(&self) -> VkXYColorEXT {
-    self.displayPrimaryRed
+  pub fn display_primary_blue(&self) -> &VkXYColorEXT {
+    &self.displayPrimaryBlue
   }
   #[inline]
-  pub fn display_primary_green(&self) -> VkXYColorEXT {
-    self.displayPrimaryGreen
-  }
-  #[inline]
-  pub fn display_primary_blue(&self) -> VkXYColorEXT {
-    self.displayPrimaryBlue
-  }
-  #[inline]
-  pub fn white_point(&self) -> VkXYColorEXT {
-    self.whitePoint
+  pub fn white_point(&self) -> &VkXYColorEXT {
+    &self.whitePoint
   }
   #[inline]
   pub fn max_luminance(&self) -> f32 {
@@ -18113,15 +18181,23 @@ impl VkHdrMetadataEXT {
   pub fn max_frame_average_light_level(&self) -> f32 {
     self.maxFrameAverageLightLevel
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_EXT_hdr_metadata")]
-impl Default for VkHdrMetadataEXT {
-  fn default() -> VkHdrMetadataEXT {
+impl<'a> Default for VkHdrMetadataEXT<'a> {
+  fn default() -> VkHdrMetadataEXT<'a> {
     VkHdrMetadataEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_hdr_metadata")]
-unsafe impl RawStruct for VkHdrMetadataEXT {
+unsafe impl<'a> RawStruct for VkHdrMetadataEXT<'a> {
   type Raw = types_raw::VkHdrMetadataEXT;
 }
 #[cfg(feature = "VK_EXT_hdr_metadata")]
@@ -18135,17 +18211,17 @@ fn test_struct_size_vk_hdr_metadata_ext() {
 
 /// Structure specifying a surface and related swapchain creation parameters
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-pub struct VkPhysicalDeviceSurfaceInfo2KHR {
+pub struct VkPhysicalDeviceSurfaceInfo2KHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub surface: VkSurfaceKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-impl VkPhysicalDeviceSurfaceInfo2KHR {
+impl<'a> VkPhysicalDeviceSurfaceInfo2KHR<'a> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceSurfaceInfo2KHR {
+  pub fn new() -> VkPhysicalDeviceSurfaceInfo2KHR<'a> {
     unsafe {
       VkPhysicalDeviceSurfaceInfo2KHR {
         sType: VkStructureType::PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
@@ -18159,26 +18235,26 @@ impl VkPhysicalDeviceSurfaceInfo2KHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn surface(&self) -> VkSurfaceKHR {
     self.surface
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-impl Default for VkPhysicalDeviceSurfaceInfo2KHR {
-  fn default() -> VkPhysicalDeviceSurfaceInfo2KHR {
+impl<'a> Default for VkPhysicalDeviceSurfaceInfo2KHR<'a> {
+  fn default() -> VkPhysicalDeviceSurfaceInfo2KHR<'a> {
     VkPhysicalDeviceSurfaceInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-unsafe impl RawStruct for VkPhysicalDeviceSurfaceInfo2KHR {
+unsafe impl<'a> RawStruct for VkPhysicalDeviceSurfaceInfo2KHR<'a> {
   type Raw = types_raw::VkPhysicalDeviceSurfaceInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
@@ -18203,16 +18279,12 @@ pub struct VkSurfaceCapabilities2KHR {
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
 impl VkSurfaceCapabilities2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn surface_capabilities(&self) -> VkSurfaceCapabilitiesKHR {
-    self.surfaceCapabilities
+  pub fn surface_capabilities(&self) -> &VkSurfaceCapabilitiesKHR {
+    &self.surfaceCapabilities
   }
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
@@ -18241,16 +18313,12 @@ pub struct VkSurfaceFormat2KHR {
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
 impl VkSurfaceFormat2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn surface_format(&self) -> VkSurfaceFormatKHR {
-    self.surfaceFormat
+  pub fn surface_format(&self) -> &VkSurfaceFormatKHR {
+    &self.surfaceFormat
   }
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
@@ -18278,10 +18346,6 @@ pub struct VkSharedPresentSurfaceCapabilitiesKHR {
 #[cfg(feature = "VK_KHR_shared_presentable_image")]
 impl VkSharedPresentSurfaceCapabilitiesKHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -18293,6 +18357,15 @@ impl VkSharedPresentSurfaceCapabilitiesKHR {
 #[cfg(feature = "VK_KHR_shared_presentable_image")]
 unsafe impl RawStruct for VkSharedPresentSurfaceCapabilitiesKHR {
   type Raw = types_raw::VkSharedPresentSurfaceCapabilitiesKHR;
+}
+#[cfg(feature = "VK_KHR_shared_presentable_image")]
+unsafe impl StructExtends<VkSurfaceCapabilities2KHR> for VkSharedPresentSurfaceCapabilitiesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkSharedPresentSurfaceCapabilitiesKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_shared_presentable_image")]
 #[cfg(test)]
@@ -18308,17 +18381,17 @@ fn test_struct_size_vk_shared_present_surface_capabilities_khr() {
 
 /// Structure specifying fence creation parameters.
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
-pub struct VkPhysicalDeviceExternalFenceInfoKHR {
+pub struct VkPhysicalDeviceExternalFenceInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
-impl VkPhysicalDeviceExternalFenceInfoKHR {
+impl<'a> VkPhysicalDeviceExternalFenceInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceExternalFenceInfoKHR {
+  pub fn new() -> VkPhysicalDeviceExternalFenceInfoKHR<'a> {
     unsafe {
       VkPhysicalDeviceExternalFenceInfoKHR {
         sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR,
@@ -18332,26 +18405,26 @@ impl VkPhysicalDeviceExternalFenceInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
     self.handleType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
-impl Default for VkPhysicalDeviceExternalFenceInfoKHR {
-  fn default() -> VkPhysicalDeviceExternalFenceInfoKHR {
+impl<'a> Default for VkPhysicalDeviceExternalFenceInfoKHR<'a> {
+  fn default() -> VkPhysicalDeviceExternalFenceInfoKHR<'a> {
     VkPhysicalDeviceExternalFenceInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
-unsafe impl RawStruct for VkPhysicalDeviceExternalFenceInfoKHR {
+unsafe impl<'a> RawStruct for VkPhysicalDeviceExternalFenceInfoKHR<'a> {
   type Raw = types_raw::VkPhysicalDeviceExternalFenceInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
@@ -18377,10 +18450,6 @@ pub struct VkExternalFencePropertiesKHR {
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
 impl VkExternalFencePropertiesKHR {
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
   #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
@@ -18416,17 +18485,17 @@ fn test_struct_size_vk_external_fence_properties_khr() {
 
 /// Structure specifying handle types that can be exported from a fence
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence")]
-pub struct VkExportFenceCreateInfoKHR {
+pub struct VkExportFenceCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalFenceHandleTypeFlagsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_fence")]
-impl VkExportFenceCreateInfoKHR {
+impl<'a> VkExportFenceCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkExportFenceCreateInfoKHR {
+  pub fn new() -> VkExportFenceCreateInfoKHR<'a> {
     unsafe {
       VkExportFenceCreateInfoKHR {
         sType: VkStructureType::EXPORT_FENCE_CREATE_INFO_KHR,
@@ -18440,27 +18509,28 @@ impl VkExportFenceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn handle_types(&self) -> VkExternalFenceHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
 #[cfg(feature = "VK_KHR_external_fence")]
-impl Default for VkExportFenceCreateInfoKHR {
-  fn default() -> VkExportFenceCreateInfoKHR {
+impl<'a> Default for VkExportFenceCreateInfoKHR<'a> {
+  fn default() -> VkExportFenceCreateInfoKHR<'a> {
     VkExportFenceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence")]
-unsafe impl RawStruct for VkExportFenceCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkExportFenceCreateInfoKHR<'a> {
   type Raw = types_raw::VkExportFenceCreateInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_fence")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkFenceCreateInfo<'b>> for VkExportFenceCreateInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExportFenceCreateInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_fence")]
 #[cfg(test)]
@@ -18476,23 +18546,23 @@ fn test_struct_size_vk_export_fence_create_info_khr() {
 
 /// (None)
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkImportFenceWin32HandleInfoKHR {
+pub struct VkImportFenceWin32HandleInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub fence: VkFence,
   pub flags: VkFenceImportFlagsKHR,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
   pub handle: wsi::win32::HANDLE,
   pub name: wsi::win32::LPCWSTR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkImportFenceWin32HandleInfoKHR {
+impl<'a> VkImportFenceWin32HandleInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkImportFenceWin32HandleInfoKHR {
+  pub fn new() -> VkImportFenceWin32HandleInfoKHR<'a> {
     unsafe {
       VkImportFenceWin32HandleInfoKHR {
         sType: VkStructureType::IMPORT_FENCE_WIN32_HANDLE_INFO_KHR,
@@ -18526,14 +18596,6 @@ impl VkImportFenceWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn fence(&self) -> VkFence {
     self.fence
   }
@@ -18553,17 +18615,25 @@ impl VkImportFenceWin32HandleInfoKHR {
   pub fn name(&self) -> wsi::win32::LPCWSTR {
     self.name
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkImportFenceWin32HandleInfoKHR {
-  fn default() -> VkImportFenceWin32HandleInfoKHR {
+impl<'a> Default for VkImportFenceWin32HandleInfoKHR<'a> {
+  fn default() -> VkImportFenceWin32HandleInfoKHR<'a> {
     VkImportFenceWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkImportFenceWin32HandleInfoKHR {
+unsafe impl<'a> RawStruct for VkImportFenceWin32HandleInfoKHR<'a> {
   type Raw = types_raw::VkImportFenceWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
@@ -18580,21 +18650,21 @@ fn test_struct_size_vk_import_fence_win32_handle_info_khr() {
 /// Structure specifying additional attributes of Windows handles exported from a
 /// fence
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkExportFenceWin32HandleInfoKHR {
+pub struct VkExportFenceWin32HandleInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub pAttributes: *const wsi::win32::SECURITY_ATTRIBUTES,
   pub dwAccess: wsi::win32::DWORD,
   pub name: wsi::win32::LPCWSTR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkExportFenceWin32HandleInfoKHR {
+impl<'a> VkExportFenceWin32HandleInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkExportFenceWin32HandleInfoKHR {
+  pub fn new() -> VkExportFenceWin32HandleInfoKHR<'a> {
     unsafe {
       VkExportFenceWin32HandleInfoKHR {
         sType: VkStructureType::EXPORT_FENCE_WIN32_HANDLE_INFO_KHR,
@@ -18618,14 +18688,6 @@ impl VkExportFenceWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
     self.pAttributes
   }
@@ -18640,15 +18702,25 @@ impl VkExportFenceWin32HandleInfoKHR {
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkExportFenceWin32HandleInfoKHR {
-  fn default() -> VkExportFenceWin32HandleInfoKHR {
+impl<'a> Default for VkExportFenceWin32HandleInfoKHR<'a> {
+  fn default() -> VkExportFenceWin32HandleInfoKHR<'a> {
     VkExportFenceWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkExportFenceWin32HandleInfoKHR {
+unsafe impl<'a> RawStruct for VkExportFenceWin32HandleInfoKHR<'a> {
   type Raw = types_raw::VkExportFenceWin32HandleInfoKHR;
+}
+#[cfg(feature = "VK_KHR_external_fence_win32")]
+#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkFenceCreateInfo<'b>> for VkExportFenceWin32HandleInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkExportFenceWin32HandleInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
@@ -18663,20 +18735,20 @@ fn test_struct_size_vk_export_fence_win32_handle_info_khr() {
 
 /// Structure describing a Win32 handle fence export operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkFenceGetWin32HandleInfoKHR {
+pub struct VkFenceGetWin32HandleInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub fence: VkFence,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl VkFenceGetWin32HandleInfoKHR {
+impl<'a> VkFenceGetWin32HandleInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkFenceGetWin32HandleInfoKHR {
+  pub fn new() -> VkFenceGetWin32HandleInfoKHR<'a> {
     unsafe {
       VkFenceGetWin32HandleInfoKHR {
         sType: VkStructureType::FENCE_GET_WIN32_HANDLE_INFO_KHR,
@@ -18695,14 +18767,6 @@ impl VkFenceGetWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn fence(&self) -> VkFence {
     self.fence
   }
@@ -18710,17 +18774,25 @@ impl VkFenceGetWin32HandleInfoKHR {
   pub fn handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
     self.handleType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkFenceGetWin32HandleInfoKHR {
-  fn default() -> VkFenceGetWin32HandleInfoKHR {
+impl<'a> Default for VkFenceGetWin32HandleInfoKHR<'a> {
+  fn default() -> VkFenceGetWin32HandleInfoKHR<'a> {
     VkFenceGetWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl RawStruct for VkFenceGetWin32HandleInfoKHR {
+unsafe impl<'a> RawStruct for VkFenceGetWin32HandleInfoKHR<'a> {
   type Raw = types_raw::VkFenceGetWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
@@ -18738,20 +18810,20 @@ fn test_struct_size_vk_fence_get_win32_handle_info_khr() {
 
 /// (None)
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-pub struct VkImportFenceFdInfoKHR {
+pub struct VkImportFenceFdInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub fence: VkFence,
   pub flags: VkFenceImportFlagsKHR,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
   pub fd: c_int,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-impl VkImportFenceFdInfoKHR {
+impl<'a> VkImportFenceFdInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkImportFenceFdInfoKHR {
+  pub fn new() -> VkImportFenceFdInfoKHR<'a> {
     unsafe {
       VkImportFenceFdInfoKHR {
         sType: VkStructureType::IMPORT_FENCE_FD_INFO_KHR,
@@ -18780,14 +18852,6 @@ impl VkImportFenceFdInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn fence(&self) -> VkFence {
     self.fence
   }
@@ -18803,15 +18867,23 @@ impl VkImportFenceFdInfoKHR {
   pub fn fd(&self) -> c_int {
     self.fd
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-impl Default for VkImportFenceFdInfoKHR {
-  fn default() -> VkImportFenceFdInfoKHR {
+impl<'a> Default for VkImportFenceFdInfoKHR<'a> {
+  fn default() -> VkImportFenceFdInfoKHR<'a> {
     VkImportFenceFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-unsafe impl RawStruct for VkImportFenceFdInfoKHR {
+unsafe impl<'a> RawStruct for VkImportFenceFdInfoKHR<'a> {
   type Raw = types_raw::VkImportFenceFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
@@ -18823,18 +18895,18 @@ fn test_struct_size_vk_import_fence_fd_info_khr() {
 
 /// Structure describing a POSIX FD fence export operation
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-pub struct VkFenceGetFdInfoKHR {
+pub struct VkFenceGetFdInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub fence: VkFence,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-impl VkFenceGetFdInfoKHR {
+impl<'a> VkFenceGetFdInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkFenceGetFdInfoKHR {
+  pub fn new() -> VkFenceGetFdInfoKHR<'a> {
     unsafe {
       VkFenceGetFdInfoKHR {
         sType: VkStructureType::FENCE_GET_FD_INFO_KHR,
@@ -18853,14 +18925,6 @@ impl VkFenceGetFdInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn fence(&self) -> VkFence {
     self.fence
   }
@@ -18868,15 +18932,23 @@ impl VkFenceGetFdInfoKHR {
   pub fn handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
     self.handleType
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-impl Default for VkFenceGetFdInfoKHR {
-  fn default() -> VkFenceGetFdInfoKHR {
+impl<'a> Default for VkFenceGetFdInfoKHR<'a> {
+  fn default() -> VkFenceGetFdInfoKHR<'a> {
     VkFenceGetFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-unsafe impl RawStruct for VkFenceGetFdInfoKHR {
+unsafe impl<'a> RawStruct for VkFenceGetFdInfoKHR<'a> {
   type Raw = types_raw::VkFenceGetFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
@@ -18900,10 +18972,6 @@ pub struct VkPhysicalDevicePointClippingPropertiesKHR {
 #[cfg(feature = "VK_KHR_maintenance2")]
 impl VkPhysicalDevicePointClippingPropertiesKHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -18915,6 +18983,15 @@ impl VkPhysicalDevicePointClippingPropertiesKHR {
 #[cfg(feature = "VK_KHR_maintenance2")]
 unsafe impl RawStruct for VkPhysicalDevicePointClippingPropertiesKHR {
   type Raw = types_raw::VkPhysicalDevicePointClippingPropertiesKHR;
+}
+#[cfg(feature = "VK_KHR_maintenance2")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDevicePointClippingPropertiesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDevicePointClippingPropertiesKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
 #[cfg(test)]
@@ -18993,11 +19070,10 @@ fn test_struct_size_vk_input_attachment_aspect_reference_khr() {
 /// Structure specifying, for a given subpass/input attachment pair, which aspect
 /// can: be read.
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_maintenance2")]
 pub struct VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   aspectReferenceCount: u32,
   pAspectReferences: *const types_raw::VkInputAttachmentAspectReferenceKHR,
   _p: ::std::marker::PhantomData<&'a u8>,
@@ -19022,14 +19098,6 @@ impl<'a> VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn aspect_reference_count(&self) -> u32 {
     self.aspectReferenceCount
   }
@@ -19045,6 +19113,17 @@ unsafe impl<'a> RawStruct for VkRenderPassInputAttachmentAspectCreateInfoKHR<'a>
   type Raw = types_raw::VkRenderPassInputAttachmentAspectCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkRenderPassCreateInfo<'b>>
+  for VkRenderPassInputAttachmentAspectCreateInfoKHR<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkRenderPassInputAttachmentAspectCreateInfoKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_maintenance2")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_render_pass_input_attachment_aspect_create_info_khr() {
@@ -19056,17 +19135,17 @@ fn test_struct_size_vk_render_pass_input_attachment_aspect_create_info_khr() {
 
 /// Specify the intended usage of an image view
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_maintenance2")]
-pub struct VkImageViewUsageCreateInfoKHR {
+pub struct VkImageViewUsageCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub usage: VkImageUsageFlags,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl VkImageViewUsageCreateInfoKHR {
+impl<'a> VkImageViewUsageCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkImageViewUsageCreateInfoKHR {
+  pub fn new() -> VkImageViewUsageCreateInfoKHR<'a> {
     unsafe {
       VkImageViewUsageCreateInfoKHR {
         sType: VkStructureType::IMAGE_VIEW_USAGE_CREATE_INFO_KHR,
@@ -19080,27 +19159,28 @@ impl VkImageViewUsageCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn usage(&self) -> VkImageUsageFlags {
     self.usage
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl Default for VkImageViewUsageCreateInfoKHR {
-  fn default() -> VkImageViewUsageCreateInfoKHR {
+impl<'a> Default for VkImageViewUsageCreateInfoKHR<'a> {
+  fn default() -> VkImageViewUsageCreateInfoKHR<'a> {
     VkImageViewUsageCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl RawStruct for VkImageViewUsageCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkImageViewUsageCreateInfoKHR<'a> {
   type Raw = types_raw::VkImageViewUsageCreateInfoKHR;
+}
+#[cfg(feature = "VK_KHR_maintenance2")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkImageViewCreateInfo<'b>> for VkImageViewUsageCreateInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkImageViewUsageCreateInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
 #[cfg(test)]
@@ -19114,17 +19194,17 @@ fn test_struct_size_vk_image_view_usage_create_info_khr() {
 
 /// Structure specifying the orientation of the tessellation domain
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_maintenance2")]
-pub struct VkPipelineTessellationDomainOriginStateCreateInfoKHR {
+pub struct VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub domainOrigin: VkTessellationDomainOriginKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl VkPipelineTessellationDomainOriginStateCreateInfoKHR {
+impl<'a> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkPipelineTessellationDomainOriginStateCreateInfoKHR {
+  pub fn new() -> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
     unsafe {
       VkPipelineTessellationDomainOriginStateCreateInfoKHR {
         sType: VkStructureType::PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO_KHR,
@@ -19138,27 +19218,30 @@ impl VkPipelineTessellationDomainOriginStateCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn domain_origin(&self) -> VkTessellationDomainOriginKHR {
     self.domainOrigin
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl Default for VkPipelineTessellationDomainOriginStateCreateInfoKHR {
-  fn default() -> VkPipelineTessellationDomainOriginStateCreateInfoKHR {
+impl<'a> Default for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
+  fn default() -> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
     VkPipelineTessellationDomainOriginStateCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl RawStruct for VkPipelineTessellationDomainOriginStateCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
   type Raw = types_raw::VkPipelineTessellationDomainOriginStateCreateInfoKHR;
+}
+#[cfg(feature = "VK_KHR_maintenance2")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineTessellationStateCreateInfo<'b>>
+  for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineTessellationDomainOriginStateCreateInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
 #[cfg(test)]
@@ -19195,6 +19278,11 @@ impl VkPhysicalDeviceVariablePointerFeaturesKHR {
     }
   }
   #[inline]
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
+    self
+  }
+  #[inline]
   pub fn set_variable_pointers_storage_buffer(mut self, value: bool) -> Self {
     let value: VkBool32 = if value { 1 } else { 0 };
     self.variablePointersStorageBuffer = value;
@@ -19205,10 +19293,6 @@ impl VkPhysicalDeviceVariablePointerFeaturesKHR {
     let value: VkBool32 = if value { 1 } else { 0 };
     self.variablePointers = value;
     self
-  }
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -19234,6 +19318,24 @@ unsafe impl RawStruct for VkPhysicalDeviceVariablePointerFeaturesKHR {
   type Raw = types_raw::VkPhysicalDeviceVariablePointerFeaturesKHR;
 }
 #[cfg(feature = "VK_KHR_variable_pointers")]
+unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceVariablePointerFeaturesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceVariablePointerFeaturesKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_variable_pointers")]
+unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDeviceVariablePointerFeaturesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceVariablePointerFeaturesKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_variable_pointers")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_physical_device_variable_pointer_features_khr() {
@@ -19247,20 +19349,20 @@ fn test_struct_size_vk_physical_device_variable_pointer_features_khr() {
 
 /// Structure specifying parameters of a newly created iOS surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
-pub struct VkIOSSurfaceCreateInfoMVK {
+pub struct VkIOSSurfaceCreateInfoMVK<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkIOSSurfaceCreateFlagsMVK,
   pView: *const c_void,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
-impl VkIOSSurfaceCreateInfoMVK {
+impl<'a> VkIOSSurfaceCreateInfoMVK<'a> {
   #[inline]
-  pub fn new() -> VkIOSSurfaceCreateInfoMVK {
+  pub fn new() -> VkIOSSurfaceCreateInfoMVK<'a> {
     unsafe {
       VkIOSSurfaceCreateInfoMVK {
         sType: VkStructureType::IOS_SURFACE_CREATE_INFO_MVK,
@@ -19274,12 +19376,9 @@ impl VkIOSSurfaceCreateInfoMVK {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
+  pub fn set_view(mut self, value: *const c_void) -> Self {
+    self.pView = value;
+    self
   }
   #[inline]
   pub fn flags(&self) -> VkIOSSurfaceCreateFlagsMVK {
@@ -19289,17 +19388,25 @@ impl VkIOSSurfaceCreateInfoMVK {
   pub fn view(&self) -> *const c_void {
     self.pView
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
-impl Default for VkIOSSurfaceCreateInfoMVK {
-  fn default() -> VkIOSSurfaceCreateInfoMVK {
+impl<'a> Default for VkIOSSurfaceCreateInfoMVK<'a> {
+  fn default() -> VkIOSSurfaceCreateInfoMVK<'a> {
     VkIOSSurfaceCreateInfoMVK::new()
   }
 }
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
-unsafe impl RawStruct for VkIOSSurfaceCreateInfoMVK {
+unsafe impl<'a> RawStruct for VkIOSSurfaceCreateInfoMVK<'a> {
   type Raw = types_raw::VkIOSSurfaceCreateInfoMVK;
 }
 #[cfg(feature = "VK_MVK_ios_surface")]
@@ -19317,20 +19424,20 @@ fn test_struct_size_vk_ios_surface_create_info_mvk() {
 
 /// Structure specifying parameters of a newly created macOS surface object
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
-pub struct VkMacOSSurfaceCreateInfoMVK {
+pub struct VkMacOSSurfaceCreateInfoMVK<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkMacOSSurfaceCreateFlagsMVK,
   pView: *const c_void,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
-impl VkMacOSSurfaceCreateInfoMVK {
+impl<'a> VkMacOSSurfaceCreateInfoMVK<'a> {
   #[inline]
-  pub fn new() -> VkMacOSSurfaceCreateInfoMVK {
+  pub fn new() -> VkMacOSSurfaceCreateInfoMVK<'a> {
     unsafe {
       VkMacOSSurfaceCreateInfoMVK {
         sType: VkStructureType::MACOS_SURFACE_CREATE_INFO_MVK,
@@ -19344,12 +19451,9 @@ impl VkMacOSSurfaceCreateInfoMVK {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
+  pub fn set_view(mut self, value: *const c_void) -> Self {
+    self.pView = value;
+    self
   }
   #[inline]
   pub fn flags(&self) -> VkMacOSSurfaceCreateFlagsMVK {
@@ -19359,17 +19463,25 @@ impl VkMacOSSurfaceCreateInfoMVK {
   pub fn view(&self) -> *const c_void {
     self.pView
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
-impl Default for VkMacOSSurfaceCreateInfoMVK {
-  fn default() -> VkMacOSSurfaceCreateInfoMVK {
+impl<'a> Default for VkMacOSSurfaceCreateInfoMVK<'a> {
+  fn default() -> VkMacOSSurfaceCreateInfoMVK<'a> {
     VkMacOSSurfaceCreateInfoMVK::new()
   }
 }
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
-unsafe impl RawStruct for VkMacOSSurfaceCreateInfoMVK {
+unsafe impl<'a> RawStruct for VkMacOSSurfaceCreateInfoMVK<'a> {
   type Raw = types_raw::VkMacOSSurfaceCreateInfoMVK;
 }
 #[cfg(feature = "VK_MVK_macos_surface")]
@@ -19387,17 +19499,17 @@ fn test_struct_size_vk_mac_os_surface_create_info_mvk() {
 
 /// (None)
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-pub struct VkBufferMemoryRequirementsInfo2KHR {
+pub struct VkBufferMemoryRequirementsInfo2KHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub buffer: VkBuffer,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl VkBufferMemoryRequirementsInfo2KHR {
+impl<'a> VkBufferMemoryRequirementsInfo2KHR<'a> {
   #[inline]
-  pub fn new() -> VkBufferMemoryRequirementsInfo2KHR {
+  pub fn new() -> VkBufferMemoryRequirementsInfo2KHR<'a> {
     unsafe {
       VkBufferMemoryRequirementsInfo2KHR {
         sType: VkStructureType::BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR,
@@ -19411,26 +19523,26 @@ impl VkBufferMemoryRequirementsInfo2KHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl Default for VkBufferMemoryRequirementsInfo2KHR {
-  fn default() -> VkBufferMemoryRequirementsInfo2KHR {
+impl<'a> Default for VkBufferMemoryRequirementsInfo2KHR<'a> {
+  fn default() -> VkBufferMemoryRequirementsInfo2KHR<'a> {
     VkBufferMemoryRequirementsInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-unsafe impl RawStruct for VkBufferMemoryRequirementsInfo2KHR {
+unsafe impl<'a> RawStruct for VkBufferMemoryRequirementsInfo2KHR<'a> {
   type Raw = types_raw::VkBufferMemoryRequirementsInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -19445,17 +19557,17 @@ fn test_struct_size_vk_buffer_memory_requirements_info2_khr() {
 
 /// (None)
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-pub struct VkImageMemoryRequirementsInfo2KHR {
+pub struct VkImageMemoryRequirementsInfo2KHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub image: VkImage,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl VkImageMemoryRequirementsInfo2KHR {
+impl<'a> VkImageMemoryRequirementsInfo2KHR<'a> {
   #[inline]
-  pub fn new() -> VkImageMemoryRequirementsInfo2KHR {
+  pub fn new() -> VkImageMemoryRequirementsInfo2KHR<'a> {
     unsafe {
       VkImageMemoryRequirementsInfo2KHR {
         sType: VkStructureType::IMAGE_MEMORY_REQUIREMENTS_INFO_2_KHR,
@@ -19469,26 +19581,26 @@ impl VkImageMemoryRequirementsInfo2KHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn image(&self) -> VkImage {
     self.image
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl Default for VkImageMemoryRequirementsInfo2KHR {
-  fn default() -> VkImageMemoryRequirementsInfo2KHR {
+impl<'a> Default for VkImageMemoryRequirementsInfo2KHR<'a> {
+  fn default() -> VkImageMemoryRequirementsInfo2KHR<'a> {
     VkImageMemoryRequirementsInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-unsafe impl RawStruct for VkImageMemoryRequirementsInfo2KHR {
+unsafe impl<'a> RawStruct for VkImageMemoryRequirementsInfo2KHR<'a> {
   type Raw = types_raw::VkImageMemoryRequirementsInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -19501,17 +19613,17 @@ fn test_struct_size_vk_image_memory_requirements_info2_khr() {
   );
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-pub struct VkImageSparseMemoryRequirementsInfo2KHR {
+pub struct VkImageSparseMemoryRequirementsInfo2KHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub image: VkImage,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl VkImageSparseMemoryRequirementsInfo2KHR {
+impl<'a> VkImageSparseMemoryRequirementsInfo2KHR<'a> {
   #[inline]
-  pub fn new() -> VkImageSparseMemoryRequirementsInfo2KHR {
+  pub fn new() -> VkImageSparseMemoryRequirementsInfo2KHR<'a> {
     unsafe {
       VkImageSparseMemoryRequirementsInfo2KHR {
         sType: VkStructureType::IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2_KHR,
@@ -19525,26 +19637,26 @@ impl VkImageSparseMemoryRequirementsInfo2KHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn image(&self) -> VkImage {
     self.image
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl Default for VkImageSparseMemoryRequirementsInfo2KHR {
-  fn default() -> VkImageSparseMemoryRequirementsInfo2KHR {
+impl<'a> Default for VkImageSparseMemoryRequirementsInfo2KHR<'a> {
+  fn default() -> VkImageSparseMemoryRequirementsInfo2KHR<'a> {
     VkImageSparseMemoryRequirementsInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-unsafe impl RawStruct for VkImageSparseMemoryRequirementsInfo2KHR {
+unsafe impl<'a> RawStruct for VkImageSparseMemoryRequirementsInfo2KHR<'a> {
   type Raw = types_raw::VkImageSparseMemoryRequirementsInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -19569,16 +19681,12 @@ pub struct VkMemoryRequirements2KHR {
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
 impl VkMemoryRequirements2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn memory_requirements(&self) -> VkMemoryRequirements {
-    self.memoryRequirements
+  pub fn memory_requirements(&self) -> &VkMemoryRequirements {
+    &self.memoryRequirements
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -19605,16 +19713,12 @@ pub struct VkSparseImageMemoryRequirements2KHR {
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
 impl VkSparseImageMemoryRequirements2KHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn memory_requirements(&self) -> VkSparseImageMemoryRequirements {
-    self.memoryRequirements
+  pub fn memory_requirements(&self) -> &VkSparseImageMemoryRequirements {
+    &self.memoryRequirements
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -19647,10 +19751,6 @@ pub struct VkMemoryDedicatedRequirementsKHR {
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
 impl VkMemoryDedicatedRequirementsKHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -19668,6 +19768,15 @@ unsafe impl RawStruct for VkMemoryDedicatedRequirementsKHR {
   type Raw = types_raw::VkMemoryDedicatedRequirementsKHR;
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
+unsafe impl StructExtends<VkMemoryRequirements2KHR> for VkMemoryDedicatedRequirementsKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkMemoryDedicatedRequirementsKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_dedicated_allocation")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_memory_dedicated_requirements_khr() {
@@ -19679,18 +19788,18 @@ fn test_struct_size_vk_memory_dedicated_requirements_khr() {
 
 /// Specify a dedicated memory allocation resource
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-pub struct VkMemoryDedicatedAllocateInfoKHR {
+pub struct VkMemoryDedicatedAllocateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub image: Option<VkImage>,
   pub buffer: Option<VkBuffer>,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-impl VkMemoryDedicatedAllocateInfoKHR {
+impl<'a> VkMemoryDedicatedAllocateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkMemoryDedicatedAllocateInfoKHR {
+  pub fn new() -> VkMemoryDedicatedAllocateInfoKHR<'a> {
     unsafe {
       VkMemoryDedicatedAllocateInfoKHR {
         sType: VkStructureType::MEMORY_DEDICATED_ALLOCATE_INFO_KHR,
@@ -19709,14 +19818,6 @@ impl VkMemoryDedicatedAllocateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn image(&self) -> Option<VkImage> {
     self.image
   }
@@ -19726,14 +19827,23 @@ impl VkMemoryDedicatedAllocateInfoKHR {
   }
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-impl Default for VkMemoryDedicatedAllocateInfoKHR {
-  fn default() -> VkMemoryDedicatedAllocateInfoKHR {
+impl<'a> Default for VkMemoryDedicatedAllocateInfoKHR<'a> {
+  fn default() -> VkMemoryDedicatedAllocateInfoKHR<'a> {
     VkMemoryDedicatedAllocateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-unsafe impl RawStruct for VkMemoryDedicatedAllocateInfoKHR {
+unsafe impl<'a> RawStruct for VkMemoryDedicatedAllocateInfoKHR<'a> {
   type Raw = types_raw::VkMemoryDedicatedAllocateInfoKHR;
+}
+#[cfg(feature = "VK_KHR_dedicated_allocation")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkMemoryDedicatedAllocateInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkMemoryDedicatedAllocateInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
 #[cfg(test)]
@@ -19749,17 +19859,17 @@ fn test_struct_size_vk_memory_dedicated_allocate_info_khr() {
 
 /// Structure specifying sampler reduction mode
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-pub struct VkSamplerReductionModeCreateInfoEXT {
+pub struct VkSamplerReductionModeCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub reductionMode: VkSamplerReductionModeEXT,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-impl VkSamplerReductionModeCreateInfoEXT {
+impl<'a> VkSamplerReductionModeCreateInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkSamplerReductionModeCreateInfoEXT {
+  pub fn new() -> VkSamplerReductionModeCreateInfoEXT<'a> {
     unsafe {
       VkSamplerReductionModeCreateInfoEXT {
         sType: VkStructureType::SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT,
@@ -19773,27 +19883,28 @@ impl VkSamplerReductionModeCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn reduction_mode(&self) -> VkSamplerReductionModeEXT {
     self.reductionMode
   }
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-impl Default for VkSamplerReductionModeCreateInfoEXT {
-  fn default() -> VkSamplerReductionModeCreateInfoEXT {
+impl<'a> Default for VkSamplerReductionModeCreateInfoEXT<'a> {
+  fn default() -> VkSamplerReductionModeCreateInfoEXT<'a> {
     VkSamplerReductionModeCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-unsafe impl RawStruct for VkSamplerReductionModeCreateInfoEXT {
+unsafe impl<'a> RawStruct for VkSamplerReductionModeCreateInfoEXT<'a> {
   type Raw = types_raw::VkSamplerReductionModeCreateInfoEXT;
+}
+#[cfg(feature = "VK_EXT_sampler_filter_minmax")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSamplerCreateInfo<'b>> for VkSamplerReductionModeCreateInfoEXT<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkSamplerReductionModeCreateInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
 #[cfg(test)]
@@ -19819,10 +19930,6 @@ pub struct VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
 impl VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -19838,6 +19945,15 @@ impl VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
 unsafe impl RawStruct for VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
   type Raw = types_raw::VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT;
+}
+#[cfg(feature = "VK_EXT_sampler_filter_minmax")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
 #[cfg(test)]
@@ -19903,11 +20019,10 @@ fn test_struct_size_vk_sample_location_ext() {
 
 /// Structure specifying a set of sample locations
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
 pub struct VkSampleLocationsInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub sampleLocationsPerPixel: VkSampleCountFlagBits,
   pub sampleLocationGridSize: VkExtent2D,
   sampleLocationsCount: u32,
@@ -19944,20 +20059,12 @@ impl<'a> VkSampleLocationsInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn sample_locations_per_pixel(&self) -> VkSampleCountFlagBits {
     self.sampleLocationsPerPixel
   }
   #[inline]
-  pub fn sample_location_grid_size(&self) -> VkExtent2D {
-    self.sampleLocationGridSize
+  pub fn sample_location_grid_size(&self) -> &VkExtent2D {
+    &self.sampleLocationGridSize
   }
   #[inline]
   pub fn sample_locations_count(&self) -> u32 {
@@ -19975,6 +20082,15 @@ unsafe impl<'a> RawStruct for VkSampleLocationsInfoEXT<'a> {
   type Raw = types_raw::VkSampleLocationsInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkImageMemoryBarrier<'b>> for VkSampleLocationsInfoEXT<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkSampleLocationsInfoEXT as *const c_void
+  }
+}
+#[cfg(feature = "VK_EXT_sample_locations")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_sample_locations_info_ext() {
@@ -19987,7 +20103,6 @@ fn test_struct_size_vk_sample_locations_info_ext() {
 /// Structure specifying the sample locations state to use in the initial layout
 /// transition of attachments
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
 pub struct VkAttachmentSampleLocationsEXT<'a> {
   pub attachmentIndex: u32,
@@ -20014,8 +20129,8 @@ impl<'a> VkAttachmentSampleLocationsEXT<'a> {
     self.attachmentIndex
   }
   #[inline]
-  pub fn sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
-    self.sampleLocationsInfo
+  pub fn sample_locations_info(&self) -> &VkSampleLocationsInfoEXT<'a> {
+    &self.sampleLocationsInfo
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -20041,7 +20156,6 @@ fn test_struct_size_vk_attachment_sample_locations_ext() {
 /// Structure specifying the sample locations state to use for layout transitions of
 /// attachments performed after a given subpass
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
 pub struct VkSubpassSampleLocationsEXT<'a> {
   pub subpassIndex: u32,
@@ -20068,8 +20182,8 @@ impl<'a> VkSubpassSampleLocationsEXT<'a> {
     self.subpassIndex
   }
   #[inline]
-  pub fn sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
-    self.sampleLocationsInfo
+  pub fn sample_locations_info(&self) -> &VkSampleLocationsInfoEXT<'a> {
+    &self.sampleLocationsInfo
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -20095,11 +20209,10 @@ fn test_struct_size_vk_subpass_sample_locations_ext() {
 /// Structure specifying sample locations to use for the layout transition of custom
 /// sample locations compatible depth/stencil attachments
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
 pub struct VkRenderPassSampleLocationsBeginInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   attachmentInitialSampleLocationsCount: u32,
   pAttachmentInitialSampleLocations: *const types_raw::VkAttachmentSampleLocationsEXT,
   postSubpassSampleLocationsCount: u32,
@@ -20134,14 +20247,6 @@ impl<'a> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn attachment_initial_sample_locations_count(&self) -> u32 {
     self.attachmentInitialSampleLocationsCount
   }
@@ -20161,6 +20266,15 @@ unsafe impl<'a> RawStruct for VkRenderPassSampleLocationsBeginInfoEXT<'a> {
   type Raw = types_raw::VkRenderPassSampleLocationsBeginInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkRenderPassBeginInfo<'b>> for VkRenderPassSampleLocationsBeginInfoEXT<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkRenderPassSampleLocationsBeginInfoEXT as *const c_void
+  }
+}
+#[cfg(feature = "VK_EXT_sample_locations")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_render_pass_sample_locations_begin_info_ext() {
@@ -20172,11 +20286,10 @@ fn test_struct_size_vk_render_pass_sample_locations_begin_info_ext() {
 
 /// Structure specifying sample locations for a pipeline
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_sample_locations")]
 pub struct VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub sampleLocationsEnable: VkBool32,
   pub sampleLocationsInfo: VkSampleLocationsInfoEXT<'a>,
 }
@@ -20203,20 +20316,12 @@ impl<'a> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn is_sample_locations_enable(&self) -> bool {
     self.sampleLocationsEnable != 0
   }
   #[inline]
-  pub fn sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
-    self.sampleLocationsInfo
+  pub fn sample_locations_info(&self) -> &VkSampleLocationsInfoEXT<'a> {
+    &self.sampleLocationsInfo
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -20228,6 +20333,17 @@ impl<'a> Default for VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
 #[cfg(feature = "VK_EXT_sample_locations")]
 unsafe impl<'a> RawStruct for VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
   type Raw = types_raw::VkPipelineSampleLocationsStateCreateInfoEXT;
+}
+#[cfg(feature = "VK_EXT_sample_locations")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineMultisampleStateCreateInfo<'b>>
+  for VkPipelineSampleLocationsStateCreateInfoEXT<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineSampleLocationsStateCreateInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
 #[cfg(test)]
@@ -20256,10 +20372,6 @@ pub struct VkPhysicalDeviceSampleLocationsPropertiesEXT {
 #[cfg(feature = "VK_EXT_sample_locations")]
 impl VkPhysicalDeviceSampleLocationsPropertiesEXT {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -20268,8 +20380,8 @@ impl VkPhysicalDeviceSampleLocationsPropertiesEXT {
     self.sampleLocationSampleCounts
   }
   #[inline]
-  pub fn max_sample_location_grid_size(&self) -> VkExtent2D {
-    self.maxSampleLocationGridSize
+  pub fn max_sample_location_grid_size(&self) -> &VkExtent2D {
+    &self.maxSampleLocationGridSize
   }
   #[inline]
   pub fn sample_location_coordinate_range(&self) -> [f32; 2] {
@@ -20287,6 +20399,15 @@ impl VkPhysicalDeviceSampleLocationsPropertiesEXT {
 #[cfg(feature = "VK_EXT_sample_locations")]
 unsafe impl RawStruct for VkPhysicalDeviceSampleLocationsPropertiesEXT {
   type Raw = types_raw::VkPhysicalDeviceSampleLocationsPropertiesEXT;
+}
+#[cfg(feature = "VK_EXT_sample_locations")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDeviceSampleLocationsPropertiesEXT {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceSampleLocationsPropertiesEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
 #[cfg(test)]
@@ -20311,16 +20432,12 @@ pub struct VkMultisamplePropertiesEXT {
 #[cfg(feature = "VK_EXT_sample_locations")]
 impl VkMultisamplePropertiesEXT {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn max_sample_location_grid_size(&self) -> VkExtent2D {
-    self.maxSampleLocationGridSize
+  pub fn max_sample_location_grid_size(&self) -> &VkExtent2D {
+    &self.maxSampleLocationGridSize
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -20341,11 +20458,10 @@ fn test_struct_size_vk_multisample_properties_ext() {
 
 /// Specify that an image can: be used with a particular set of formats
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_image_format_list")]
 pub struct VkImageFormatListCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   viewFormatCount: u32,
   pViewFormats: *const VkFormat,
   _p: ::std::marker::PhantomData<&'a u8>,
@@ -20370,14 +20486,6 @@ impl<'a> VkImageFormatListCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn view_format_count(&self) -> u32 {
     self.viewFormatCount
   }
@@ -20391,6 +20499,15 @@ impl<'a> Default for VkImageFormatListCreateInfoKHR<'a> {
 #[cfg(feature = "VK_KHR_image_format_list")]
 unsafe impl<'a> RawStruct for VkImageFormatListCreateInfoKHR<'a> {
   type Raw = types_raw::VkImageFormatListCreateInfoKHR;
+}
+#[cfg(feature = "VK_KHR_image_format_list")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkImageFormatListCreateInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkImageFormatListCreateInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_image_format_list")]
 #[cfg(test)]
@@ -20426,14 +20543,15 @@ impl VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     }
   }
   #[inline]
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
+    self
+  }
+  #[inline]
   pub fn set_advanced_blend_coherent_operations(mut self, value: bool) -> Self {
     let value: VkBool32 = if value { 1 } else { 0 };
     self.advancedBlendCoherentOperations = value;
     self
-  }
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -20453,6 +20571,15 @@ impl Default for VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
 unsafe impl RawStruct for VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
   type Raw = types_raw::VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT;
+}
+#[cfg(feature = "VK_EXT_blend_operation_advanced")]
+unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
 #[cfg(test)]
@@ -20481,10 +20608,6 @@ pub struct VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
 impl VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
   #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
@@ -20519,6 +20642,15 @@ unsafe impl RawStruct for VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
   type Raw = types_raw::VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT;
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT as *const c_void
+  }
+}
+#[cfg(feature = "VK_EXT_blend_operation_advanced")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_physical_device_blend_operation_advanced_properties_ext() {
@@ -20530,19 +20662,19 @@ fn test_struct_size_vk_physical_device_blend_operation_advanced_properties_ext()
 
 /// Structure specifying parameters that affect advanced blend operations
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-pub struct VkPipelineColorBlendAdvancedStateCreateInfoEXT {
+pub struct VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub srcPremultiplied: VkBool32,
   pub dstPremultiplied: VkBool32,
   pub blendOverlap: VkBlendOverlapEXT,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-impl VkPipelineColorBlendAdvancedStateCreateInfoEXT {
+impl<'a> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkPipelineColorBlendAdvancedStateCreateInfoEXT {
+  pub fn new() -> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
     unsafe {
       VkPipelineColorBlendAdvancedStateCreateInfoEXT {
         sType: VkStructureType::PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT,
@@ -20568,14 +20700,6 @@ impl VkPipelineColorBlendAdvancedStateCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn is_src_premultiplied(&self) -> bool {
     self.srcPremultiplied != 0
   }
@@ -20589,14 +20713,25 @@ impl VkPipelineColorBlendAdvancedStateCreateInfoEXT {
   }
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-impl Default for VkPipelineColorBlendAdvancedStateCreateInfoEXT {
-  fn default() -> VkPipelineColorBlendAdvancedStateCreateInfoEXT {
+impl<'a> Default for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
+  fn default() -> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
     VkPipelineColorBlendAdvancedStateCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-unsafe impl RawStruct for VkPipelineColorBlendAdvancedStateCreateInfoEXT {
+unsafe impl<'a> RawStruct for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
   type Raw = types_raw::VkPipelineColorBlendAdvancedStateCreateInfoEXT;
+}
+#[cfg(feature = "VK_EXT_blend_operation_advanced")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineColorBlendStateCreateInfo<'b>>
+  for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineColorBlendAdvancedStateCreateInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
 #[cfg(test)]
@@ -20612,19 +20747,19 @@ fn test_struct_size_vk_pipeline_color_blend_advanced_state_create_info_ext() {
 
 /// Structure specifying whether fragment coverage replaces a color
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-pub struct VkPipelineCoverageToColorStateCreateInfoNV {
+pub struct VkPipelineCoverageToColorStateCreateInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineCoverageToColorStateCreateFlagsNV,
   pub coverageToColorEnable: VkBool32,
   pub coverageToColorLocation: u32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-impl VkPipelineCoverageToColorStateCreateInfoNV {
+impl<'a> VkPipelineCoverageToColorStateCreateInfoNV<'a> {
   #[inline]
-  pub fn new() -> VkPipelineCoverageToColorStateCreateInfoNV {
+  pub fn new() -> VkPipelineCoverageToColorStateCreateInfoNV<'a> {
     unsafe {
       VkPipelineCoverageToColorStateCreateInfoNV {
         sType: VkStructureType::PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV,
@@ -20649,14 +20784,6 @@ impl VkPipelineCoverageToColorStateCreateInfoNV {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineCoverageToColorStateCreateFlagsNV {
     self.flags
   }
@@ -20670,14 +20797,25 @@ impl VkPipelineCoverageToColorStateCreateInfoNV {
   }
 }
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-impl Default for VkPipelineCoverageToColorStateCreateInfoNV {
-  fn default() -> VkPipelineCoverageToColorStateCreateInfoNV {
+impl<'a> Default for VkPipelineCoverageToColorStateCreateInfoNV<'a> {
+  fn default() -> VkPipelineCoverageToColorStateCreateInfoNV<'a> {
     VkPipelineCoverageToColorStateCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-unsafe impl RawStruct for VkPipelineCoverageToColorStateCreateInfoNV {
+unsafe impl<'a> RawStruct for VkPipelineCoverageToColorStateCreateInfoNV<'a> {
   type Raw = types_raw::VkPipelineCoverageToColorStateCreateInfoNV;
+}
+#[cfg(feature = "VK_NV_fragment_coverage_to_color")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineMultisampleStateCreateInfo<'b>>
+  for VkPipelineCoverageToColorStateCreateInfoNV<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineCoverageToColorStateCreateInfoNV as *const c_void
+  }
 }
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
 #[cfg(test)]
@@ -20693,11 +20831,10 @@ fn test_struct_size_vk_pipeline_coverage_to_color_state_create_info_nv() {
 
 /// Structure specifying parameters controlling coverage modulation
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
 pub struct VkPipelineCoverageModulationStateCreateInfoNV<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkPipelineCoverageModulationStateCreateFlagsNV,
   pub coverageModulationMode: VkCoverageModulationModeNV,
   pub coverageModulationTableEnable: VkBool32,
@@ -20741,14 +20878,6 @@ impl<'a> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkPipelineCoverageModulationStateCreateFlagsNV {
     self.flags
   }
@@ -20776,6 +20905,17 @@ unsafe impl<'a> RawStruct for VkPipelineCoverageModulationStateCreateInfoNV<'a> 
   type Raw = types_raw::VkPipelineCoverageModulationStateCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineMultisampleStateCreateInfo<'b>>
+  for VkPipelineCoverageModulationStateCreateInfoNV<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPipelineCoverageModulationStateCreateInfoNV as *const c_void
+  }
+}
+#[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_pipeline_coverage_modulation_state_create_info_nv() {
@@ -20789,19 +20929,19 @@ fn test_struct_size_vk_pipeline_coverage_modulation_state_create_info_nv() {
 
 /// Structure specifying how to bind a buffer to memory
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_bind_memory2")]
-pub struct VkBindBufferMemoryInfoKHR {
+pub struct VkBindBufferMemoryInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub buffer: VkBuffer,
   pub memory: VkDeviceMemory,
   pub memoryOffset: VkDeviceSize,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-impl VkBindBufferMemoryInfoKHR {
+impl<'a> VkBindBufferMemoryInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkBindBufferMemoryInfoKHR {
+  pub fn new() -> VkBindBufferMemoryInfoKHR<'a> {
     unsafe {
       VkBindBufferMemoryInfoKHR {
         sType: VkStructureType::BIND_BUFFER_MEMORY_INFO_KHR,
@@ -20825,14 +20965,6 @@ impl VkBindBufferMemoryInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
@@ -20844,15 +20976,23 @@ impl VkBindBufferMemoryInfoKHR {
   pub fn memory_offset(&self) -> VkDeviceSize {
     self.memoryOffset
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-impl Default for VkBindBufferMemoryInfoKHR {
-  fn default() -> VkBindBufferMemoryInfoKHR {
+impl<'a> Default for VkBindBufferMemoryInfoKHR<'a> {
+  fn default() -> VkBindBufferMemoryInfoKHR<'a> {
     VkBindBufferMemoryInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-unsafe impl RawStruct for VkBindBufferMemoryInfoKHR {
+unsafe impl<'a> RawStruct for VkBindBufferMemoryInfoKHR<'a> {
   type Raw = types_raw::VkBindBufferMemoryInfoKHR;
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
@@ -20867,19 +21007,19 @@ fn test_struct_size_vk_bind_buffer_memory_info_khr() {
 
 /// Structure specifying how to bind an image to memory
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_bind_memory2")]
-pub struct VkBindImageMemoryInfoKHR {
+pub struct VkBindImageMemoryInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub image: VkImage,
   pub memory: VkDeviceMemory,
   pub memoryOffset: VkDeviceSize,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-impl VkBindImageMemoryInfoKHR {
+impl<'a> VkBindImageMemoryInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkBindImageMemoryInfoKHR {
+  pub fn new() -> VkBindImageMemoryInfoKHR<'a> {
     unsafe {
       VkBindImageMemoryInfoKHR {
         sType: VkStructureType::BIND_IMAGE_MEMORY_INFO_KHR,
@@ -20903,14 +21043,6 @@ impl VkBindImageMemoryInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn image(&self) -> VkImage {
     self.image
   }
@@ -20922,15 +21054,23 @@ impl VkBindImageMemoryInfoKHR {
   pub fn memory_offset(&self) -> VkDeviceSize {
     self.memoryOffset
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-impl Default for VkBindImageMemoryInfoKHR {
-  fn default() -> VkBindImageMemoryInfoKHR {
+impl<'a> Default for VkBindImageMemoryInfoKHR<'a> {
+  fn default() -> VkBindImageMemoryInfoKHR<'a> {
     VkBindImageMemoryInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-unsafe impl RawStruct for VkBindImageMemoryInfoKHR {
+unsafe impl<'a> RawStruct for VkBindImageMemoryInfoKHR<'a> {
   type Raw = types_raw::VkBindImageMemoryInfoKHR;
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
@@ -20947,11 +21087,10 @@ fn test_struct_size_vk_bind_image_memory_info_khr() {
 
 /// Structure specifying the parameters of the newly created conversion
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-pub struct VkSamplerYcbcrConversionCreateInfoKHR {
+pub struct VkSamplerYcbcrConversionCreateInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub format: VkFormat,
   pub ycbcrModel: VkSamplerYcbcrModelConversionKHR,
   pub ycbcrRange: VkSamplerYcbcrRangeKHR,
@@ -20960,11 +21099,12 @@ pub struct VkSamplerYcbcrConversionCreateInfoKHR {
   pub yChromaOffset: VkChromaLocationKHR,
   pub chromaFilter: VkFilter,
   pub forceExplicitReconstruction: VkBool32,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl VkSamplerYcbcrConversionCreateInfoKHR {
+impl<'a> VkSamplerYcbcrConversionCreateInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkSamplerYcbcrConversionCreateInfoKHR {
+  pub fn new() -> VkSamplerYcbcrConversionCreateInfoKHR<'a> {
     unsafe {
       VkSamplerYcbcrConversionCreateInfoKHR {
         sType: VkStructureType::SAMPLER_YCBCR_CONVERSION_CREATE_INFO_KHR,
@@ -21014,14 +21154,6 @@ impl VkSamplerYcbcrConversionCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn format(&self) -> VkFormat {
     self.format
   }
@@ -21034,8 +21166,8 @@ impl VkSamplerYcbcrConversionCreateInfoKHR {
     self.ycbcrRange
   }
   #[inline]
-  pub fn components(&self) -> VkComponentMapping {
-    self.components
+  pub fn components(&self) -> &VkComponentMapping {
+    &self.components
   }
   #[inline]
   pub fn x_chroma_offset(&self) -> VkChromaLocationKHR {
@@ -21053,15 +21185,23 @@ impl VkSamplerYcbcrConversionCreateInfoKHR {
   pub fn is_force_explicit_reconstruction(&self) -> bool {
     self.forceExplicitReconstruction != 0
   }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
+  }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl Default for VkSamplerYcbcrConversionCreateInfoKHR {
-  fn default() -> VkSamplerYcbcrConversionCreateInfoKHR {
+impl<'a> Default for VkSamplerYcbcrConversionCreateInfoKHR<'a> {
+  fn default() -> VkSamplerYcbcrConversionCreateInfoKHR<'a> {
     VkSamplerYcbcrConversionCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl RawStruct for VkSamplerYcbcrConversionCreateInfoKHR {
+unsafe impl<'a> RawStruct for VkSamplerYcbcrConversionCreateInfoKHR<'a> {
   type Raw = types_raw::VkSamplerYcbcrConversionCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -21083,17 +21223,17 @@ pub type VkSamplerYcbcrConversionKHR = VkNonDispatchableHandle<VkSamplerYcbcrCon
 
 /// Structure specifying Y\'CbCr conversion to a sampler or image view
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-pub struct VkSamplerYcbcrConversionInfoKHR {
+pub struct VkSamplerYcbcrConversionInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub conversion: VkSamplerYcbcrConversionKHR,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl VkSamplerYcbcrConversionInfoKHR {
+impl<'a> VkSamplerYcbcrConversionInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkSamplerYcbcrConversionInfoKHR {
+  pub fn new() -> VkSamplerYcbcrConversionInfoKHR<'a> {
     unsafe {
       VkSamplerYcbcrConversionInfoKHR {
         sType: VkStructureType::SAMPLER_YCBCR_CONVERSION_INFO_KHR,
@@ -21107,27 +21247,37 @@ impl VkSamplerYcbcrConversionInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn conversion(&self) -> VkSamplerYcbcrConversionKHR {
     self.conversion
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl Default for VkSamplerYcbcrConversionInfoKHR {
-  fn default() -> VkSamplerYcbcrConversionInfoKHR {
+impl<'a> Default for VkSamplerYcbcrConversionInfoKHR<'a> {
+  fn default() -> VkSamplerYcbcrConversionInfoKHR<'a> {
     VkSamplerYcbcrConversionInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl RawStruct for VkSamplerYcbcrConversionInfoKHR {
+unsafe impl<'a> RawStruct for VkSamplerYcbcrConversionInfoKHR<'a> {
   type Raw = types_raw::VkSamplerYcbcrConversionInfoKHR;
+}
+#[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkSamplerCreateInfo<'b>> for VkSamplerYcbcrConversionInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkSamplerYcbcrConversionInfoKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkImageViewCreateInfo<'b>> for VkSamplerYcbcrConversionInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkSamplerYcbcrConversionInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 #[cfg(test)]
@@ -21141,17 +21291,17 @@ fn test_struct_size_vk_sampler_ycbcr_conversion_info_khr() {
 
 /// Structure specifying how to bind an image plane to memory
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-pub struct VkBindImagePlaneMemoryInfoKHR {
+pub struct VkBindImagePlaneMemoryInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub planeAspect: VkImageAspectFlagBits,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl VkBindImagePlaneMemoryInfoKHR {
+impl<'a> VkBindImagePlaneMemoryInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkBindImagePlaneMemoryInfoKHR {
+  pub fn new() -> VkBindImagePlaneMemoryInfoKHR<'a> {
     unsafe {
       VkBindImagePlaneMemoryInfoKHR {
         sType: VkStructureType::BIND_IMAGE_PLANE_MEMORY_INFO_KHR,
@@ -21165,27 +21315,28 @@ impl VkBindImagePlaneMemoryInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn plane_aspect(&self) -> VkImageAspectFlagBits {
     self.planeAspect
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl Default for VkBindImagePlaneMemoryInfoKHR {
-  fn default() -> VkBindImagePlaneMemoryInfoKHR {
+impl<'a> Default for VkBindImagePlaneMemoryInfoKHR<'a> {
+  fn default() -> VkBindImagePlaneMemoryInfoKHR<'a> {
     VkBindImagePlaneMemoryInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl RawStruct for VkBindImagePlaneMemoryInfoKHR {
+unsafe impl<'a> RawStruct for VkBindImagePlaneMemoryInfoKHR<'a> {
   type Raw = types_raw::VkBindImagePlaneMemoryInfoKHR;
+}
+#[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkBindImageMemoryInfoKHR<'b>> for VkBindImagePlaneMemoryInfoKHR<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkBindImagePlaneMemoryInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 #[cfg(test)]
@@ -21199,17 +21350,17 @@ fn test_struct_size_vk_bind_image_plane_memory_info_khr() {
 
 /// Structure specifying image plane for memory requirements
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-pub struct VkImagePlaneMemoryRequirementsInfoKHR {
+pub struct VkImagePlaneMemoryRequirementsInfoKHR<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub planeAspect: VkImageAspectFlagBits,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl VkImagePlaneMemoryRequirementsInfoKHR {
+impl<'a> VkImagePlaneMemoryRequirementsInfoKHR<'a> {
   #[inline]
-  pub fn new() -> VkImagePlaneMemoryRequirementsInfoKHR {
+  pub fn new() -> VkImagePlaneMemoryRequirementsInfoKHR<'a> {
     unsafe {
       VkImagePlaneMemoryRequirementsInfoKHR {
         sType: VkStructureType::IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO_KHR,
@@ -21223,27 +21374,30 @@ impl VkImagePlaneMemoryRequirementsInfoKHR {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn plane_aspect(&self) -> VkImageAspectFlagBits {
     self.planeAspect
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl Default for VkImagePlaneMemoryRequirementsInfoKHR {
-  fn default() -> VkImagePlaneMemoryRequirementsInfoKHR {
+impl<'a> Default for VkImagePlaneMemoryRequirementsInfoKHR<'a> {
+  fn default() -> VkImagePlaneMemoryRequirementsInfoKHR<'a> {
     VkImagePlaneMemoryRequirementsInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl RawStruct for VkImagePlaneMemoryRequirementsInfoKHR {
+unsafe impl<'a> RawStruct for VkImagePlaneMemoryRequirementsInfoKHR<'a> {
   type Raw = types_raw::VkImagePlaneMemoryRequirementsInfoKHR;
+}
+#[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkImageMemoryRequirementsInfo2KHR<'b>>
+  for VkImagePlaneMemoryRequirementsInfoKHR<'a>
+{
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkImagePlaneMemoryRequirementsInfoKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 #[cfg(test)]
@@ -21277,14 +21431,15 @@ impl VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
     }
   }
   #[inline]
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
+    self
+  }
+  #[inline]
   pub fn set_sampler_ycbcr_conversion(mut self, value: bool) -> Self {
     let value: VkBool32 = if value { 1 } else { 0 };
     self.samplerYcbcrConversion = value;
     self
-  }
-  #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -21304,6 +21459,24 @@ impl Default for VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 unsafe impl RawStruct for VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
   type Raw = types_raw::VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR;
+}
+#[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
+unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR as *const c_void
+  }
+}
+#[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
+unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 #[cfg(test)]
@@ -21328,10 +21501,6 @@ pub struct VkSamplerYcbcrConversionImageFormatPropertiesKHR {
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 impl VkSamplerYcbcrConversionImageFormatPropertiesKHR {
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
   }
@@ -21343,6 +21512,15 @@ impl VkSamplerYcbcrConversionImageFormatPropertiesKHR {
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 unsafe impl RawStruct for VkSamplerYcbcrConversionImageFormatPropertiesKHR {
   type Raw = types_raw::VkSamplerYcbcrConversionImageFormatPropertiesKHR;
+}
+#[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
+unsafe impl StructExtends<VkImageFormatProperties2KHR> for VkSamplerYcbcrConversionImageFormatPropertiesKHR {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkSamplerYcbcrConversionImageFormatPropertiesKHR as *const c_void
+  }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 #[cfg(test)]
@@ -21366,11 +21544,10 @@ pub type VkValidationCacheEXT = VkNonDispatchableHandle<VkValidationCacheEXT__>;
 
 /// Structure specifying parameters of a newly created validation cache
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_validation_cache")]
 pub struct VkValidationCacheCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub flags: VkValidationCacheCreateFlagsEXT,
   initialDataSize: usize,
   pInitialData: *const c_void,
@@ -21401,20 +21578,20 @@ impl<'a> VkValidationCacheCreateInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn flags(&self) -> VkValidationCacheCreateFlagsEXT {
     self.flags
   }
   #[inline]
   pub fn initial_data_size(&self) -> usize {
     self.initialDataSize
+  }
+  #[inline]
+  pub fn extend<E>(self, e: &E) -> Self
+  where
+    E: StructExtends<Self> + Sized,
+  {
+    unsafe { self.pNext.set(e.extend(self.pNext.get())) };
+    self
   }
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
@@ -21439,17 +21616,17 @@ fn test_struct_size_vk_validation_cache_create_info_ext() {
 
 /// Specify validation cache to use during shader module creation
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_validation_cache")]
-pub struct VkShaderModuleValidationCacheCreateInfoEXT {
+pub struct VkShaderModuleValidationCacheCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub validationCache: VkValidationCacheEXT,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-impl VkShaderModuleValidationCacheCreateInfoEXT {
+impl<'a> VkShaderModuleValidationCacheCreateInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkShaderModuleValidationCacheCreateInfoEXT {
+  pub fn new() -> VkShaderModuleValidationCacheCreateInfoEXT<'a> {
     unsafe {
       VkShaderModuleValidationCacheCreateInfoEXT {
         sType: VkStructureType::SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT,
@@ -21463,27 +21640,28 @@ impl VkShaderModuleValidationCacheCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn validation_cache(&self) -> VkValidationCacheEXT {
     self.validationCache
   }
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-impl Default for VkShaderModuleValidationCacheCreateInfoEXT {
-  fn default() -> VkShaderModuleValidationCacheCreateInfoEXT {
+impl<'a> Default for VkShaderModuleValidationCacheCreateInfoEXT<'a> {
+  fn default() -> VkShaderModuleValidationCacheCreateInfoEXT<'a> {
     VkShaderModuleValidationCacheCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-unsafe impl RawStruct for VkShaderModuleValidationCacheCreateInfoEXT {
+unsafe impl<'a> RawStruct for VkShaderModuleValidationCacheCreateInfoEXT<'a> {
   type Raw = types_raw::VkShaderModuleValidationCacheCreateInfoEXT;
+}
+#[cfg(feature = "VK_EXT_validation_cache")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkShaderModuleCreateInfo<'b>> for VkShaderModuleValidationCacheCreateInfoEXT<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkShaderModuleValidationCacheCreateInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
 #[cfg(test)]
@@ -21499,17 +21677,17 @@ fn test_struct_size_vk_shader_module_validation_cache_create_info_ext() {
 
 /// Specify a system wide priority
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_global_priority")]
-pub struct VkDeviceQueueGlobalPriorityCreateInfoEXT {
+pub struct VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub globalPriority: VkQueueGlobalPriorityEXT,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_global_priority")]
-impl VkDeviceQueueGlobalPriorityCreateInfoEXT {
+impl<'a> VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkDeviceQueueGlobalPriorityCreateInfoEXT {
+  pub fn new() -> VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
     unsafe {
       VkDeviceQueueGlobalPriorityCreateInfoEXT {
         sType: VkStructureType::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
@@ -21523,27 +21701,28 @@ impl VkDeviceQueueGlobalPriorityCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
-  }
-  #[inline]
   pub fn global_priority(&self) -> VkQueueGlobalPriorityEXT {
     self.globalPriority
   }
 }
 #[cfg(feature = "VK_EXT_global_priority")]
-impl Default for VkDeviceQueueGlobalPriorityCreateInfoEXT {
-  fn default() -> VkDeviceQueueGlobalPriorityCreateInfoEXT {
+impl<'a> Default for VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
+  fn default() -> VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
     VkDeviceQueueGlobalPriorityCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_global_priority")]
-unsafe impl RawStruct for VkDeviceQueueGlobalPriorityCreateInfoEXT {
+unsafe impl<'a> RawStruct for VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
   type Raw = types_raw::VkDeviceQueueGlobalPriorityCreateInfoEXT;
+}
+#[cfg(feature = "VK_EXT_global_priority")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkDeviceQueueCreateInfo<'b>> for VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkDeviceQueueGlobalPriorityCreateInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_global_priority")]
 #[cfg(test)]
@@ -21559,18 +21738,18 @@ fn test_struct_size_vk_device_queue_global_priority_create_info_ext() {
 
 /// import memory from a host pointer
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_EXT_external_memory_host")]
-pub struct VkImportMemoryHostPointerInfoEXT {
+pub struct VkImportMemoryHostPointerInfoEXT<'a> {
   sType: VkStructureType,
-  pNext: *const c_void,
+  pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
   pHostPointer: *mut c_void,
+  _p: ::std::marker::PhantomData<&'a u8>,
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
-impl VkImportMemoryHostPointerInfoEXT {
+impl<'a> VkImportMemoryHostPointerInfoEXT<'a> {
   #[inline]
-  pub fn new() -> VkImportMemoryHostPointerInfoEXT {
+  pub fn new() -> VkImportMemoryHostPointerInfoEXT<'a> {
     unsafe {
       VkImportMemoryHostPointerInfoEXT {
         sType: VkStructureType::IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
@@ -21584,12 +21763,9 @@ impl VkImportMemoryHostPointerInfoEXT {
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
-  }
-  #[inline]
-  pub fn next(&self) -> *const c_void {
-    self.pNext
+  pub fn set_host_pointer(mut self, value: *mut c_void) -> Self {
+    self.pHostPointer = value;
+    self
   }
   #[inline]
   pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
@@ -21601,14 +21777,23 @@ impl VkImportMemoryHostPointerInfoEXT {
   }
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
-impl Default for VkImportMemoryHostPointerInfoEXT {
-  fn default() -> VkImportMemoryHostPointerInfoEXT {
+impl<'a> Default for VkImportMemoryHostPointerInfoEXT<'a> {
+  fn default() -> VkImportMemoryHostPointerInfoEXT<'a> {
     VkImportMemoryHostPointerInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
-unsafe impl RawStruct for VkImportMemoryHostPointerInfoEXT {
+unsafe impl<'a> RawStruct for VkImportMemoryHostPointerInfoEXT<'a> {
   type Raw = types_raw::VkImportMemoryHostPointerInfoEXT;
+}
+#[cfg(feature = "VK_EXT_external_memory_host")]
+unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkImportMemoryHostPointerInfoEXT<'a> {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkImportMemoryHostPointerInfoEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
 #[cfg(test)]
@@ -21641,13 +21826,14 @@ impl VkMemoryHostPointerPropertiesEXT {
     }
   }
   #[inline]
-  pub fn set_memory_type_bits(mut self, value: u32) -> Self {
-    self.memoryTypeBits = value;
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
+  pub fn set_memory_type_bits(mut self, value: u32) -> Self {
+    self.memoryTypeBits = value;
+    self
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -21700,13 +21886,14 @@ impl VkPhysicalDeviceExternalMemoryHostPropertiesEXT {
     }
   }
   #[inline]
-  pub fn set_min_imported_host_pointer_alignment(mut self, value: VkDeviceSize) -> Self {
-    self.minImportedHostPointerAlignment = value;
+  pub fn set_next(mut self, value: *mut c_void) -> Self {
+    self.pNext = value;
     self
   }
   #[inline]
-  pub fn s_type(&self) -> VkStructureType {
-    self.sType
+  pub fn set_min_imported_host_pointer_alignment(mut self, value: VkDeviceSize) -> Self {
+    self.minImportedHostPointerAlignment = value;
+    self
   }
   #[inline]
   pub fn next(&self) -> *mut c_void {
@@ -21726,6 +21913,15 @@ impl Default for VkPhysicalDeviceExternalMemoryHostPropertiesEXT {
 #[cfg(feature = "VK_EXT_external_memory_host")]
 unsafe impl RawStruct for VkPhysicalDeviceExternalMemoryHostPropertiesEXT {
   type Raw = types_raw::VkPhysicalDeviceExternalMemoryHostPropertiesEXT;
+}
+#[cfg(feature = "VK_EXT_external_memory_host")]
+unsafe impl StructExtends<VkPhysicalDeviceProperties2KHR> for VkPhysicalDeviceExternalMemoryHostPropertiesEXT {
+  #[inline]
+  unsafe fn extend(&self, next: *const c_void) -> *const c_void {
+    assert!(self.pNext.get().is_null());
+    self.pNext.set(next);
+    self as *const VkPhysicalDeviceExternalMemoryHostPropertiesEXT as *const c_void
+  }
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
 #[cfg(test)]

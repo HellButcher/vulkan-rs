@@ -378,6 +378,8 @@ TypeRef.VOID = NamedTypeRef("void")
 TypeRef.CHAR = NamedTypeRef("char")
 TypeRef.RESULT = NamedTypeRef("VkResult")
 TypeRef.BOOL = NamedTypeRef("VkBool32")
+TypeRef.VOID_PTR = PointerTypeRef(ConstTypeRef(TypeRef.VOID))
+TypeRef.STRING = PointerTypeRef(ConstTypeRef(TypeRef.CHAR))
 
 class Typed:
     def __init__(self, ty):
@@ -530,6 +532,7 @@ class StructType(BaseTypeElem,Composed):
     def __init__(self, registry, elem):
         BaseTypeElem.__init__(self, registry, elem.get(_NAME_), elem)
         Composed.__init__(self, elem.findall('member'))
+        self.structextends = _split_attrib(elem.get('structextends'))
 
 class UnionType(BaseTypeElem,Composed):
     _CATEGORY_ = 'union'

@@ -141,6 +141,11 @@ trait AsRaw {
   unsafe fn as_raw(self) -> Self::Output;
 }
 
+pub unsafe trait StructExtends<T> {
+  #[doc(hidden)]
+  unsafe fn extend(&self, next: *const ::std::os::raw::c_void) -> *const ::std::os::raw::c_void;
+}
+
 unsafe trait Primitive {}
 
 trait Zero {
