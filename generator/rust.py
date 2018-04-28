@@ -223,6 +223,21 @@ class RustGenerator:
         return name
     rust_param_name = rust_member_name
 
+    def rust_member_function(self, member, keyword_prefix='_'):
+        if isinstance(member, str):
+            name = member
+        else:
+            name = member.name
+        name = camel_to_snake_case(name)
+        if name.startswith('pp_'):
+            name = name[3:]
+        elif name.startswith('p_'):
+            name = name[2:]
+        if name in RESERVED_KEYWORDS:
+            name = keyword_prefix + name
+        return name
+    rust_param_name = rust_member_name
+
     def rust_type(self, ty, **kwargs):
         if isinstance(ty, Member):
             ty = ty.type
@@ -582,11 +597,6 @@ class RustGenerator:
         is_with_lifetime = False
         for member in ty.members:
             name = self.rust_member_name(member)
-            fname = camel_to_snake_case(member.name)
-            if fname.startswith('pp_'):
-                fname = fname[3:]
-            elif fname.startswith('p_'):
-                fname = fname[2:]
             (typename, as_raw_conv, do_cast, no_ref) = self.rust_safe_type_details(member, lifetime='a')
             raw_typename = self.rust_type(member, raw_prefix='types_raw::')
             uses_lifetime = False
@@ -596,7 +606,6 @@ class RustGenerator:
             members.append({
                 'obj': member,
                 'name': name,
-                'fname': fname,
                 'typename': typename,
                 'raw_typename': raw_typename,
                 'as_raw_conv': as_raw_conv, 
@@ -608,7 +617,6 @@ class RustGenerator:
         gen('#[repr(C)]').nl()
         gen('#[derive(Copy,Clone)]').nl()
         self._generate_feature_protect(ty.requiering_feature, gen)
-        #gen('pub struct ', ty.name, ' (types_raw::', ty.name ,');').nl()
         lifetime = is_with_lifetime and '<\'a>' or ''
         gen('pub struct ', ty.name, lifetime, ' {').nl()
         uses_lifetime = False
@@ -628,75 +636,76 @@ class RustGenerator:
         self._generate_feature_protect(ty.requiering_feature, gen)
         gen('impl', lifetime, ' ', ty.name, lifetime, ' {').nl()
         with gen.open_indention():
-            gen('#[inline]').nl()
-            gen('pub fn new() -> ', ty.name, lifetime ,' {').nl()
-            with gen.open_indention():
-                gen('unsafe {').nl()
-                with gen.open_indention():
-                    default_values = []
-                    for m in members:
-                        if m['obj'].values:
-                            default_values.append((m['name'], m['obj'].values))
-                    if default_values:
-                        gen(ty.name, ' {').nl()
-                        with gen.open_indention():
-                            for name, value in default_values:
-                                value, _ = self.rust_value(value)
-                                gen(name, ': ', value, ', ').nl()
-                            gen('..::std::mem::zeroed()').nl()
-                        gen('}').nl()
-                    else:
-                        gen('::std::mem::zeroed()').nl()
-                gen('}').nl()
-            gen('}').nl()
-            for mem in members:
-                m = mem['obj']
-                if m.len_for or m.values:
-                    continue
-                if not self.is_public(m):
-                    if  mem['typename'].startswith('*'): # TODO
-                        if m.name != 'pNext':
-                            print('unable to handle setter for %s::%s (1)' % (ty.name, m.name))
-                        continue
-                    if m.type.__class__ == TypeRef.POINTER and m.type.arg.__class__ == TypeRef.CONST:
-                        arg = m.type.arg.arg
-                        if arg.__class__ == TypeRef.POINTER and arg.arg.__class__ == TypeRef.CONST and arg.arg.arg == TypeRef.CHAR: #TODO
-                            print('unable to handle setter for %s::%s (2)' % (ty.name, m.name))
-                            continue
-                    if m.len and m.len != 'null-terminated':
-                        if m.len not in ty.members: #TODO
-                            print('unable to handle setter for %s::%s (3)' % (ty.name, m.name))
-                            continue
-                        if len(ty.members[m.len].len_for) != 1: #TODO
-                            print('unable to handle setter for %s::%s (4)' % (ty.name, m.name))
-                            continue
+            if not ty.returnedonly:
                 gen('#[inline]').nl()
-                valuetype = mem['typename']
-                if valuetype == 'VkBool32':
-                    valuetype = 'bool'
-                gen('pub fn set_', mem['fname'], '(mut self, value: ', valuetype, ') -> Self {').nl()
+                gen('pub fn new() -> ', ty.name, lifetime ,' {').nl()
                 with gen.open_indention():
-                    if valuetype == 'bool':
-                        gen('let value : VkBool32 = if value { 1 } else { 0 };')
-                    if m.len and m.len != 'null-terminated':
-                        len_param = ty.members[m.len]
-                        gen('self. ', self.rust_param_name(len_param), ' = value.len() as ', self.rust_type(len_param), ';').nl()
-                    if self.is_public(m):
-                        gen('self.', mem['name'], ' = value;').nl()
-                    else:
-                        as_raw_call = self.rust_param_as_raw(m, declname='value')
-                        unsafe = False
-                        if 'as_raw' in  as_raw_call:
-                            unsafe = True
-                        if unsafe:
-                            gen('unsafe {').nl().i()
-                        with gen.open_indention():
-                            gen('self.', mem['name'], ' = ', as_raw_call, ';').nl()
-                        if unsafe:
-                            gen.o()
+                    gen('unsafe {').nl()
+                    with gen.open_indention():
+                        default_values = []
+                        for m in members:
+                            if m['obj'].values:
+                                default_values.append((m['name'], m['obj'].values))
+                        if default_values:
+                            gen(ty.name, ' {').nl()
+                            with gen.open_indention():
+                                for name, value in default_values:
+                                    value, _ = self.rust_value(value)
+                                    gen(name, ': ', value, ', ').nl()
+                                gen('..::std::mem::zeroed()').nl()
                             gen('}').nl()
-                    gen('self').nl()
+                        else:
+                            gen('::std::mem::zeroed()').nl()
+                    gen('}').nl()
                 gen('}').nl()
+                for mem in members:
+                    m = mem['obj']
+                    if m.len_for or m.values:
+                        continue
+                    if not self.is_public(m):
+                        if  mem['typename'].startswith('*'): # TODO
+                            if m.name != 'pNext':
+                                print('unable to handle setter for %s::%s (1)' % (ty.name, m.name))
+                            continue
+                        if m.type.__class__ == TypeRef.POINTER and m.type.arg.__class__ == TypeRef.CONST:
+                            arg = m.type.arg.arg
+                            if arg.__class__ == TypeRef.POINTER and arg.arg.__class__ == TypeRef.CONST and arg.arg.arg == TypeRef.CHAR: #TODO
+                                print('unable to handle setter for %s::%s (2)' % (ty.name, m.name))
+                                continue
+                        if m.len and m.len != 'null-terminated':
+                            if m.len not in ty.members: #TODO
+                                print('unable to handle setter for %s::%s (3)' % (ty.name, m.name))
+                                continue
+                            if len(ty.members[m.len].len_for) != 1: #TODO
+                                print('unable to handle setter for %s::%s (4)' % (ty.name, m.name))
+                                continue
+                    gen('#[inline]').nl()
+                    valuetype = mem['typename']
+                    if valuetype == 'VkBool32':
+                        valuetype = 'bool'
+                    gen('pub fn set_', self.rust_member_function(m, ''), '(mut self, value: ', valuetype, ') -> Self {').nl()
+                    with gen.open_indention():
+                        if valuetype == 'bool':
+                            gen('let value : VkBool32 = if value { 1 } else { 0 };')
+                        if m.len and m.len != 'null-terminated':
+                            len_param = ty.members[m.len]
+                            gen('self. ', self.rust_param_name(len_param), ' = value.len() as ', self.rust_type(len_param), ';').nl()
+                        if self.is_public(m):
+                            gen('self.', mem['name'], ' = value;').nl()
+                        else:
+                            as_raw_call = self.rust_param_as_raw(m, declname='value')
+                            unsafe = False
+                            if 'as_raw' in  as_raw_call:
+                                unsafe = True
+                            if unsafe:
+                                gen('unsafe {').nl().i()
+                            with gen.open_indention():
+                                gen('self.', mem['name'], ' = ', as_raw_call, ';').nl()
+                            if unsafe:
+                                gen.o()
+                                gen('}').nl()
+                        gen('self').nl()
+                    gen('}').nl()
             for mem in members:
                 m = mem['obj']
                 rettype = mem['typename']
@@ -710,12 +719,12 @@ class RustGenerator:
                 #    continue # TODO
                 gen('#[inline]').nl()
                 if rettype == 'bool':
-                    gen('pub fn is_', mem['fname'], '(&self) -> bool {').nl()
+                    gen('pub fn is_', self.rust_member_function(m, ''), '(&self) -> bool {').nl()
                     with gen.open_indention():
                         gen('self.', mem['name'], ' != 0').nl()
                     gen('}').nl()
                 else:
-                    gen('pub fn get_', mem['fname'], '(&self) -> ', rettype,' {').nl()
+                    gen('pub fn ', self.rust_member_function(m, 'get_'), '(&self) -> ', rettype,' {').nl()
                     with gen.open_indention():
                         if m.len == 'null-terminated':
                             gen('unsafe { ::std::ffi::CStr::from_ptr(self.', mem['name'],') }').nl()
@@ -730,11 +739,12 @@ class RustGenerator:
                     gen('}').nl()
 
         gen('}').nl()
-        self._generate_feature_protect(ty.requiering_feature, gen)
-        gen('impl', lifetime, ' Default for ', ty.name, lifetime, ' {').nl()
-        with gen.open_indention():
-            gen('fn default() -> ', ty.name, lifetime,' { ', ty.name, '::new() }').nl()
-        gen('}').nl()
+        if not ty.returnedonly:
+            self._generate_feature_protect(ty.requiering_feature, gen)
+            gen('impl', lifetime, ' Default for ', ty.name, lifetime, ' {').nl()
+            with gen.open_indention():
+                gen('fn default() -> ', ty.name, lifetime,' { ', ty.name, '::new() }').nl()
+            gen('}').nl()
         self._generate_feature_protect(ty.requiering_feature, gen)
         gen('unsafe impl', lifetime, ' RawStruct for ', ty.name, lifetime, ' {').nl()
         with gen.open_indention():
@@ -1092,7 +1102,7 @@ class RustGenerator:
                             gen('Vec::new();').nl()
                         else:
                             out_len_elems = out_param.len.split('::')
-                            out_len_expr = self.rust_param_name(out_len_elems[0]) + ''.join(['.get_%s()' % camel_to_snake_case(p) for p in out_len_elems[1:]])
+                            out_len_expr = self.rust_param_name(out_len_elems[0]) + ''.join(['.%s()' % self.rust_member_function(p) for p in out_len_elems[1:]])
                             gen('Vec::with_capacity(', out_len_expr,' as usize);').nl()
                     else:
                         gen('::std::mem::zeroed();').nl()

@@ -79,39 +79,39 @@ impl VkBufferMemoryBarrier {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_src_access_mask(&self) -> VkAccessFlags {
+  pub fn src_access_mask(&self) -> VkAccessFlags {
     self.srcAccessMask
   }
   #[inline]
-  pub fn get_dst_access_mask(&self) -> VkAccessFlags {
+  pub fn dst_access_mask(&self) -> VkAccessFlags {
     self.dstAccessMask
   }
   #[inline]
-  pub fn get_src_queue_family_index(&self) -> u32 {
+  pub fn src_queue_family_index(&self) -> u32 {
     self.srcQueueFamilyIndex
   }
   #[inline]
-  pub fn get_dst_queue_family_index(&self) -> u32 {
+  pub fn dst_queue_family_index(&self) -> u32 {
     self.dstQueueFamilyIndex
   }
   #[inline]
-  pub fn get_buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
   #[inline]
-  pub fn get_offset(&self) -> VkDeviceSize {
+  pub fn offset(&self) -> VkDeviceSize {
     self.offset
   }
   #[inline]
-  pub fn get_size(&self) -> VkDeviceSize {
+  pub fn size(&self) -> VkDeviceSize {
     self.size
   }
 }
@@ -158,15 +158,15 @@ impl VkDispatchIndirectCommand {
     self
   }
   #[inline]
-  pub fn get_x(&self) -> u32 {
+  pub fn x(&self) -> u32 {
     self.x
   }
   #[inline]
-  pub fn get_y(&self) -> u32 {
+  pub fn y(&self) -> u32 {
     self.y
   }
   #[inline]
-  pub fn get_z(&self) -> u32 {
+  pub fn z(&self) -> u32 {
     self.z
   }
 }
@@ -228,23 +228,23 @@ impl VkDrawIndexedIndirectCommand {
     self
   }
   #[inline]
-  pub fn get_index_count(&self) -> u32 {
+  pub fn index_count(&self) -> u32 {
     self.indexCount
   }
   #[inline]
-  pub fn get_instance_count(&self) -> u32 {
+  pub fn instance_count(&self) -> u32 {
     self.instanceCount
   }
   #[inline]
-  pub fn get_first_index(&self) -> u32 {
+  pub fn first_index(&self) -> u32 {
     self.firstIndex
   }
   #[inline]
-  pub fn get_vertex_offset(&self) -> i32 {
+  pub fn vertex_offset(&self) -> i32 {
     self.vertexOffset
   }
   #[inline]
-  pub fn get_first_instance(&self) -> u32 {
+  pub fn first_instance(&self) -> u32 {
     self.firstInstance
   }
 }
@@ -300,19 +300,19 @@ impl VkDrawIndirectCommand {
     self
   }
   #[inline]
-  pub fn get_vertex_count(&self) -> u32 {
+  pub fn vertex_count(&self) -> u32 {
     self.vertexCount
   }
   #[inline]
-  pub fn get_instance_count(&self) -> u32 {
+  pub fn instance_count(&self) -> u32 {
     self.instanceCount
   }
   #[inline]
-  pub fn get_first_vertex(&self) -> u32 {
+  pub fn first_vertex(&self) -> u32 {
     self.firstVertex
   }
   #[inline]
-  pub fn get_first_instance(&self) -> u32 {
+  pub fn first_instance(&self) -> u32 {
     self.firstInstance
   }
 }
@@ -377,23 +377,23 @@ impl VkImageSubresourceRange {
     self
   }
   #[inline]
-  pub fn get_aspect_mask(&self) -> VkImageAspectFlags {
+  pub fn aspect_mask(&self) -> VkImageAspectFlags {
     self.aspectMask
   }
   #[inline]
-  pub fn get_base_mip_level(&self) -> u32 {
+  pub fn base_mip_level(&self) -> u32 {
     self.baseMipLevel
   }
   #[inline]
-  pub fn get_level_count(&self) -> u32 {
+  pub fn level_count(&self) -> u32 {
     self.levelCount
   }
   #[inline]
-  pub fn get_base_array_layer(&self) -> u32 {
+  pub fn base_array_layer(&self) -> u32 {
     self.baseArrayLayer
   }
   #[inline]
-  pub fn get_layer_count(&self) -> u32 {
+  pub fn layer_count(&self) -> u32 {
     self.layerCount
   }
 }
@@ -477,43 +477,43 @@ impl VkImageMemoryBarrier {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_src_access_mask(&self) -> VkAccessFlags {
+  pub fn src_access_mask(&self) -> VkAccessFlags {
     self.srcAccessMask
   }
   #[inline]
-  pub fn get_dst_access_mask(&self) -> VkAccessFlags {
+  pub fn dst_access_mask(&self) -> VkAccessFlags {
     self.dstAccessMask
   }
   #[inline]
-  pub fn get_old_layout(&self) -> VkImageLayout {
+  pub fn old_layout(&self) -> VkImageLayout {
     self.oldLayout
   }
   #[inline]
-  pub fn get_new_layout(&self) -> VkImageLayout {
+  pub fn new_layout(&self) -> VkImageLayout {
     self.newLayout
   }
   #[inline]
-  pub fn get_src_queue_family_index(&self) -> u32 {
+  pub fn src_queue_family_index(&self) -> u32 {
     self.srcQueueFamilyIndex
   }
   #[inline]
-  pub fn get_dst_queue_family_index(&self) -> u32 {
+  pub fn dst_queue_family_index(&self) -> u32 {
     self.dstQueueFamilyIndex
   }
   #[inline]
-  pub fn get_image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage {
     self.image
   }
   #[inline]
-  pub fn get_subresource_range(&self) -> VkImageSubresourceRange {
+  pub fn subresource_range(&self) -> VkImageSubresourceRange {
     self.subresourceRange
   }
 }
@@ -561,19 +561,19 @@ impl VkMemoryBarrier {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_src_access_mask(&self) -> VkAccessFlags {
+  pub fn src_access_mask(&self) -> VkAccessFlags {
     self.srcAccessMask
   }
   #[inline]
-  pub fn get_dst_access_mask(&self) -> VkAccessFlags {
+  pub fn dst_access_mask(&self) -> VkAccessFlags {
     self.dstAccessMask
   }
 }
@@ -644,31 +644,31 @@ impl<'a> VkApplicationInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_application_name(&self) -> &'a CStr {
+  pub fn application_name(&self) -> &'a CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pApplicationName) }
   }
   #[inline]
-  pub fn get_application_version(&self) -> u32 {
+  pub fn application_version(&self) -> u32 {
     self.applicationVersion
   }
   #[inline]
-  pub fn get_engine_name(&self) -> &'a CStr {
+  pub fn engine_name(&self) -> &'a CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pEngineName) }
   }
   #[inline]
-  pub fn get_engine_version(&self) -> u32 {
+  pub fn engine_version(&self) -> u32 {
     self.engineVersion
   }
   #[inline]
-  pub fn get_api_version(&self) -> u32 {
+  pub fn api_version(&self) -> u32 {
     self.apiVersion
   }
 }
@@ -720,27 +720,27 @@ impl<'a> VkInstanceCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkInstanceCreateFlags {
+  pub fn flags(&self) -> VkInstanceCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_application_info(&self) -> Option<&'a VkApplicationInfo<'a>> {
+  pub fn application_info(&self) -> Option<&'a VkApplicationInfo<'a>> {
     self.pApplicationInfo
   }
   #[inline]
-  pub fn get_enabled_layer_count(&self) -> u32 {
+  pub fn enabled_layer_count(&self) -> u32 {
     self.enabledLayerCount
   }
   #[inline]
-  pub fn get_enabled_extension_count(&self) -> u32 {
+  pub fn enabled_extension_count(&self) -> u32 {
     self.enabledExtensionCount
   }
 }
@@ -815,27 +815,27 @@ impl VkAllocationCallbacks {
     self
   }
   #[inline]
-  pub fn get_user_data(&self) -> *mut c_void {
+  pub fn user_data(&self) -> *mut c_void {
     self.pUserData
   }
   #[inline]
-  pub fn get_pfn_allocation(&self) -> PFN_vkAllocationFunction {
+  pub fn pfn_allocation(&self) -> PFN_vkAllocationFunction {
     self.pfnAllocation
   }
   #[inline]
-  pub fn get_pfn_reallocation(&self) -> PFN_vkReallocationFunction {
+  pub fn pfn_reallocation(&self) -> PFN_vkReallocationFunction {
     self.pfnReallocation
   }
   #[inline]
-  pub fn get_pfn_free(&self) -> PFN_vkFreeFunction {
+  pub fn pfn_free(&self) -> PFN_vkFreeFunction {
     self.pfnFree
   }
   #[inline]
-  pub fn get_pfn_internal_allocation(&self) -> Option<PFN_vkInternalAllocationNotification> {
+  pub fn pfn_internal_allocation(&self) -> Option<PFN_vkInternalAllocationNotification> {
     self.pfnInternalAllocation
   }
   #[inline]
-  pub fn get_pfn_internal_free(&self) -> Option<PFN_vkInternalFreeNotification> {
+  pub fn pfn_internal_free(&self) -> Option<PFN_vkInternalFreeNotification> {
     self.pfnInternalFree
   }
 }
@@ -1509,40 +1509,16 @@ pub struct VkFormatProperties {
 }
 impl VkFormatProperties {
   #[inline]
-  pub fn new() -> VkFormatProperties {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_linear_tiling_features(mut self, value: VkFormatFeatureFlags) -> Self {
-    self.linearTilingFeatures = value;
-    self
-  }
-  #[inline]
-  pub fn set_optimal_tiling_features(mut self, value: VkFormatFeatureFlags) -> Self {
-    self.optimalTilingFeatures = value;
-    self
-  }
-  #[inline]
-  pub fn set_buffer_features(mut self, value: VkFormatFeatureFlags) -> Self {
-    self.bufferFeatures = value;
-    self
-  }
-  #[inline]
-  pub fn get_linear_tiling_features(&self) -> VkFormatFeatureFlags {
+  pub fn linear_tiling_features(&self) -> VkFormatFeatureFlags {
     self.linearTilingFeatures
   }
   #[inline]
-  pub fn get_optimal_tiling_features(&self) -> VkFormatFeatureFlags {
+  pub fn optimal_tiling_features(&self) -> VkFormatFeatureFlags {
     self.optimalTilingFeatures
   }
   #[inline]
-  pub fn get_buffer_features(&self) -> VkFormatFeatureFlags {
+  pub fn buffer_features(&self) -> VkFormatFeatureFlags {
     self.bufferFeatures
-  }
-}
-impl Default for VkFormatProperties {
-  fn default() -> VkFormatProperties {
-    VkFormatProperties::new()
   }
 }
 unsafe impl RawStruct for VkFormatProperties {
@@ -1583,15 +1559,15 @@ impl VkExtent3D {
     self
   }
   #[inline]
-  pub fn get_width(&self) -> u32 {
+  pub fn width(&self) -> u32 {
     self.width
   }
   #[inline]
-  pub fn get_height(&self) -> u32 {
+  pub fn height(&self) -> u32 {
     self.height
   }
   #[inline]
-  pub fn get_depth(&self) -> u32 {
+  pub fn depth(&self) -> u32 {
     self.depth
   }
 }
@@ -1621,58 +1597,24 @@ pub struct VkImageFormatProperties {
 }
 impl VkImageFormatProperties {
   #[inline]
-  pub fn new() -> VkImageFormatProperties {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_max_extent(mut self, value: VkExtent3D) -> Self {
-    self.maxExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_mip_levels(mut self, value: u32) -> Self {
-    self.maxMipLevels = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_array_layers(mut self, value: u32) -> Self {
-    self.maxArrayLayers = value;
-    self
-  }
-  #[inline]
-  pub fn set_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.sampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_resource_size(mut self, value: VkDeviceSize) -> Self {
-    self.maxResourceSize = value;
-    self
-  }
-  #[inline]
-  pub fn get_max_extent(&self) -> VkExtent3D {
+  pub fn max_extent(&self) -> VkExtent3D {
     self.maxExtent
   }
   #[inline]
-  pub fn get_max_mip_levels(&self) -> u32 {
+  pub fn max_mip_levels(&self) -> u32 {
     self.maxMipLevels
   }
   #[inline]
-  pub fn get_max_array_layers(&self) -> u32 {
+  pub fn max_array_layers(&self) -> u32 {
     self.maxArrayLayers
   }
   #[inline]
-  pub fn get_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn sample_counts(&self) -> VkSampleCountFlags {
     self.sampleCounts
   }
   #[inline]
-  pub fn get_max_resource_size(&self) -> VkDeviceSize {
+  pub fn max_resource_size(&self) -> VkDeviceSize {
     self.maxResourceSize
-  }
-}
-impl Default for VkImageFormatProperties {
-  fn default() -> VkImageFormatProperties {
-    VkImageFormatProperties::new()
   }
 }
 unsafe impl RawStruct for VkImageFormatProperties {
@@ -1797,904 +1739,367 @@ pub struct VkPhysicalDeviceLimits {
 }
 impl VkPhysicalDeviceLimits {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceLimits {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_max_image_dimension1_d(mut self, value: u32) -> Self {
-    self.maxImageDimension1D = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_dimension2_d(mut self, value: u32) -> Self {
-    self.maxImageDimension2D = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_dimension3_d(mut self, value: u32) -> Self {
-    self.maxImageDimension3D = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_dimension_cube(mut self, value: u32) -> Self {
-    self.maxImageDimensionCube = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_array_layers(mut self, value: u32) -> Self {
-    self.maxImageArrayLayers = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_texel_buffer_elements(mut self, value: u32) -> Self {
-    self.maxTexelBufferElements = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_uniform_buffer_range(mut self, value: u32) -> Self {
-    self.maxUniformBufferRange = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_storage_buffer_range(mut self, value: u32) -> Self {
-    self.maxStorageBufferRange = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_push_constants_size(mut self, value: u32) -> Self {
-    self.maxPushConstantsSize = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_memory_allocation_count(mut self, value: u32) -> Self {
-    self.maxMemoryAllocationCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_sampler_allocation_count(mut self, value: u32) -> Self {
-    self.maxSamplerAllocationCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_buffer_image_granularity(mut self, value: VkDeviceSize) -> Self {
-    self.bufferImageGranularity = value;
-    self
-  }
-  #[inline]
-  pub fn set_sparse_address_space_size(mut self, value: VkDeviceSize) -> Self {
-    self.sparseAddressSpaceSize = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_bound_descriptor_sets(mut self, value: u32) -> Self {
-    self.maxBoundDescriptorSets = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_per_stage_descriptor_samplers(mut self, value: u32) -> Self {
-    self.maxPerStageDescriptorSamplers = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_per_stage_descriptor_uniform_buffers(mut self, value: u32) -> Self {
-    self.maxPerStageDescriptorUniformBuffers = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_per_stage_descriptor_storage_buffers(mut self, value: u32) -> Self {
-    self.maxPerStageDescriptorStorageBuffers = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_per_stage_descriptor_sampled_images(mut self, value: u32) -> Self {
-    self.maxPerStageDescriptorSampledImages = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_per_stage_descriptor_storage_images(mut self, value: u32) -> Self {
-    self.maxPerStageDescriptorStorageImages = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_per_stage_descriptor_input_attachments(mut self, value: u32) -> Self {
-    self.maxPerStageDescriptorInputAttachments = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_per_stage_resources(mut self, value: u32) -> Self {
-    self.maxPerStageResources = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_descriptor_set_samplers(mut self, value: u32) -> Self {
-    self.maxDescriptorSetSamplers = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_descriptor_set_uniform_buffers(mut self, value: u32) -> Self {
-    self.maxDescriptorSetUniformBuffers = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_descriptor_set_uniform_buffers_dynamic(mut self, value: u32) -> Self {
-    self.maxDescriptorSetUniformBuffersDynamic = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_descriptor_set_storage_buffers(mut self, value: u32) -> Self {
-    self.maxDescriptorSetStorageBuffers = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_descriptor_set_storage_buffers_dynamic(mut self, value: u32) -> Self {
-    self.maxDescriptorSetStorageBuffersDynamic = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_descriptor_set_sampled_images(mut self, value: u32) -> Self {
-    self.maxDescriptorSetSampledImages = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_descriptor_set_storage_images(mut self, value: u32) -> Self {
-    self.maxDescriptorSetStorageImages = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_descriptor_set_input_attachments(mut self, value: u32) -> Self {
-    self.maxDescriptorSetInputAttachments = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_vertex_input_attributes(mut self, value: u32) -> Self {
-    self.maxVertexInputAttributes = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_vertex_input_bindings(mut self, value: u32) -> Self {
-    self.maxVertexInputBindings = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_vertex_input_attribute_offset(mut self, value: u32) -> Self {
-    self.maxVertexInputAttributeOffset = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_vertex_input_binding_stride(mut self, value: u32) -> Self {
-    self.maxVertexInputBindingStride = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_vertex_output_components(mut self, value: u32) -> Self {
-    self.maxVertexOutputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_tessellation_generation_level(mut self, value: u32) -> Self {
-    self.maxTessellationGenerationLevel = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_tessellation_patch_size(mut self, value: u32) -> Self {
-    self.maxTessellationPatchSize = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_tessellation_control_per_vertex_input_components(mut self, value: u32) -> Self {
-    self.maxTessellationControlPerVertexInputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_tessellation_control_per_vertex_output_components(mut self, value: u32) -> Self {
-    self.maxTessellationControlPerVertexOutputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_tessellation_control_per_patch_output_components(mut self, value: u32) -> Self {
-    self.maxTessellationControlPerPatchOutputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_tessellation_control_total_output_components(mut self, value: u32) -> Self {
-    self.maxTessellationControlTotalOutputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_tessellation_evaluation_input_components(mut self, value: u32) -> Self {
-    self.maxTessellationEvaluationInputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_tessellation_evaluation_output_components(mut self, value: u32) -> Self {
-    self.maxTessellationEvaluationOutputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_geometry_shader_invocations(mut self, value: u32) -> Self {
-    self.maxGeometryShaderInvocations = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_geometry_input_components(mut self, value: u32) -> Self {
-    self.maxGeometryInputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_geometry_output_components(mut self, value: u32) -> Self {
-    self.maxGeometryOutputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_geometry_output_vertices(mut self, value: u32) -> Self {
-    self.maxGeometryOutputVertices = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_geometry_total_output_components(mut self, value: u32) -> Self {
-    self.maxGeometryTotalOutputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_fragment_input_components(mut self, value: u32) -> Self {
-    self.maxFragmentInputComponents = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_fragment_output_attachments(mut self, value: u32) -> Self {
-    self.maxFragmentOutputAttachments = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_fragment_dual_src_attachments(mut self, value: u32) -> Self {
-    self.maxFragmentDualSrcAttachments = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_fragment_combined_output_resources(mut self, value: u32) -> Self {
-    self.maxFragmentCombinedOutputResources = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_compute_shared_memory_size(mut self, value: u32) -> Self {
-    self.maxComputeSharedMemorySize = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_compute_work_group_count(mut self, value: [u32; 3]) -> Self {
-    self.maxComputeWorkGroupCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_compute_work_group_invocations(mut self, value: u32) -> Self {
-    self.maxComputeWorkGroupInvocations = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_compute_work_group_size(mut self, value: [u32; 3]) -> Self {
-    self.maxComputeWorkGroupSize = value;
-    self
-  }
-  #[inline]
-  pub fn set_sub_pixel_precision_bits(mut self, value: u32) -> Self {
-    self.subPixelPrecisionBits = value;
-    self
-  }
-  #[inline]
-  pub fn set_sub_texel_precision_bits(mut self, value: u32) -> Self {
-    self.subTexelPrecisionBits = value;
-    self
-  }
-  #[inline]
-  pub fn set_mipmap_precision_bits(mut self, value: u32) -> Self {
-    self.mipmapPrecisionBits = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_draw_indexed_index_value(mut self, value: u32) -> Self {
-    self.maxDrawIndexedIndexValue = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_draw_indirect_count(mut self, value: u32) -> Self {
-    self.maxDrawIndirectCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_sampler_lod_bias(mut self, value: f32) -> Self {
-    self.maxSamplerLodBias = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_sampler_anisotropy(mut self, value: f32) -> Self {
-    self.maxSamplerAnisotropy = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_viewports(mut self, value: u32) -> Self {
-    self.maxViewports = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_viewport_dimensions(mut self, value: [u32; 2]) -> Self {
-    self.maxViewportDimensions = value;
-    self
-  }
-  #[inline]
-  pub fn set_viewport_bounds_range(mut self, value: [f32; 2]) -> Self {
-    self.viewportBoundsRange = value;
-    self
-  }
-  #[inline]
-  pub fn set_viewport_sub_pixel_bits(mut self, value: u32) -> Self {
-    self.viewportSubPixelBits = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_memory_map_alignment(mut self, value: usize) -> Self {
-    self.minMemoryMapAlignment = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_texel_buffer_offset_alignment(mut self, value: VkDeviceSize) -> Self {
-    self.minTexelBufferOffsetAlignment = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_uniform_buffer_offset_alignment(mut self, value: VkDeviceSize) -> Self {
-    self.minUniformBufferOffsetAlignment = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_storage_buffer_offset_alignment(mut self, value: VkDeviceSize) -> Self {
-    self.minStorageBufferOffsetAlignment = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_texel_offset(mut self, value: i32) -> Self {
-    self.minTexelOffset = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_texel_offset(mut self, value: u32) -> Self {
-    self.maxTexelOffset = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_texel_gather_offset(mut self, value: i32) -> Self {
-    self.minTexelGatherOffset = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_texel_gather_offset(mut self, value: u32) -> Self {
-    self.maxTexelGatherOffset = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_interpolation_offset(mut self, value: f32) -> Self {
-    self.minInterpolationOffset = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_interpolation_offset(mut self, value: f32) -> Self {
-    self.maxInterpolationOffset = value;
-    self
-  }
-  #[inline]
-  pub fn set_sub_pixel_interpolation_offset_bits(mut self, value: u32) -> Self {
-    self.subPixelInterpolationOffsetBits = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_framebuffer_width(mut self, value: u32) -> Self {
-    self.maxFramebufferWidth = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_framebuffer_height(mut self, value: u32) -> Self {
-    self.maxFramebufferHeight = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_framebuffer_layers(mut self, value: u32) -> Self {
-    self.maxFramebufferLayers = value;
-    self
-  }
-  #[inline]
-  pub fn set_framebuffer_color_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.framebufferColorSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_framebuffer_depth_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.framebufferDepthSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_framebuffer_stencil_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.framebufferStencilSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_framebuffer_no_attachments_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.framebufferNoAttachmentsSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_color_attachments(mut self, value: u32) -> Self {
-    self.maxColorAttachments = value;
-    self
-  }
-  #[inline]
-  pub fn set_sampled_image_color_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.sampledImageColorSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_sampled_image_integer_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.sampledImageIntegerSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_sampled_image_depth_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.sampledImageDepthSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_sampled_image_stencil_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.sampledImageStencilSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_storage_image_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.storageImageSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_sample_mask_words(mut self, value: u32) -> Self {
-    self.maxSampleMaskWords = value;
-    self
-  }
-  #[inline]
-  pub fn set_timestamp_compute_and_graphics(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.timestampComputeAndGraphics = value;
-    self
-  }
-  #[inline]
-  pub fn set_timestamp_period(mut self, value: f32) -> Self {
-    self.timestampPeriod = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_clip_distances(mut self, value: u32) -> Self {
-    self.maxClipDistances = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_cull_distances(mut self, value: u32) -> Self {
-    self.maxCullDistances = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_combined_clip_and_cull_distances(mut self, value: u32) -> Self {
-    self.maxCombinedClipAndCullDistances = value;
-    self
-  }
-  #[inline]
-  pub fn set_discrete_queue_priorities(mut self, value: u32) -> Self {
-    self.discreteQueuePriorities = value;
-    self
-  }
-  #[inline]
-  pub fn set_point_size_range(mut self, value: [f32; 2]) -> Self {
-    self.pointSizeRange = value;
-    self
-  }
-  #[inline]
-  pub fn set_line_width_range(mut self, value: [f32; 2]) -> Self {
-    self.lineWidthRange = value;
-    self
-  }
-  #[inline]
-  pub fn set_point_size_granularity(mut self, value: f32) -> Self {
-    self.pointSizeGranularity = value;
-    self
-  }
-  #[inline]
-  pub fn set_line_width_granularity(mut self, value: f32) -> Self {
-    self.lineWidthGranularity = value;
-    self
-  }
-  #[inline]
-  pub fn set_strict_lines(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.strictLines = value;
-    self
-  }
-  #[inline]
-  pub fn set_standard_sample_locations(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.standardSampleLocations = value;
-    self
-  }
-  #[inline]
-  pub fn set_optimal_buffer_copy_offset_alignment(mut self, value: VkDeviceSize) -> Self {
-    self.optimalBufferCopyOffsetAlignment = value;
-    self
-  }
-  #[inline]
-  pub fn set_optimal_buffer_copy_row_pitch_alignment(mut self, value: VkDeviceSize) -> Self {
-    self.optimalBufferCopyRowPitchAlignment = value;
-    self
-  }
-  #[inline]
-  pub fn set_non_coherent_atom_size(mut self, value: VkDeviceSize) -> Self {
-    self.nonCoherentAtomSize = value;
-    self
-  }
-  #[inline]
-  pub fn get_max_image_dimension1_d(&self) -> u32 {
+  pub fn max_image_dimension1_d(&self) -> u32 {
     self.maxImageDimension1D
   }
   #[inline]
-  pub fn get_max_image_dimension2_d(&self) -> u32 {
+  pub fn max_image_dimension2_d(&self) -> u32 {
     self.maxImageDimension2D
   }
   #[inline]
-  pub fn get_max_image_dimension3_d(&self) -> u32 {
+  pub fn max_image_dimension3_d(&self) -> u32 {
     self.maxImageDimension3D
   }
   #[inline]
-  pub fn get_max_image_dimension_cube(&self) -> u32 {
+  pub fn max_image_dimension_cube(&self) -> u32 {
     self.maxImageDimensionCube
   }
   #[inline]
-  pub fn get_max_image_array_layers(&self) -> u32 {
+  pub fn max_image_array_layers(&self) -> u32 {
     self.maxImageArrayLayers
   }
   #[inline]
-  pub fn get_max_texel_buffer_elements(&self) -> u32 {
+  pub fn max_texel_buffer_elements(&self) -> u32 {
     self.maxTexelBufferElements
   }
   #[inline]
-  pub fn get_max_uniform_buffer_range(&self) -> u32 {
+  pub fn max_uniform_buffer_range(&self) -> u32 {
     self.maxUniformBufferRange
   }
   #[inline]
-  pub fn get_max_storage_buffer_range(&self) -> u32 {
+  pub fn max_storage_buffer_range(&self) -> u32 {
     self.maxStorageBufferRange
   }
   #[inline]
-  pub fn get_max_push_constants_size(&self) -> u32 {
+  pub fn max_push_constants_size(&self) -> u32 {
     self.maxPushConstantsSize
   }
   #[inline]
-  pub fn get_max_memory_allocation_count(&self) -> u32 {
+  pub fn max_memory_allocation_count(&self) -> u32 {
     self.maxMemoryAllocationCount
   }
   #[inline]
-  pub fn get_max_sampler_allocation_count(&self) -> u32 {
+  pub fn max_sampler_allocation_count(&self) -> u32 {
     self.maxSamplerAllocationCount
   }
   #[inline]
-  pub fn get_buffer_image_granularity(&self) -> VkDeviceSize {
+  pub fn buffer_image_granularity(&self) -> VkDeviceSize {
     self.bufferImageGranularity
   }
   #[inline]
-  pub fn get_sparse_address_space_size(&self) -> VkDeviceSize {
+  pub fn sparse_address_space_size(&self) -> VkDeviceSize {
     self.sparseAddressSpaceSize
   }
   #[inline]
-  pub fn get_max_bound_descriptor_sets(&self) -> u32 {
+  pub fn max_bound_descriptor_sets(&self) -> u32 {
     self.maxBoundDescriptorSets
   }
   #[inline]
-  pub fn get_max_per_stage_descriptor_samplers(&self) -> u32 {
+  pub fn max_per_stage_descriptor_samplers(&self) -> u32 {
     self.maxPerStageDescriptorSamplers
   }
   #[inline]
-  pub fn get_max_per_stage_descriptor_uniform_buffers(&self) -> u32 {
+  pub fn max_per_stage_descriptor_uniform_buffers(&self) -> u32 {
     self.maxPerStageDescriptorUniformBuffers
   }
   #[inline]
-  pub fn get_max_per_stage_descriptor_storage_buffers(&self) -> u32 {
+  pub fn max_per_stage_descriptor_storage_buffers(&self) -> u32 {
     self.maxPerStageDescriptorStorageBuffers
   }
   #[inline]
-  pub fn get_max_per_stage_descriptor_sampled_images(&self) -> u32 {
+  pub fn max_per_stage_descriptor_sampled_images(&self) -> u32 {
     self.maxPerStageDescriptorSampledImages
   }
   #[inline]
-  pub fn get_max_per_stage_descriptor_storage_images(&self) -> u32 {
+  pub fn max_per_stage_descriptor_storage_images(&self) -> u32 {
     self.maxPerStageDescriptorStorageImages
   }
   #[inline]
-  pub fn get_max_per_stage_descriptor_input_attachments(&self) -> u32 {
+  pub fn max_per_stage_descriptor_input_attachments(&self) -> u32 {
     self.maxPerStageDescriptorInputAttachments
   }
   #[inline]
-  pub fn get_max_per_stage_resources(&self) -> u32 {
+  pub fn max_per_stage_resources(&self) -> u32 {
     self.maxPerStageResources
   }
   #[inline]
-  pub fn get_max_descriptor_set_samplers(&self) -> u32 {
+  pub fn max_descriptor_set_samplers(&self) -> u32 {
     self.maxDescriptorSetSamplers
   }
   #[inline]
-  pub fn get_max_descriptor_set_uniform_buffers(&self) -> u32 {
+  pub fn max_descriptor_set_uniform_buffers(&self) -> u32 {
     self.maxDescriptorSetUniformBuffers
   }
   #[inline]
-  pub fn get_max_descriptor_set_uniform_buffers_dynamic(&self) -> u32 {
+  pub fn max_descriptor_set_uniform_buffers_dynamic(&self) -> u32 {
     self.maxDescriptorSetUniformBuffersDynamic
   }
   #[inline]
-  pub fn get_max_descriptor_set_storage_buffers(&self) -> u32 {
+  pub fn max_descriptor_set_storage_buffers(&self) -> u32 {
     self.maxDescriptorSetStorageBuffers
   }
   #[inline]
-  pub fn get_max_descriptor_set_storage_buffers_dynamic(&self) -> u32 {
+  pub fn max_descriptor_set_storage_buffers_dynamic(&self) -> u32 {
     self.maxDescriptorSetStorageBuffersDynamic
   }
   #[inline]
-  pub fn get_max_descriptor_set_sampled_images(&self) -> u32 {
+  pub fn max_descriptor_set_sampled_images(&self) -> u32 {
     self.maxDescriptorSetSampledImages
   }
   #[inline]
-  pub fn get_max_descriptor_set_storage_images(&self) -> u32 {
+  pub fn max_descriptor_set_storage_images(&self) -> u32 {
     self.maxDescriptorSetStorageImages
   }
   #[inline]
-  pub fn get_max_descriptor_set_input_attachments(&self) -> u32 {
+  pub fn max_descriptor_set_input_attachments(&self) -> u32 {
     self.maxDescriptorSetInputAttachments
   }
   #[inline]
-  pub fn get_max_vertex_input_attributes(&self) -> u32 {
+  pub fn max_vertex_input_attributes(&self) -> u32 {
     self.maxVertexInputAttributes
   }
   #[inline]
-  pub fn get_max_vertex_input_bindings(&self) -> u32 {
+  pub fn max_vertex_input_bindings(&self) -> u32 {
     self.maxVertexInputBindings
   }
   #[inline]
-  pub fn get_max_vertex_input_attribute_offset(&self) -> u32 {
+  pub fn max_vertex_input_attribute_offset(&self) -> u32 {
     self.maxVertexInputAttributeOffset
   }
   #[inline]
-  pub fn get_max_vertex_input_binding_stride(&self) -> u32 {
+  pub fn max_vertex_input_binding_stride(&self) -> u32 {
     self.maxVertexInputBindingStride
   }
   #[inline]
-  pub fn get_max_vertex_output_components(&self) -> u32 {
+  pub fn max_vertex_output_components(&self) -> u32 {
     self.maxVertexOutputComponents
   }
   #[inline]
-  pub fn get_max_tessellation_generation_level(&self) -> u32 {
+  pub fn max_tessellation_generation_level(&self) -> u32 {
     self.maxTessellationGenerationLevel
   }
   #[inline]
-  pub fn get_max_tessellation_patch_size(&self) -> u32 {
+  pub fn max_tessellation_patch_size(&self) -> u32 {
     self.maxTessellationPatchSize
   }
   #[inline]
-  pub fn get_max_tessellation_control_per_vertex_input_components(&self) -> u32 {
+  pub fn max_tessellation_control_per_vertex_input_components(&self) -> u32 {
     self.maxTessellationControlPerVertexInputComponents
   }
   #[inline]
-  pub fn get_max_tessellation_control_per_vertex_output_components(&self) -> u32 {
+  pub fn max_tessellation_control_per_vertex_output_components(&self) -> u32 {
     self.maxTessellationControlPerVertexOutputComponents
   }
   #[inline]
-  pub fn get_max_tessellation_control_per_patch_output_components(&self) -> u32 {
+  pub fn max_tessellation_control_per_patch_output_components(&self) -> u32 {
     self.maxTessellationControlPerPatchOutputComponents
   }
   #[inline]
-  pub fn get_max_tessellation_control_total_output_components(&self) -> u32 {
+  pub fn max_tessellation_control_total_output_components(&self) -> u32 {
     self.maxTessellationControlTotalOutputComponents
   }
   #[inline]
-  pub fn get_max_tessellation_evaluation_input_components(&self) -> u32 {
+  pub fn max_tessellation_evaluation_input_components(&self) -> u32 {
     self.maxTessellationEvaluationInputComponents
   }
   #[inline]
-  pub fn get_max_tessellation_evaluation_output_components(&self) -> u32 {
+  pub fn max_tessellation_evaluation_output_components(&self) -> u32 {
     self.maxTessellationEvaluationOutputComponents
   }
   #[inline]
-  pub fn get_max_geometry_shader_invocations(&self) -> u32 {
+  pub fn max_geometry_shader_invocations(&self) -> u32 {
     self.maxGeometryShaderInvocations
   }
   #[inline]
-  pub fn get_max_geometry_input_components(&self) -> u32 {
+  pub fn max_geometry_input_components(&self) -> u32 {
     self.maxGeometryInputComponents
   }
   #[inline]
-  pub fn get_max_geometry_output_components(&self) -> u32 {
+  pub fn max_geometry_output_components(&self) -> u32 {
     self.maxGeometryOutputComponents
   }
   #[inline]
-  pub fn get_max_geometry_output_vertices(&self) -> u32 {
+  pub fn max_geometry_output_vertices(&self) -> u32 {
     self.maxGeometryOutputVertices
   }
   #[inline]
-  pub fn get_max_geometry_total_output_components(&self) -> u32 {
+  pub fn max_geometry_total_output_components(&self) -> u32 {
     self.maxGeometryTotalOutputComponents
   }
   #[inline]
-  pub fn get_max_fragment_input_components(&self) -> u32 {
+  pub fn max_fragment_input_components(&self) -> u32 {
     self.maxFragmentInputComponents
   }
   #[inline]
-  pub fn get_max_fragment_output_attachments(&self) -> u32 {
+  pub fn max_fragment_output_attachments(&self) -> u32 {
     self.maxFragmentOutputAttachments
   }
   #[inline]
-  pub fn get_max_fragment_dual_src_attachments(&self) -> u32 {
+  pub fn max_fragment_dual_src_attachments(&self) -> u32 {
     self.maxFragmentDualSrcAttachments
   }
   #[inline]
-  pub fn get_max_fragment_combined_output_resources(&self) -> u32 {
+  pub fn max_fragment_combined_output_resources(&self) -> u32 {
     self.maxFragmentCombinedOutputResources
   }
   #[inline]
-  pub fn get_max_compute_shared_memory_size(&self) -> u32 {
+  pub fn max_compute_shared_memory_size(&self) -> u32 {
     self.maxComputeSharedMemorySize
   }
   #[inline]
-  pub fn get_max_compute_work_group_count(&self) -> [u32; 3] {
+  pub fn max_compute_work_group_count(&self) -> [u32; 3] {
     self.maxComputeWorkGroupCount
   }
   #[inline]
-  pub fn get_max_compute_work_group_invocations(&self) -> u32 {
+  pub fn max_compute_work_group_invocations(&self) -> u32 {
     self.maxComputeWorkGroupInvocations
   }
   #[inline]
-  pub fn get_max_compute_work_group_size(&self) -> [u32; 3] {
+  pub fn max_compute_work_group_size(&self) -> [u32; 3] {
     self.maxComputeWorkGroupSize
   }
   #[inline]
-  pub fn get_sub_pixel_precision_bits(&self) -> u32 {
+  pub fn sub_pixel_precision_bits(&self) -> u32 {
     self.subPixelPrecisionBits
   }
   #[inline]
-  pub fn get_sub_texel_precision_bits(&self) -> u32 {
+  pub fn sub_texel_precision_bits(&self) -> u32 {
     self.subTexelPrecisionBits
   }
   #[inline]
-  pub fn get_mipmap_precision_bits(&self) -> u32 {
+  pub fn mipmap_precision_bits(&self) -> u32 {
     self.mipmapPrecisionBits
   }
   #[inline]
-  pub fn get_max_draw_indexed_index_value(&self) -> u32 {
+  pub fn max_draw_indexed_index_value(&self) -> u32 {
     self.maxDrawIndexedIndexValue
   }
   #[inline]
-  pub fn get_max_draw_indirect_count(&self) -> u32 {
+  pub fn max_draw_indirect_count(&self) -> u32 {
     self.maxDrawIndirectCount
   }
   #[inline]
-  pub fn get_max_sampler_lod_bias(&self) -> f32 {
+  pub fn max_sampler_lod_bias(&self) -> f32 {
     self.maxSamplerLodBias
   }
   #[inline]
-  pub fn get_max_sampler_anisotropy(&self) -> f32 {
+  pub fn max_sampler_anisotropy(&self) -> f32 {
     self.maxSamplerAnisotropy
   }
   #[inline]
-  pub fn get_max_viewports(&self) -> u32 {
+  pub fn max_viewports(&self) -> u32 {
     self.maxViewports
   }
   #[inline]
-  pub fn get_max_viewport_dimensions(&self) -> [u32; 2] {
+  pub fn max_viewport_dimensions(&self) -> [u32; 2] {
     self.maxViewportDimensions
   }
   #[inline]
-  pub fn get_viewport_bounds_range(&self) -> [f32; 2] {
+  pub fn viewport_bounds_range(&self) -> [f32; 2] {
     self.viewportBoundsRange
   }
   #[inline]
-  pub fn get_viewport_sub_pixel_bits(&self) -> u32 {
+  pub fn viewport_sub_pixel_bits(&self) -> u32 {
     self.viewportSubPixelBits
   }
   #[inline]
-  pub fn get_min_memory_map_alignment(&self) -> usize {
+  pub fn min_memory_map_alignment(&self) -> usize {
     self.minMemoryMapAlignment
   }
   #[inline]
-  pub fn get_min_texel_buffer_offset_alignment(&self) -> VkDeviceSize {
+  pub fn min_texel_buffer_offset_alignment(&self) -> VkDeviceSize {
     self.minTexelBufferOffsetAlignment
   }
   #[inline]
-  pub fn get_min_uniform_buffer_offset_alignment(&self) -> VkDeviceSize {
+  pub fn min_uniform_buffer_offset_alignment(&self) -> VkDeviceSize {
     self.minUniformBufferOffsetAlignment
   }
   #[inline]
-  pub fn get_min_storage_buffer_offset_alignment(&self) -> VkDeviceSize {
+  pub fn min_storage_buffer_offset_alignment(&self) -> VkDeviceSize {
     self.minStorageBufferOffsetAlignment
   }
   #[inline]
-  pub fn get_min_texel_offset(&self) -> i32 {
+  pub fn min_texel_offset(&self) -> i32 {
     self.minTexelOffset
   }
   #[inline]
-  pub fn get_max_texel_offset(&self) -> u32 {
+  pub fn max_texel_offset(&self) -> u32 {
     self.maxTexelOffset
   }
   #[inline]
-  pub fn get_min_texel_gather_offset(&self) -> i32 {
+  pub fn min_texel_gather_offset(&self) -> i32 {
     self.minTexelGatherOffset
   }
   #[inline]
-  pub fn get_max_texel_gather_offset(&self) -> u32 {
+  pub fn max_texel_gather_offset(&self) -> u32 {
     self.maxTexelGatherOffset
   }
   #[inline]
-  pub fn get_min_interpolation_offset(&self) -> f32 {
+  pub fn min_interpolation_offset(&self) -> f32 {
     self.minInterpolationOffset
   }
   #[inline]
-  pub fn get_max_interpolation_offset(&self) -> f32 {
+  pub fn max_interpolation_offset(&self) -> f32 {
     self.maxInterpolationOffset
   }
   #[inline]
-  pub fn get_sub_pixel_interpolation_offset_bits(&self) -> u32 {
+  pub fn sub_pixel_interpolation_offset_bits(&self) -> u32 {
     self.subPixelInterpolationOffsetBits
   }
   #[inline]
-  pub fn get_max_framebuffer_width(&self) -> u32 {
+  pub fn max_framebuffer_width(&self) -> u32 {
     self.maxFramebufferWidth
   }
   #[inline]
-  pub fn get_max_framebuffer_height(&self) -> u32 {
+  pub fn max_framebuffer_height(&self) -> u32 {
     self.maxFramebufferHeight
   }
   #[inline]
-  pub fn get_max_framebuffer_layers(&self) -> u32 {
+  pub fn max_framebuffer_layers(&self) -> u32 {
     self.maxFramebufferLayers
   }
   #[inline]
-  pub fn get_framebuffer_color_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn framebuffer_color_sample_counts(&self) -> VkSampleCountFlags {
     self.framebufferColorSampleCounts
   }
   #[inline]
-  pub fn get_framebuffer_depth_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn framebuffer_depth_sample_counts(&self) -> VkSampleCountFlags {
     self.framebufferDepthSampleCounts
   }
   #[inline]
-  pub fn get_framebuffer_stencil_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn framebuffer_stencil_sample_counts(&self) -> VkSampleCountFlags {
     self.framebufferStencilSampleCounts
   }
   #[inline]
-  pub fn get_framebuffer_no_attachments_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn framebuffer_no_attachments_sample_counts(&self) -> VkSampleCountFlags {
     self.framebufferNoAttachmentsSampleCounts
   }
   #[inline]
-  pub fn get_max_color_attachments(&self) -> u32 {
+  pub fn max_color_attachments(&self) -> u32 {
     self.maxColorAttachments
   }
   #[inline]
-  pub fn get_sampled_image_color_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn sampled_image_color_sample_counts(&self) -> VkSampleCountFlags {
     self.sampledImageColorSampleCounts
   }
   #[inline]
-  pub fn get_sampled_image_integer_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn sampled_image_integer_sample_counts(&self) -> VkSampleCountFlags {
     self.sampledImageIntegerSampleCounts
   }
   #[inline]
-  pub fn get_sampled_image_depth_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn sampled_image_depth_sample_counts(&self) -> VkSampleCountFlags {
     self.sampledImageDepthSampleCounts
   }
   #[inline]
-  pub fn get_sampled_image_stencil_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn sampled_image_stencil_sample_counts(&self) -> VkSampleCountFlags {
     self.sampledImageStencilSampleCounts
   }
   #[inline]
-  pub fn get_storage_image_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn storage_image_sample_counts(&self) -> VkSampleCountFlags {
     self.storageImageSampleCounts
   }
   #[inline]
-  pub fn get_max_sample_mask_words(&self) -> u32 {
+  pub fn max_sample_mask_words(&self) -> u32 {
     self.maxSampleMaskWords
   }
   #[inline]
@@ -2702,39 +2107,39 @@ impl VkPhysicalDeviceLimits {
     self.timestampComputeAndGraphics != 0
   }
   #[inline]
-  pub fn get_timestamp_period(&self) -> f32 {
+  pub fn timestamp_period(&self) -> f32 {
     self.timestampPeriod
   }
   #[inline]
-  pub fn get_max_clip_distances(&self) -> u32 {
+  pub fn max_clip_distances(&self) -> u32 {
     self.maxClipDistances
   }
   #[inline]
-  pub fn get_max_cull_distances(&self) -> u32 {
+  pub fn max_cull_distances(&self) -> u32 {
     self.maxCullDistances
   }
   #[inline]
-  pub fn get_max_combined_clip_and_cull_distances(&self) -> u32 {
+  pub fn max_combined_clip_and_cull_distances(&self) -> u32 {
     self.maxCombinedClipAndCullDistances
   }
   #[inline]
-  pub fn get_discrete_queue_priorities(&self) -> u32 {
+  pub fn discrete_queue_priorities(&self) -> u32 {
     self.discreteQueuePriorities
   }
   #[inline]
-  pub fn get_point_size_range(&self) -> [f32; 2] {
+  pub fn point_size_range(&self) -> [f32; 2] {
     self.pointSizeRange
   }
   #[inline]
-  pub fn get_line_width_range(&self) -> [f32; 2] {
+  pub fn line_width_range(&self) -> [f32; 2] {
     self.lineWidthRange
   }
   #[inline]
-  pub fn get_point_size_granularity(&self) -> f32 {
+  pub fn point_size_granularity(&self) -> f32 {
     self.pointSizeGranularity
   }
   #[inline]
-  pub fn get_line_width_granularity(&self) -> f32 {
+  pub fn line_width_granularity(&self) -> f32 {
     self.lineWidthGranularity
   }
   #[inline]
@@ -2746,21 +2151,16 @@ impl VkPhysicalDeviceLimits {
     self.standardSampleLocations != 0
   }
   #[inline]
-  pub fn get_optimal_buffer_copy_offset_alignment(&self) -> VkDeviceSize {
+  pub fn optimal_buffer_copy_offset_alignment(&self) -> VkDeviceSize {
     self.optimalBufferCopyOffsetAlignment
   }
   #[inline]
-  pub fn get_optimal_buffer_copy_row_pitch_alignment(&self) -> VkDeviceSize {
+  pub fn optimal_buffer_copy_row_pitch_alignment(&self) -> VkDeviceSize {
     self.optimalBufferCopyRowPitchAlignment
   }
   #[inline]
-  pub fn get_non_coherent_atom_size(&self) -> VkDeviceSize {
+  pub fn non_coherent_atom_size(&self) -> VkDeviceSize {
     self.nonCoherentAtomSize
-  }
-}
-impl Default for VkPhysicalDeviceLimits {
-  fn default() -> VkPhysicalDeviceLimits {
-    VkPhysicalDeviceLimits::new()
   }
 }
 unsafe impl RawStruct for VkPhysicalDeviceLimits {
@@ -2784,40 +2184,6 @@ pub struct VkPhysicalDeviceSparseProperties {
 }
 impl VkPhysicalDeviceSparseProperties {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceSparseProperties {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_residency_standard2_d_block_shape(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.residencyStandard2DBlockShape = value;
-    self
-  }
-  #[inline]
-  pub fn set_residency_standard2_d_multisample_block_shape(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.residencyStandard2DMultisampleBlockShape = value;
-    self
-  }
-  #[inline]
-  pub fn set_residency_standard3_d_block_shape(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.residencyStandard3DBlockShape = value;
-    self
-  }
-  #[inline]
-  pub fn set_residency_aligned_mip_size(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.residencyAlignedMipSize = value;
-    self
-  }
-  #[inline]
-  pub fn set_residency_non_resident_strict(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.residencyNonResidentStrict = value;
-    self
-  }
-  #[inline]
   pub fn is_residency_standard2_d_block_shape(&self) -> bool {
     self.residencyStandard2DBlockShape != 0
   }
@@ -2836,11 +2202,6 @@ impl VkPhysicalDeviceSparseProperties {
   #[inline]
   pub fn is_residency_non_resident_strict(&self) -> bool {
     self.residencyNonResidentStrict != 0
-  }
-}
-impl Default for VkPhysicalDeviceSparseProperties {
-  fn default() -> VkPhysicalDeviceSparseProperties {
-    VkPhysicalDeviceSparseProperties::new()
   }
 }
 unsafe impl RawStruct for VkPhysicalDeviceSparseProperties {
@@ -2871,94 +2232,40 @@ pub struct VkPhysicalDeviceProperties {
 }
 impl VkPhysicalDeviceProperties {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceProperties {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_api_version(mut self, value: u32) -> Self {
-    self.apiVersion = value;
-    self
-  }
-  #[inline]
-  pub fn set_driver_version(mut self, value: u32) -> Self {
-    self.driverVersion = value;
-    self
-  }
-  #[inline]
-  pub fn set_vendor_id(mut self, value: u32) -> Self {
-    self.vendorID = value;
-    self
-  }
-  #[inline]
-  pub fn set_device_id(mut self, value: u32) -> Self {
-    self.deviceID = value;
-    self
-  }
-  #[inline]
-  pub fn set_device_type(mut self, value: VkPhysicalDeviceType) -> Self {
-    self.deviceType = value;
-    self
-  }
-  #[inline]
-  pub fn set_device_name(mut self, value: [c_char; enums::VK_MAX_PHYSICAL_DEVICE_NAME_SIZE as usize]) -> Self {
-    self.deviceName = value;
-    self
-  }
-  #[inline]
-  pub fn set_pipeline_cache_uuid(mut self, value: [u8; enums::VK_UUID_SIZE as usize]) -> Self {
-    self.pipelineCacheUUID = value;
-    self
-  }
-  #[inline]
-  pub fn set_limits(mut self, value: VkPhysicalDeviceLimits) -> Self {
-    self.limits = value;
-    self
-  }
-  #[inline]
-  pub fn set_sparse_properties(mut self, value: VkPhysicalDeviceSparseProperties) -> Self {
-    self.sparseProperties = value;
-    self
-  }
-  #[inline]
-  pub fn get_api_version(&self) -> u32 {
+  pub fn api_version(&self) -> u32 {
     self.apiVersion
   }
   #[inline]
-  pub fn get_driver_version(&self) -> u32 {
+  pub fn driver_version(&self) -> u32 {
     self.driverVersion
   }
   #[inline]
-  pub fn get_vendor_id(&self) -> u32 {
+  pub fn vendor_id(&self) -> u32 {
     self.vendorID
   }
   #[inline]
-  pub fn get_device_id(&self) -> u32 {
+  pub fn device_id(&self) -> u32 {
     self.deviceID
   }
   #[inline]
-  pub fn get_device_type(&self) -> VkPhysicalDeviceType {
+  pub fn device_type(&self) -> VkPhysicalDeviceType {
     self.deviceType
   }
   #[inline]
-  pub fn get_device_name(&self) -> [c_char; enums::VK_MAX_PHYSICAL_DEVICE_NAME_SIZE as usize] {
+  pub fn device_name(&self) -> [c_char; enums::VK_MAX_PHYSICAL_DEVICE_NAME_SIZE as usize] {
     self.deviceName
   }
   #[inline]
-  pub fn get_pipeline_cache_uuid(&self) -> [u8; enums::VK_UUID_SIZE as usize] {
+  pub fn pipeline_cache_uuid(&self) -> [u8; enums::VK_UUID_SIZE as usize] {
     self.pipelineCacheUUID
   }
   #[inline]
-  pub fn get_limits(&self) -> VkPhysicalDeviceLimits {
+  pub fn limits(&self) -> VkPhysicalDeviceLimits {
     self.limits
   }
   #[inline]
-  pub fn get_sparse_properties(&self) -> VkPhysicalDeviceSparseProperties {
+  pub fn sparse_properties(&self) -> VkPhysicalDeviceSparseProperties {
     self.sparseProperties
-  }
-}
-impl Default for VkPhysicalDeviceProperties {
-  fn default() -> VkPhysicalDeviceProperties {
-    VkPhysicalDeviceProperties::new()
   }
 }
 unsafe impl RawStruct for VkPhysicalDeviceProperties {
@@ -2984,49 +2291,20 @@ pub struct VkQueueFamilyProperties {
 }
 impl VkQueueFamilyProperties {
   #[inline]
-  pub fn new() -> VkQueueFamilyProperties {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_queue_flags(mut self, value: VkQueueFlags) -> Self {
-    self.queueFlags = value;
-    self
-  }
-  #[inline]
-  pub fn set_queue_count(mut self, value: u32) -> Self {
-    self.queueCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_timestamp_valid_bits(mut self, value: u32) -> Self {
-    self.timestampValidBits = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_image_transfer_granularity(mut self, value: VkExtent3D) -> Self {
-    self.minImageTransferGranularity = value;
-    self
-  }
-  #[inline]
-  pub fn get_queue_flags(&self) -> VkQueueFlags {
+  pub fn queue_flags(&self) -> VkQueueFlags {
     self.queueFlags
   }
   #[inline]
-  pub fn get_queue_count(&self) -> u32 {
+  pub fn queue_count(&self) -> u32 {
     self.queueCount
   }
   #[inline]
-  pub fn get_timestamp_valid_bits(&self) -> u32 {
+  pub fn timestamp_valid_bits(&self) -> u32 {
     self.timestampValidBits
   }
   #[inline]
-  pub fn get_min_image_transfer_granularity(&self) -> VkExtent3D {
+  pub fn min_image_transfer_granularity(&self) -> VkExtent3D {
     self.minImageTransferGranularity
-  }
-}
-impl Default for VkQueueFamilyProperties {
-  fn default() -> VkQueueFamilyProperties {
-    VkQueueFamilyProperties::new()
   }
 }
 unsafe impl RawStruct for VkQueueFamilyProperties {
@@ -3047,31 +2325,12 @@ pub struct VkMemoryType {
 }
 impl VkMemoryType {
   #[inline]
-  pub fn new() -> VkMemoryType {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_property_flags(mut self, value: VkMemoryPropertyFlags) -> Self {
-    self.propertyFlags = value;
-    self
-  }
-  #[inline]
-  pub fn set_heap_index(mut self, value: u32) -> Self {
-    self.heapIndex = value;
-    self
-  }
-  #[inline]
-  pub fn get_property_flags(&self) -> VkMemoryPropertyFlags {
+  pub fn property_flags(&self) -> VkMemoryPropertyFlags {
     self.propertyFlags
   }
   #[inline]
-  pub fn get_heap_index(&self) -> u32 {
+  pub fn heap_index(&self) -> u32 {
     self.heapIndex
-  }
-}
-impl Default for VkMemoryType {
-  fn default() -> VkMemoryType {
-    VkMemoryType::new()
   }
 }
 unsafe impl RawStruct for VkMemoryType {
@@ -3092,31 +2351,12 @@ pub struct VkMemoryHeap {
 }
 impl VkMemoryHeap {
   #[inline]
-  pub fn new() -> VkMemoryHeap {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_size(mut self, value: VkDeviceSize) -> Self {
-    self.size = value;
-    self
-  }
-  #[inline]
-  pub fn set_flags(mut self, value: VkMemoryHeapFlags) -> Self {
-    self.flags = value;
-    self
-  }
-  #[inline]
-  pub fn get_size(&self) -> VkDeviceSize {
+  pub fn size(&self) -> VkDeviceSize {
     self.size
   }
   #[inline]
-  pub fn get_flags(&self) -> VkMemoryHeapFlags {
+  pub fn flags(&self) -> VkMemoryHeapFlags {
     self.flags
-  }
-}
-impl Default for VkMemoryHeap {
-  fn default() -> VkMemoryHeap {
-    VkMemoryHeap::new()
   }
 }
 unsafe impl RawStruct for VkMemoryHeap {
@@ -3139,49 +2379,20 @@ pub struct VkPhysicalDeviceMemoryProperties {
 }
 impl VkPhysicalDeviceMemoryProperties {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceMemoryProperties {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_memory_type_count(mut self, value: u32) -> Self {
-    self.memoryTypeCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_memory_types(mut self, value: [VkMemoryType; enums::VK_MAX_MEMORY_TYPES as usize]) -> Self {
-    self.memoryTypes = value;
-    self
-  }
-  #[inline]
-  pub fn set_memory_heap_count(mut self, value: u32) -> Self {
-    self.memoryHeapCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_memory_heaps(mut self, value: [VkMemoryHeap; enums::VK_MAX_MEMORY_HEAPS as usize]) -> Self {
-    self.memoryHeaps = value;
-    self
-  }
-  #[inline]
-  pub fn get_memory_type_count(&self) -> u32 {
+  pub fn memory_type_count(&self) -> u32 {
     self.memoryTypeCount
   }
   #[inline]
-  pub fn get_memory_types(&self) -> [VkMemoryType; enums::VK_MAX_MEMORY_TYPES as usize] {
+  pub fn memory_types(&self) -> [VkMemoryType; enums::VK_MAX_MEMORY_TYPES as usize] {
     self.memoryTypes
   }
   #[inline]
-  pub fn get_memory_heap_count(&self) -> u32 {
+  pub fn memory_heap_count(&self) -> u32 {
     self.memoryHeapCount
   }
   #[inline]
-  pub fn get_memory_heaps(&self) -> [VkMemoryHeap; enums::VK_MAX_MEMORY_HEAPS as usize] {
+  pub fn memory_heaps(&self) -> [VkMemoryHeap; enums::VK_MAX_MEMORY_HEAPS as usize] {
     self.memoryHeaps
-  }
-}
-impl Default for VkPhysicalDeviceMemoryProperties {
-  fn default() -> VkPhysicalDeviceMemoryProperties {
-    VkPhysicalDeviceMemoryProperties::new()
   }
 }
 unsafe impl RawStruct for VkPhysicalDeviceMemoryProperties {
@@ -3246,23 +2457,23 @@ impl<'a> VkDeviceQueueCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkDeviceQueueCreateFlags {
+  pub fn flags(&self) -> VkDeviceQueueCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_queue_family_index(&self) -> u32 {
+  pub fn queue_family_index(&self) -> u32 {
     self.queueFamilyIndex
   }
   #[inline]
-  pub fn get_queue_count(&self) -> u32 {
+  pub fn queue_count(&self) -> u32 {
     self.queueCount
   }
 }
@@ -3324,31 +2535,31 @@ impl<'a> VkDeviceCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkDeviceCreateFlags {
+  pub fn flags(&self) -> VkDeviceCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_queue_create_info_count(&self) -> u32 {
+  pub fn queue_create_info_count(&self) -> u32 {
     self.queueCreateInfoCount
   }
   #[inline]
-  pub fn get_enabled_layer_count(&self) -> u32 {
+  pub fn enabled_layer_count(&self) -> u32 {
     self.enabledLayerCount
   }
   #[inline]
-  pub fn get_enabled_extension_count(&self) -> u32 {
+  pub fn enabled_extension_count(&self) -> u32 {
     self.enabledExtensionCount
   }
   #[inline]
-  pub fn get_enabled_features(&self) -> Option<&'a VkPhysicalDeviceFeatures> {
+  pub fn enabled_features(&self) -> Option<&'a VkPhysicalDeviceFeatures> {
     self.pEnabledFeatures
   }
 }
@@ -3375,31 +2586,12 @@ pub struct VkExtensionProperties {
 }
 impl VkExtensionProperties {
   #[inline]
-  pub fn new() -> VkExtensionProperties {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_extension_name(mut self, value: [c_char; enums::VK_MAX_EXTENSION_NAME_SIZE as usize]) -> Self {
-    self.extensionName = value;
-    self
-  }
-  #[inline]
-  pub fn set_spec_version(mut self, value: u32) -> Self {
-    self.specVersion = value;
-    self
-  }
-  #[inline]
-  pub fn get_extension_name(&self) -> [c_char; enums::VK_MAX_EXTENSION_NAME_SIZE as usize] {
+  pub fn extension_name(&self) -> [c_char; enums::VK_MAX_EXTENSION_NAME_SIZE as usize] {
     self.extensionName
   }
   #[inline]
-  pub fn get_spec_version(&self) -> u32 {
+  pub fn spec_version(&self) -> u32 {
     self.specVersion
-  }
-}
-impl Default for VkExtensionProperties {
-  fn default() -> VkExtensionProperties {
-    VkExtensionProperties::new()
   }
 }
 unsafe impl RawStruct for VkExtensionProperties {
@@ -3422,49 +2614,20 @@ pub struct VkLayerProperties {
 }
 impl VkLayerProperties {
   #[inline]
-  pub fn new() -> VkLayerProperties {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_layer_name(mut self, value: [c_char; enums::VK_MAX_EXTENSION_NAME_SIZE as usize]) -> Self {
-    self.layerName = value;
-    self
-  }
-  #[inline]
-  pub fn set_spec_version(mut self, value: u32) -> Self {
-    self.specVersion = value;
-    self
-  }
-  #[inline]
-  pub fn set_implementation_version(mut self, value: u32) -> Self {
-    self.implementationVersion = value;
-    self
-  }
-  #[inline]
-  pub fn set_description(mut self, value: [c_char; enums::VK_MAX_DESCRIPTION_SIZE as usize]) -> Self {
-    self.description = value;
-    self
-  }
-  #[inline]
-  pub fn get_layer_name(&self) -> [c_char; enums::VK_MAX_EXTENSION_NAME_SIZE as usize] {
+  pub fn layer_name(&self) -> [c_char; enums::VK_MAX_EXTENSION_NAME_SIZE as usize] {
     self.layerName
   }
   #[inline]
-  pub fn get_spec_version(&self) -> u32 {
+  pub fn spec_version(&self) -> u32 {
     self.specVersion
   }
   #[inline]
-  pub fn get_implementation_version(&self) -> u32 {
+  pub fn implementation_version(&self) -> u32 {
     self.implementationVersion
   }
   #[inline]
-  pub fn get_description(&self) -> [c_char; enums::VK_MAX_DESCRIPTION_SIZE as usize] {
+  pub fn description(&self) -> [c_char; enums::VK_MAX_DESCRIPTION_SIZE as usize] {
     self.description
-  }
-}
-impl Default for VkLayerProperties {
-  fn default() -> VkLayerProperties {
-    VkLayerProperties::new()
   }
 }
 unsafe impl RawStruct for VkLayerProperties {
@@ -3536,23 +2699,23 @@ impl<'a> VkSubmitInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_wait_semaphore_count(&self) -> u32 {
+  pub fn wait_semaphore_count(&self) -> u32 {
     self.waitSemaphoreCount
   }
   #[inline]
-  pub fn get_command_buffer_count(&self) -> u32 {
+  pub fn command_buffer_count(&self) -> u32 {
     self.commandBufferCount
   }
   #[inline]
-  pub fn get_signal_semaphore_count(&self) -> u32 {
+  pub fn signal_semaphore_count(&self) -> u32 {
     self.signalSemaphoreCount
   }
 }
@@ -3606,19 +2769,19 @@ impl VkMemoryAllocateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_allocation_size(&self) -> VkDeviceSize {
+  pub fn allocation_size(&self) -> VkDeviceSize {
     self.allocationSize
   }
   #[inline]
-  pub fn get_memory_type_index(&self) -> u32 {
+  pub fn memory_type_index(&self) -> u32 {
     self.memoryTypeIndex
   }
 }
@@ -3678,23 +2841,23 @@ impl VkMappedMemoryRange {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory {
     self.memory
   }
   #[inline]
-  pub fn get_offset(&self) -> VkDeviceSize {
+  pub fn offset(&self) -> VkDeviceSize {
     self.offset
   }
   #[inline]
-  pub fn get_size(&self) -> VkDeviceSize {
+  pub fn size(&self) -> VkDeviceSize {
     self.size
   }
 }
@@ -3722,40 +2885,16 @@ pub struct VkMemoryRequirements {
 }
 impl VkMemoryRequirements {
   #[inline]
-  pub fn new() -> VkMemoryRequirements {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_size(mut self, value: VkDeviceSize) -> Self {
-    self.size = value;
-    self
-  }
-  #[inline]
-  pub fn set_alignment(mut self, value: VkDeviceSize) -> Self {
-    self.alignment = value;
-    self
-  }
-  #[inline]
-  pub fn set_memory_type_bits(mut self, value: u32) -> Self {
-    self.memoryTypeBits = value;
-    self
-  }
-  #[inline]
-  pub fn get_size(&self) -> VkDeviceSize {
+  pub fn size(&self) -> VkDeviceSize {
     self.size
   }
   #[inline]
-  pub fn get_alignment(&self) -> VkDeviceSize {
+  pub fn alignment(&self) -> VkDeviceSize {
     self.alignment
   }
   #[inline]
-  pub fn get_memory_type_bits(&self) -> u32 {
+  pub fn memory_type_bits(&self) -> u32 {
     self.memoryTypeBits
-  }
-}
-impl Default for VkMemoryRequirements {
-  fn default() -> VkMemoryRequirements {
-    VkMemoryRequirements::new()
   }
 }
 unsafe impl RawStruct for VkMemoryRequirements {
@@ -3777,40 +2916,16 @@ pub struct VkSparseImageFormatProperties {
 }
 impl VkSparseImageFormatProperties {
   #[inline]
-  pub fn new() -> VkSparseImageFormatProperties {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_aspect_mask(mut self, value: VkImageAspectFlags) -> Self {
-    self.aspectMask = value;
-    self
-  }
-  #[inline]
-  pub fn set_image_granularity(mut self, value: VkExtent3D) -> Self {
-    self.imageGranularity = value;
-    self
-  }
-  #[inline]
-  pub fn set_flags(mut self, value: VkSparseImageFormatFlags) -> Self {
-    self.flags = value;
-    self
-  }
-  #[inline]
-  pub fn get_aspect_mask(&self) -> VkImageAspectFlags {
+  pub fn aspect_mask(&self) -> VkImageAspectFlags {
     self.aspectMask
   }
   #[inline]
-  pub fn get_image_granularity(&self) -> VkExtent3D {
+  pub fn image_granularity(&self) -> VkExtent3D {
     self.imageGranularity
   }
   #[inline]
-  pub fn get_flags(&self) -> VkSparseImageFormatFlags {
+  pub fn flags(&self) -> VkSparseImageFormatFlags {
     self.flags
-  }
-}
-impl Default for VkSparseImageFormatProperties {
-  fn default() -> VkSparseImageFormatProperties {
-    VkSparseImageFormatProperties::new()
   }
 }
 unsafe impl RawStruct for VkSparseImageFormatProperties {
@@ -3837,58 +2952,24 @@ pub struct VkSparseImageMemoryRequirements {
 }
 impl VkSparseImageMemoryRequirements {
   #[inline]
-  pub fn new() -> VkSparseImageMemoryRequirements {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_format_properties(mut self, value: VkSparseImageFormatProperties) -> Self {
-    self.formatProperties = value;
-    self
-  }
-  #[inline]
-  pub fn set_image_mip_tail_first_lod(mut self, value: u32) -> Self {
-    self.imageMipTailFirstLod = value;
-    self
-  }
-  #[inline]
-  pub fn set_image_mip_tail_size(mut self, value: VkDeviceSize) -> Self {
-    self.imageMipTailSize = value;
-    self
-  }
-  #[inline]
-  pub fn set_image_mip_tail_offset(mut self, value: VkDeviceSize) -> Self {
-    self.imageMipTailOffset = value;
-    self
-  }
-  #[inline]
-  pub fn set_image_mip_tail_stride(mut self, value: VkDeviceSize) -> Self {
-    self.imageMipTailStride = value;
-    self
-  }
-  #[inline]
-  pub fn get_format_properties(&self) -> VkSparseImageFormatProperties {
+  pub fn format_properties(&self) -> VkSparseImageFormatProperties {
     self.formatProperties
   }
   #[inline]
-  pub fn get_image_mip_tail_first_lod(&self) -> u32 {
+  pub fn image_mip_tail_first_lod(&self) -> u32 {
     self.imageMipTailFirstLod
   }
   #[inline]
-  pub fn get_image_mip_tail_size(&self) -> VkDeviceSize {
+  pub fn image_mip_tail_size(&self) -> VkDeviceSize {
     self.imageMipTailSize
   }
   #[inline]
-  pub fn get_image_mip_tail_offset(&self) -> VkDeviceSize {
+  pub fn image_mip_tail_offset(&self) -> VkDeviceSize {
     self.imageMipTailOffset
   }
   #[inline]
-  pub fn get_image_mip_tail_stride(&self) -> VkDeviceSize {
+  pub fn image_mip_tail_stride(&self) -> VkDeviceSize {
     self.imageMipTailStride
-  }
-}
-impl Default for VkSparseImageMemoryRequirements {
-  fn default() -> VkSparseImageMemoryRequirements {
-    VkSparseImageMemoryRequirements::new()
   }
 }
 unsafe impl RawStruct for VkSparseImageMemoryRequirements {
@@ -3944,23 +3025,23 @@ impl VkSparseMemoryBind {
     self
   }
   #[inline]
-  pub fn get_resource_offset(&self) -> VkDeviceSize {
+  pub fn resource_offset(&self) -> VkDeviceSize {
     self.resourceOffset
   }
   #[inline]
-  pub fn get_size(&self) -> VkDeviceSize {
+  pub fn size(&self) -> VkDeviceSize {
     self.size
   }
   #[inline]
-  pub fn get_memory(&self) -> Option<VkDeviceMemory> {
+  pub fn memory(&self) -> Option<VkDeviceMemory> {
     self.memory
   }
   #[inline]
-  pub fn get_memory_offset(&self) -> VkDeviceSize {
+  pub fn memory_offset(&self) -> VkDeviceSize {
     self.memoryOffset
   }
   #[inline]
-  pub fn get_flags(&self) -> VkSparseMemoryBindFlags {
+  pub fn flags(&self) -> VkSparseMemoryBindFlags {
     self.flags
   }
 }
@@ -4006,11 +3087,11 @@ impl<'a> VkSparseBufferMemoryBindInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
   #[inline]
-  pub fn get_bind_count(&self) -> u32 {
+  pub fn bind_count(&self) -> u32 {
     self.bindCount
   }
 }
@@ -4059,11 +3140,11 @@ impl<'a> VkSparseImageOpaqueMemoryBindInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage {
     self.image
   }
   #[inline]
-  pub fn get_bind_count(&self) -> u32 {
+  pub fn bind_count(&self) -> u32 {
     self.bindCount
   }
 }
@@ -4113,15 +3194,15 @@ impl VkImageSubresource {
     self
   }
   #[inline]
-  pub fn get_aspect_mask(&self) -> VkImageAspectFlags {
+  pub fn aspect_mask(&self) -> VkImageAspectFlags {
     self.aspectMask
   }
   #[inline]
-  pub fn get_mip_level(&self) -> u32 {
+  pub fn mip_level(&self) -> u32 {
     self.mipLevel
   }
   #[inline]
-  pub fn get_array_layer(&self) -> u32 {
+  pub fn array_layer(&self) -> u32 {
     self.arrayLayer
   }
 }
@@ -4168,15 +3249,15 @@ impl VkOffset3D {
     self
   }
   #[inline]
-  pub fn get_x(&self) -> i32 {
+  pub fn x(&self) -> i32 {
     self.x
   }
   #[inline]
-  pub fn get_y(&self) -> i32 {
+  pub fn y(&self) -> i32 {
     self.y
   }
   #[inline]
-  pub fn get_z(&self) -> i32 {
+  pub fn z(&self) -> i32 {
     self.z
   }
 }
@@ -4241,27 +3322,27 @@ impl VkSparseImageMemoryBind {
     self
   }
   #[inline]
-  pub fn get_subresource(&self) -> VkImageSubresource {
+  pub fn subresource(&self) -> VkImageSubresource {
     self.subresource
   }
   #[inline]
-  pub fn get_offset(&self) -> VkOffset3D {
+  pub fn offset(&self) -> VkOffset3D {
     self.offset
   }
   #[inline]
-  pub fn get_extent(&self) -> VkExtent3D {
+  pub fn extent(&self) -> VkExtent3D {
     self.extent
   }
   #[inline]
-  pub fn get_memory(&self) -> Option<VkDeviceMemory> {
+  pub fn memory(&self) -> Option<VkDeviceMemory> {
     self.memory
   }
   #[inline]
-  pub fn get_memory_offset(&self) -> VkDeviceSize {
+  pub fn memory_offset(&self) -> VkDeviceSize {
     self.memoryOffset
   }
   #[inline]
-  pub fn get_flags(&self) -> VkSparseMemoryBindFlags {
+  pub fn flags(&self) -> VkSparseMemoryBindFlags {
     self.flags
   }
 }
@@ -4307,11 +3388,11 @@ impl<'a> VkSparseImageMemoryBindInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage {
     self.image
   }
   #[inline]
-  pub fn get_bind_count(&self) -> u32 {
+  pub fn bind_count(&self) -> u32 {
     self.bindCount
   }
 }
@@ -4401,31 +3482,31 @@ impl<'a> VkBindSparseInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_wait_semaphore_count(&self) -> u32 {
+  pub fn wait_semaphore_count(&self) -> u32 {
     self.waitSemaphoreCount
   }
   #[inline]
-  pub fn get_buffer_bind_count(&self) -> u32 {
+  pub fn buffer_bind_count(&self) -> u32 {
     self.bufferBindCount
   }
   #[inline]
-  pub fn get_image_opaque_bind_count(&self) -> u32 {
+  pub fn image_opaque_bind_count(&self) -> u32 {
     self.imageOpaqueBindCount
   }
   #[inline]
-  pub fn get_image_bind_count(&self) -> u32 {
+  pub fn image_bind_count(&self) -> u32 {
     self.imageBindCount
   }
   #[inline]
-  pub fn get_signal_semaphore_count(&self) -> u32 {
+  pub fn signal_semaphore_count(&self) -> u32 {
     self.signalSemaphoreCount
   }
 }
@@ -4467,15 +3548,15 @@ impl VkFenceCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkFenceCreateFlags {
+  pub fn flags(&self) -> VkFenceCreateFlags {
     self.flags
   }
 }
@@ -4517,15 +3598,15 @@ impl VkSemaphoreCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkSemaphoreCreateFlags {
+  pub fn flags(&self) -> VkSemaphoreCreateFlags {
     self.flags
   }
 }
@@ -4567,15 +3648,15 @@ impl VkEventCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkEventCreateFlags {
+  pub fn flags(&self) -> VkEventCreateFlags {
     self.flags
   }
 }
@@ -4641,27 +3722,27 @@ impl VkQueryPoolCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkQueryPoolCreateFlags {
+  pub fn flags(&self) -> VkQueryPoolCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_query_type(&self) -> VkQueryType {
+  pub fn query_type(&self) -> VkQueryType {
     self.queryType
   }
   #[inline]
-  pub fn get_query_count(&self) -> u32 {
+  pub fn query_count(&self) -> u32 {
     self.queryCount
   }
   #[inline]
-  pub fn get_pipeline_statistics(&self) -> VkQueryPipelineStatisticFlags {
+  pub fn pipeline_statistics(&self) -> VkQueryPipelineStatisticFlags {
     self.pipelineStatistics
   }
 }
@@ -4738,31 +3819,31 @@ impl<'a> VkBufferCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkBufferCreateFlags {
+  pub fn flags(&self) -> VkBufferCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_size(&self) -> VkDeviceSize {
+  pub fn size(&self) -> VkDeviceSize {
     self.size
   }
   #[inline]
-  pub fn get_usage(&self) -> VkBufferUsageFlags {
+  pub fn usage(&self) -> VkBufferUsageFlags {
     self.usage
   }
   #[inline]
-  pub fn get_sharing_mode(&self) -> VkSharingMode {
+  pub fn sharing_mode(&self) -> VkSharingMode {
     self.sharingMode
   }
   #[inline]
-  pub fn get_queue_family_index_count(&self) -> u32 {
+  pub fn queue_family_index_count(&self) -> u32 {
     self.queueFamilyIndexCount
   }
 }
@@ -4828,31 +3909,31 @@ impl VkBufferViewCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkBufferViewCreateFlags {
+  pub fn flags(&self) -> VkBufferViewCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
   #[inline]
-  pub fn get_format(&self) -> VkFormat {
+  pub fn format(&self) -> VkFormat {
     self.format
   }
   #[inline]
-  pub fn get_offset(&self) -> VkDeviceSize {
+  pub fn offset(&self) -> VkDeviceSize {
     self.offset
   }
   #[inline]
-  pub fn get_range(&self) -> VkDeviceSize {
+  pub fn range(&self) -> VkDeviceSize {
     self.range
   }
 }
@@ -4971,59 +4052,59 @@ impl<'a> VkImageCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkImageCreateFlags {
+  pub fn flags(&self) -> VkImageCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_image_type(&self) -> VkImageType {
+  pub fn image_type(&self) -> VkImageType {
     self.imageType
   }
   #[inline]
-  pub fn get_format(&self) -> VkFormat {
+  pub fn format(&self) -> VkFormat {
     self.format
   }
   #[inline]
-  pub fn get_extent(&self) -> VkExtent3D {
+  pub fn extent(&self) -> VkExtent3D {
     self.extent
   }
   #[inline]
-  pub fn get_mip_levels(&self) -> u32 {
+  pub fn mip_levels(&self) -> u32 {
     self.mipLevels
   }
   #[inline]
-  pub fn get_array_layers(&self) -> u32 {
+  pub fn array_layers(&self) -> u32 {
     self.arrayLayers
   }
   #[inline]
-  pub fn get_samples(&self) -> VkSampleCountFlagBits {
+  pub fn samples(&self) -> VkSampleCountFlagBits {
     self.samples
   }
   #[inline]
-  pub fn get_tiling(&self) -> VkImageTiling {
+  pub fn tiling(&self) -> VkImageTiling {
     self.tiling
   }
   #[inline]
-  pub fn get_usage(&self) -> VkImageUsageFlags {
+  pub fn usage(&self) -> VkImageUsageFlags {
     self.usage
   }
   #[inline]
-  pub fn get_sharing_mode(&self) -> VkSharingMode {
+  pub fn sharing_mode(&self) -> VkSharingMode {
     self.sharingMode
   }
   #[inline]
-  pub fn get_queue_family_index_count(&self) -> u32 {
+  pub fn queue_family_index_count(&self) -> u32 {
     self.queueFamilyIndexCount
   }
   #[inline]
-  pub fn get_initial_layout(&self) -> VkImageLayout {
+  pub fn initial_layout(&self) -> VkImageLayout {
     self.initialLayout
   }
 }
@@ -5053,58 +4134,24 @@ pub struct VkSubresourceLayout {
 }
 impl VkSubresourceLayout {
   #[inline]
-  pub fn new() -> VkSubresourceLayout {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_offset(mut self, value: VkDeviceSize) -> Self {
-    self.offset = value;
-    self
-  }
-  #[inline]
-  pub fn set_size(mut self, value: VkDeviceSize) -> Self {
-    self.size = value;
-    self
-  }
-  #[inline]
-  pub fn set_row_pitch(mut self, value: VkDeviceSize) -> Self {
-    self.rowPitch = value;
-    self
-  }
-  #[inline]
-  pub fn set_array_pitch(mut self, value: VkDeviceSize) -> Self {
-    self.arrayPitch = value;
-    self
-  }
-  #[inline]
-  pub fn set_depth_pitch(mut self, value: VkDeviceSize) -> Self {
-    self.depthPitch = value;
-    self
-  }
-  #[inline]
-  pub fn get_offset(&self) -> VkDeviceSize {
+  pub fn offset(&self) -> VkDeviceSize {
     self.offset
   }
   #[inline]
-  pub fn get_size(&self) -> VkDeviceSize {
+  pub fn size(&self) -> VkDeviceSize {
     self.size
   }
   #[inline]
-  pub fn get_row_pitch(&self) -> VkDeviceSize {
+  pub fn row_pitch(&self) -> VkDeviceSize {
     self.rowPitch
   }
   #[inline]
-  pub fn get_array_pitch(&self) -> VkDeviceSize {
+  pub fn array_pitch(&self) -> VkDeviceSize {
     self.arrayPitch
   }
   #[inline]
-  pub fn get_depth_pitch(&self) -> VkDeviceSize {
+  pub fn depth_pitch(&self) -> VkDeviceSize {
     self.depthPitch
-  }
-}
-impl Default for VkSubresourceLayout {
-  fn default() -> VkSubresourceLayout {
-    VkSubresourceLayout::new()
   }
 }
 unsafe impl RawStruct for VkSubresourceLayout {
@@ -5151,19 +4198,19 @@ impl VkComponentMapping {
     self
   }
   #[inline]
-  pub fn get_r(&self) -> VkComponentSwizzle {
+  pub fn r(&self) -> VkComponentSwizzle {
     self.r
   }
   #[inline]
-  pub fn get_g(&self) -> VkComponentSwizzle {
+  pub fn g(&self) -> VkComponentSwizzle {
     self.g
   }
   #[inline]
-  pub fn get_b(&self) -> VkComponentSwizzle {
+  pub fn b(&self) -> VkComponentSwizzle {
     self.b
   }
   #[inline]
-  pub fn get_a(&self) -> VkComponentSwizzle {
+  pub fn a(&self) -> VkComponentSwizzle {
     self.a
   }
 }
@@ -5235,35 +4282,35 @@ impl VkImageViewCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkImageViewCreateFlags {
+  pub fn flags(&self) -> VkImageViewCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage {
     self.image
   }
   #[inline]
-  pub fn get_view_type(&self) -> VkImageViewType {
+  pub fn view_type(&self) -> VkImageViewType {
     self.viewType
   }
   #[inline]
-  pub fn get_format(&self) -> VkFormat {
+  pub fn format(&self) -> VkFormat {
     self.format
   }
   #[inline]
-  pub fn get_components(&self) -> VkComponentMapping {
+  pub fn components(&self) -> VkComponentMapping {
     self.components
   }
   #[inline]
-  pub fn get_subresource_range(&self) -> VkImageSubresourceRange {
+  pub fn subresource_range(&self) -> VkImageSubresourceRange {
     self.subresourceRange
   }
 }
@@ -5319,19 +4366,19 @@ impl<'a> VkShaderModuleCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkShaderModuleCreateFlags {
+  pub fn flags(&self) -> VkShaderModuleCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_code_size(&self) -> usize {
+  pub fn code_size(&self) -> usize {
     self.codeSize
   }
 }
@@ -5393,19 +4440,19 @@ impl<'a> VkPipelineCacheCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineCacheCreateFlags {
+  pub fn flags(&self) -> VkPipelineCacheCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_initial_data_size(&self) -> usize {
+  pub fn initial_data_size(&self) -> usize {
     self.initialDataSize
   }
 }
@@ -5461,15 +4508,15 @@ impl VkSpecializationMapEntry {
     self
   }
   #[inline]
-  pub fn get_constant_id(&self) -> u32 {
+  pub fn constant_id(&self) -> u32 {
     self.constantID
   }
   #[inline]
-  pub fn get_offset(&self) -> u32 {
+  pub fn offset(&self) -> u32 {
     self.offset
   }
   #[inline]
-  pub fn get_size(&self) -> usize {
+  pub fn size(&self) -> usize {
     self.size
   }
 }
@@ -5522,11 +4569,11 @@ impl<'a> VkSpecializationInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_map_entry_count(&self) -> u32 {
+  pub fn map_entry_count(&self) -> u32 {
     self.mapEntryCount
   }
   #[inline]
-  pub fn get_data_size(&self) -> usize {
+  pub fn data_size(&self) -> usize {
     self.dataSize
   }
 }
@@ -5594,31 +4641,31 @@ impl<'a> VkPipelineShaderStageCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineShaderStageCreateFlags {
+  pub fn flags(&self) -> VkPipelineShaderStageCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_stage(&self) -> VkShaderStageFlagBits {
+  pub fn stage(&self) -> VkShaderStageFlagBits {
     self.stage
   }
   #[inline]
-  pub fn get_module(&self) -> VkShaderModule {
+  pub fn module(&self) -> VkShaderModule {
     self.module
   }
   #[inline]
-  pub fn get_name(&self) -> &'a CStr {
+  pub fn name(&self) -> &'a CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pName) }
   }
   #[inline]
-  pub fn get_specialization_info(&self) -> Option<&'a VkSpecializationInfo<'a>> {
+  pub fn specialization_info(&self) -> Option<&'a VkSpecializationInfo<'a>> {
     self.pSpecializationInfo
   }
 }
@@ -5668,15 +4715,15 @@ impl VkVertexInputBindingDescription {
     self
   }
   #[inline]
-  pub fn get_binding(&self) -> u32 {
+  pub fn binding(&self) -> u32 {
     self.binding
   }
   #[inline]
-  pub fn get_stride(&self) -> u32 {
+  pub fn stride(&self) -> u32 {
     self.stride
   }
   #[inline]
-  pub fn get_input_rate(&self) -> VkVertexInputRate {
+  pub fn input_rate(&self) -> VkVertexInputRate {
     self.inputRate
   }
 }
@@ -5732,19 +4779,19 @@ impl VkVertexInputAttributeDescription {
     self
   }
   #[inline]
-  pub fn get_location(&self) -> u32 {
+  pub fn location(&self) -> u32 {
     self.location
   }
   #[inline]
-  pub fn get_binding(&self) -> u32 {
+  pub fn binding(&self) -> u32 {
     self.binding
   }
   #[inline]
-  pub fn get_format(&self) -> VkFormat {
+  pub fn format(&self) -> VkFormat {
     self.format
   }
   #[inline]
-  pub fn get_offset(&self) -> u32 {
+  pub fn offset(&self) -> u32 {
     self.offset
   }
 }
@@ -5810,23 +4857,23 @@ impl<'a> VkPipelineVertexInputStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineVertexInputStateCreateFlags {
+  pub fn flags(&self) -> VkPipelineVertexInputStateCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_vertex_binding_description_count(&self) -> u32 {
+  pub fn vertex_binding_description_count(&self) -> u32 {
     self.vertexBindingDescriptionCount
   }
   #[inline]
-  pub fn get_vertex_attribute_description_count(&self) -> u32 {
+  pub fn vertex_attribute_description_count(&self) -> u32 {
     self.vertexAttributeDescriptionCount
   }
 }
@@ -5884,19 +4931,19 @@ impl VkPipelineInputAssemblyStateCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineInputAssemblyStateCreateFlags {
+  pub fn flags(&self) -> VkPipelineInputAssemblyStateCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_topology(&self) -> VkPrimitiveTopology {
+  pub fn topology(&self) -> VkPrimitiveTopology {
     self.topology
   }
   #[inline]
@@ -5951,19 +4998,19 @@ impl VkPipelineTessellationStateCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineTessellationStateCreateFlags {
+  pub fn flags(&self) -> VkPipelineTessellationStateCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_patch_control_points(&self) -> u32 {
+  pub fn patch_control_points(&self) -> u32 {
     self.patchControlPoints
   }
 }
@@ -6031,27 +5078,27 @@ impl VkViewport {
     self
   }
   #[inline]
-  pub fn get_x(&self) -> f32 {
+  pub fn x(&self) -> f32 {
     self.x
   }
   #[inline]
-  pub fn get_y(&self) -> f32 {
+  pub fn y(&self) -> f32 {
     self.y
   }
   #[inline]
-  pub fn get_width(&self) -> f32 {
+  pub fn width(&self) -> f32 {
     self.width
   }
   #[inline]
-  pub fn get_height(&self) -> f32 {
+  pub fn height(&self) -> f32 {
     self.height
   }
   #[inline]
-  pub fn get_min_depth(&self) -> f32 {
+  pub fn min_depth(&self) -> f32 {
     self.minDepth
   }
   #[inline]
-  pub fn get_max_depth(&self) -> f32 {
+  pub fn max_depth(&self) -> f32 {
     self.maxDepth
   }
 }
@@ -6092,11 +5139,11 @@ impl VkOffset2D {
     self
   }
   #[inline]
-  pub fn get_x(&self) -> i32 {
+  pub fn x(&self) -> i32 {
     self.x
   }
   #[inline]
-  pub fn get_y(&self) -> i32 {
+  pub fn y(&self) -> i32 {
     self.y
   }
 }
@@ -6137,11 +5184,11 @@ impl VkExtent2D {
     self
   }
   #[inline]
-  pub fn get_width(&self) -> u32 {
+  pub fn width(&self) -> u32 {
     self.width
   }
   #[inline]
-  pub fn get_height(&self) -> u32 {
+  pub fn height(&self) -> u32 {
     self.height
   }
 }
@@ -6182,11 +5229,11 @@ impl VkRect2D {
     self
   }
   #[inline]
-  pub fn get_offset(&self) -> VkOffset2D {
+  pub fn offset(&self) -> VkOffset2D {
     self.offset
   }
   #[inline]
-  pub fn get_extent(&self) -> VkExtent2D {
+  pub fn extent(&self) -> VkExtent2D {
     self.extent
   }
 }
@@ -6249,23 +5296,23 @@ impl<'a> VkPipelineViewportStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineViewportStateCreateFlags {
+  pub fn flags(&self) -> VkPipelineViewportStateCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_viewport_count(&self) -> u32 {
+  pub fn viewport_count(&self) -> u32 {
     self.viewportCount
   }
   #[inline]
-  pub fn get_scissor_count(&self) -> u32 {
+  pub fn scissor_count(&self) -> u32 {
     self.scissorCount
   }
 }
@@ -6373,15 +5420,15 @@ impl VkPipelineRasterizationStateCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineRasterizationStateCreateFlags {
+  pub fn flags(&self) -> VkPipelineRasterizationStateCreateFlags {
     self.flags
   }
   #[inline]
@@ -6393,15 +5440,15 @@ impl VkPipelineRasterizationStateCreateInfo {
     self.rasterizerDiscardEnable != 0
   }
   #[inline]
-  pub fn get_polygon_mode(&self) -> VkPolygonMode {
+  pub fn polygon_mode(&self) -> VkPolygonMode {
     self.polygonMode
   }
   #[inline]
-  pub fn get_cull_mode(&self) -> VkCullModeFlags {
+  pub fn cull_mode(&self) -> VkCullModeFlags {
     self.cullMode
   }
   #[inline]
-  pub fn get_front_face(&self) -> VkFrontFace {
+  pub fn front_face(&self) -> VkFrontFace {
     self.frontFace
   }
   #[inline]
@@ -6409,19 +5456,19 @@ impl VkPipelineRasterizationStateCreateInfo {
     self.depthBiasEnable != 0
   }
   #[inline]
-  pub fn get_depth_bias_constant_factor(&self) -> f32 {
+  pub fn depth_bias_constant_factor(&self) -> f32 {
     self.depthBiasConstantFactor
   }
   #[inline]
-  pub fn get_depth_bias_clamp(&self) -> f32 {
+  pub fn depth_bias_clamp(&self) -> f32 {
     self.depthBiasClamp
   }
   #[inline]
-  pub fn get_depth_bias_slope_factor(&self) -> f32 {
+  pub fn depth_bias_slope_factor(&self) -> f32 {
     self.depthBiasSlopeFactor
   }
   #[inline]
-  pub fn get_line_width(&self) -> f32 {
+  pub fn line_width(&self) -> f32 {
     self.lineWidth
   }
 }
@@ -6501,19 +5548,19 @@ impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineMultisampleStateCreateFlags {
+  pub fn flags(&self) -> VkPipelineMultisampleStateCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_rasterization_samples(&self) -> VkSampleCountFlagBits {
+  pub fn rasterization_samples(&self) -> VkSampleCountFlagBits {
     self.rasterizationSamples
   }
   #[inline]
@@ -6521,7 +5568,7 @@ impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
     self.sampleShadingEnable != 0
   }
   #[inline]
-  pub fn get_min_sample_shading(&self) -> f32 {
+  pub fn min_sample_shading(&self) -> f32 {
     self.minSampleShading
   }
   #[inline]
@@ -6603,31 +5650,31 @@ impl VkStencilOpState {
     self
   }
   #[inline]
-  pub fn get_fail_op(&self) -> VkStencilOp {
+  pub fn fail_op(&self) -> VkStencilOp {
     self.failOp
   }
   #[inline]
-  pub fn get_pass_op(&self) -> VkStencilOp {
+  pub fn pass_op(&self) -> VkStencilOp {
     self.passOp
   }
   #[inline]
-  pub fn get_depth_fail_op(&self) -> VkStencilOp {
+  pub fn depth_fail_op(&self) -> VkStencilOp {
     self.depthFailOp
   }
   #[inline]
-  pub fn get_compare_op(&self) -> VkCompareOp {
+  pub fn compare_op(&self) -> VkCompareOp {
     self.compareOp
   }
   #[inline]
-  pub fn get_compare_mask(&self) -> u32 {
+  pub fn compare_mask(&self) -> u32 {
     self.compareMask
   }
   #[inline]
-  pub fn get_write_mask(&self) -> u32 {
+  pub fn write_mask(&self) -> u32 {
     self.writeMask
   }
   #[inline]
-  pub fn get_reference(&self) -> u32 {
+  pub fn reference(&self) -> u32 {
     self.reference
   }
 }
@@ -6727,15 +5774,15 @@ impl VkPipelineDepthStencilStateCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineDepthStencilStateCreateFlags {
+  pub fn flags(&self) -> VkPipelineDepthStencilStateCreateFlags {
     self.flags
   }
   #[inline]
@@ -6747,7 +5794,7 @@ impl VkPipelineDepthStencilStateCreateInfo {
     self.depthWriteEnable != 0
   }
   #[inline]
-  pub fn get_depth_compare_op(&self) -> VkCompareOp {
+  pub fn depth_compare_op(&self) -> VkCompareOp {
     self.depthCompareOp
   }
   #[inline]
@@ -6759,19 +5806,19 @@ impl VkPipelineDepthStencilStateCreateInfo {
     self.stencilTestEnable != 0
   }
   #[inline]
-  pub fn get_front(&self) -> VkStencilOpState {
+  pub fn front(&self) -> VkStencilOpState {
     self.front
   }
   #[inline]
-  pub fn get_back(&self) -> VkStencilOpState {
+  pub fn back(&self) -> VkStencilOpState {
     self.back
   }
   #[inline]
-  pub fn get_min_depth_bounds(&self) -> f32 {
+  pub fn min_depth_bounds(&self) -> f32 {
     self.minDepthBounds
   }
   #[inline]
-  pub fn get_max_depth_bounds(&self) -> f32 {
+  pub fn max_depth_bounds(&self) -> f32 {
     self.maxDepthBounds
   }
 }
@@ -6856,31 +5903,31 @@ impl VkPipelineColorBlendAttachmentState {
     self.blendEnable != 0
   }
   #[inline]
-  pub fn get_src_color_blend_factor(&self) -> VkBlendFactor {
+  pub fn src_color_blend_factor(&self) -> VkBlendFactor {
     self.srcColorBlendFactor
   }
   #[inline]
-  pub fn get_dst_color_blend_factor(&self) -> VkBlendFactor {
+  pub fn dst_color_blend_factor(&self) -> VkBlendFactor {
     self.dstColorBlendFactor
   }
   #[inline]
-  pub fn get_color_blend_op(&self) -> VkBlendOp {
+  pub fn color_blend_op(&self) -> VkBlendOp {
     self.colorBlendOp
   }
   #[inline]
-  pub fn get_src_alpha_blend_factor(&self) -> VkBlendFactor {
+  pub fn src_alpha_blend_factor(&self) -> VkBlendFactor {
     self.srcAlphaBlendFactor
   }
   #[inline]
-  pub fn get_dst_alpha_blend_factor(&self) -> VkBlendFactor {
+  pub fn dst_alpha_blend_factor(&self) -> VkBlendFactor {
     self.dstAlphaBlendFactor
   }
   #[inline]
-  pub fn get_alpha_blend_op(&self) -> VkBlendOp {
+  pub fn alpha_blend_op(&self) -> VkBlendOp {
     self.alphaBlendOp
   }
   #[inline]
-  pub fn get_color_write_mask(&self) -> VkColorComponentFlags {
+  pub fn color_write_mask(&self) -> VkColorComponentFlags {
     self.colorWriteMask
   }
 }
@@ -6955,15 +6002,15 @@ impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineColorBlendStateCreateFlags {
+  pub fn flags(&self) -> VkPipelineColorBlendStateCreateFlags {
     self.flags
   }
   #[inline]
@@ -6971,15 +6018,15 @@ impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
     self.logicOpEnable != 0
   }
   #[inline]
-  pub fn get_logic_op(&self) -> VkLogicOp {
+  pub fn logic_op(&self) -> VkLogicOp {
     self.logicOp
   }
   #[inline]
-  pub fn get_attachment_count(&self) -> u32 {
+  pub fn attachment_count(&self) -> u32 {
     self.attachmentCount
   }
   #[inline]
-  pub fn get_blend_constants(&self) -> [f32; 4] {
+  pub fn blend_constants(&self) -> [f32; 4] {
     self.blendConstants
   }
 }
@@ -7035,19 +6082,19 @@ impl<'a> VkPipelineDynamicStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineDynamicStateCreateFlags {
+  pub fn flags(&self) -> VkPipelineDynamicStateCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_dynamic_state_count(&self) -> u32 {
+  pub fn dynamic_state_count(&self) -> u32 {
     self.dynamicStateCount
   }
 }
@@ -7204,75 +6251,75 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineCreateFlags {
+  pub fn flags(&self) -> VkPipelineCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_stage_count(&self) -> u32 {
+  pub fn stage_count(&self) -> u32 {
     self.stageCount
   }
   #[inline]
-  pub fn get_vertex_input_state(&self) -> &'a VkPipelineVertexInputStateCreateInfo<'a> {
+  pub fn vertex_input_state(&self) -> &'a VkPipelineVertexInputStateCreateInfo<'a> {
     self.pVertexInputState
   }
   #[inline]
-  pub fn get_input_assembly_state(&self) -> &'a VkPipelineInputAssemblyStateCreateInfo {
+  pub fn input_assembly_state(&self) -> &'a VkPipelineInputAssemblyStateCreateInfo {
     self.pInputAssemblyState
   }
   #[inline]
-  pub fn get_tessellation_state(&self) -> Option<&'a VkPipelineTessellationStateCreateInfo> {
+  pub fn tessellation_state(&self) -> Option<&'a VkPipelineTessellationStateCreateInfo> {
     self.pTessellationState
   }
   #[inline]
-  pub fn get_viewport_state(&self) -> Option<&'a VkPipelineViewportStateCreateInfo<'a>> {
+  pub fn viewport_state(&self) -> Option<&'a VkPipelineViewportStateCreateInfo<'a>> {
     self.pViewportState
   }
   #[inline]
-  pub fn get_rasterization_state(&self) -> &'a VkPipelineRasterizationStateCreateInfo {
+  pub fn rasterization_state(&self) -> &'a VkPipelineRasterizationStateCreateInfo {
     self.pRasterizationState
   }
   #[inline]
-  pub fn get_multisample_state(&self) -> Option<&'a VkPipelineMultisampleStateCreateInfo<'a>> {
+  pub fn multisample_state(&self) -> Option<&'a VkPipelineMultisampleStateCreateInfo<'a>> {
     self.pMultisampleState
   }
   #[inline]
-  pub fn get_depth_stencil_state(&self) -> Option<&'a VkPipelineDepthStencilStateCreateInfo> {
+  pub fn depth_stencil_state(&self) -> Option<&'a VkPipelineDepthStencilStateCreateInfo> {
     self.pDepthStencilState
   }
   #[inline]
-  pub fn get_color_blend_state(&self) -> Option<&'a VkPipelineColorBlendStateCreateInfo<'a>> {
+  pub fn color_blend_state(&self) -> Option<&'a VkPipelineColorBlendStateCreateInfo<'a>> {
     self.pColorBlendState
   }
   #[inline]
-  pub fn get_dynamic_state(&self) -> Option<&'a VkPipelineDynamicStateCreateInfo<'a>> {
+  pub fn dynamic_state(&self) -> Option<&'a VkPipelineDynamicStateCreateInfo<'a>> {
     self.pDynamicState
   }
   #[inline]
-  pub fn get_layout(&self) -> VkPipelineLayout {
+  pub fn layout(&self) -> VkPipelineLayout {
     self.layout
   }
   #[inline]
-  pub fn get_render_pass(&self) -> VkRenderPass {
+  pub fn render_pass(&self) -> VkRenderPass {
     self.renderPass
   }
   #[inline]
-  pub fn get_subpass(&self) -> u32 {
+  pub fn subpass(&self) -> u32 {
     self.subpass
   }
   #[inline]
-  pub fn get_base_pipeline_handle(&self) -> Option<VkPipeline> {
+  pub fn base_pipeline_handle(&self) -> Option<VkPipeline> {
     self.basePipelineHandle
   }
   #[inline]
-  pub fn get_base_pipeline_index(&self) -> i32 {
+  pub fn base_pipeline_index(&self) -> i32 {
     self.basePipelineIndex
   }
 }
@@ -7341,31 +6388,31 @@ impl<'a> VkComputePipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineCreateFlags {
+  pub fn flags(&self) -> VkPipelineCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_stage(&self) -> VkPipelineShaderStageCreateInfo<'a> {
+  pub fn stage(&self) -> VkPipelineShaderStageCreateInfo<'a> {
     self.stage
   }
   #[inline]
-  pub fn get_layout(&self) -> VkPipelineLayout {
+  pub fn layout(&self) -> VkPipelineLayout {
     self.layout
   }
   #[inline]
-  pub fn get_base_pipeline_handle(&self) -> Option<VkPipeline> {
+  pub fn base_pipeline_handle(&self) -> Option<VkPipeline> {
     self.basePipelineHandle
   }
   #[inline]
-  pub fn get_base_pipeline_index(&self) -> i32 {
+  pub fn base_pipeline_index(&self) -> i32 {
     self.basePipelineIndex
   }
 }
@@ -7421,15 +6468,15 @@ impl VkPushConstantRange {
     self
   }
   #[inline]
-  pub fn get_stage_flags(&self) -> VkShaderStageFlags {
+  pub fn stage_flags(&self) -> VkShaderStageFlags {
     self.stageFlags
   }
   #[inline]
-  pub fn get_offset(&self) -> u32 {
+  pub fn offset(&self) -> u32 {
     self.offset
   }
   #[inline]
-  pub fn get_size(&self) -> u32 {
+  pub fn size(&self) -> u32 {
     self.size
   }
 }
@@ -7492,23 +6539,23 @@ impl<'a> VkPipelineLayoutCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineLayoutCreateFlags {
+  pub fn flags(&self) -> VkPipelineLayoutCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_set_layout_count(&self) -> u32 {
+  pub fn set_layout_count(&self) -> u32 {
     self.setLayoutCount
   }
   #[inline]
-  pub fn get_push_constant_range_count(&self) -> u32 {
+  pub fn push_constant_range_count(&self) -> u32 {
     self.pushConstantRangeCount
   }
 }
@@ -7646,43 +6693,43 @@ impl VkSamplerCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkSamplerCreateFlags {
+  pub fn flags(&self) -> VkSamplerCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_mag_filter(&self) -> VkFilter {
+  pub fn mag_filter(&self) -> VkFilter {
     self.magFilter
   }
   #[inline]
-  pub fn get_min_filter(&self) -> VkFilter {
+  pub fn min_filter(&self) -> VkFilter {
     self.minFilter
   }
   #[inline]
-  pub fn get_mipmap_mode(&self) -> VkSamplerMipmapMode {
+  pub fn mipmap_mode(&self) -> VkSamplerMipmapMode {
     self.mipmapMode
   }
   #[inline]
-  pub fn get_address_mode_u(&self) -> VkSamplerAddressMode {
+  pub fn address_mode_u(&self) -> VkSamplerAddressMode {
     self.addressModeU
   }
   #[inline]
-  pub fn get_address_mode_v(&self) -> VkSamplerAddressMode {
+  pub fn address_mode_v(&self) -> VkSamplerAddressMode {
     self.addressModeV
   }
   #[inline]
-  pub fn get_address_mode_w(&self) -> VkSamplerAddressMode {
+  pub fn address_mode_w(&self) -> VkSamplerAddressMode {
     self.addressModeW
   }
   #[inline]
-  pub fn get_mip_lod_bias(&self) -> f32 {
+  pub fn mip_lod_bias(&self) -> f32 {
     self.mipLodBias
   }
   #[inline]
@@ -7690,7 +6737,7 @@ impl VkSamplerCreateInfo {
     self.anisotropyEnable != 0
   }
   #[inline]
-  pub fn get_max_anisotropy(&self) -> f32 {
+  pub fn max_anisotropy(&self) -> f32 {
     self.maxAnisotropy
   }
   #[inline]
@@ -7698,19 +6745,19 @@ impl VkSamplerCreateInfo {
     self.compareEnable != 0
   }
   #[inline]
-  pub fn get_compare_op(&self) -> VkCompareOp {
+  pub fn compare_op(&self) -> VkCompareOp {
     self.compareOp
   }
   #[inline]
-  pub fn get_min_lod(&self) -> f32 {
+  pub fn min_lod(&self) -> f32 {
     self.minLod
   }
   #[inline]
-  pub fn get_max_lod(&self) -> f32 {
+  pub fn max_lod(&self) -> f32 {
     self.maxLod
   }
   #[inline]
-  pub fn get_border_color(&self) -> VkBorderColor {
+  pub fn border_color(&self) -> VkBorderColor {
     self.borderColor
   }
   #[inline]
@@ -7778,19 +6825,19 @@ impl<'a> VkDescriptorSetLayoutBinding<'a> {
     self
   }
   #[inline]
-  pub fn get_binding(&self) -> u32 {
+  pub fn binding(&self) -> u32 {
     self.binding
   }
   #[inline]
-  pub fn get_descriptor_type(&self) -> VkDescriptorType {
+  pub fn descriptor_type(&self) -> VkDescriptorType {
     self.descriptorType
   }
   #[inline]
-  pub fn get_descriptor_count(&self) -> u32 {
+  pub fn descriptor_count(&self) -> u32 {
     self.descriptorCount
   }
   #[inline]
-  pub fn get_stage_flags(&self) -> VkShaderStageFlags {
+  pub fn stage_flags(&self) -> VkShaderStageFlags {
     self.stageFlags
   }
 }
@@ -7846,19 +6893,19 @@ impl<'a> VkDescriptorSetLayoutCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkDescriptorSetLayoutCreateFlags {
+  pub fn flags(&self) -> VkDescriptorSetLayoutCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_binding_count(&self) -> u32 {
+  pub fn binding_count(&self) -> u32 {
     self.bindingCount
   }
 }
@@ -7906,7 +6953,7 @@ impl VkDescriptorPoolSize {
     self.eType
   }
   #[inline]
-  pub fn get_descriptor_count(&self) -> u32 {
+  pub fn descriptor_count(&self) -> u32 {
     self.descriptorCount
   }
 }
@@ -7965,23 +7012,23 @@ impl<'a> VkDescriptorPoolCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkDescriptorPoolCreateFlags {
+  pub fn flags(&self) -> VkDescriptorPoolCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_max_sets(&self) -> u32 {
+  pub fn max_sets(&self) -> u32 {
     self.maxSets
   }
   #[inline]
-  pub fn get_pool_size_count(&self) -> u32 {
+  pub fn pool_size_count(&self) -> u32 {
     self.poolSizeCount
   }
 }
@@ -8043,19 +7090,19 @@ impl<'a> VkDescriptorSetAllocateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_descriptor_pool(&self) -> VkDescriptorPool {
+  pub fn descriptor_pool(&self) -> VkDescriptorPool {
     self.descriptorPool
   }
   #[inline]
-  pub fn get_descriptor_set_count(&self) -> u32 {
+  pub fn descriptor_set_count(&self) -> u32 {
     self.descriptorSetCount
   }
 }
@@ -8111,15 +7158,15 @@ impl VkDescriptorImageInfo {
     self
   }
   #[inline]
-  pub fn get_sampler(&self) -> VkSampler {
+  pub fn sampler(&self) -> VkSampler {
     self.sampler
   }
   #[inline]
-  pub fn get_image_view(&self) -> VkImageView {
+  pub fn image_view(&self) -> VkImageView {
     self.imageView
   }
   #[inline]
-  pub fn get_image_layout(&self) -> VkImageLayout {
+  pub fn image_layout(&self) -> VkImageLayout {
     self.imageLayout
   }
 }
@@ -8166,15 +7213,15 @@ impl VkDescriptorBufferInfo {
     self
   }
   #[inline]
-  pub fn get_buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
   #[inline]
-  pub fn get_offset(&self) -> VkDeviceSize {
+  pub fn offset(&self) -> VkDeviceSize {
     self.offset
   }
   #[inline]
-  pub fn get_range(&self) -> VkDeviceSize {
+  pub fn range(&self) -> VkDeviceSize {
     self.range
   }
 }
@@ -8239,31 +7286,31 @@ impl<'a> VkWriteDescriptorSet<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_dst_set(&self) -> VkDescriptorSet {
+  pub fn dst_set(&self) -> VkDescriptorSet {
     self.dstSet
   }
   #[inline]
-  pub fn get_dst_binding(&self) -> u32 {
+  pub fn dst_binding(&self) -> u32 {
     self.dstBinding
   }
   #[inline]
-  pub fn get_dst_array_element(&self) -> u32 {
+  pub fn dst_array_element(&self) -> u32 {
     self.dstArrayElement
   }
   #[inline]
-  pub fn get_descriptor_count(&self) -> u32 {
+  pub fn descriptor_count(&self) -> u32 {
     self.descriptorCount
   }
   #[inline]
-  pub fn get_descriptor_type(&self) -> VkDescriptorType {
+  pub fn descriptor_type(&self) -> VkDescriptorType {
     self.descriptorType
   }
 }
@@ -8341,39 +7388,39 @@ impl VkCopyDescriptorSet {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_src_set(&self) -> VkDescriptorSet {
+  pub fn src_set(&self) -> VkDescriptorSet {
     self.srcSet
   }
   #[inline]
-  pub fn get_src_binding(&self) -> u32 {
+  pub fn src_binding(&self) -> u32 {
     self.srcBinding
   }
   #[inline]
-  pub fn get_src_array_element(&self) -> u32 {
+  pub fn src_array_element(&self) -> u32 {
     self.srcArrayElement
   }
   #[inline]
-  pub fn get_dst_set(&self) -> VkDescriptorSet {
+  pub fn dst_set(&self) -> VkDescriptorSet {
     self.dstSet
   }
   #[inline]
-  pub fn get_dst_binding(&self) -> u32 {
+  pub fn dst_binding(&self) -> u32 {
     self.dstBinding
   }
   #[inline]
-  pub fn get_dst_array_element(&self) -> u32 {
+  pub fn dst_array_element(&self) -> u32 {
     self.dstArrayElement
   }
   #[inline]
-  pub fn get_descriptor_count(&self) -> u32 {
+  pub fn descriptor_count(&self) -> u32 {
     self.descriptorCount
   }
 }
@@ -8450,35 +7497,35 @@ impl<'a> VkFramebufferCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkFramebufferCreateFlags {
+  pub fn flags(&self) -> VkFramebufferCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_render_pass(&self) -> VkRenderPass {
+  pub fn render_pass(&self) -> VkRenderPass {
     self.renderPass
   }
   #[inline]
-  pub fn get_attachment_count(&self) -> u32 {
+  pub fn attachment_count(&self) -> u32 {
     self.attachmentCount
   }
   #[inline]
-  pub fn get_width(&self) -> u32 {
+  pub fn width(&self) -> u32 {
     self.width
   }
   #[inline]
-  pub fn get_height(&self) -> u32 {
+  pub fn height(&self) -> u32 {
     self.height
   }
   #[inline]
-  pub fn get_layers(&self) -> u32 {
+  pub fn layers(&self) -> u32 {
     self.layers
   }
 }
@@ -8567,39 +7614,39 @@ impl VkAttachmentDescription {
     self
   }
   #[inline]
-  pub fn get_flags(&self) -> VkAttachmentDescriptionFlags {
+  pub fn flags(&self) -> VkAttachmentDescriptionFlags {
     self.flags
   }
   #[inline]
-  pub fn get_format(&self) -> VkFormat {
+  pub fn format(&self) -> VkFormat {
     self.format
   }
   #[inline]
-  pub fn get_samples(&self) -> VkSampleCountFlagBits {
+  pub fn samples(&self) -> VkSampleCountFlagBits {
     self.samples
   }
   #[inline]
-  pub fn get_load_op(&self) -> VkAttachmentLoadOp {
+  pub fn load_op(&self) -> VkAttachmentLoadOp {
     self.loadOp
   }
   #[inline]
-  pub fn get_store_op(&self) -> VkAttachmentStoreOp {
+  pub fn store_op(&self) -> VkAttachmentStoreOp {
     self.storeOp
   }
   #[inline]
-  pub fn get_stencil_load_op(&self) -> VkAttachmentLoadOp {
+  pub fn stencil_load_op(&self) -> VkAttachmentLoadOp {
     self.stencilLoadOp
   }
   #[inline]
-  pub fn get_stencil_store_op(&self) -> VkAttachmentStoreOp {
+  pub fn stencil_store_op(&self) -> VkAttachmentStoreOp {
     self.stencilStoreOp
   }
   #[inline]
-  pub fn get_initial_layout(&self) -> VkImageLayout {
+  pub fn initial_layout(&self) -> VkImageLayout {
     self.initialLayout
   }
   #[inline]
-  pub fn get_final_layout(&self) -> VkImageLayout {
+  pub fn final_layout(&self) -> VkImageLayout {
     self.finalLayout
   }
 }
@@ -8640,11 +7687,11 @@ impl VkAttachmentReference {
     self
   }
   #[inline]
-  pub fn get_attachment(&self) -> u32 {
+  pub fn attachment(&self) -> u32 {
     self.attachment
   }
   #[inline]
-  pub fn get_layout(&self) -> VkImageLayout {
+  pub fn layout(&self) -> VkImageLayout {
     self.layout
   }
 }
@@ -8714,27 +7761,27 @@ impl<'a> VkSubpassDescription<'a> {
     self
   }
   #[inline]
-  pub fn get_flags(&self) -> VkSubpassDescriptionFlags {
+  pub fn flags(&self) -> VkSubpassDescriptionFlags {
     self.flags
   }
   #[inline]
-  pub fn get_pipeline_bind_point(&self) -> VkPipelineBindPoint {
+  pub fn pipeline_bind_point(&self) -> VkPipelineBindPoint {
     self.pipelineBindPoint
   }
   #[inline]
-  pub fn get_input_attachment_count(&self) -> u32 {
+  pub fn input_attachment_count(&self) -> u32 {
     self.inputAttachmentCount
   }
   #[inline]
-  pub fn get_color_attachment_count(&self) -> u32 {
+  pub fn color_attachment_count(&self) -> u32 {
     self.colorAttachmentCount
   }
   #[inline]
-  pub fn get_depth_stencil_attachment(&self) -> Option<&'a VkAttachmentReference> {
+  pub fn depth_stencil_attachment(&self) -> Option<&'a VkAttachmentReference> {
     self.pDepthStencilAttachment
   }
   #[inline]
-  pub fn get_preserve_attachment_count(&self) -> u32 {
+  pub fn preserve_attachment_count(&self) -> u32 {
     self.preserveAttachmentCount
   }
 }
@@ -8805,31 +7852,31 @@ impl VkSubpassDependency {
     self
   }
   #[inline]
-  pub fn get_src_subpass(&self) -> u32 {
+  pub fn src_subpass(&self) -> u32 {
     self.srcSubpass
   }
   #[inline]
-  pub fn get_dst_subpass(&self) -> u32 {
+  pub fn dst_subpass(&self) -> u32 {
     self.dstSubpass
   }
   #[inline]
-  pub fn get_src_stage_mask(&self) -> VkPipelineStageFlags {
+  pub fn src_stage_mask(&self) -> VkPipelineStageFlags {
     self.srcStageMask
   }
   #[inline]
-  pub fn get_dst_stage_mask(&self) -> VkPipelineStageFlags {
+  pub fn dst_stage_mask(&self) -> VkPipelineStageFlags {
     self.dstStageMask
   }
   #[inline]
-  pub fn get_src_access_mask(&self) -> VkAccessFlags {
+  pub fn src_access_mask(&self) -> VkAccessFlags {
     self.srcAccessMask
   }
   #[inline]
-  pub fn get_dst_access_mask(&self) -> VkAccessFlags {
+  pub fn dst_access_mask(&self) -> VkAccessFlags {
     self.dstAccessMask
   }
   #[inline]
-  pub fn get_dependency_flags(&self) -> VkDependencyFlags {
+  pub fn dependency_flags(&self) -> VkDependencyFlags {
     self.dependencyFlags
   }
 }
@@ -8902,27 +7949,27 @@ impl<'a> VkRenderPassCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkRenderPassCreateFlags {
+  pub fn flags(&self) -> VkRenderPassCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_attachment_count(&self) -> u32 {
+  pub fn attachment_count(&self) -> u32 {
     self.attachmentCount
   }
   #[inline]
-  pub fn get_subpass_count(&self) -> u32 {
+  pub fn subpass_count(&self) -> u32 {
     self.subpassCount
   }
   #[inline]
-  pub fn get_dependency_count(&self) -> u32 {
+  pub fn dependency_count(&self) -> u32 {
     self.dependencyCount
   }
 }
@@ -8970,19 +8017,19 @@ impl VkCommandPoolCreateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkCommandPoolCreateFlags {
+  pub fn flags(&self) -> VkCommandPoolCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_queue_family_index(&self) -> u32 {
+  pub fn queue_family_index(&self) -> u32 {
     self.queueFamilyIndex
   }
 }
@@ -9042,23 +8089,23 @@ impl VkCommandBufferAllocateInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_command_pool(&self) -> VkCommandPool {
+  pub fn command_pool(&self) -> VkCommandPool {
     self.commandPool
   }
   #[inline]
-  pub fn get_level(&self) -> VkCommandBufferLevel {
+  pub fn level(&self) -> VkCommandBufferLevel {
     self.level
   }
   #[inline]
-  pub fn get_command_buffer_count(&self) -> u32 {
+  pub fn command_buffer_count(&self) -> u32 {
     self.commandBufferCount
   }
 }
@@ -9134,23 +8181,23 @@ impl VkCommandBufferInheritanceInfo {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_render_pass(&self) -> Option<VkRenderPass> {
+  pub fn render_pass(&self) -> Option<VkRenderPass> {
     self.renderPass
   }
   #[inline]
-  pub fn get_subpass(&self) -> u32 {
+  pub fn subpass(&self) -> u32 {
     self.subpass
   }
   #[inline]
-  pub fn get_framebuffer(&self) -> Option<VkFramebuffer> {
+  pub fn framebuffer(&self) -> Option<VkFramebuffer> {
     self.framebuffer
   }
   #[inline]
@@ -9158,11 +8205,11 @@ impl VkCommandBufferInheritanceInfo {
     self.occlusionQueryEnable != 0
   }
   #[inline]
-  pub fn get_query_flags(&self) -> VkQueryControlFlags {
+  pub fn query_flags(&self) -> VkQueryControlFlags {
     self.queryFlags
   }
   #[inline]
-  pub fn get_pipeline_statistics(&self) -> VkQueryPipelineStatisticFlags {
+  pub fn pipeline_statistics(&self) -> VkQueryPipelineStatisticFlags {
     self.pipelineStatistics
   }
 }
@@ -9213,19 +8260,19 @@ impl<'a> VkCommandBufferBeginInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkCommandBufferUsageFlags {
+  pub fn flags(&self) -> VkCommandBufferUsageFlags {
     self.flags
   }
   #[inline]
-  pub fn get_inheritance_info(&self) -> Option<&'a VkCommandBufferInheritanceInfo> {
+  pub fn inheritance_info(&self) -> Option<&'a VkCommandBufferInheritanceInfo> {
     self.pInheritanceInfo
   }
 }
@@ -9275,15 +8322,15 @@ impl VkBufferCopy {
     self
   }
   #[inline]
-  pub fn get_src_offset(&self) -> VkDeviceSize {
+  pub fn src_offset(&self) -> VkDeviceSize {
     self.srcOffset
   }
   #[inline]
-  pub fn get_dst_offset(&self) -> VkDeviceSize {
+  pub fn dst_offset(&self) -> VkDeviceSize {
     self.dstOffset
   }
   #[inline]
-  pub fn get_size(&self) -> VkDeviceSize {
+  pub fn size(&self) -> VkDeviceSize {
     self.size
   }
 }
@@ -9336,19 +8383,19 @@ impl VkImageSubresourceLayers {
     self
   }
   #[inline]
-  pub fn get_aspect_mask(&self) -> VkImageAspectFlags {
+  pub fn aspect_mask(&self) -> VkImageAspectFlags {
     self.aspectMask
   }
   #[inline]
-  pub fn get_mip_level(&self) -> u32 {
+  pub fn mip_level(&self) -> u32 {
     self.mipLevel
   }
   #[inline]
-  pub fn get_base_array_layer(&self) -> u32 {
+  pub fn base_array_layer(&self) -> u32 {
     self.baseArrayLayer
   }
   #[inline]
-  pub fn get_layer_count(&self) -> u32 {
+  pub fn layer_count(&self) -> u32 {
     self.layerCount
   }
 }
@@ -9410,23 +8457,23 @@ impl VkImageCopy {
     self
   }
   #[inline]
-  pub fn get_src_subresource(&self) -> VkImageSubresourceLayers {
+  pub fn src_subresource(&self) -> VkImageSubresourceLayers {
     self.srcSubresource
   }
   #[inline]
-  pub fn get_src_offset(&self) -> VkOffset3D {
+  pub fn src_offset(&self) -> VkOffset3D {
     self.srcOffset
   }
   #[inline]
-  pub fn get_dst_subresource(&self) -> VkImageSubresourceLayers {
+  pub fn dst_subresource(&self) -> VkImageSubresourceLayers {
     self.dstSubresource
   }
   #[inline]
-  pub fn get_dst_offset(&self) -> VkOffset3D {
+  pub fn dst_offset(&self) -> VkOffset3D {
     self.dstOffset
   }
   #[inline]
-  pub fn get_extent(&self) -> VkExtent3D {
+  pub fn extent(&self) -> VkExtent3D {
     self.extent
   }
 }
@@ -9479,19 +8526,19 @@ impl VkImageBlit {
     self
   }
   #[inline]
-  pub fn get_src_subresource(&self) -> VkImageSubresourceLayers {
+  pub fn src_subresource(&self) -> VkImageSubresourceLayers {
     self.srcSubresource
   }
   #[inline]
-  pub fn get_src_offsets(&self) -> [VkOffset3D; 2] {
+  pub fn src_offsets(&self) -> [VkOffset3D; 2] {
     self.srcOffsets
   }
   #[inline]
-  pub fn get_dst_subresource(&self) -> VkImageSubresourceLayers {
+  pub fn dst_subresource(&self) -> VkImageSubresourceLayers {
     self.dstSubresource
   }
   #[inline]
-  pub fn get_dst_offsets(&self) -> [VkOffset3D; 2] {
+  pub fn dst_offsets(&self) -> [VkOffset3D; 2] {
     self.dstOffsets
   }
 }
@@ -9556,27 +8603,27 @@ impl VkBufferImageCopy {
     self
   }
   #[inline]
-  pub fn get_buffer_offset(&self) -> VkDeviceSize {
+  pub fn buffer_offset(&self) -> VkDeviceSize {
     self.bufferOffset
   }
   #[inline]
-  pub fn get_buffer_row_length(&self) -> u32 {
+  pub fn buffer_row_length(&self) -> u32 {
     self.bufferRowLength
   }
   #[inline]
-  pub fn get_buffer_image_height(&self) -> u32 {
+  pub fn buffer_image_height(&self) -> u32 {
     self.bufferImageHeight
   }
   #[inline]
-  pub fn get_image_subresource(&self) -> VkImageSubresourceLayers {
+  pub fn image_subresource(&self) -> VkImageSubresourceLayers {
     self.imageSubresource
   }
   #[inline]
-  pub fn get_image_offset(&self) -> VkOffset3D {
+  pub fn image_offset(&self) -> VkOffset3D {
     self.imageOffset
   }
   #[inline]
-  pub fn get_image_extent(&self) -> VkExtent3D {
+  pub fn image_extent(&self) -> VkExtent3D {
     self.imageExtent
   }
 }
@@ -9634,11 +8681,11 @@ impl VkClearDepthStencilValue {
     self
   }
   #[inline]
-  pub fn get_depth(&self) -> f32 {
+  pub fn depth(&self) -> f32 {
     self.depth
   }
   #[inline]
-  pub fn get_stencil(&self) -> u32 {
+  pub fn stencil(&self) -> u32 {
     self.stencil
   }
 }
@@ -9704,15 +8751,15 @@ impl VkClearAttachment {
     self
   }
   #[inline]
-  pub fn get_aspect_mask(&self) -> VkImageAspectFlags {
+  pub fn aspect_mask(&self) -> VkImageAspectFlags {
     self.aspectMask
   }
   #[inline]
-  pub fn get_color_attachment(&self) -> u32 {
+  pub fn color_attachment(&self) -> u32 {
     self.colorAttachment
   }
   #[inline]
-  pub fn get_clear_value(&self) -> VkClearValue {
+  pub fn clear_value(&self) -> VkClearValue {
     self.clearValue
   }
 }
@@ -9759,15 +8806,15 @@ impl VkClearRect {
     self
   }
   #[inline]
-  pub fn get_rect(&self) -> VkRect2D {
+  pub fn rect(&self) -> VkRect2D {
     self.rect
   }
   #[inline]
-  pub fn get_base_array_layer(&self) -> u32 {
+  pub fn base_array_layer(&self) -> u32 {
     self.baseArrayLayer
   }
   #[inline]
-  pub fn get_layer_count(&self) -> u32 {
+  pub fn layer_count(&self) -> u32 {
     self.layerCount
   }
 }
@@ -9826,23 +8873,23 @@ impl VkImageResolve {
     self
   }
   #[inline]
-  pub fn get_src_subresource(&self) -> VkImageSubresourceLayers {
+  pub fn src_subresource(&self) -> VkImageSubresourceLayers {
     self.srcSubresource
   }
   #[inline]
-  pub fn get_src_offset(&self) -> VkOffset3D {
+  pub fn src_offset(&self) -> VkOffset3D {
     self.srcOffset
   }
   #[inline]
-  pub fn get_dst_subresource(&self) -> VkImageSubresourceLayers {
+  pub fn dst_subresource(&self) -> VkImageSubresourceLayers {
     self.dstSubresource
   }
   #[inline]
-  pub fn get_dst_offset(&self) -> VkOffset3D {
+  pub fn dst_offset(&self) -> VkOffset3D {
     self.dstOffset
   }
   #[inline]
-  pub fn get_extent(&self) -> VkExtent3D {
+  pub fn extent(&self) -> VkExtent3D {
     self.extent
   }
 }
@@ -9907,27 +8954,27 @@ impl<'a> VkRenderPassBeginInfo<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_render_pass(&self) -> VkRenderPass {
+  pub fn render_pass(&self) -> VkRenderPass {
     self.renderPass
   }
   #[inline]
-  pub fn get_framebuffer(&self) -> VkFramebuffer {
+  pub fn framebuffer(&self) -> VkFramebuffer {
     self.framebuffer
   }
   #[inline]
-  pub fn get_render_area(&self) -> VkRect2D {
+  pub fn render_area(&self) -> VkRect2D {
     self.renderArea
   }
   #[inline]
-  pub fn get_clear_value_count(&self) -> u32 {
+  pub fn clear_value_count(&self) -> u32 {
     self.clearValueCount
   }
 }
@@ -9974,104 +9021,44 @@ pub struct VkSurfaceCapabilitiesKHR {
 #[cfg(feature = "VK_KHR_surface")]
 impl VkSurfaceCapabilitiesKHR {
   #[inline]
-  pub fn new() -> VkSurfaceCapabilitiesKHR {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_min_image_count(mut self, value: u32) -> Self {
-    self.minImageCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_count(mut self, value: u32) -> Self {
-    self.maxImageCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_current_extent(mut self, value: VkExtent2D) -> Self {
-    self.currentExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_image_extent(mut self, value: VkExtent2D) -> Self {
-    self.minImageExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_extent(mut self, value: VkExtent2D) -> Self {
-    self.maxImageExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_array_layers(mut self, value: u32) -> Self {
-    self.maxImageArrayLayers = value;
-    self
-  }
-  #[inline]
-  pub fn set_supported_transforms(mut self, value: VkSurfaceTransformFlagsKHR) -> Self {
-    self.supportedTransforms = value;
-    self
-  }
-  #[inline]
-  pub fn set_current_transform(mut self, value: VkSurfaceTransformFlagBitsKHR) -> Self {
-    self.currentTransform = value;
-    self
-  }
-  #[inline]
-  pub fn set_supported_composite_alpha(mut self, value: VkCompositeAlphaFlagsKHR) -> Self {
-    self.supportedCompositeAlpha = value;
-    self
-  }
-  #[inline]
-  pub fn set_supported_usage_flags(mut self, value: VkImageUsageFlags) -> Self {
-    self.supportedUsageFlags = value;
-    self
-  }
-  #[inline]
-  pub fn get_min_image_count(&self) -> u32 {
+  pub fn min_image_count(&self) -> u32 {
     self.minImageCount
   }
   #[inline]
-  pub fn get_max_image_count(&self) -> u32 {
+  pub fn max_image_count(&self) -> u32 {
     self.maxImageCount
   }
   #[inline]
-  pub fn get_current_extent(&self) -> VkExtent2D {
+  pub fn current_extent(&self) -> VkExtent2D {
     self.currentExtent
   }
   #[inline]
-  pub fn get_min_image_extent(&self) -> VkExtent2D {
+  pub fn min_image_extent(&self) -> VkExtent2D {
     self.minImageExtent
   }
   #[inline]
-  pub fn get_max_image_extent(&self) -> VkExtent2D {
+  pub fn max_image_extent(&self) -> VkExtent2D {
     self.maxImageExtent
   }
   #[inline]
-  pub fn get_max_image_array_layers(&self) -> u32 {
+  pub fn max_image_array_layers(&self) -> u32 {
     self.maxImageArrayLayers
   }
   #[inline]
-  pub fn get_supported_transforms(&self) -> VkSurfaceTransformFlagsKHR {
+  pub fn supported_transforms(&self) -> VkSurfaceTransformFlagsKHR {
     self.supportedTransforms
   }
   #[inline]
-  pub fn get_current_transform(&self) -> VkSurfaceTransformFlagBitsKHR {
+  pub fn current_transform(&self) -> VkSurfaceTransformFlagBitsKHR {
     self.currentTransform
   }
   #[inline]
-  pub fn get_supported_composite_alpha(&self) -> VkCompositeAlphaFlagsKHR {
+  pub fn supported_composite_alpha(&self) -> VkCompositeAlphaFlagsKHR {
     self.supportedCompositeAlpha
   }
   #[inline]
-  pub fn get_supported_usage_flags(&self) -> VkImageUsageFlags {
+  pub fn supported_usage_flags(&self) -> VkImageUsageFlags {
     self.supportedUsageFlags
-  }
-}
-#[cfg(feature = "VK_KHR_surface")]
-impl Default for VkSurfaceCapabilitiesKHR {
-  fn default() -> VkSurfaceCapabilitiesKHR {
-    VkSurfaceCapabilitiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_surface")]
@@ -10099,32 +9086,12 @@ pub struct VkSurfaceFormatKHR {
 #[cfg(feature = "VK_KHR_surface")]
 impl VkSurfaceFormatKHR {
   #[inline]
-  pub fn new() -> VkSurfaceFormatKHR {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_format(mut self, value: VkFormat) -> Self {
-    self.format = value;
-    self
-  }
-  #[inline]
-  pub fn set_color_space(mut self, value: VkColorSpaceKHR) -> Self {
-    self.colorSpace = value;
-    self
-  }
-  #[inline]
-  pub fn get_format(&self) -> VkFormat {
+  pub fn format(&self) -> VkFormat {
     self.format
   }
   #[inline]
-  pub fn get_color_space(&self) -> VkColorSpaceKHR {
+  pub fn color_space(&self) -> VkColorSpaceKHR {
     self.colorSpace
-  }
-}
-#[cfg(feature = "VK_KHR_surface")]
-impl Default for VkSurfaceFormatKHR {
-  fn default() -> VkSurfaceFormatKHR {
-    VkSurfaceFormatKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_surface")]
@@ -10264,63 +9231,63 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkSwapchainCreateFlagsKHR {
+  pub fn flags(&self) -> VkSwapchainCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_surface(&self) -> VkSurfaceKHR {
+  pub fn surface(&self) -> VkSurfaceKHR {
     self.surface
   }
   #[inline]
-  pub fn get_min_image_count(&self) -> u32 {
+  pub fn min_image_count(&self) -> u32 {
     self.minImageCount
   }
   #[inline]
-  pub fn get_image_format(&self) -> VkFormat {
+  pub fn image_format(&self) -> VkFormat {
     self.imageFormat
   }
   #[inline]
-  pub fn get_image_color_space(&self) -> VkColorSpaceKHR {
+  pub fn image_color_space(&self) -> VkColorSpaceKHR {
     self.imageColorSpace
   }
   #[inline]
-  pub fn get_image_extent(&self) -> VkExtent2D {
+  pub fn image_extent(&self) -> VkExtent2D {
     self.imageExtent
   }
   #[inline]
-  pub fn get_image_array_layers(&self) -> u32 {
+  pub fn image_array_layers(&self) -> u32 {
     self.imageArrayLayers
   }
   #[inline]
-  pub fn get_image_usage(&self) -> VkImageUsageFlags {
+  pub fn image_usage(&self) -> VkImageUsageFlags {
     self.imageUsage
   }
   #[inline]
-  pub fn get_image_sharing_mode(&self) -> VkSharingMode {
+  pub fn image_sharing_mode(&self) -> VkSharingMode {
     self.imageSharingMode
   }
   #[inline]
-  pub fn get_queue_family_index_count(&self) -> u32 {
+  pub fn queue_family_index_count(&self) -> u32 {
     self.queueFamilyIndexCount
   }
   #[inline]
-  pub fn get_pre_transform(&self) -> VkSurfaceTransformFlagBitsKHR {
+  pub fn pre_transform(&self) -> VkSurfaceTransformFlagBitsKHR {
     self.preTransform
   }
   #[inline]
-  pub fn get_composite_alpha(&self) -> VkCompositeAlphaFlagBitsKHR {
+  pub fn composite_alpha(&self) -> VkCompositeAlphaFlagBitsKHR {
     self.compositeAlpha
   }
   #[inline]
-  pub fn get_present_mode(&self) -> VkPresentModeKHR {
+  pub fn present_mode(&self) -> VkPresentModeKHR {
     self.presentMode
   }
   #[inline]
@@ -10328,7 +9295,7 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self.clipped != 0
   }
   #[inline]
-  pub fn get_old_swapchain(&self) -> Option<VkSwapchainKHR> {
+  pub fn old_swapchain(&self) -> Option<VkSwapchainKHR> {
     self.oldSwapchain
   }
 }
@@ -10387,19 +9354,19 @@ impl<'a> VkPresentInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_wait_semaphore_count(&self) -> u32 {
+  pub fn wait_semaphore_count(&self) -> u32 {
     self.waitSemaphoreCount
   }
   #[inline]
-  pub fn get_swapchain_count(&self) -> u32 {
+  pub fn swapchain_count(&self) -> u32 {
     self.swapchainCount
   }
 }
@@ -10447,66 +9414,23 @@ pub struct VkDisplayPropertiesKHR<'a> {
 #[cfg(feature = "VK_KHR_display")]
 impl<'a> VkDisplayPropertiesKHR<'a> {
   #[inline]
-  pub fn new() -> VkDisplayPropertiesKHR<'a> {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_display(mut self, value: VkDisplayKHR) -> Self {
-    self.display = value;
-    self
-  }
-  #[inline]
-  pub fn set_display_name(mut self, value: &'a AsRef<CStr>) -> Self {
-    unsafe {
-      self.displayName = value.as_raw();
-    }
-    self
-  }
-  #[inline]
-  pub fn set_physical_dimensions(mut self, value: VkExtent2D) -> Self {
-    self.physicalDimensions = value;
-    self
-  }
-  #[inline]
-  pub fn set_physical_resolution(mut self, value: VkExtent2D) -> Self {
-    self.physicalResolution = value;
-    self
-  }
-  #[inline]
-  pub fn set_supported_transforms(mut self, value: VkSurfaceTransformFlagsKHR) -> Self {
-    self.supportedTransforms = value;
-    self
-  }
-  #[inline]
-  pub fn set_plane_reorder_possible(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.planeReorderPossible = value;
-    self
-  }
-  #[inline]
-  pub fn set_persistent_content(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.persistentContent = value;
-    self
-  }
-  #[inline]
-  pub fn get_display(&self) -> VkDisplayKHR {
+  pub fn display(&self) -> VkDisplayKHR {
     self.display
   }
   #[inline]
-  pub fn get_display_name(&self) -> &'a CStr {
+  pub fn display_name(&self) -> &'a CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.displayName) }
   }
   #[inline]
-  pub fn get_physical_dimensions(&self) -> VkExtent2D {
+  pub fn physical_dimensions(&self) -> VkExtent2D {
     self.physicalDimensions
   }
   #[inline]
-  pub fn get_physical_resolution(&self) -> VkExtent2D {
+  pub fn physical_resolution(&self) -> VkExtent2D {
     self.physicalResolution
   }
   #[inline]
-  pub fn get_supported_transforms(&self) -> VkSurfaceTransformFlagsKHR {
+  pub fn supported_transforms(&self) -> VkSurfaceTransformFlagsKHR {
     self.supportedTransforms
   }
   #[inline]
@@ -10516,12 +9440,6 @@ impl<'a> VkDisplayPropertiesKHR<'a> {
   #[inline]
   pub fn is_persistent_content(&self) -> bool {
     self.persistentContent != 0
-  }
-}
-#[cfg(feature = "VK_KHR_display")]
-impl<'a> Default for VkDisplayPropertiesKHR<'a> {
-  fn default() -> VkDisplayPropertiesKHR<'a> {
-    VkDisplayPropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -10560,11 +9478,11 @@ impl VkDisplayModeParametersKHR {
     self
   }
   #[inline]
-  pub fn get_visible_region(&self) -> VkExtent2D {
+  pub fn visible_region(&self) -> VkExtent2D {
     self.visibleRegion
   }
   #[inline]
-  pub fn get_refresh_rate(&self) -> u32 {
+  pub fn refresh_rate(&self) -> u32 {
     self.refreshRate
   }
 }
@@ -10607,32 +9525,12 @@ pub struct VkDisplayModePropertiesKHR {
 #[cfg(feature = "VK_KHR_display")]
 impl VkDisplayModePropertiesKHR {
   #[inline]
-  pub fn new() -> VkDisplayModePropertiesKHR {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_display_mode(mut self, value: VkDisplayModeKHR) -> Self {
-    self.displayMode = value;
-    self
-  }
-  #[inline]
-  pub fn set_parameters(mut self, value: VkDisplayModeParametersKHR) -> Self {
-    self.parameters = value;
-    self
-  }
-  #[inline]
-  pub fn get_display_mode(&self) -> VkDisplayModeKHR {
+  pub fn display_mode(&self) -> VkDisplayModeKHR {
     self.displayMode
   }
   #[inline]
-  pub fn get_parameters(&self) -> VkDisplayModeParametersKHR {
+  pub fn parameters(&self) -> VkDisplayModeParametersKHR {
     self.parameters
-  }
-}
-#[cfg(feature = "VK_KHR_display")]
-impl Default for VkDisplayModePropertiesKHR {
-  fn default() -> VkDisplayModePropertiesKHR {
-    VkDisplayModePropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -10681,19 +9579,19 @@ impl VkDisplayModeCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkDisplayModeCreateFlagsKHR {
+  pub fn flags(&self) -> VkDisplayModeCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_parameters(&self) -> VkDisplayModeParametersKHR {
+  pub fn parameters(&self) -> VkDisplayModeParametersKHR {
     self.parameters
   }
 }
@@ -10735,95 +9633,40 @@ pub struct VkDisplayPlaneCapabilitiesKHR {
 #[cfg(feature = "VK_KHR_display")]
 impl VkDisplayPlaneCapabilitiesKHR {
   #[inline]
-  pub fn new() -> VkDisplayPlaneCapabilitiesKHR {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_supported_alpha(mut self, value: VkDisplayPlaneAlphaFlagsKHR) -> Self {
-    self.supportedAlpha = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_src_position(mut self, value: VkOffset2D) -> Self {
-    self.minSrcPosition = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_src_position(mut self, value: VkOffset2D) -> Self {
-    self.maxSrcPosition = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_src_extent(mut self, value: VkExtent2D) -> Self {
-    self.minSrcExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_src_extent(mut self, value: VkExtent2D) -> Self {
-    self.maxSrcExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_dst_position(mut self, value: VkOffset2D) -> Self {
-    self.minDstPosition = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_dst_position(mut self, value: VkOffset2D) -> Self {
-    self.maxDstPosition = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_dst_extent(mut self, value: VkExtent2D) -> Self {
-    self.minDstExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_dst_extent(mut self, value: VkExtent2D) -> Self {
-    self.maxDstExtent = value;
-    self
-  }
-  #[inline]
-  pub fn get_supported_alpha(&self) -> VkDisplayPlaneAlphaFlagsKHR {
+  pub fn supported_alpha(&self) -> VkDisplayPlaneAlphaFlagsKHR {
     self.supportedAlpha
   }
   #[inline]
-  pub fn get_min_src_position(&self) -> VkOffset2D {
+  pub fn min_src_position(&self) -> VkOffset2D {
     self.minSrcPosition
   }
   #[inline]
-  pub fn get_max_src_position(&self) -> VkOffset2D {
+  pub fn max_src_position(&self) -> VkOffset2D {
     self.maxSrcPosition
   }
   #[inline]
-  pub fn get_min_src_extent(&self) -> VkExtent2D {
+  pub fn min_src_extent(&self) -> VkExtent2D {
     self.minSrcExtent
   }
   #[inline]
-  pub fn get_max_src_extent(&self) -> VkExtent2D {
+  pub fn max_src_extent(&self) -> VkExtent2D {
     self.maxSrcExtent
   }
   #[inline]
-  pub fn get_min_dst_position(&self) -> VkOffset2D {
+  pub fn min_dst_position(&self) -> VkOffset2D {
     self.minDstPosition
   }
   #[inline]
-  pub fn get_max_dst_position(&self) -> VkOffset2D {
+  pub fn max_dst_position(&self) -> VkOffset2D {
     self.maxDstPosition
   }
   #[inline]
-  pub fn get_min_dst_extent(&self) -> VkExtent2D {
+  pub fn min_dst_extent(&self) -> VkExtent2D {
     self.minDstExtent
   }
   #[inline]
-  pub fn get_max_dst_extent(&self) -> VkExtent2D {
+  pub fn max_dst_extent(&self) -> VkExtent2D {
     self.maxDstExtent
-  }
-}
-#[cfg(feature = "VK_KHR_display")]
-impl Default for VkDisplayPlaneCapabilitiesKHR {
-  fn default() -> VkDisplayPlaneCapabilitiesKHR {
-    VkDisplayPlaneCapabilitiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -10851,32 +9694,12 @@ pub struct VkDisplayPlanePropertiesKHR {
 #[cfg(feature = "VK_KHR_display")]
 impl VkDisplayPlanePropertiesKHR {
   #[inline]
-  pub fn new() -> VkDisplayPlanePropertiesKHR {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_current_display(mut self, value: VkDisplayKHR) -> Self {
-    self.currentDisplay = value;
-    self
-  }
-  #[inline]
-  pub fn set_current_stack_index(mut self, value: u32) -> Self {
-    self.currentStackIndex = value;
-    self
-  }
-  #[inline]
-  pub fn get_current_display(&self) -> VkDisplayKHR {
+  pub fn current_display(&self) -> VkDisplayKHR {
     self.currentDisplay
   }
   #[inline]
-  pub fn get_current_stack_index(&self) -> u32 {
+  pub fn current_stack_index(&self) -> u32 {
     self.currentStackIndex
-  }
-}
-#[cfg(feature = "VK_KHR_display")]
-impl Default for VkDisplayPlanePropertiesKHR {
-  fn default() -> VkDisplayPlanePropertiesKHR {
-    VkDisplayPlanePropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -10961,43 +9784,43 @@ impl VkDisplaySurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkDisplaySurfaceCreateFlagsKHR {
+  pub fn flags(&self) -> VkDisplaySurfaceCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_display_mode(&self) -> VkDisplayModeKHR {
+  pub fn display_mode(&self) -> VkDisplayModeKHR {
     self.displayMode
   }
   #[inline]
-  pub fn get_plane_index(&self) -> u32 {
+  pub fn plane_index(&self) -> u32 {
     self.planeIndex
   }
   #[inline]
-  pub fn get_plane_stack_index(&self) -> u32 {
+  pub fn plane_stack_index(&self) -> u32 {
     self.planeStackIndex
   }
   #[inline]
-  pub fn get_transform(&self) -> VkSurfaceTransformFlagBitsKHR {
+  pub fn transform(&self) -> VkSurfaceTransformFlagBitsKHR {
     self.transform
   }
   #[inline]
-  pub fn get_global_alpha(&self) -> f32 {
+  pub fn global_alpha(&self) -> f32 {
     self.globalAlpha
   }
   #[inline]
-  pub fn get_alpha_mode(&self) -> VkDisplayPlaneAlphaFlagBitsKHR {
+  pub fn alpha_mode(&self) -> VkDisplayPlaneAlphaFlagBitsKHR {
     self.alphaMode
   }
   #[inline]
-  pub fn get_image_extent(&self) -> VkExtent2D {
+  pub fn image_extent(&self) -> VkExtent2D {
     self.imageExtent
   }
 }
@@ -11062,19 +9885,19 @@ impl VkDisplayPresentInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_src_rect(&self) -> VkRect2D {
+  pub fn src_rect(&self) -> VkRect2D {
     self.srcRect
   }
   #[inline]
-  pub fn get_dst_rect(&self) -> VkRect2D {
+  pub fn dst_rect(&self) -> VkRect2D {
     self.dstRect
   }
   #[inline]
@@ -11141,23 +9964,23 @@ impl VkXlibSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkXlibSurfaceCreateFlagsKHR {
+  pub fn flags(&self) -> VkXlibSurfaceCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_dpy(&self) -> *mut wsi::xlib::Display {
+  pub fn dpy(&self) -> *mut wsi::xlib::Display {
     self.dpy
   }
   #[inline]
-  pub fn get_window(&self) -> wsi::xlib::Window {
+  pub fn window(&self) -> wsi::xlib::Window {
     self.window
   }
 }
@@ -11226,23 +10049,23 @@ impl VkXcbSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkXcbSurfaceCreateFlagsKHR {
+  pub fn flags(&self) -> VkXcbSurfaceCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_connection(&self) -> *mut wsi::xcb::xcb_connection_t {
+  pub fn connection(&self) -> *mut wsi::xcb::xcb_connection_t {
     self.connection
   }
   #[inline]
-  pub fn get_window(&self) -> wsi::xcb::xcb_window_t {
+  pub fn window(&self) -> wsi::xcb::xcb_window_t {
     self.window
   }
 }
@@ -11311,23 +10134,23 @@ impl VkWaylandSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkWaylandSurfaceCreateFlagsKHR {
+  pub fn flags(&self) -> VkWaylandSurfaceCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_display(&self) -> *mut wsi::wayland::wl_display {
+  pub fn display(&self) -> *mut wsi::wayland::wl_display {
     self.display
   }
   #[inline]
-  pub fn get_surface(&self) -> *mut wsi::wayland::wl_surface {
+  pub fn surface(&self) -> *mut wsi::wayland::wl_surface {
     self.surface
   }
 }
@@ -11396,23 +10219,23 @@ impl VkMirSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkMirSurfaceCreateFlagsKHR {
+  pub fn flags(&self) -> VkMirSurfaceCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_connection(&self) -> *mut wsi::mir::MirConnection {
+  pub fn connection(&self) -> *mut wsi::mir::MirConnection {
     self.connection
   }
   #[inline]
-  pub fn get_mir_surface(&self) -> *mut wsi::mir::MirSurface {
+  pub fn mir_surface(&self) -> *mut wsi::mir::MirSurface {
     self.mirSurface
   }
 }
@@ -11475,19 +10298,19 @@ impl VkAndroidSurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkAndroidSurfaceCreateFlagsKHR {
+  pub fn flags(&self) -> VkAndroidSurfaceCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_window(&self) -> *mut wsi::android::ANativeWindow {
+  pub fn window(&self) -> *mut wsi::android::ANativeWindow {
     self.window
   }
 }
@@ -11556,23 +10379,23 @@ impl VkWin32SurfaceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkWin32SurfaceCreateFlagsKHR {
+  pub fn flags(&self) -> VkWin32SurfaceCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_hinstance(&self) -> wsi::win32::HINSTANCE {
+  pub fn hinstance(&self) -> wsi::win32::HINSTANCE {
     self.hinstance
   }
   #[inline]
-  pub fn get_hwnd(&self) -> wsi::win32::HWND {
+  pub fn hwnd(&self) -> wsi::win32::HWND {
     self.hwnd
   }
 }
@@ -11638,23 +10461,23 @@ impl VkDebugReportCallbackCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkDebugReportFlagsEXT {
+  pub fn flags(&self) -> VkDebugReportFlagsEXT {
     self.flags
   }
   #[inline]
-  pub fn get_pfn_callback(&self) -> PFN_vkDebugReportCallbackEXT {
+  pub fn pfn_callback(&self) -> PFN_vkDebugReportCallbackEXT {
     self.pfnCallback
   }
   #[inline]
-  pub fn get_user_data(&self) -> *mut c_void {
+  pub fn user_data(&self) -> *mut c_void {
     self.pUserData
   }
 }
@@ -11714,15 +10537,15 @@ impl VkPipelineRasterizationStateRasterizationOrderAMD {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_rasterization_order(&self) -> VkRasterizationOrderAMD {
+  pub fn rasterization_order(&self) -> VkRasterizationOrderAMD {
     self.rasterizationOrder
   }
 }
@@ -11789,23 +10612,23 @@ impl<'a> VkDebugMarkerObjectNameInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_object_type(&self) -> VkDebugReportObjectTypeEXT {
+  pub fn object_type(&self) -> VkDebugReportObjectTypeEXT {
     self.objectType
   }
   #[inline]
-  pub fn get_object(&self) -> u64 {
+  pub fn object(&self) -> u64 {
     self.object
   }
   #[inline]
-  pub fn get_object_name(&self) -> &'a CStr {
+  pub fn object_name(&self) -> &'a CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pObjectName) }
   }
 }
@@ -11878,27 +10701,27 @@ impl<'a> VkDebugMarkerObjectTagInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_object_type(&self) -> VkDebugReportObjectTypeEXT {
+  pub fn object_type(&self) -> VkDebugReportObjectTypeEXT {
     self.objectType
   }
   #[inline]
-  pub fn get_object(&self) -> u64 {
+  pub fn object(&self) -> u64 {
     self.object
   }
   #[inline]
-  pub fn get_tag_name(&self) -> u64 {
+  pub fn tag_name(&self) -> u64 {
     self.tagName
   }
   #[inline]
-  pub fn get_tag_size(&self) -> usize {
+  pub fn tag_size(&self) -> usize {
     self.tagSize
   }
 }
@@ -11957,19 +10780,19 @@ impl<'a> VkDebugMarkerMarkerInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_marker_name(&self) -> &'a CStr {
+  pub fn marker_name(&self) -> &'a CStr {
     unsafe { ::std::ffi::CStr::from_ptr(self.pMarkerName) }
   }
   #[inline]
-  pub fn get_color(&self) -> [f32; 4] {
+  pub fn color(&self) -> [f32; 4] {
     self.color
   }
 }
@@ -12022,11 +10845,11 @@ impl VkDedicatedAllocationImageCreateInfoNV {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
@@ -12081,11 +10904,11 @@ impl VkDedicatedAllocationBufferCreateInfoNV {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
@@ -12145,19 +10968,19 @@ impl VkDedicatedAllocationMemoryAllocateInfoNV {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_image(&self) -> Option<VkImage> {
+  pub fn image(&self) -> Option<VkImage> {
     self.image
   }
   #[inline]
-  pub fn get_buffer(&self) -> Option<VkBuffer> {
+  pub fn buffer(&self) -> Option<VkBuffer> {
     self.buffer
   }
 }
@@ -12210,15 +11033,15 @@ impl VkPhysicalDeviceFeatures2KHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_features(&self) -> VkPhysicalDeviceFeatures {
+  pub fn features(&self) -> VkPhysicalDeviceFeatures {
     self.features
   }
 }
@@ -12254,36 +11077,16 @@ pub struct VkPhysicalDeviceProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkPhysicalDeviceProperties2KHR {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceProperties2KHR {
-    unsafe {
-      VkPhysicalDeviceProperties2KHR {
-        sType: VkStructureType::PHYSICAL_DEVICE_PROPERTIES_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_properties(mut self, value: VkPhysicalDeviceProperties) -> Self {
-    self.properties = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_properties(&self) -> VkPhysicalDeviceProperties {
+  pub fn properties(&self) -> VkPhysicalDeviceProperties {
     self.properties
-  }
-}
-#[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl Default for VkPhysicalDeviceProperties2KHR {
-  fn default() -> VkPhysicalDeviceProperties2KHR {
-    VkPhysicalDeviceProperties2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12312,36 +11115,16 @@ pub struct VkFormatProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkFormatProperties2KHR {
   #[inline]
-  pub fn new() -> VkFormatProperties2KHR {
-    unsafe {
-      VkFormatProperties2KHR {
-        sType: VkStructureType::FORMAT_PROPERTIES_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_format_properties(mut self, value: VkFormatProperties) -> Self {
-    self.formatProperties = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_format_properties(&self) -> VkFormatProperties {
+  pub fn format_properties(&self) -> VkFormatProperties {
     self.formatProperties
-  }
-}
-#[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl Default for VkFormatProperties2KHR {
-  fn default() -> VkFormatProperties2KHR {
-    VkFormatProperties2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12367,36 +11150,16 @@ pub struct VkImageFormatProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkImageFormatProperties2KHR {
   #[inline]
-  pub fn new() -> VkImageFormatProperties2KHR {
-    unsafe {
-      VkImageFormatProperties2KHR {
-        sType: VkStructureType::IMAGE_FORMAT_PROPERTIES_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_image_format_properties(mut self, value: VkImageFormatProperties) -> Self {
-    self.imageFormatProperties = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_image_format_properties(&self) -> VkImageFormatProperties {
+  pub fn image_format_properties(&self) -> VkImageFormatProperties {
     self.imageFormatProperties
-  }
-}
-#[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl Default for VkImageFormatProperties2KHR {
-  fn default() -> VkImageFormatProperties2KHR {
-    VkImageFormatProperties2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12463,15 +11226,15 @@ impl VkPhysicalDeviceImageFormatInfo2KHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_format(&self) -> VkFormat {
+  pub fn format(&self) -> VkFormat {
     self.format
   }
   #[inline]
@@ -12479,15 +11242,15 @@ impl VkPhysicalDeviceImageFormatInfo2KHR {
     self.eType
   }
   #[inline]
-  pub fn get_tiling(&self) -> VkImageTiling {
+  pub fn tiling(&self) -> VkImageTiling {
     self.tiling
   }
   #[inline]
-  pub fn get_usage(&self) -> VkImageUsageFlags {
+  pub fn usage(&self) -> VkImageUsageFlags {
     self.usage
   }
   #[inline]
-  pub fn get_flags(&self) -> VkImageCreateFlags {
+  pub fn flags(&self) -> VkImageCreateFlags {
     self.flags
   }
 }
@@ -12523,36 +11286,16 @@ pub struct VkQueueFamilyProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkQueueFamilyProperties2KHR {
   #[inline]
-  pub fn new() -> VkQueueFamilyProperties2KHR {
-    unsafe {
-      VkQueueFamilyProperties2KHR {
-        sType: VkStructureType::QUEUE_FAMILY_PROPERTIES_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_queue_family_properties(mut self, value: VkQueueFamilyProperties) -> Self {
-    self.queueFamilyProperties = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_queue_family_properties(&self) -> VkQueueFamilyProperties {
+  pub fn queue_family_properties(&self) -> VkQueueFamilyProperties {
     self.queueFamilyProperties
-  }
-}
-#[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl Default for VkQueueFamilyProperties2KHR {
-  fn default() -> VkQueueFamilyProperties2KHR {
-    VkQueueFamilyProperties2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12581,36 +11324,16 @@ pub struct VkPhysicalDeviceMemoryProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkPhysicalDeviceMemoryProperties2KHR {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceMemoryProperties2KHR {
-    unsafe {
-      VkPhysicalDeviceMemoryProperties2KHR {
-        sType: VkStructureType::PHYSICAL_DEVICE_MEMORY_PROPERTIES_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_memory_properties(mut self, value: VkPhysicalDeviceMemoryProperties) -> Self {
-    self.memoryProperties = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_memory_properties(&self) -> VkPhysicalDeviceMemoryProperties {
+  pub fn memory_properties(&self) -> VkPhysicalDeviceMemoryProperties {
     self.memoryProperties
-  }
-}
-#[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl Default for VkPhysicalDeviceMemoryProperties2KHR {
-  fn default() -> VkPhysicalDeviceMemoryProperties2KHR {
-    VkPhysicalDeviceMemoryProperties2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12639,36 +11362,16 @@ pub struct VkSparseImageFormatProperties2KHR {
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 impl VkSparseImageFormatProperties2KHR {
   #[inline]
-  pub fn new() -> VkSparseImageFormatProperties2KHR {
-    unsafe {
-      VkSparseImageFormatProperties2KHR {
-        sType: VkStructureType::SPARSE_IMAGE_FORMAT_PROPERTIES_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_properties(mut self, value: VkSparseImageFormatProperties) -> Self {
-    self.properties = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_properties(&self) -> VkSparseImageFormatProperties {
+  pub fn properties(&self) -> VkSparseImageFormatProperties {
     self.properties
-  }
-}
-#[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl Default for VkSparseImageFormatProperties2KHR {
-  fn default() -> VkSparseImageFormatProperties2KHR {
-    VkSparseImageFormatProperties2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -12735,15 +11438,15 @@ impl VkPhysicalDeviceSparseImageFormatInfo2KHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_format(&self) -> VkFormat {
+  pub fn format(&self) -> VkFormat {
     self.format
   }
   #[inline]
@@ -12751,15 +11454,15 @@ impl VkPhysicalDeviceSparseImageFormatInfo2KHR {
     self.eType
   }
   #[inline]
-  pub fn get_samples(&self) -> VkSampleCountFlagBits {
+  pub fn samples(&self) -> VkSampleCountFlagBits {
     self.samples
   }
   #[inline]
-  pub fn get_usage(&self) -> VkImageUsageFlags {
+  pub fn usage(&self) -> VkImageUsageFlags {
     self.usage
   }
   #[inline]
-  pub fn get_tiling(&self) -> VkImageTiling {
+  pub fn tiling(&self) -> VkImageTiling {
     self.tiling
   }
 }
@@ -12798,37 +11501,16 @@ pub struct VkTextureLODGatherFormatPropertiesAMD {
 #[cfg(feature = "VK_AMD_texture_gather_bias_lod")]
 impl VkTextureLODGatherFormatPropertiesAMD {
   #[inline]
-  pub fn new() -> VkTextureLODGatherFormatPropertiesAMD {
-    unsafe {
-      VkTextureLODGatherFormatPropertiesAMD {
-        sType: VkStructureType::TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_supports_texture_gather_lod_bias_amd(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.supportsTextureGatherLODBiasAMD = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
   pub fn is_supports_texture_gather_lod_bias_amd(&self) -> bool {
     self.supportsTextureGatherLODBiasAMD != 0
-  }
-}
-#[cfg(feature = "VK_AMD_texture_gather_bias_lod")]
-impl Default for VkTextureLODGatherFormatPropertiesAMD {
-  fn default() -> VkTextureLODGatherFormatPropertiesAMD {
-    VkTextureLODGatherFormatPropertiesAMD::new()
   }
 }
 #[cfg(feature = "VK_AMD_texture_gather_bias_lod")]
@@ -12861,59 +11543,24 @@ pub struct VkShaderResourceUsageAMD {
 #[cfg(feature = "VK_AMD_shader_info")]
 impl VkShaderResourceUsageAMD {
   #[inline]
-  pub fn new() -> VkShaderResourceUsageAMD {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_num_used_vgprs(mut self, value: u32) -> Self {
-    self.numUsedVgprs = value;
-    self
-  }
-  #[inline]
-  pub fn set_num_used_sgprs(mut self, value: u32) -> Self {
-    self.numUsedSgprs = value;
-    self
-  }
-  #[inline]
-  pub fn set_lds_size_per_local_work_group(mut self, value: u32) -> Self {
-    self.ldsSizePerLocalWorkGroup = value;
-    self
-  }
-  #[inline]
-  pub fn set_lds_usage_size_in_bytes(mut self, value: usize) -> Self {
-    self.ldsUsageSizeInBytes = value;
-    self
-  }
-  #[inline]
-  pub fn set_scratch_mem_usage_in_bytes(mut self, value: usize) -> Self {
-    self.scratchMemUsageInBytes = value;
-    self
-  }
-  #[inline]
-  pub fn get_num_used_vgprs(&self) -> u32 {
+  pub fn num_used_vgprs(&self) -> u32 {
     self.numUsedVgprs
   }
   #[inline]
-  pub fn get_num_used_sgprs(&self) -> u32 {
+  pub fn num_used_sgprs(&self) -> u32 {
     self.numUsedSgprs
   }
   #[inline]
-  pub fn get_lds_size_per_local_work_group(&self) -> u32 {
+  pub fn lds_size_per_local_work_group(&self) -> u32 {
     self.ldsSizePerLocalWorkGroup
   }
   #[inline]
-  pub fn get_lds_usage_size_in_bytes(&self) -> usize {
+  pub fn lds_usage_size_in_bytes(&self) -> usize {
     self.ldsUsageSizeInBytes
   }
   #[inline]
-  pub fn get_scratch_mem_usage_in_bytes(&self) -> usize {
+  pub fn scratch_mem_usage_in_bytes(&self) -> usize {
     self.scratchMemUsageInBytes
-  }
-}
-#[cfg(feature = "VK_AMD_shader_info")]
-impl Default for VkShaderResourceUsageAMD {
-  fn default() -> VkShaderResourceUsageAMD {
-    VkShaderResourceUsageAMD::new()
   }
 }
 #[cfg(feature = "VK_AMD_shader_info")]
@@ -12946,77 +11593,32 @@ pub struct VkShaderStatisticsInfoAMD {
 #[cfg(feature = "VK_AMD_shader_info")]
 impl VkShaderStatisticsInfoAMD {
   #[inline]
-  pub fn new() -> VkShaderStatisticsInfoAMD {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_shader_stage_mask(mut self, value: VkShaderStageFlags) -> Self {
-    self.shaderStageMask = value;
-    self
-  }
-  #[inline]
-  pub fn set_resource_usage(mut self, value: VkShaderResourceUsageAMD) -> Self {
-    self.resourceUsage = value;
-    self
-  }
-  #[inline]
-  pub fn set_num_physical_vgprs(mut self, value: u32) -> Self {
-    self.numPhysicalVgprs = value;
-    self
-  }
-  #[inline]
-  pub fn set_num_physical_sgprs(mut self, value: u32) -> Self {
-    self.numPhysicalSgprs = value;
-    self
-  }
-  #[inline]
-  pub fn set_num_available_vgprs(mut self, value: u32) -> Self {
-    self.numAvailableVgprs = value;
-    self
-  }
-  #[inline]
-  pub fn set_num_available_sgprs(mut self, value: u32) -> Self {
-    self.numAvailableSgprs = value;
-    self
-  }
-  #[inline]
-  pub fn set_compute_work_group_size(mut self, value: [u32; 3]) -> Self {
-    self.computeWorkGroupSize = value;
-    self
-  }
-  #[inline]
-  pub fn get_shader_stage_mask(&self) -> VkShaderStageFlags {
+  pub fn shader_stage_mask(&self) -> VkShaderStageFlags {
     self.shaderStageMask
   }
   #[inline]
-  pub fn get_resource_usage(&self) -> VkShaderResourceUsageAMD {
+  pub fn resource_usage(&self) -> VkShaderResourceUsageAMD {
     self.resourceUsage
   }
   #[inline]
-  pub fn get_num_physical_vgprs(&self) -> u32 {
+  pub fn num_physical_vgprs(&self) -> u32 {
     self.numPhysicalVgprs
   }
   #[inline]
-  pub fn get_num_physical_sgprs(&self) -> u32 {
+  pub fn num_physical_sgprs(&self) -> u32 {
     self.numPhysicalSgprs
   }
   #[inline]
-  pub fn get_num_available_vgprs(&self) -> u32 {
+  pub fn num_available_vgprs(&self) -> u32 {
     self.numAvailableVgprs
   }
   #[inline]
-  pub fn get_num_available_sgprs(&self) -> u32 {
+  pub fn num_available_sgprs(&self) -> u32 {
     self.numAvailableSgprs
   }
   #[inline]
-  pub fn get_compute_work_group_size(&self) -> [u32; 3] {
+  pub fn compute_work_group_size(&self) -> [u32; 3] {
     self.computeWorkGroupSize
-  }
-}
-#[cfg(feature = "VK_AMD_shader_info")]
-impl Default for VkShaderStatisticsInfoAMD {
-  fn default() -> VkShaderStatisticsInfoAMD {
-    VkShaderStatisticsInfoAMD::new()
   }
 }
 #[cfg(feature = "VK_AMD_shader_info")]
@@ -13086,23 +11688,23 @@ impl<'a> VkRenderPassMultiviewCreateInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_subpass_count(&self) -> u32 {
+  pub fn subpass_count(&self) -> u32 {
     self.subpassCount
   }
   #[inline]
-  pub fn get_dependency_count(&self) -> u32 {
+  pub fn dependency_count(&self) -> u32 {
     self.dependencyCount
   }
   #[inline]
-  pub fn get_correlation_mask_count(&self) -> u32 {
+  pub fn correlation_mask_count(&self) -> u32 {
     self.correlationMaskCount
   }
 }
@@ -13168,11 +11770,11 @@ impl VkPhysicalDeviceMultiviewFeaturesKHX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
@@ -13221,45 +11823,20 @@ pub struct VkPhysicalDeviceMultiviewPropertiesKHX {
 #[cfg(feature = "VK_KHX_multiview")]
 impl VkPhysicalDeviceMultiviewPropertiesKHX {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceMultiviewPropertiesKHX {
-    unsafe {
-      VkPhysicalDeviceMultiviewPropertiesKHX {
-        sType: VkStructureType::PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHX,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_max_multiview_view_count(mut self, value: u32) -> Self {
-    self.maxMultiviewViewCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_multiview_instance_index(mut self, value: u32) -> Self {
-    self.maxMultiviewInstanceIndex = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_max_multiview_view_count(&self) -> u32 {
+  pub fn max_multiview_view_count(&self) -> u32 {
     self.maxMultiviewViewCount
   }
   #[inline]
-  pub fn get_max_multiview_instance_index(&self) -> u32 {
+  pub fn max_multiview_instance_index(&self) -> u32 {
     self.maxMultiviewInstanceIndex
-  }
-}
-#[cfg(feature = "VK_KHX_multiview")]
-impl Default for VkPhysicalDeviceMultiviewPropertiesKHX {
-  fn default() -> VkPhysicalDeviceMultiviewPropertiesKHX {
-    VkPhysicalDeviceMultiviewPropertiesKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_multiview")]
@@ -13291,50 +11868,20 @@ pub struct VkExternalImageFormatPropertiesNV {
 #[cfg(feature = "VK_NV_external_memory_capabilities")]
 impl VkExternalImageFormatPropertiesNV {
   #[inline]
-  pub fn new() -> VkExternalImageFormatPropertiesNV {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_image_format_properties(mut self, value: VkImageFormatProperties) -> Self {
-    self.imageFormatProperties = value;
-    self
-  }
-  #[inline]
-  pub fn set_external_memory_features(mut self, value: VkExternalMemoryFeatureFlagsNV) -> Self {
-    self.externalMemoryFeatures = value;
-    self
-  }
-  #[inline]
-  pub fn set_export_from_imported_handle_types(mut self, value: VkExternalMemoryHandleTypeFlagsNV) -> Self {
-    self.exportFromImportedHandleTypes = value;
-    self
-  }
-  #[inline]
-  pub fn set_compatible_handle_types(mut self, value: VkExternalMemoryHandleTypeFlagsNV) -> Self {
-    self.compatibleHandleTypes = value;
-    self
-  }
-  #[inline]
-  pub fn get_image_format_properties(&self) -> VkImageFormatProperties {
+  pub fn image_format_properties(&self) -> VkImageFormatProperties {
     self.imageFormatProperties
   }
   #[inline]
-  pub fn get_external_memory_features(&self) -> VkExternalMemoryFeatureFlagsNV {
+  pub fn external_memory_features(&self) -> VkExternalMemoryFeatureFlagsNV {
     self.externalMemoryFeatures
   }
   #[inline]
-  pub fn get_export_from_imported_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
+  pub fn export_from_imported_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
     self.exportFromImportedHandleTypes
   }
   #[inline]
-  pub fn get_compatible_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
+  pub fn compatible_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
     self.compatibleHandleTypes
-  }
-}
-#[cfg(feature = "VK_NV_external_memory_capabilities")]
-impl Default for VkExternalImageFormatPropertiesNV {
-  fn default() -> VkExternalImageFormatPropertiesNV {
-    VkExternalImageFormatPropertiesNV::new()
   }
 }
 #[cfg(feature = "VK_NV_external_memory_capabilities")]
@@ -13379,15 +11926,15 @@ impl VkExternalMemoryImageCreateInfoNV {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
+  pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
     self.handleTypes
   }
 }
@@ -13437,15 +11984,15 @@ impl VkExportMemoryAllocateInfoNV {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
+  pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsNV {
     self.handleTypes
   }
 }
@@ -13505,19 +12052,19 @@ impl VkImportMemoryWin32HandleInfoNV {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalMemoryHandleTypeFlagsNV {
+  pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagsNV {
     self.handleType
   }
   #[inline]
-  pub fn get_handle(&self) -> wsi::win32::HANDLE {
+  pub fn handle(&self) -> wsi::win32::HANDLE {
     self.handle
   }
 }
@@ -13578,19 +12125,19 @@ impl VkExportMemoryWin32HandleInfoNV {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
+  pub fn attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
     self.pAttributes
   }
   #[inline]
-  pub fn get_dw_access(&self) -> wsi::win32::DWORD {
+  pub fn dw_access(&self) -> wsi::win32::DWORD {
     self.dwAccess
   }
 }
@@ -13649,19 +12196,19 @@ impl<'a> VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
     }
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_acquire_count(&self) -> u32 {
+  pub fn acquire_count(&self) -> u32 {
     self.acquireCount
   }
   #[inline]
-  pub fn get_release_count(&self) -> u32 {
+  pub fn release_count(&self) -> u32 {
     self.releaseCount
   }
 }
@@ -13704,58 +12251,24 @@ pub struct VkPhysicalDeviceGroupPropertiesKHX {
 #[cfg(feature = "VK_KHX_device_group_creation")]
 impl VkPhysicalDeviceGroupPropertiesKHX {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceGroupPropertiesKHX {
-    unsafe {
-      VkPhysicalDeviceGroupPropertiesKHX {
-        sType: VkStructureType::PHYSICAL_DEVICE_GROUP_PROPERTIES_KHX,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_physical_device_count(mut self, value: u32) -> Self {
-    self.physicalDeviceCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_physical_devices(
-    mut self,
-    value: [VkPhysicalDevice; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize],
-  ) -> Self {
-    self.physicalDevices = value;
-    self
-  }
-  #[inline]
-  pub fn set_subset_allocation(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.subsetAllocation = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_physical_device_count(&self) -> u32 {
+  pub fn physical_device_count(&self) -> u32 {
     self.physicalDeviceCount
   }
   #[inline]
-  pub fn get_physical_devices(&self) -> [VkPhysicalDevice; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize] {
+  pub fn physical_devices(&self) -> [VkPhysicalDevice; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize] {
     self.physicalDevices
   }
   #[inline]
   pub fn is_subset_allocation(&self) -> bool {
     self.subsetAllocation != 0
-  }
-}
-#[cfg(feature = "VK_KHX_device_group_creation")]
-impl Default for VkPhysicalDeviceGroupPropertiesKHX {
-  fn default() -> VkPhysicalDeviceGroupPropertiesKHX {
-    VkPhysicalDeviceGroupPropertiesKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
@@ -13803,15 +12316,15 @@ impl<'a> VkDeviceGroupDeviceCreateInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_physical_device_count(&self) -> u32 {
+  pub fn physical_device_count(&self) -> u32 {
     self.physicalDeviceCount
   }
 }
@@ -13869,19 +12382,19 @@ impl VkMemoryAllocateFlagsInfoKHX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkMemoryAllocateFlagsKHX {
+  pub fn flags(&self) -> VkMemoryAllocateFlagsKHX {
     self.flags
   }
   #[inline]
-  pub fn get_device_mask(&self) -> u32 {
+  pub fn device_mask(&self) -> u32 {
     self.deviceMask
   }
 }
@@ -13942,19 +12455,19 @@ impl<'a> VkDeviceGroupRenderPassBeginInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_device_mask(&self) -> u32 {
+  pub fn device_mask(&self) -> u32 {
     self.deviceMask
   }
   #[inline]
-  pub fn get_device_render_area_count(&self) -> u32 {
+  pub fn device_render_area_count(&self) -> u32 {
     self.deviceRenderAreaCount
   }
 }
@@ -14004,15 +12517,15 @@ impl VkDeviceGroupCommandBufferBeginInfoKHX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_device_mask(&self) -> u32 {
+  pub fn device_mask(&self) -> u32 {
     self.deviceMask
   }
 }
@@ -14088,23 +12601,23 @@ impl<'a> VkDeviceGroupSubmitInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_wait_semaphore_count(&self) -> u32 {
+  pub fn wait_semaphore_count(&self) -> u32 {
     self.waitSemaphoreCount
   }
   #[inline]
-  pub fn get_command_buffer_count(&self) -> u32 {
+  pub fn command_buffer_count(&self) -> u32 {
     self.commandBufferCount
   }
   #[inline]
-  pub fn get_signal_semaphore_count(&self) -> u32 {
+  pub fn signal_semaphore_count(&self) -> u32 {
     self.signalSemaphoreCount
   }
 }
@@ -14160,19 +12673,19 @@ impl VkDeviceGroupBindSparseInfoKHX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_resource_device_index(&self) -> u32 {
+  pub fn resource_device_index(&self) -> u32 {
     self.resourceDeviceIndex
   }
   #[inline]
-  pub fn get_memory_device_index(&self) -> u32 {
+  pub fn memory_device_index(&self) -> u32 {
     self.memoryDeviceIndex
   }
 }
@@ -14227,15 +12740,15 @@ impl<'a> VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_device_index_count(&self) -> u32 {
+  pub fn device_index_count(&self) -> u32 {
     self.deviceIndexCount
   }
 }
@@ -14300,19 +12813,19 @@ impl<'a> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_device_index_count(&self) -> u32 {
+  pub fn device_index_count(&self) -> u32 {
     self.deviceIndexCount
   }
   #[inline]
-  pub fn get_sfr_rect_count(&self) -> u32 {
+  pub fn sfr_rect_count(&self) -> u32 {
     self.SFRRectCount
   }
 }
@@ -14349,45 +12862,20 @@ pub struct VkDeviceGroupPresentCapabilitiesKHX {
 #[cfg(feature = "VK_KHX_device_group")]
 impl VkDeviceGroupPresentCapabilitiesKHX {
   #[inline]
-  pub fn new() -> VkDeviceGroupPresentCapabilitiesKHX {
-    unsafe {
-      VkDeviceGroupPresentCapabilitiesKHX {
-        sType: VkStructureType::DEVICE_GROUP_PRESENT_CAPABILITIES_KHX,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_present_mask(mut self, value: [u32; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize]) -> Self {
-    self.presentMask = value;
-    self
-  }
-  #[inline]
-  pub fn set_modes(mut self, value: VkDeviceGroupPresentModeFlagsKHX) -> Self {
-    self.modes = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_present_mask(&self) -> [u32; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize] {
+  pub fn present_mask(&self) -> [u32; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize] {
     self.presentMask
   }
   #[inline]
-  pub fn get_modes(&self) -> VkDeviceGroupPresentModeFlagsKHX {
+  pub fn modes(&self) -> VkDeviceGroupPresentModeFlagsKHX {
     self.modes
-  }
-}
-#[cfg(feature = "VK_KHX_device_group")]
-impl Default for VkDeviceGroupPresentCapabilitiesKHX {
-  fn default() -> VkDeviceGroupPresentCapabilitiesKHX {
-    VkDeviceGroupPresentCapabilitiesKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
@@ -14430,15 +12918,15 @@ impl VkImageSwapchainCreateInfoKHX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_swapchain(&self) -> Option<VkSwapchainKHR> {
+  pub fn swapchain(&self) -> Option<VkSwapchainKHR> {
     self.swapchain
   }
 }
@@ -14494,19 +12982,19 @@ impl VkBindImageMemorySwapchainInfoKHX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_swapchain(&self) -> VkSwapchainKHR {
+  pub fn swapchain(&self) -> VkSwapchainKHR {
     self.swapchain
   }
   #[inline]
-  pub fn get_image_index(&self) -> u32 {
+  pub fn image_index(&self) -> u32 {
     self.imageIndex
   }
 }
@@ -14580,31 +13068,31 @@ impl VkAcquireNextImageInfoKHX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_swapchain(&self) -> VkSwapchainKHR {
+  pub fn swapchain(&self) -> VkSwapchainKHR {
     self.swapchain
   }
   #[inline]
-  pub fn get_timeout(&self) -> u64 {
+  pub fn timeout(&self) -> u64 {
     self.timeout
   }
   #[inline]
-  pub fn get_semaphore(&self) -> Option<VkSemaphore> {
+  pub fn semaphore(&self) -> Option<VkSemaphore> {
     self.semaphore
   }
   #[inline]
-  pub fn get_fence(&self) -> Option<VkFence> {
+  pub fn fence(&self) -> Option<VkFence> {
     self.fence
   }
   #[inline]
-  pub fn get_device_mask(&self) -> u32 {
+  pub fn device_mask(&self) -> u32 {
     self.deviceMask
   }
 }
@@ -14665,19 +13153,19 @@ impl<'a> VkDeviceGroupPresentInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_swapchain_count(&self) -> u32 {
+  pub fn swapchain_count(&self) -> u32 {
     self.swapchainCount
   }
   #[inline]
-  pub fn get_mode(&self) -> VkDeviceGroupPresentModeFlagBitsKHX {
+  pub fn mode(&self) -> VkDeviceGroupPresentModeFlagBitsKHX {
     self.mode
   }
 }
@@ -14727,15 +13215,15 @@ impl VkDeviceGroupSwapchainCreateInfoKHX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_modes(&self) -> VkDeviceGroupPresentModeFlagsKHX {
+  pub fn modes(&self) -> VkDeviceGroupPresentModeFlagsKHX {
     self.modes
   }
 }
@@ -14792,15 +13280,15 @@ impl<'a> VkValidationFlagsEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_disabled_validation_check_count(&self) -> u32 {
+  pub fn disabled_validation_check_count(&self) -> u32 {
     self.disabledValidationCheckCount
   }
 }
@@ -14852,19 +13340,19 @@ impl VkViSurfaceCreateInfoNN {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkViSurfaceCreateFlagsNN {
+  pub fn flags(&self) -> VkViSurfaceCreateFlagsNN {
     self.flags
   }
   #[inline]
-  pub fn get_window(&self) -> *mut c_void {
+  pub fn window(&self) -> *mut c_void {
     self.window
   }
 }
@@ -14902,41 +13390,16 @@ pub struct VkExternalMemoryPropertiesKHR {
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 impl VkExternalMemoryPropertiesKHR {
   #[inline]
-  pub fn new() -> VkExternalMemoryPropertiesKHR {
-    unsafe { ::std::mem::zeroed() }
-  }
-  #[inline]
-  pub fn set_external_memory_features(mut self, value: VkExternalMemoryFeatureFlagsKHR) -> Self {
-    self.externalMemoryFeatures = value;
-    self
-  }
-  #[inline]
-  pub fn set_export_from_imported_handle_types(mut self, value: VkExternalMemoryHandleTypeFlagsKHR) -> Self {
-    self.exportFromImportedHandleTypes = value;
-    self
-  }
-  #[inline]
-  pub fn set_compatible_handle_types(mut self, value: VkExternalMemoryHandleTypeFlagsKHR) -> Self {
-    self.compatibleHandleTypes = value;
-    self
-  }
-  #[inline]
-  pub fn get_external_memory_features(&self) -> VkExternalMemoryFeatureFlagsKHR {
+  pub fn external_memory_features(&self) -> VkExternalMemoryFeatureFlagsKHR {
     self.externalMemoryFeatures
   }
   #[inline]
-  pub fn get_export_from_imported_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
+  pub fn export_from_imported_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
     self.exportFromImportedHandleTypes
   }
   #[inline]
-  pub fn get_compatible_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
+  pub fn compatible_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
     self.compatibleHandleTypes
-  }
-}
-#[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl Default for VkExternalMemoryPropertiesKHR {
-  fn default() -> VkExternalMemoryPropertiesKHR {
-    VkExternalMemoryPropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -14979,15 +13442,15 @@ impl VkPhysicalDeviceExternalImageFormatInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -15023,36 +13486,16 @@ pub struct VkExternalImageFormatPropertiesKHR {
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 impl VkExternalImageFormatPropertiesKHR {
   #[inline]
-  pub fn new() -> VkExternalImageFormatPropertiesKHR {
-    unsafe {
-      VkExternalImageFormatPropertiesKHR {
-        sType: VkStructureType::EXTERNAL_IMAGE_FORMAT_PROPERTIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_external_memory_properties(mut self, value: VkExternalMemoryPropertiesKHR) -> Self {
-    self.externalMemoryProperties = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_external_memory_properties(&self) -> VkExternalMemoryPropertiesKHR {
+  pub fn external_memory_properties(&self) -> VkExternalMemoryPropertiesKHR {
     self.externalMemoryProperties
-  }
-}
-#[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl Default for VkExternalImageFormatPropertiesKHR {
-  fn default() -> VkExternalImageFormatPropertiesKHR {
-    VkExternalImageFormatPropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -15107,23 +13550,23 @@ impl VkPhysicalDeviceExternalBufferInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkBufferCreateFlags {
+  pub fn flags(&self) -> VkBufferCreateFlags {
     self.flags
   }
   #[inline]
-  pub fn get_usage(&self) -> VkBufferUsageFlags {
+  pub fn usage(&self) -> VkBufferUsageFlags {
     self.usage
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -15159,36 +13602,16 @@ pub struct VkExternalBufferPropertiesKHR {
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 impl VkExternalBufferPropertiesKHR {
   #[inline]
-  pub fn new() -> VkExternalBufferPropertiesKHR {
-    unsafe {
-      VkExternalBufferPropertiesKHR {
-        sType: VkStructureType::EXTERNAL_BUFFER_PROPERTIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_external_memory_properties(mut self, value: VkExternalMemoryPropertiesKHR) -> Self {
-    self.externalMemoryProperties = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_external_memory_properties(&self) -> VkExternalMemoryPropertiesKHR {
+  pub fn external_memory_properties(&self) -> VkExternalMemoryPropertiesKHR {
     self.externalMemoryProperties
-  }
-}
-#[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl Default for VkExternalBufferPropertiesKHR {
-  fn default() -> VkExternalBufferPropertiesKHR {
-    VkExternalBufferPropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -15221,73 +13644,32 @@ pub struct VkPhysicalDeviceIDPropertiesKHR {
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 impl VkPhysicalDeviceIDPropertiesKHR {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceIDPropertiesKHR {
-    unsafe {
-      VkPhysicalDeviceIDPropertiesKHR {
-        sType: VkStructureType::PHYSICAL_DEVICE_ID_PROPERTIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_device_uuid(mut self, value: [u8; enums::VK_UUID_SIZE as usize]) -> Self {
-    self.deviceUUID = value;
-    self
-  }
-  #[inline]
-  pub fn set_driver_uuid(mut self, value: [u8; enums::VK_UUID_SIZE as usize]) -> Self {
-    self.driverUUID = value;
-    self
-  }
-  #[inline]
-  pub fn set_device_luid(mut self, value: [u8; enums::VK_LUID_SIZE_KHR as usize]) -> Self {
-    self.deviceLUID = value;
-    self
-  }
-  #[inline]
-  pub fn set_device_node_mask(mut self, value: u32) -> Self {
-    self.deviceNodeMask = value;
-    self
-  }
-  #[inline]
-  pub fn set_device_luid_valid(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.deviceLUIDValid = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_device_uuid(&self) -> [u8; enums::VK_UUID_SIZE as usize] {
+  pub fn device_uuid(&self) -> [u8; enums::VK_UUID_SIZE as usize] {
     self.deviceUUID
   }
   #[inline]
-  pub fn get_driver_uuid(&self) -> [u8; enums::VK_UUID_SIZE as usize] {
+  pub fn driver_uuid(&self) -> [u8; enums::VK_UUID_SIZE as usize] {
     self.driverUUID
   }
   #[inline]
-  pub fn get_device_luid(&self) -> [u8; enums::VK_LUID_SIZE_KHR as usize] {
+  pub fn device_luid(&self) -> [u8; enums::VK_LUID_SIZE_KHR as usize] {
     self.deviceLUID
   }
   #[inline]
-  pub fn get_device_node_mask(&self) -> u32 {
+  pub fn device_node_mask(&self) -> u32 {
     self.deviceNodeMask
   }
   #[inline]
   pub fn is_device_luid_valid(&self) -> bool {
     self.deviceLUIDValid != 0
-  }
-}
-#[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl Default for VkPhysicalDeviceIDPropertiesKHR {
-  fn default() -> VkPhysicalDeviceIDPropertiesKHR {
-    VkPhysicalDeviceIDPropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -15332,15 +13714,15 @@ impl VkExternalMemoryImageCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
+  pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
@@ -15390,15 +13772,15 @@ impl VkExternalMemoryBufferCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
+  pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
@@ -15448,15 +13830,15 @@ impl VkExportMemoryAllocateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
+  pub fn handle_types(&self) -> VkExternalMemoryHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
@@ -15522,23 +13904,23 @@ impl VkImportMemoryWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
   #[inline]
-  pub fn get_handle(&self) -> wsi::win32::HANDLE {
+  pub fn handle(&self) -> wsi::win32::HANDLE {
     self.handle
   }
   #[inline]
-  pub fn get_name(&self) -> wsi::win32::LPCWSTR {
+  pub fn name(&self) -> wsi::win32::LPCWSTR {
     self.name
   }
 }
@@ -15606,23 +13988,23 @@ impl VkExportMemoryWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
+  pub fn attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
     self.pAttributes
   }
   #[inline]
-  pub fn get_dw_access(&self) -> wsi::win32::DWORD {
+  pub fn dw_access(&self) -> wsi::win32::DWORD {
     self.dwAccess
   }
   #[inline]
-  pub fn get_name(&self) -> wsi::win32::LPCWSTR {
+  pub fn name(&self) -> wsi::win32::LPCWSTR {
     self.name
   }
 }
@@ -15663,37 +14045,16 @@ pub struct VkMemoryWin32HandlePropertiesKHR {
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 impl VkMemoryWin32HandlePropertiesKHR {
   #[inline]
-  pub fn new() -> VkMemoryWin32HandlePropertiesKHR {
-    unsafe {
-      VkMemoryWin32HandlePropertiesKHR {
-        sType: VkStructureType::MEMORY_WIN32_HANDLE_PROPERTIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_memory_type_bits(mut self, value: u32) -> Self {
-    self.memoryTypeBits = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_memory_type_bits(&self) -> u32 {
+  pub fn memory_type_bits(&self) -> u32 {
     self.memoryTypeBits
-  }
-}
-#[cfg(feature = "VK_KHR_external_memory_win32")]
-#[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl Default for VkMemoryWin32HandlePropertiesKHR {
-  fn default() -> VkMemoryWin32HandlePropertiesKHR {
-    VkMemoryWin32HandlePropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
@@ -15746,19 +14107,19 @@ impl VkMemoryGetWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory {
     self.memory
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -15819,19 +14180,19 @@ impl VkImportMemoryFdInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
   #[inline]
-  pub fn get_fd(&self) -> c_int {
+  pub fn fd(&self) -> c_int {
     self.fd
   }
 }
@@ -15864,36 +14225,16 @@ pub struct VkMemoryFdPropertiesKHR {
 #[cfg(feature = "VK_KHR_external_memory_fd")]
 impl VkMemoryFdPropertiesKHR {
   #[inline]
-  pub fn new() -> VkMemoryFdPropertiesKHR {
-    unsafe {
-      VkMemoryFdPropertiesKHR {
-        sType: VkStructureType::MEMORY_FD_PROPERTIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_memory_type_bits(mut self, value: u32) -> Self {
-    self.memoryTypeBits = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_memory_type_bits(&self) -> u32 {
+  pub fn memory_type_bits(&self) -> u32 {
     self.memoryTypeBits
-  }
-}
-#[cfg(feature = "VK_KHR_external_memory_fd")]
-impl Default for VkMemoryFdPropertiesKHR {
-  fn default() -> VkMemoryFdPropertiesKHR {
-    VkMemoryFdPropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
@@ -15939,19 +14280,19 @@ impl VkMemoryGetFdInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory {
     self.memory
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -16004,19 +14345,19 @@ impl<'a> VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_acquire_count(&self) -> u32 {
+  pub fn acquire_count(&self) -> u32 {
     self.acquireCount
   }
   #[inline]
-  pub fn get_release_count(&self) -> u32 {
+  pub fn release_count(&self) -> u32 {
     self.releaseCount
   }
 }
@@ -16071,15 +14412,15 @@ impl VkPhysicalDeviceExternalSemaphoreInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -16117,54 +14458,24 @@ pub struct VkExternalSemaphorePropertiesKHR {
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
 impl VkExternalSemaphorePropertiesKHR {
   #[inline]
-  pub fn new() -> VkExternalSemaphorePropertiesKHR {
-    unsafe {
-      VkExternalSemaphorePropertiesKHR {
-        sType: VkStructureType::EXTERNAL_SEMAPHORE_PROPERTIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_export_from_imported_handle_types(mut self, value: VkExternalSemaphoreHandleTypeFlagsKHR) -> Self {
-    self.exportFromImportedHandleTypes = value;
-    self
-  }
-  #[inline]
-  pub fn set_compatible_handle_types(mut self, value: VkExternalSemaphoreHandleTypeFlagsKHR) -> Self {
-    self.compatibleHandleTypes = value;
-    self
-  }
-  #[inline]
-  pub fn set_external_semaphore_features(mut self, value: VkExternalSemaphoreFeatureFlagsKHR) -> Self {
-    self.externalSemaphoreFeatures = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_export_from_imported_handle_types(&self) -> VkExternalSemaphoreHandleTypeFlagsKHR {
+  pub fn export_from_imported_handle_types(&self) -> VkExternalSemaphoreHandleTypeFlagsKHR {
     self.exportFromImportedHandleTypes
   }
   #[inline]
-  pub fn get_compatible_handle_types(&self) -> VkExternalSemaphoreHandleTypeFlagsKHR {
+  pub fn compatible_handle_types(&self) -> VkExternalSemaphoreHandleTypeFlagsKHR {
     self.compatibleHandleTypes
   }
   #[inline]
-  pub fn get_external_semaphore_features(&self) -> VkExternalSemaphoreFeatureFlagsKHR {
+  pub fn external_semaphore_features(&self) -> VkExternalSemaphoreFeatureFlagsKHR {
     self.externalSemaphoreFeatures
-  }
-}
-#[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
-impl Default for VkExternalSemaphorePropertiesKHR {
-  fn default() -> VkExternalSemaphorePropertiesKHR {
-    VkExternalSemaphorePropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
@@ -16209,15 +14520,15 @@ impl VkExportSemaphoreCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_types(&self) -> VkExternalSemaphoreHandleTypeFlagsKHR {
+  pub fn handle_types(&self) -> VkExternalSemaphoreHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
@@ -16295,31 +14606,31 @@ impl VkImportSemaphoreWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_semaphore(&self) -> VkSemaphore {
+  pub fn semaphore(&self) -> VkSemaphore {
     self.semaphore
   }
   #[inline]
-  pub fn get_flags(&self) -> VkSemaphoreImportFlagsKHR {
+  pub fn flags(&self) -> VkSemaphoreImportFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
     self.handleType
   }
   #[inline]
-  pub fn get_handle(&self) -> wsi::win32::HANDLE {
+  pub fn handle(&self) -> wsi::win32::HANDLE {
     self.handle
   }
   #[inline]
-  pub fn get_name(&self) -> wsi::win32::LPCWSTR {
+  pub fn name(&self) -> wsi::win32::LPCWSTR {
     self.name
   }
 }
@@ -16387,23 +14698,23 @@ impl VkExportSemaphoreWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
+  pub fn attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
     self.pAttributes
   }
   #[inline]
-  pub fn get_dw_access(&self) -> wsi::win32::DWORD {
+  pub fn dw_access(&self) -> wsi::win32::DWORD {
     self.dwAccess
   }
   #[inline]
-  pub fn get_name(&self) -> wsi::win32::LPCWSTR {
+  pub fn name(&self) -> wsi::win32::LPCWSTR {
     self.name
   }
 }
@@ -16473,19 +14784,19 @@ impl<'a> VkD3D12FenceSubmitInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_wait_semaphore_values_count(&self) -> u32 {
+  pub fn wait_semaphore_values_count(&self) -> u32 {
     self.waitSemaphoreValuesCount
   }
   #[inline]
-  pub fn get_signal_semaphore_values_count(&self) -> u32 {
+  pub fn signal_semaphore_values_count(&self) -> u32 {
     self.signalSemaphoreValuesCount
   }
 }
@@ -16546,19 +14857,19 @@ impl VkSemaphoreGetWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_semaphore(&self) -> VkSemaphore {
+  pub fn semaphore(&self) -> VkSemaphore {
     self.semaphore
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -16631,27 +14942,27 @@ impl VkImportSemaphoreFdInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_semaphore(&self) -> VkSemaphore {
+  pub fn semaphore(&self) -> VkSemaphore {
     self.semaphore
   }
   #[inline]
-  pub fn get_flags(&self) -> VkSemaphoreImportFlagsKHR {
+  pub fn flags(&self) -> VkSemaphoreImportFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
     self.handleType
   }
   #[inline]
-  pub fn get_fd(&self) -> c_int {
+  pub fn fd(&self) -> c_int {
     self.fd
   }
 }
@@ -16707,19 +15018,19 @@ impl VkSemaphoreGetFdInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_semaphore(&self) -> VkSemaphore {
+  pub fn semaphore(&self) -> VkSemaphore {
     self.semaphore
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalSemaphoreHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -16769,15 +15080,15 @@ impl VkPhysicalDevicePushDescriptorPropertiesKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_max_push_descriptors(&self) -> u32 {
+  pub fn max_push_descriptors(&self) -> u32 {
     self.maxPushDescriptors
   }
 }
@@ -16849,11 +15160,11 @@ impl VkPhysicalDevice16BitStorageFeaturesKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
@@ -16927,15 +15238,15 @@ impl VkRectLayerKHR {
     self
   }
   #[inline]
-  pub fn get_offset(&self) -> VkOffset2D {
+  pub fn offset(&self) -> VkOffset2D {
     self.offset
   }
   #[inline]
-  pub fn get_extent(&self) -> VkExtent2D {
+  pub fn extent(&self) -> VkExtent2D {
     self.extent
   }
   #[inline]
-  pub fn get_layer(&self) -> u32 {
+  pub fn layer(&self) -> u32 {
     self.layer
   }
 }
@@ -16981,7 +15292,7 @@ impl<'a> VkPresentRegionKHR<'a> {
     self
   }
   #[inline]
-  pub fn get_rectangle_count(&self) -> u32 {
+  pub fn rectangle_count(&self) -> u32 {
     self.rectangleCount
   }
 }
@@ -17033,15 +15344,15 @@ impl<'a> VkPresentRegionsKHR<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_swapchain_count(&self) -> u32 {
+  pub fn swapchain_count(&self) -> u32 {
     self.swapchainCount
   }
 }
@@ -17121,27 +15432,27 @@ impl VkDescriptorUpdateTemplateEntryKHR {
     self
   }
   #[inline]
-  pub fn get_dst_binding(&self) -> u32 {
+  pub fn dst_binding(&self) -> u32 {
     self.dstBinding
   }
   #[inline]
-  pub fn get_dst_array_element(&self) -> u32 {
+  pub fn dst_array_element(&self) -> u32 {
     self.dstArrayElement
   }
   #[inline]
-  pub fn get_descriptor_count(&self) -> u32 {
+  pub fn descriptor_count(&self) -> u32 {
     self.descriptorCount
   }
   #[inline]
-  pub fn get_descriptor_type(&self) -> VkDescriptorType {
+  pub fn descriptor_type(&self) -> VkDescriptorType {
     self.descriptorType
   }
   #[inline]
-  pub fn get_offset(&self) -> usize {
+  pub fn offset(&self) -> usize {
     self.offset
   }
   #[inline]
-  pub fn get_stride(&self) -> usize {
+  pub fn stride(&self) -> usize {
     self.stride
   }
 }
@@ -17232,39 +15543,39 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkDescriptorUpdateTemplateCreateFlagsKHR {
+  pub fn flags(&self) -> VkDescriptorUpdateTemplateCreateFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_descriptor_update_entry_count(&self) -> u32 {
+  pub fn descriptor_update_entry_count(&self) -> u32 {
     self.descriptorUpdateEntryCount
   }
   #[inline]
-  pub fn get_template_type(&self) -> VkDescriptorUpdateTemplateTypeKHR {
+  pub fn template_type(&self) -> VkDescriptorUpdateTemplateTypeKHR {
     self.templateType
   }
   #[inline]
-  pub fn get_descriptor_set_layout(&self) -> Option<VkDescriptorSetLayout> {
+  pub fn descriptor_set_layout(&self) -> Option<VkDescriptorSetLayout> {
     self.descriptorSetLayout
   }
   #[inline]
-  pub fn get_pipeline_bind_point(&self) -> VkPipelineBindPoint {
+  pub fn pipeline_bind_point(&self) -> VkPipelineBindPoint {
     self.pipelineBindPoint
   }
   #[inline]
-  pub fn get_pipeline_layout(&self) -> Option<VkPipelineLayout> {
+  pub fn pipeline_layout(&self) -> Option<VkPipelineLayout> {
     self.pipelineLayout
   }
   #[inline]
-  pub fn get_set(&self) -> u32 {
+  pub fn set(&self) -> u32 {
     self.set
   }
 }
@@ -17333,11 +15644,11 @@ impl VkDeviceGeneratedCommandsFeaturesNVX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
@@ -17415,31 +15726,31 @@ impl VkDeviceGeneratedCommandsLimitsNVX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_max_indirect_commands_layout_token_count(&self) -> u32 {
+  pub fn max_indirect_commands_layout_token_count(&self) -> u32 {
     self.maxIndirectCommandsLayoutTokenCount
   }
   #[inline]
-  pub fn get_max_object_entry_counts(&self) -> u32 {
+  pub fn max_object_entry_counts(&self) -> u32 {
     self.maxObjectEntryCounts
   }
   #[inline]
-  pub fn get_min_sequence_count_buffer_offset_alignment(&self) -> u32 {
+  pub fn min_sequence_count_buffer_offset_alignment(&self) -> u32 {
     self.minSequenceCountBufferOffsetAlignment
   }
   #[inline]
-  pub fn get_min_sequence_index_buffer_offset_alignment(&self) -> u32 {
+  pub fn min_sequence_index_buffer_offset_alignment(&self) -> u32 {
     self.minSequenceIndexBufferOffsetAlignment
   }
   #[inline]
-  pub fn get_min_commands_token_buffer_offset_alignment(&self) -> u32 {
+  pub fn min_commands_token_buffer_offset_alignment(&self) -> u32 {
     self.minCommandsTokenBufferOffsetAlignment
   }
 }
@@ -17494,15 +15805,15 @@ impl VkIndirectCommandsTokenNVX {
     self
   }
   #[inline]
-  pub fn get_token_type(&self) -> VkIndirectCommandsTokenTypeNVX {
+  pub fn token_type(&self) -> VkIndirectCommandsTokenTypeNVX {
     self.tokenType
   }
   #[inline]
-  pub fn get_buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
   #[inline]
-  pub fn get_offset(&self) -> VkDeviceSize {
+  pub fn offset(&self) -> VkDeviceSize {
     self.offset
   }
 }
@@ -17563,19 +15874,19 @@ impl VkIndirectCommandsLayoutTokenNVX {
     self
   }
   #[inline]
-  pub fn get_token_type(&self) -> VkIndirectCommandsTokenTypeNVX {
+  pub fn token_type(&self) -> VkIndirectCommandsTokenTypeNVX {
     self.tokenType
   }
   #[inline]
-  pub fn get_binding_unit(&self) -> u32 {
+  pub fn binding_unit(&self) -> u32 {
     self.bindingUnit
   }
   #[inline]
-  pub fn get_dynamic_count(&self) -> u32 {
+  pub fn dynamic_count(&self) -> u32 {
     self.dynamicCount
   }
   #[inline]
-  pub fn get_divisor(&self) -> u32 {
+  pub fn divisor(&self) -> u32 {
     self.divisor
   }
 }
@@ -17643,23 +15954,23 @@ impl<'a> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_pipeline_bind_point(&self) -> VkPipelineBindPoint {
+  pub fn pipeline_bind_point(&self) -> VkPipelineBindPoint {
     self.pipelineBindPoint
   }
   #[inline]
-  pub fn get_flags(&self) -> VkIndirectCommandsLayoutUsageFlagsNVX {
+  pub fn flags(&self) -> VkIndirectCommandsLayoutUsageFlagsNVX {
     self.flags
   }
   #[inline]
-  pub fn get_token_count(&self) -> u32 {
+  pub fn token_count(&self) -> u32 {
     self.tokenCount
   }
 }
@@ -17762,47 +16073,47 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_object_table(&self) -> VkObjectTableNVX {
+  pub fn object_table(&self) -> VkObjectTableNVX {
     self.objectTable
   }
   #[inline]
-  pub fn get_indirect_commands_layout(&self) -> VkIndirectCommandsLayoutNVX {
+  pub fn indirect_commands_layout(&self) -> VkIndirectCommandsLayoutNVX {
     self.indirectCommandsLayout
   }
   #[inline]
-  pub fn get_indirect_commands_token_count(&self) -> u32 {
+  pub fn indirect_commands_token_count(&self) -> u32 {
     self.indirectCommandsTokenCount
   }
   #[inline]
-  pub fn get_max_sequences_count(&self) -> u32 {
+  pub fn max_sequences_count(&self) -> u32 {
     self.maxSequencesCount
   }
   #[inline]
-  pub fn get_target_command_buffer(&self) -> Option<VkCommandBuffer> {
+  pub fn target_command_buffer(&self) -> Option<VkCommandBuffer> {
     self.targetCommandBuffer
   }
   #[inline]
-  pub fn get_sequences_count_buffer(&self) -> Option<VkBuffer> {
+  pub fn sequences_count_buffer(&self) -> Option<VkBuffer> {
     self.sequencesCountBuffer
   }
   #[inline]
-  pub fn get_sequences_count_offset(&self) -> VkDeviceSize {
+  pub fn sequences_count_offset(&self) -> VkDeviceSize {
     self.sequencesCountOffset
   }
   #[inline]
-  pub fn get_sequences_index_buffer(&self) -> Option<VkBuffer> {
+  pub fn sequences_index_buffer(&self) -> Option<VkBuffer> {
     self.sequencesIndexBuffer
   }
   #[inline]
-  pub fn get_sequences_index_offset(&self) -> VkDeviceSize {
+  pub fn sequences_index_offset(&self) -> VkDeviceSize {
     self.sequencesIndexOffset
   }
 }
@@ -17864,23 +16175,23 @@ impl VkCmdReserveSpaceForCommandsInfoNVX {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_object_table(&self) -> VkObjectTableNVX {
+  pub fn object_table(&self) -> VkObjectTableNVX {
     self.objectTable
   }
   #[inline]
-  pub fn get_indirect_commands_layout(&self) -> VkIndirectCommandsLayoutNVX {
+  pub fn indirect_commands_layout(&self) -> VkIndirectCommandsLayoutNVX {
     self.indirectCommandsLayout
   }
   #[inline]
-  pub fn get_max_sequences_count(&self) -> u32 {
+  pub fn max_sequences_count(&self) -> u32 {
     self.maxSequencesCount
   }
 }
@@ -17959,35 +16270,35 @@ impl<'a> VkObjectTableCreateInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_object_count(&self) -> u32 {
+  pub fn object_count(&self) -> u32 {
     self.objectCount
   }
   #[inline]
-  pub fn get_max_uniform_buffers_per_descriptor(&self) -> u32 {
+  pub fn max_uniform_buffers_per_descriptor(&self) -> u32 {
     self.maxUniformBuffersPerDescriptor
   }
   #[inline]
-  pub fn get_max_storage_buffers_per_descriptor(&self) -> u32 {
+  pub fn max_storage_buffers_per_descriptor(&self) -> u32 {
     self.maxStorageBuffersPerDescriptor
   }
   #[inline]
-  pub fn get_max_storage_images_per_descriptor(&self) -> u32 {
+  pub fn max_storage_images_per_descriptor(&self) -> u32 {
     self.maxStorageImagesPerDescriptor
   }
   #[inline]
-  pub fn get_max_sampled_images_per_descriptor(&self) -> u32 {
+  pub fn max_sampled_images_per_descriptor(&self) -> u32 {
     self.maxSampledImagesPerDescriptor
   }
   #[inline]
-  pub fn get_max_pipeline_layouts(&self) -> u32 {
+  pub fn max_pipeline_layouts(&self) -> u32 {
     self.maxPipelineLayouts
   }
 }
@@ -18040,7 +16351,7 @@ impl VkObjectTableEntryNVX {
     self.eType
   }
   #[inline]
-  pub fn get_flags(&self) -> VkObjectEntryUsageFlagsNVX {
+  pub fn flags(&self) -> VkObjectEntryUsageFlagsNVX {
     self.flags
   }
 }
@@ -18096,11 +16407,11 @@ impl VkObjectTablePipelineEntryNVX {
     self.eType
   }
   #[inline]
-  pub fn get_flags(&self) -> VkObjectEntryUsageFlagsNVX {
+  pub fn flags(&self) -> VkObjectEntryUsageFlagsNVX {
     self.flags
   }
   #[inline]
-  pub fn get_pipeline(&self) -> VkPipeline {
+  pub fn pipeline(&self) -> VkPipeline {
     self.pipeline
   }
 }
@@ -18165,15 +16476,15 @@ impl VkObjectTableDescriptorSetEntryNVX {
     self.eType
   }
   #[inline]
-  pub fn get_flags(&self) -> VkObjectEntryUsageFlagsNVX {
+  pub fn flags(&self) -> VkObjectEntryUsageFlagsNVX {
     self.flags
   }
   #[inline]
-  pub fn get_pipeline_layout(&self) -> VkPipelineLayout {
+  pub fn pipeline_layout(&self) -> VkPipelineLayout {
     self.pipelineLayout
   }
   #[inline]
-  pub fn get_descriptor_set(&self) -> VkDescriptorSet {
+  pub fn descriptor_set(&self) -> VkDescriptorSet {
     self.descriptorSet
   }
 }
@@ -18232,11 +16543,11 @@ impl VkObjectTableVertexBufferEntryNVX {
     self.eType
   }
   #[inline]
-  pub fn get_flags(&self) -> VkObjectEntryUsageFlagsNVX {
+  pub fn flags(&self) -> VkObjectEntryUsageFlagsNVX {
     self.flags
   }
   #[inline]
-  pub fn get_buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
 }
@@ -18301,15 +16612,15 @@ impl VkObjectTableIndexBufferEntryNVX {
     self.eType
   }
   #[inline]
-  pub fn get_flags(&self) -> VkObjectEntryUsageFlagsNVX {
+  pub fn flags(&self) -> VkObjectEntryUsageFlagsNVX {
     self.flags
   }
   #[inline]
-  pub fn get_buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
   #[inline]
-  pub fn get_index_type(&self) -> VkIndexType {
+  pub fn index_type(&self) -> VkIndexType {
     self.indexType
   }
 }
@@ -18374,15 +16685,15 @@ impl VkObjectTablePushConstantEntryNVX {
     self.eType
   }
   #[inline]
-  pub fn get_flags(&self) -> VkObjectEntryUsageFlagsNVX {
+  pub fn flags(&self) -> VkObjectEntryUsageFlagsNVX {
     self.flags
   }
   #[inline]
-  pub fn get_pipeline_layout(&self) -> VkPipelineLayout {
+  pub fn pipeline_layout(&self) -> VkPipelineLayout {
     self.pipelineLayout
   }
   #[inline]
-  pub fn get_stage_flags(&self) -> VkShaderStageFlags {
+  pub fn stage_flags(&self) -> VkShaderStageFlags {
     self.stageFlags
   }
 }
@@ -18433,11 +16744,11 @@ impl VkViewportWScalingNV {
     self
   }
   #[inline]
-  pub fn get_xcoeff(&self) -> f32 {
+  pub fn xcoeff(&self) -> f32 {
     self.xcoeff
   }
   #[inline]
-  pub fn get_ycoeff(&self) -> f32 {
+  pub fn ycoeff(&self) -> f32 {
     self.ycoeff
   }
 }
@@ -18497,11 +16808,11 @@ impl<'a> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
@@ -18509,7 +16820,7 @@ impl<'a> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
     self.viewportWScalingEnable != 0
   }
   #[inline]
-  pub fn get_viewport_count(&self) -> u32 {
+  pub fn viewport_count(&self) -> u32 {
     self.viewportCount
   }
 }
@@ -18557,126 +16868,56 @@ pub struct VkSurfaceCapabilities2EXT {
 #[cfg(feature = "VK_EXT_display_surface_counter")]
 impl VkSurfaceCapabilities2EXT {
   #[inline]
-  pub fn new() -> VkSurfaceCapabilities2EXT {
-    unsafe {
-      VkSurfaceCapabilities2EXT {
-        sType: VkStructureType::SURFACE_CAPABILITIES_2_EXT,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_min_image_count(mut self, value: u32) -> Self {
-    self.minImageCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_count(mut self, value: u32) -> Self {
-    self.maxImageCount = value;
-    self
-  }
-  #[inline]
-  pub fn set_current_extent(mut self, value: VkExtent2D) -> Self {
-    self.currentExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_min_image_extent(mut self, value: VkExtent2D) -> Self {
-    self.minImageExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_extent(mut self, value: VkExtent2D) -> Self {
-    self.maxImageExtent = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_image_array_layers(mut self, value: u32) -> Self {
-    self.maxImageArrayLayers = value;
-    self
-  }
-  #[inline]
-  pub fn set_supported_transforms(mut self, value: VkSurfaceTransformFlagsKHR) -> Self {
-    self.supportedTransforms = value;
-    self
-  }
-  #[inline]
-  pub fn set_current_transform(mut self, value: VkSurfaceTransformFlagBitsKHR) -> Self {
-    self.currentTransform = value;
-    self
-  }
-  #[inline]
-  pub fn set_supported_composite_alpha(mut self, value: VkCompositeAlphaFlagsKHR) -> Self {
-    self.supportedCompositeAlpha = value;
-    self
-  }
-  #[inline]
-  pub fn set_supported_usage_flags(mut self, value: VkImageUsageFlags) -> Self {
-    self.supportedUsageFlags = value;
-    self
-  }
-  #[inline]
-  pub fn set_supported_surface_counters(mut self, value: VkSurfaceCounterFlagsEXT) -> Self {
-    self.supportedSurfaceCounters = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_min_image_count(&self) -> u32 {
+  pub fn min_image_count(&self) -> u32 {
     self.minImageCount
   }
   #[inline]
-  pub fn get_max_image_count(&self) -> u32 {
+  pub fn max_image_count(&self) -> u32 {
     self.maxImageCount
   }
   #[inline]
-  pub fn get_current_extent(&self) -> VkExtent2D {
+  pub fn current_extent(&self) -> VkExtent2D {
     self.currentExtent
   }
   #[inline]
-  pub fn get_min_image_extent(&self) -> VkExtent2D {
+  pub fn min_image_extent(&self) -> VkExtent2D {
     self.minImageExtent
   }
   #[inline]
-  pub fn get_max_image_extent(&self) -> VkExtent2D {
+  pub fn max_image_extent(&self) -> VkExtent2D {
     self.maxImageExtent
   }
   #[inline]
-  pub fn get_max_image_array_layers(&self) -> u32 {
+  pub fn max_image_array_layers(&self) -> u32 {
     self.maxImageArrayLayers
   }
   #[inline]
-  pub fn get_supported_transforms(&self) -> VkSurfaceTransformFlagsKHR {
+  pub fn supported_transforms(&self) -> VkSurfaceTransformFlagsKHR {
     self.supportedTransforms
   }
   #[inline]
-  pub fn get_current_transform(&self) -> VkSurfaceTransformFlagBitsKHR {
+  pub fn current_transform(&self) -> VkSurfaceTransformFlagBitsKHR {
     self.currentTransform
   }
   #[inline]
-  pub fn get_supported_composite_alpha(&self) -> VkCompositeAlphaFlagsKHR {
+  pub fn supported_composite_alpha(&self) -> VkCompositeAlphaFlagsKHR {
     self.supportedCompositeAlpha
   }
   #[inline]
-  pub fn get_supported_usage_flags(&self) -> VkImageUsageFlags {
+  pub fn supported_usage_flags(&self) -> VkImageUsageFlags {
     self.supportedUsageFlags
   }
   #[inline]
-  pub fn get_supported_surface_counters(&self) -> VkSurfaceCounterFlagsEXT {
+  pub fn supported_surface_counters(&self) -> VkSurfaceCounterFlagsEXT {
     self.supportedSurfaceCounters
-  }
-}
-#[cfg(feature = "VK_EXT_display_surface_counter")]
-impl Default for VkSurfaceCapabilities2EXT {
-  fn default() -> VkSurfaceCapabilities2EXT {
-    VkSurfaceCapabilities2EXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_display_surface_counter")]
@@ -18721,15 +16962,15 @@ impl VkDisplayPowerInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_power_state(&self) -> VkDisplayPowerStateEXT {
+  pub fn power_state(&self) -> VkDisplayPowerStateEXT {
     self.powerState
   }
 }
@@ -18776,15 +17017,15 @@ impl VkDeviceEventInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_device_event(&self) -> VkDeviceEventTypeEXT {
+  pub fn device_event(&self) -> VkDeviceEventTypeEXT {
     self.deviceEvent
   }
 }
@@ -18831,15 +17072,15 @@ impl VkDisplayEventInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_display_event(&self) -> VkDisplayEventTypeEXT {
+  pub fn display_event(&self) -> VkDisplayEventTypeEXT {
     self.displayEvent
   }
 }
@@ -18886,15 +17127,15 @@ impl VkSwapchainCounterCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_surface_counters(&self) -> VkSurfaceCounterFlagsEXT {
+  pub fn surface_counters(&self) -> VkSurfaceCounterFlagsEXT {
     self.surfaceCounters
   }
 }
@@ -18939,7 +17180,7 @@ impl VkRefreshCycleDurationGOOGLE {
     self
   }
   #[inline]
-  pub fn get_refresh_duration(&self) -> u64 {
+  pub fn refresh_duration(&self) -> u64 {
     self.refreshDuration
   }
 }
@@ -19006,23 +17247,23 @@ impl VkPastPresentationTimingGOOGLE {
     self
   }
   #[inline]
-  pub fn get_present_id(&self) -> u32 {
+  pub fn present_id(&self) -> u32 {
     self.presentID
   }
   #[inline]
-  pub fn get_desired_present_time(&self) -> u64 {
+  pub fn desired_present_time(&self) -> u64 {
     self.desiredPresentTime
   }
   #[inline]
-  pub fn get_actual_present_time(&self) -> u64 {
+  pub fn actual_present_time(&self) -> u64 {
     self.actualPresentTime
   }
   #[inline]
-  pub fn get_earliest_present_time(&self) -> u64 {
+  pub fn earliest_present_time(&self) -> u64 {
     self.earliestPresentTime
   }
   #[inline]
-  pub fn get_present_margin(&self) -> u64 {
+  pub fn present_margin(&self) -> u64 {
     self.presentMargin
   }
 }
@@ -19071,11 +17312,11 @@ impl VkPresentTimeGOOGLE {
     self
   }
   #[inline]
-  pub fn get_present_id(&self) -> u32 {
+  pub fn present_id(&self) -> u32 {
     self.presentID
   }
   #[inline]
-  pub fn get_desired_present_time(&self) -> u64 {
+  pub fn desired_present_time(&self) -> u64 {
     self.desiredPresentTime
   }
 }
@@ -19127,15 +17368,15 @@ impl<'a> VkPresentTimesInfoGOOGLE<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_swapchain_count(&self) -> u32 {
+  pub fn swapchain_count(&self) -> u32 {
     self.swapchainCount
   }
 }
@@ -19173,37 +17414,16 @@ pub struct VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
 #[cfg(feature = "VK_NVX_multiview_per_view_attributes")]
 impl VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
-    unsafe {
-      VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
-        sType: VkStructureType::PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_per_view_position_all_components(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.perViewPositionAllComponents = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
   pub fn is_per_view_position_all_components(&self) -> bool {
     self.perViewPositionAllComponents != 0
-  }
-}
-#[cfg(feature = "VK_NVX_multiview_per_view_attributes")]
-impl Default for VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
-  fn default() -> VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
-    VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_multiview_per_view_attributes")]
@@ -19259,19 +17479,19 @@ impl VkViewportSwizzleNV {
     self
   }
   #[inline]
-  pub fn get_x(&self) -> VkViewportCoordinateSwizzleNV {
+  pub fn x(&self) -> VkViewportCoordinateSwizzleNV {
     self.x
   }
   #[inline]
-  pub fn get_y(&self) -> VkViewportCoordinateSwizzleNV {
+  pub fn y(&self) -> VkViewportCoordinateSwizzleNV {
     self.y
   }
   #[inline]
-  pub fn get_z(&self) -> VkViewportCoordinateSwizzleNV {
+  pub fn z(&self) -> VkViewportCoordinateSwizzleNV {
     self.z
   }
   #[inline]
-  pub fn get_w(&self) -> VkViewportCoordinateSwizzleNV {
+  pub fn w(&self) -> VkViewportCoordinateSwizzleNV {
     self.w
   }
 }
@@ -19329,19 +17549,19 @@ impl<'a> VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineViewportSwizzleStateCreateFlagsNV {
+  pub fn flags(&self) -> VkPipelineViewportSwizzleStateCreateFlagsNV {
     self.flags
   }
   #[inline]
-  pub fn get_viewport_count(&self) -> u32 {
+  pub fn viewport_count(&self) -> u32 {
     self.viewportCount
   }
 }
@@ -19394,15 +17614,15 @@ impl VkPhysicalDeviceDiscardRectanglePropertiesEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_max_discard_rectangles(&self) -> u32 {
+  pub fn max_discard_rectangles(&self) -> u32 {
     self.maxDiscardRectangles
   }
 }
@@ -19469,23 +17689,23 @@ impl<'a> VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineDiscardRectangleStateCreateFlagsEXT {
+  pub fn flags(&self) -> VkPipelineDiscardRectangleStateCreateFlagsEXT {
     self.flags
   }
   #[inline]
-  pub fn get_discard_rectangle_mode(&self) -> VkDiscardRectangleModeEXT {
+  pub fn discard_rectangle_mode(&self) -> VkDiscardRectangleModeEXT {
     self.discardRectangleMode
   }
   #[inline]
-  pub fn get_discard_rectangle_count(&self) -> u32 {
+  pub fn discard_rectangle_count(&self) -> u32 {
     self.discardRectangleCount
   }
 }
@@ -19592,23 +17812,23 @@ impl VkPhysicalDeviceConservativeRasterizationPropertiesEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_primitive_overestimation_size(&self) -> f32 {
+  pub fn primitive_overestimation_size(&self) -> f32 {
     self.primitiveOverestimationSize
   }
   #[inline]
-  pub fn get_max_extra_primitive_overestimation_size(&self) -> f32 {
+  pub fn max_extra_primitive_overestimation_size(&self) -> f32 {
     self.maxExtraPrimitiveOverestimationSize
   }
   #[inline]
-  pub fn get_extra_primitive_overestimation_size_granularity(&self) -> f32 {
+  pub fn extra_primitive_overestimation_size_granularity(&self) -> f32 {
     self.extraPrimitiveOverestimationSizeGranularity
   }
   #[inline]
@@ -19694,23 +17914,23 @@ impl VkPipelineRasterizationConservativeStateCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineRasterizationConservativeStateCreateFlagsEXT {
+  pub fn flags(&self) -> VkPipelineRasterizationConservativeStateCreateFlagsEXT {
     self.flags
   }
   #[inline]
-  pub fn get_conservative_rasterization_mode(&self) -> VkConservativeRasterizationModeEXT {
+  pub fn conservative_rasterization_mode(&self) -> VkConservativeRasterizationModeEXT {
     self.conservativeRasterizationMode
   }
   #[inline]
-  pub fn get_extra_primitive_overestimation_size(&self) -> f32 {
+  pub fn extra_primitive_overestimation_size(&self) -> f32 {
     self.extraPrimitiveOverestimationSize
   }
 }
@@ -19761,11 +17981,11 @@ impl VkXYColorEXT {
     self
   }
   #[inline]
-  pub fn get_x(&self) -> f32 {
+  pub fn x(&self) -> f32 {
     self.x
   }
   #[inline]
-  pub fn get_y(&self) -> f32 {
+  pub fn y(&self) -> f32 {
     self.y
   }
 }
@@ -19854,43 +18074,43 @@ impl VkHdrMetadataEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_display_primary_red(&self) -> VkXYColorEXT {
+  pub fn display_primary_red(&self) -> VkXYColorEXT {
     self.displayPrimaryRed
   }
   #[inline]
-  pub fn get_display_primary_green(&self) -> VkXYColorEXT {
+  pub fn display_primary_green(&self) -> VkXYColorEXT {
     self.displayPrimaryGreen
   }
   #[inline]
-  pub fn get_display_primary_blue(&self) -> VkXYColorEXT {
+  pub fn display_primary_blue(&self) -> VkXYColorEXT {
     self.displayPrimaryBlue
   }
   #[inline]
-  pub fn get_white_point(&self) -> VkXYColorEXT {
+  pub fn white_point(&self) -> VkXYColorEXT {
     self.whitePoint
   }
   #[inline]
-  pub fn get_max_luminance(&self) -> f32 {
+  pub fn max_luminance(&self) -> f32 {
     self.maxLuminance
   }
   #[inline]
-  pub fn get_min_luminance(&self) -> f32 {
+  pub fn min_luminance(&self) -> f32 {
     self.minLuminance
   }
   #[inline]
-  pub fn get_max_content_light_level(&self) -> f32 {
+  pub fn max_content_light_level(&self) -> f32 {
     self.maxContentLightLevel
   }
   #[inline]
-  pub fn get_max_frame_average_light_level(&self) -> f32 {
+  pub fn max_frame_average_light_level(&self) -> f32 {
     self.maxFrameAverageLightLevel
   }
 }
@@ -19939,15 +18159,15 @@ impl VkPhysicalDeviceSurfaceInfo2KHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_surface(&self) -> VkSurfaceKHR {
+  pub fn surface(&self) -> VkSurfaceKHR {
     self.surface
   }
 }
@@ -19983,36 +18203,16 @@ pub struct VkSurfaceCapabilities2KHR {
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
 impl VkSurfaceCapabilities2KHR {
   #[inline]
-  pub fn new() -> VkSurfaceCapabilities2KHR {
-    unsafe {
-      VkSurfaceCapabilities2KHR {
-        sType: VkStructureType::SURFACE_CAPABILITIES_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_surface_capabilities(mut self, value: VkSurfaceCapabilitiesKHR) -> Self {
-    self.surfaceCapabilities = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_surface_capabilities(&self) -> VkSurfaceCapabilitiesKHR {
+  pub fn surface_capabilities(&self) -> VkSurfaceCapabilitiesKHR {
     self.surfaceCapabilities
-  }
-}
-#[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-impl Default for VkSurfaceCapabilities2KHR {
-  fn default() -> VkSurfaceCapabilities2KHR {
-    VkSurfaceCapabilities2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
@@ -20041,36 +18241,16 @@ pub struct VkSurfaceFormat2KHR {
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
 impl VkSurfaceFormat2KHR {
   #[inline]
-  pub fn new() -> VkSurfaceFormat2KHR {
-    unsafe {
-      VkSurfaceFormat2KHR {
-        sType: VkStructureType::SURFACE_FORMAT_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_surface_format(mut self, value: VkSurfaceFormatKHR) -> Self {
-    self.surfaceFormat = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_surface_format(&self) -> VkSurfaceFormatKHR {
+  pub fn surface_format(&self) -> VkSurfaceFormatKHR {
     self.surfaceFormat
-  }
-}
-#[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-impl Default for VkSurfaceFormat2KHR {
-  fn default() -> VkSurfaceFormat2KHR {
-    VkSurfaceFormat2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
@@ -20098,36 +18278,16 @@ pub struct VkSharedPresentSurfaceCapabilitiesKHR {
 #[cfg(feature = "VK_KHR_shared_presentable_image")]
 impl VkSharedPresentSurfaceCapabilitiesKHR {
   #[inline]
-  pub fn new() -> VkSharedPresentSurfaceCapabilitiesKHR {
-    unsafe {
-      VkSharedPresentSurfaceCapabilitiesKHR {
-        sType: VkStructureType::SHARED_PRESENT_SURFACE_CAPABILITIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_shared_present_supported_usage_flags(mut self, value: VkImageUsageFlags) -> Self {
-    self.sharedPresentSupportedUsageFlags = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_shared_present_supported_usage_flags(&self) -> VkImageUsageFlags {
+  pub fn shared_present_supported_usage_flags(&self) -> VkImageUsageFlags {
     self.sharedPresentSupportedUsageFlags
-  }
-}
-#[cfg(feature = "VK_KHR_shared_presentable_image")]
-impl Default for VkSharedPresentSurfaceCapabilitiesKHR {
-  fn default() -> VkSharedPresentSurfaceCapabilitiesKHR {
-    VkSharedPresentSurfaceCapabilitiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_shared_presentable_image")]
@@ -20172,15 +18332,15 @@ impl VkPhysicalDeviceExternalFenceInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -20218,54 +18378,24 @@ pub struct VkExternalFencePropertiesKHR {
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
 impl VkExternalFencePropertiesKHR {
   #[inline]
-  pub fn new() -> VkExternalFencePropertiesKHR {
-    unsafe {
-      VkExternalFencePropertiesKHR {
-        sType: VkStructureType::EXTERNAL_FENCE_PROPERTIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_export_from_imported_handle_types(mut self, value: VkExternalFenceHandleTypeFlagsKHR) -> Self {
-    self.exportFromImportedHandleTypes = value;
-    self
-  }
-  #[inline]
-  pub fn set_compatible_handle_types(mut self, value: VkExternalFenceHandleTypeFlagsKHR) -> Self {
-    self.compatibleHandleTypes = value;
-    self
-  }
-  #[inline]
-  pub fn set_external_fence_features(mut self, value: VkExternalFenceFeatureFlagsKHR) -> Self {
-    self.externalFenceFeatures = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_export_from_imported_handle_types(&self) -> VkExternalFenceHandleTypeFlagsKHR {
+  pub fn export_from_imported_handle_types(&self) -> VkExternalFenceHandleTypeFlagsKHR {
     self.exportFromImportedHandleTypes
   }
   #[inline]
-  pub fn get_compatible_handle_types(&self) -> VkExternalFenceHandleTypeFlagsKHR {
+  pub fn compatible_handle_types(&self) -> VkExternalFenceHandleTypeFlagsKHR {
     self.compatibleHandleTypes
   }
   #[inline]
-  pub fn get_external_fence_features(&self) -> VkExternalFenceFeatureFlagsKHR {
+  pub fn external_fence_features(&self) -> VkExternalFenceFeatureFlagsKHR {
     self.externalFenceFeatures
-  }
-}
-#[cfg(feature = "VK_KHR_external_fence_capabilities")]
-impl Default for VkExternalFencePropertiesKHR {
-  fn default() -> VkExternalFencePropertiesKHR {
-    VkExternalFencePropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
@@ -20310,15 +18440,15 @@ impl VkExportFenceCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_types(&self) -> VkExternalFenceHandleTypeFlagsKHR {
+  pub fn handle_types(&self) -> VkExternalFenceHandleTypeFlagsKHR {
     self.handleTypes
   }
 }
@@ -20396,31 +18526,31 @@ impl VkImportFenceWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_fence(&self) -> VkFence {
+  pub fn fence(&self) -> VkFence {
     self.fence
   }
   #[inline]
-  pub fn get_flags(&self) -> VkFenceImportFlagsKHR {
+  pub fn flags(&self) -> VkFenceImportFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
     self.handleType
   }
   #[inline]
-  pub fn get_handle(&self) -> wsi::win32::HANDLE {
+  pub fn handle(&self) -> wsi::win32::HANDLE {
     self.handle
   }
   #[inline]
-  pub fn get_name(&self) -> wsi::win32::LPCWSTR {
+  pub fn name(&self) -> wsi::win32::LPCWSTR {
     self.name
   }
 }
@@ -20488,23 +18618,23 @@ impl VkExportFenceWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
+  pub fn attributes(&self) -> *const wsi::win32::SECURITY_ATTRIBUTES {
     self.pAttributes
   }
   #[inline]
-  pub fn get_dw_access(&self) -> wsi::win32::DWORD {
+  pub fn dw_access(&self) -> wsi::win32::DWORD {
     self.dwAccess
   }
   #[inline]
-  pub fn get_name(&self) -> wsi::win32::LPCWSTR {
+  pub fn name(&self) -> wsi::win32::LPCWSTR {
     self.name
   }
 }
@@ -20565,19 +18695,19 @@ impl VkFenceGetWin32HandleInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_fence(&self) -> VkFence {
+  pub fn fence(&self) -> VkFence {
     self.fence
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -20650,27 +18780,27 @@ impl VkImportFenceFdInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_fence(&self) -> VkFence {
+  pub fn fence(&self) -> VkFence {
     self.fence
   }
   #[inline]
-  pub fn get_flags(&self) -> VkFenceImportFlagsKHR {
+  pub fn flags(&self) -> VkFenceImportFlagsKHR {
     self.flags
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
     self.handleType
   }
   #[inline]
-  pub fn get_fd(&self) -> c_int {
+  pub fn fd(&self) -> c_int {
     self.fd
   }
 }
@@ -20723,19 +18853,19 @@ impl VkFenceGetFdInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_fence(&self) -> VkFence {
+  pub fn fence(&self) -> VkFence {
     self.fence
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalFenceHandleTypeFlagBitsKHR {
     self.handleType
   }
 }
@@ -20770,36 +18900,16 @@ pub struct VkPhysicalDevicePointClippingPropertiesKHR {
 #[cfg(feature = "VK_KHR_maintenance2")]
 impl VkPhysicalDevicePointClippingPropertiesKHR {
   #[inline]
-  pub fn new() -> VkPhysicalDevicePointClippingPropertiesKHR {
-    unsafe {
-      VkPhysicalDevicePointClippingPropertiesKHR {
-        sType: VkStructureType::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_point_clipping_behavior(mut self, value: VkPointClippingBehaviorKHR) -> Self {
-    self.pointClippingBehavior = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_point_clipping_behavior(&self) -> VkPointClippingBehaviorKHR {
+  pub fn point_clipping_behavior(&self) -> VkPointClippingBehaviorKHR {
     self.pointClippingBehavior
-  }
-}
-#[cfg(feature = "VK_KHR_maintenance2")]
-impl Default for VkPhysicalDevicePointClippingPropertiesKHR {
-  fn default() -> VkPhysicalDevicePointClippingPropertiesKHR {
-    VkPhysicalDevicePointClippingPropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
@@ -20848,15 +18958,15 @@ impl VkInputAttachmentAspectReferenceKHR {
     self
   }
   #[inline]
-  pub fn get_subpass(&self) -> u32 {
+  pub fn subpass(&self) -> u32 {
     self.subpass
   }
   #[inline]
-  pub fn get_input_attachment_index(&self) -> u32 {
+  pub fn input_attachment_index(&self) -> u32 {
     self.inputAttachmentIndex
   }
   #[inline]
-  pub fn get_aspect_mask(&self) -> VkImageAspectFlags {
+  pub fn aspect_mask(&self) -> VkImageAspectFlags {
     self.aspectMask
   }
 }
@@ -20912,15 +19022,15 @@ impl<'a> VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_aspect_reference_count(&self) -> u32 {
+  pub fn aspect_reference_count(&self) -> u32 {
     self.aspectReferenceCount
   }
 }
@@ -20970,15 +19080,15 @@ impl VkImageViewUsageCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_usage(&self) -> VkImageUsageFlags {
+  pub fn usage(&self) -> VkImageUsageFlags {
     self.usage
   }
 }
@@ -21028,15 +19138,15 @@ impl VkPipelineTessellationDomainOriginStateCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_domain_origin(&self) -> VkTessellationDomainOriginKHR {
+  pub fn domain_origin(&self) -> VkTessellationDomainOriginKHR {
     self.domainOrigin
   }
 }
@@ -21097,11 +19207,11 @@ impl VkPhysicalDeviceVariablePointerFeaturesKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
@@ -21164,19 +19274,19 @@ impl VkIOSSurfaceCreateInfoMVK {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkIOSSurfaceCreateFlagsMVK {
+  pub fn flags(&self) -> VkIOSSurfaceCreateFlagsMVK {
     self.flags
   }
   #[inline]
-  pub fn get_view(&self) -> *const c_void {
+  pub fn view(&self) -> *const c_void {
     self.pView
   }
 }
@@ -21234,19 +19344,19 @@ impl VkMacOSSurfaceCreateInfoMVK {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkMacOSSurfaceCreateFlagsMVK {
+  pub fn flags(&self) -> VkMacOSSurfaceCreateFlagsMVK {
     self.flags
   }
   #[inline]
-  pub fn get_view(&self) -> *const c_void {
+  pub fn view(&self) -> *const c_void {
     self.pView
   }
 }
@@ -21301,15 +19411,15 @@ impl VkBufferMemoryRequirementsInfo2KHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
 }
@@ -21359,15 +19469,15 @@ impl VkImageMemoryRequirementsInfo2KHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage {
     self.image
   }
 }
@@ -21415,15 +19525,15 @@ impl VkImageSparseMemoryRequirementsInfo2KHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage {
     self.image
   }
 }
@@ -21459,36 +19569,16 @@ pub struct VkMemoryRequirements2KHR {
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
 impl VkMemoryRequirements2KHR {
   #[inline]
-  pub fn new() -> VkMemoryRequirements2KHR {
-    unsafe {
-      VkMemoryRequirements2KHR {
-        sType: VkStructureType::MEMORY_REQUIREMENTS_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_memory_requirements(mut self, value: VkMemoryRequirements) -> Self {
-    self.memoryRequirements = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_memory_requirements(&self) -> VkMemoryRequirements {
+  pub fn memory_requirements(&self) -> VkMemoryRequirements {
     self.memoryRequirements
-  }
-}
-#[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl Default for VkMemoryRequirements2KHR {
-  fn default() -> VkMemoryRequirements2KHR {
-    VkMemoryRequirements2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -21515,36 +19605,16 @@ pub struct VkSparseImageMemoryRequirements2KHR {
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
 impl VkSparseImageMemoryRequirements2KHR {
   #[inline]
-  pub fn new() -> VkSparseImageMemoryRequirements2KHR {
-    unsafe {
-      VkSparseImageMemoryRequirements2KHR {
-        sType: VkStructureType::SPARSE_IMAGE_MEMORY_REQUIREMENTS_2_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_memory_requirements(mut self, value: VkSparseImageMemoryRequirements) -> Self {
-    self.memoryRequirements = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_memory_requirements(&self) -> VkSparseImageMemoryRequirements {
+  pub fn memory_requirements(&self) -> VkSparseImageMemoryRequirements {
     self.memoryRequirements
-  }
-}
-#[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl Default for VkSparseImageMemoryRequirements2KHR {
-  fn default() -> VkSparseImageMemoryRequirements2KHR {
-    VkSparseImageMemoryRequirements2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -21577,32 +19647,11 @@ pub struct VkMemoryDedicatedRequirementsKHR {
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
 impl VkMemoryDedicatedRequirementsKHR {
   #[inline]
-  pub fn new() -> VkMemoryDedicatedRequirementsKHR {
-    unsafe {
-      VkMemoryDedicatedRequirementsKHR {
-        sType: VkStructureType::MEMORY_DEDICATED_REQUIREMENTS_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_prefers_dedicated_allocation(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.prefersDedicatedAllocation = value;
-    self
-  }
-  #[inline]
-  pub fn set_requires_dedicated_allocation(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.requiresDedicatedAllocation = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
@@ -21612,12 +19661,6 @@ impl VkMemoryDedicatedRequirementsKHR {
   #[inline]
   pub fn is_requires_dedicated_allocation(&self) -> bool {
     self.requiresDedicatedAllocation != 0
-  }
-}
-#[cfg(feature = "VK_KHR_dedicated_allocation")]
-impl Default for VkMemoryDedicatedRequirementsKHR {
-  fn default() -> VkMemoryDedicatedRequirementsKHR {
-    VkMemoryDedicatedRequirementsKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
@@ -21666,19 +19709,19 @@ impl VkMemoryDedicatedAllocateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_image(&self) -> Option<VkImage> {
+  pub fn image(&self) -> Option<VkImage> {
     self.image
   }
   #[inline]
-  pub fn get_buffer(&self) -> Option<VkBuffer> {
+  pub fn buffer(&self) -> Option<VkBuffer> {
     self.buffer
   }
 }
@@ -21730,15 +19773,15 @@ impl VkSamplerReductionModeCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_reduction_mode(&self) -> VkSamplerReductionModeEXT {
+  pub fn reduction_mode(&self) -> VkSamplerReductionModeEXT {
     self.reductionMode
   }
 }
@@ -21776,32 +19819,11 @@ pub struct VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
 impl VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
-    unsafe {
-      VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
-        sType: VkStructureType::PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_filter_minmax_single_component_formats(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.filterMinmaxSingleComponentFormats = value;
-    self
-  }
-  #[inline]
-  pub fn set_filter_minmax_image_component_mapping(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.filterMinmaxImageComponentMapping = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
@@ -21811,12 +19833,6 @@ impl VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
   #[inline]
   pub fn is_filter_minmax_image_component_mapping(&self) -> bool {
     self.filterMinmaxImageComponentMapping != 0
-  }
-}
-#[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-impl Default for VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
-  fn default() -> VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
-    VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
@@ -21860,11 +19876,11 @@ impl VkSampleLocationEXT {
     self
   }
   #[inline]
-  pub fn get_x(&self) -> f32 {
+  pub fn x(&self) -> f32 {
     self.x
   }
   #[inline]
-  pub fn get_y(&self) -> f32 {
+  pub fn y(&self) -> f32 {
     self.y
   }
 }
@@ -21928,23 +19944,23 @@ impl<'a> VkSampleLocationsInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_sample_locations_per_pixel(&self) -> VkSampleCountFlagBits {
+  pub fn sample_locations_per_pixel(&self) -> VkSampleCountFlagBits {
     self.sampleLocationsPerPixel
   }
   #[inline]
-  pub fn get_sample_location_grid_size(&self) -> VkExtent2D {
+  pub fn sample_location_grid_size(&self) -> VkExtent2D {
     self.sampleLocationGridSize
   }
   #[inline]
-  pub fn get_sample_locations_count(&self) -> u32 {
+  pub fn sample_locations_count(&self) -> u32 {
     self.sampleLocationsCount
   }
 }
@@ -21994,11 +20010,11 @@ impl<'a> VkAttachmentSampleLocationsEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_attachment_index(&self) -> u32 {
+  pub fn attachment_index(&self) -> u32 {
     self.attachmentIndex
   }
   #[inline]
-  pub fn get_sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
+  pub fn sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
     self.sampleLocationsInfo
   }
 }
@@ -22048,11 +20064,11 @@ impl<'a> VkSubpassSampleLocationsEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_subpass_index(&self) -> u32 {
+  pub fn subpass_index(&self) -> u32 {
     self.subpassIndex
   }
   #[inline]
-  pub fn get_sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
+  pub fn sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
     self.sampleLocationsInfo
   }
 }
@@ -22118,19 +20134,19 @@ impl<'a> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_attachment_initial_sample_locations_count(&self) -> u32 {
+  pub fn attachment_initial_sample_locations_count(&self) -> u32 {
     self.attachmentInitialSampleLocationsCount
   }
   #[inline]
-  pub fn get_post_subpass_sample_locations_count(&self) -> u32 {
+  pub fn post_subpass_sample_locations_count(&self) -> u32 {
     self.postSubpassSampleLocationsCount
   }
 }
@@ -22187,11 +20203,11 @@ impl<'a> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
@@ -22199,7 +20215,7 @@ impl<'a> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
     self.sampleLocationsEnable != 0
   }
   #[inline]
-  pub fn get_sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
+  pub fn sample_locations_info(&self) -> VkSampleLocationsInfoEXT<'a> {
     self.sampleLocationsInfo
   }
 }
@@ -22240,73 +20256,32 @@ pub struct VkPhysicalDeviceSampleLocationsPropertiesEXT {
 #[cfg(feature = "VK_EXT_sample_locations")]
 impl VkPhysicalDeviceSampleLocationsPropertiesEXT {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceSampleLocationsPropertiesEXT {
-    unsafe {
-      VkPhysicalDeviceSampleLocationsPropertiesEXT {
-        sType: VkStructureType::PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_sample_location_sample_counts(mut self, value: VkSampleCountFlags) -> Self {
-    self.sampleLocationSampleCounts = value;
-    self
-  }
-  #[inline]
-  pub fn set_max_sample_location_grid_size(mut self, value: VkExtent2D) -> Self {
-    self.maxSampleLocationGridSize = value;
-    self
-  }
-  #[inline]
-  pub fn set_sample_location_coordinate_range(mut self, value: [f32; 2]) -> Self {
-    self.sampleLocationCoordinateRange = value;
-    self
-  }
-  #[inline]
-  pub fn set_sample_location_sub_pixel_bits(mut self, value: u32) -> Self {
-    self.sampleLocationSubPixelBits = value;
-    self
-  }
-  #[inline]
-  pub fn set_variable_sample_locations(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.variableSampleLocations = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_sample_location_sample_counts(&self) -> VkSampleCountFlags {
+  pub fn sample_location_sample_counts(&self) -> VkSampleCountFlags {
     self.sampleLocationSampleCounts
   }
   #[inline]
-  pub fn get_max_sample_location_grid_size(&self) -> VkExtent2D {
+  pub fn max_sample_location_grid_size(&self) -> VkExtent2D {
     self.maxSampleLocationGridSize
   }
   #[inline]
-  pub fn get_sample_location_coordinate_range(&self) -> [f32; 2] {
+  pub fn sample_location_coordinate_range(&self) -> [f32; 2] {
     self.sampleLocationCoordinateRange
   }
   #[inline]
-  pub fn get_sample_location_sub_pixel_bits(&self) -> u32 {
+  pub fn sample_location_sub_pixel_bits(&self) -> u32 {
     self.sampleLocationSubPixelBits
   }
   #[inline]
   pub fn is_variable_sample_locations(&self) -> bool {
     self.variableSampleLocations != 0
-  }
-}
-#[cfg(feature = "VK_EXT_sample_locations")]
-impl Default for VkPhysicalDeviceSampleLocationsPropertiesEXT {
-  fn default() -> VkPhysicalDeviceSampleLocationsPropertiesEXT {
-    VkPhysicalDeviceSampleLocationsPropertiesEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -22336,36 +20311,16 @@ pub struct VkMultisamplePropertiesEXT {
 #[cfg(feature = "VK_EXT_sample_locations")]
 impl VkMultisamplePropertiesEXT {
   #[inline]
-  pub fn new() -> VkMultisamplePropertiesEXT {
-    unsafe {
-      VkMultisamplePropertiesEXT {
-        sType: VkStructureType::MULTISAMPLE_PROPERTIES_EXT,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_max_sample_location_grid_size(mut self, value: VkExtent2D) -> Self {
-    self.maxSampleLocationGridSize = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_max_sample_location_grid_size(&self) -> VkExtent2D {
+  pub fn max_sample_location_grid_size(&self) -> VkExtent2D {
     self.maxSampleLocationGridSize
-  }
-}
-#[cfg(feature = "VK_EXT_sample_locations")]
-impl Default for VkMultisamplePropertiesEXT {
-  fn default() -> VkMultisamplePropertiesEXT {
-    VkMultisamplePropertiesEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -22415,15 +20370,15 @@ impl<'a> VkImageFormatListCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_view_format_count(&self) -> u32 {
+  pub fn view_format_count(&self) -> u32 {
     self.viewFormatCount
   }
 }
@@ -22477,11 +20432,11 @@ impl VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
@@ -22527,59 +20482,15 @@ pub struct VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
 impl VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
-    unsafe {
-      VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
-        sType: VkStructureType::PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_advanced_blend_max_color_attachments(mut self, value: u32) -> Self {
-    self.advancedBlendMaxColorAttachments = value;
-    self
-  }
-  #[inline]
-  pub fn set_advanced_blend_independent_blend(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.advancedBlendIndependentBlend = value;
-    self
-  }
-  #[inline]
-  pub fn set_advanced_blend_non_premultiplied_src_color(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.advancedBlendNonPremultipliedSrcColor = value;
-    self
-  }
-  #[inline]
-  pub fn set_advanced_blend_non_premultiplied_dst_color(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.advancedBlendNonPremultipliedDstColor = value;
-    self
-  }
-  #[inline]
-  pub fn set_advanced_blend_correlated_overlap(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.advancedBlendCorrelatedOverlap = value;
-    self
-  }
-  #[inline]
-  pub fn set_advanced_blend_all_operations(mut self, value: bool) -> Self {
-    let value: VkBool32 = if value { 1 } else { 0 };
-    self.advancedBlendAllOperations = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_advanced_blend_max_color_attachments(&self) -> u32 {
+  pub fn advanced_blend_max_color_attachments(&self) -> u32 {
     self.advancedBlendMaxColorAttachments
   }
   #[inline]
@@ -22601,12 +20512,6 @@ impl VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
   #[inline]
   pub fn is_advanced_blend_all_operations(&self) -> bool {
     self.advancedBlendAllOperations != 0
-  }
-}
-#[cfg(feature = "VK_EXT_blend_operation_advanced")]
-impl Default for VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
-  fn default() -> VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT {
-    VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
@@ -22663,11 +20568,11 @@ impl VkPipelineColorBlendAdvancedStateCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
@@ -22679,7 +20584,7 @@ impl VkPipelineColorBlendAdvancedStateCreateInfoEXT {
     self.dstPremultiplied != 0
   }
   #[inline]
-  pub fn get_blend_overlap(&self) -> VkBlendOverlapEXT {
+  pub fn blend_overlap(&self) -> VkBlendOverlapEXT {
     self.blendOverlap
   }
 }
@@ -22744,15 +20649,15 @@ impl VkPipelineCoverageToColorStateCreateInfoNV {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineCoverageToColorStateCreateFlagsNV {
+  pub fn flags(&self) -> VkPipelineCoverageToColorStateCreateFlagsNV {
     self.flags
   }
   #[inline]
@@ -22760,7 +20665,7 @@ impl VkPipelineCoverageToColorStateCreateInfoNV {
     self.coverageToColorEnable != 0
   }
   #[inline]
-  pub fn get_coverage_to_color_location(&self) -> u32 {
+  pub fn coverage_to_color_location(&self) -> u32 {
     self.coverageToColorLocation
   }
 }
@@ -22836,19 +20741,19 @@ impl<'a> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkPipelineCoverageModulationStateCreateFlagsNV {
+  pub fn flags(&self) -> VkPipelineCoverageModulationStateCreateFlagsNV {
     self.flags
   }
   #[inline]
-  pub fn get_coverage_modulation_mode(&self) -> VkCoverageModulationModeNV {
+  pub fn coverage_modulation_mode(&self) -> VkCoverageModulationModeNV {
     self.coverageModulationMode
   }
   #[inline]
@@ -22856,7 +20761,7 @@ impl<'a> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
     self.coverageModulationTableEnable != 0
   }
   #[inline]
-  pub fn get_coverage_modulation_table_count(&self) -> u32 {
+  pub fn coverage_modulation_table_count(&self) -> u32 {
     self.coverageModulationTableCount
   }
 }
@@ -22920,23 +20825,23 @@ impl VkBindBufferMemoryInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer {
     self.buffer
   }
   #[inline]
-  pub fn get_memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory {
     self.memory
   }
   #[inline]
-  pub fn get_memory_offset(&self) -> VkDeviceSize {
+  pub fn memory_offset(&self) -> VkDeviceSize {
     self.memoryOffset
   }
 }
@@ -22998,23 +20903,23 @@ impl VkBindImageMemoryInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage {
     self.image
   }
   #[inline]
-  pub fn get_memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory {
     self.memory
   }
   #[inline]
-  pub fn get_memory_offset(&self) -> VkDeviceSize {
+  pub fn memory_offset(&self) -> VkDeviceSize {
     self.memoryOffset
   }
 }
@@ -23109,39 +21014,39 @@ impl VkSamplerYcbcrConversionCreateInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_format(&self) -> VkFormat {
+  pub fn format(&self) -> VkFormat {
     self.format
   }
   #[inline]
-  pub fn get_ycbcr_model(&self) -> VkSamplerYcbcrModelConversionKHR {
+  pub fn ycbcr_model(&self) -> VkSamplerYcbcrModelConversionKHR {
     self.ycbcrModel
   }
   #[inline]
-  pub fn get_ycbcr_range(&self) -> VkSamplerYcbcrRangeKHR {
+  pub fn ycbcr_range(&self) -> VkSamplerYcbcrRangeKHR {
     self.ycbcrRange
   }
   #[inline]
-  pub fn get_components(&self) -> VkComponentMapping {
+  pub fn components(&self) -> VkComponentMapping {
     self.components
   }
   #[inline]
-  pub fn get_x_chroma_offset(&self) -> VkChromaLocationKHR {
+  pub fn x_chroma_offset(&self) -> VkChromaLocationKHR {
     self.xChromaOffset
   }
   #[inline]
-  pub fn get_y_chroma_offset(&self) -> VkChromaLocationKHR {
+  pub fn y_chroma_offset(&self) -> VkChromaLocationKHR {
     self.yChromaOffset
   }
   #[inline]
-  pub fn get_chroma_filter(&self) -> VkFilter {
+  pub fn chroma_filter(&self) -> VkFilter {
     self.chromaFilter
   }
   #[inline]
@@ -23202,15 +21107,15 @@ impl VkSamplerYcbcrConversionInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_conversion(&self) -> VkSamplerYcbcrConversionKHR {
+  pub fn conversion(&self) -> VkSamplerYcbcrConversionKHR {
     self.conversion
   }
 }
@@ -23260,15 +21165,15 @@ impl VkBindImagePlaneMemoryInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_plane_aspect(&self) -> VkImageAspectFlagBits {
+  pub fn plane_aspect(&self) -> VkImageAspectFlagBits {
     self.planeAspect
   }
 }
@@ -23318,15 +21223,15 @@ impl VkImagePlaneMemoryRequirementsInfoKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_plane_aspect(&self) -> VkImageAspectFlagBits {
+  pub fn plane_aspect(&self) -> VkImageAspectFlagBits {
     self.planeAspect
   }
 }
@@ -23378,11 +21283,11 @@ impl VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
@@ -23423,36 +21328,16 @@ pub struct VkSamplerYcbcrConversionImageFormatPropertiesKHR {
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 impl VkSamplerYcbcrConversionImageFormatPropertiesKHR {
   #[inline]
-  pub fn new() -> VkSamplerYcbcrConversionImageFormatPropertiesKHR {
-    unsafe {
-      VkSamplerYcbcrConversionImageFormatPropertiesKHR {
-        sType: VkStructureType::SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES_KHR,
-        ..::std::mem::zeroed()
-      }
-    }
-  }
-  #[inline]
-  pub fn set_combined_image_sampler_descriptor_count(mut self, value: u32) -> Self {
-    self.combinedImageSamplerDescriptorCount = value;
-    self
-  }
-  #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_combined_image_sampler_descriptor_count(&self) -> u32 {
+  pub fn combined_image_sampler_descriptor_count(&self) -> u32 {
     self.combinedImageSamplerDescriptorCount
-  }
-}
-#[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl Default for VkSamplerYcbcrConversionImageFormatPropertiesKHR {
-  fn default() -> VkSamplerYcbcrConversionImageFormatPropertiesKHR {
-    VkSamplerYcbcrConversionImageFormatPropertiesKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -23516,19 +21401,19 @@ impl<'a> VkValidationCacheCreateInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_flags(&self) -> VkValidationCacheCreateFlagsEXT {
+  pub fn flags(&self) -> VkValidationCacheCreateFlagsEXT {
     self.flags
   }
   #[inline]
-  pub fn get_initial_data_size(&self) -> usize {
+  pub fn initial_data_size(&self) -> usize {
     self.initialDataSize
   }
 }
@@ -23578,15 +21463,15 @@ impl VkShaderModuleValidationCacheCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_validation_cache(&self) -> VkValidationCacheEXT {
+  pub fn validation_cache(&self) -> VkValidationCacheEXT {
     self.validationCache
   }
 }
@@ -23638,15 +21523,15 @@ impl VkDeviceQueueGlobalPriorityCreateInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_global_priority(&self) -> VkQueueGlobalPriorityEXT {
+  pub fn global_priority(&self) -> VkQueueGlobalPriorityEXT {
     self.globalPriority
   }
 }
@@ -23699,19 +21584,19 @@ impl VkImportMemoryHostPointerInfoEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *const c_void {
+  pub fn next(&self) -> *const c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
+  pub fn handle_type(&self) -> VkExternalMemoryHandleTypeFlagBitsKHR {
     self.handleType
   }
   #[inline]
-  pub fn get_host_pointer(&self) -> *mut c_void {
+  pub fn host_pointer(&self) -> *mut c_void {
     self.pHostPointer
   }
 }
@@ -23761,15 +21646,15 @@ impl VkMemoryHostPointerPropertiesEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_memory_type_bits(&self) -> u32 {
+  pub fn memory_type_bits(&self) -> u32 {
     self.memoryTypeBits
   }
 }
@@ -23820,15 +21705,15 @@ impl VkPhysicalDeviceExternalMemoryHostPropertiesEXT {
     self
   }
   #[inline]
-  pub fn get_s_type(&self) -> VkStructureType {
+  pub fn s_type(&self) -> VkStructureType {
     self.sType
   }
   #[inline]
-  pub fn get_next(&self) -> *mut c_void {
+  pub fn next(&self) -> *mut c_void {
     self.pNext
   }
   #[inline]
-  pub fn get_min_imported_host_pointer_alignment(&self) -> VkDeviceSize {
+  pub fn min_imported_host_pointer_alignment(&self) -> VkDeviceSize {
     self.minImportedHostPointerAlignment
   }
 }

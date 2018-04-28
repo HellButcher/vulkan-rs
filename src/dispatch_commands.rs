@@ -1402,8 +1402,7 @@ pub fn vkAllocateDescriptorSets(
   pAllocateInfo: &VkDescriptorSetAllocateInfo,
 ) -> Result<Vec<VkDescriptorSet>, VkResult> {
   unsafe {
-    let mut pDescriptorSets: Vec<VkDescriptorSet> =
-      Vec::with_capacity(pAllocateInfo.get_descriptor_set_count() as usize);
+    let mut pDescriptorSets: Vec<VkDescriptorSet> = Vec::with_capacity(pAllocateInfo.descriptor_set_count() as usize);
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkAllocateDescriptorSets.unwrap()(
         device.as_raw(),
@@ -1413,7 +1412,7 @@ pub fn vkAllocateDescriptorSets(
       if _r != VkResult::SUCCESS {
         return Err(_r);
       }
-      pDescriptorSets.set_len(pAllocateInfo.get_descriptor_set_count() as usize);
+      pDescriptorSets.set_len(pAllocateInfo.descriptor_set_count() as usize);
       return Ok(pDescriptorSets);
     })
   }
@@ -1597,8 +1596,7 @@ pub fn vkAllocateCommandBuffers(
   pAllocateInfo: &VkCommandBufferAllocateInfo,
 ) -> Result<Vec<VkCommandBuffer>, VkResult> {
   unsafe {
-    let mut pCommandBuffers: Vec<VkCommandBuffer> =
-      Vec::with_capacity(pAllocateInfo.get_command_buffer_count() as usize);
+    let mut pCommandBuffers: Vec<VkCommandBuffer> = Vec::with_capacity(pAllocateInfo.command_buffer_count() as usize);
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkAllocateCommandBuffers.unwrap()(
         device.as_raw(),
@@ -1608,7 +1606,7 @@ pub fn vkAllocateCommandBuffers(
       if _r != VkResult::SUCCESS {
         return Err(_r);
       }
-      pCommandBuffers.set_len(pAllocateInfo.get_command_buffer_count() as usize);
+      pCommandBuffers.set_len(pAllocateInfo.command_buffer_count() as usize);
       return Ok(pCommandBuffers);
     })
   }
