@@ -620,6 +620,7 @@ class EnumItem(BaseElem,Named):
         self.enum_group = enum_group
         self.requiering_feature = None
         self.docs = None
+        self.comment = elem.get('comment')
         if self.bitpos is not None:
             self.bitpos = int(self.bitpos)
         offset = elem.get('offset')

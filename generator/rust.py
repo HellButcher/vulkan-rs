@@ -867,45 +867,110 @@ class RustGenerator:
             or group.name in IGNORED:
             return
         self._generate_feature_comment_nonconsecutive(group.requiering_feature, gen)
+        gen.nl()
         if group.type is None:
-            gen.nl()
-            gen('// ', group.name).nl()
-            gen('/////', '/'*len(group.name)).nl()
-            for item in group.enum_items:
-                if item.requiering_feature is None \
-                    or item.name in IGNORED:
-                    continue
-                elif item.requiering_feature is not group.requiering_feature:
-                    self._generate_feature_comment_nonconsecutive(item.requiering_feature, gen)
-                self._generate_docs(item, gen)
-                self._generate_feature_protect(item.requiering_feature, gen)
-                name = self.rust_enum_item_name(item)
-                value, ty = self.rust_enum_item_value(item)
-                gen('pub const ', name, ' : ', ty, ' = ', value, ';').nl()
+            self._generate_enum_group_defines(group, gen)
+        elif group.name == 'VkResult':
+            self._generate_enum_group_error_enum(group, gen)
         else:
-            gen.nl()
-            self._generate_feature_protect(group.requiering_feature, gen)
-            gen('define_', group.type, "! {").nl()
+            self._generate_enum_group_enum(group, gen)
+
+    def _generate_enum_group_defines(self, group, gen):
+        gen('// ', group.name).nl()
+        gen('/////', '/'*len(group.name)).nl()
+        for item in group.enum_items:
+            if item.requiering_feature is None \
+                or item.name in IGNORED:
+                continue
+            elif item.requiering_feature is not group.requiering_feature:
+                self._generate_feature_comment_nonconsecutive(item.requiering_feature, gen)
+            self._generate_docs(item, gen)
+            self._generate_feature_protect(item.requiering_feature, gen)
+            name = self.rust_enum_item_name(item)
+            value, ty = self.rust_enum_item_value(item)
+            gen('pub const ', name, ' : ', ty, ' = ', value, ';').nl()
+
+    def _generate_enum_group_enum_item(self, group, item, gen):
+        with_guard = item.requiering_feature is not None and item.requiering_feature is not group.requiering_feature
+        if with_guard:
+            self._generate_feature_comment_nonconsecutive(item.requiering_feature, gen)
+        self._generate_docs(item, gen)
+        if with_guard:
+            self._generate_feature_protect(item.requiering_feature, gen)
+        name = self.rust_enum_item_name(item)
+        value, _ = self.rust_enum_item_value(item)
+        gen(name, ' = ', value)
+
+    def _generate_enum_group_enum(self, group, gen):
+        self._generate_feature_protect(group.requiering_feature, gen)
+        gen('define_', group.type, '! {').nl()
+        with gen.open_indention():
+            self._generate_docs(group.enum_type, gen)
+            gen('pub enum ', group.name, ' {').nl()
             with gen.open_indention():
-                self._generate_docs(group.enum_type, gen)
-                gen('pub enum ', group.name, ' {').nl()
-                with gen.open_indention():
-                    for i, item in enumerate(group.enum_items):
-                        if i>0:
-                            gen(',').nl()
-                        with_guard = item.requiering_feature is not group.requiering_feature and (item.requiering_feature is not None and item.requiering_feature is not group.requiering_feature)
-                        if with_guard:
-                            self._generate_feature_comment_nonconsecutive(item.requiering_feature, gen)
-                        self._generate_docs(item, gen)
-                        if with_guard:
-                            self._generate_feature_protect(item.requiering_feature, gen)
-                        name = self.rust_enum_item_name(item)
-                        value, _ = self.rust_enum_item_value(item)
-                        gen(name, ' = ', value)
-                gen.nl()
-                gen('}').nl()
+                for i, item in enumerate(group.enum_items):
+                    if i>0:
+                        gen(',').nl()
+                    self._generate_enum_group_enum_item(group, item, gen)
+            gen.nl()
             gen('}').nl()
-            gen._last_feature = group.requiering_feature
+        gen('}').nl()
+        gen._last_feature = group.requiering_feature
+        
+    def _generate_enum_group_error_enum(self, group, gen):
+        gen('define_enum! {').nl()
+        with gen.open_indention():
+            self._generate_docs(group.enum_type, gen)
+            gen('pub enum VkError {').nl()
+            with gen.open_indention():
+                for i, item in enumerate(group.enum_items):
+                    if i == 0: # skip SUCCESS
+                        continue
+                    if i > 1:
+                        gen(',').nl()
+                    self._generate_enum_group_enum_item(group, item, gen)
+            gen.nl()
+            gen('}').nl()
+        gen('}').nl()
+        gen.nl()
+        gen('impl ::std::error::Error for VkError {').nl()
+        with gen.open_indention():
+            gen('fn description(&self) -> &str {').nl()
+            with gen.open_indention():
+                for i, item in enumerate(group.enum_items):
+                    if i == 0: # skip SUCCESS
+                        continue
+                    with_guard = item.requiering_feature is not None and item.requiering_feature is not group.requiering_feature
+                    if with_guard:
+                        self._generate_feature_protect(item.requiering_feature, gen)
+                        gen('{').nl().i()
+                    name = self.rust_enum_item_name(item)
+                    comment = item.comment
+                    if not comment and item.docs and len(item.docs)>0:
+                        comment = item.docs[0].strip()
+                    if not comment:
+                        comment = item.shortname.lower()
+                        if comment.startswith('error_'):
+                            comment = comment[6:]
+                    else:
+                        dot = comment.find('.')
+                        if dot > 0:
+                            comment = comment[:dot]
+                    gen('if *self == VkError::', name, '{ return "', comment,'"; }').nl()
+                    if with_guard:
+                        gen.o()('}').nl()
+                gen('"unknown"').nl()
+            gen('}').nl()
+        gen('}').nl()
+        gen('impl ::std::fmt::Display for VkError {').nl()
+        with gen.open_indention():
+            gen('fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {').nl()
+            with gen.open_indention():
+                gen('write!(f, "{} ({})", ::std::error::Error::description(self), *self as i32)')
+            gen('}').nl()
+        gen('}').nl()
+        self._generate_docs(group.enum_type, gen)
+        gen('pub type VkResult<V=()> = Result<V,VkError>;')
 
     def _generate_command_signature(self, base_cmd, gen, paramnames=True, method=None, safe=False, with_return=True, **kwargs):
         if method is None:
@@ -1045,7 +1110,7 @@ class RustGenerator:
             with self.manage_imports(gen) as gen:
                 self.add_import('AsRaw')
                 self.add_import('platform::*')
-                self.add_import('enums::VkResult')
+                self.add_import('enums::{VkError,VkResult}')
                 self.add_import('types::*')
                 self.add_import('dispatch_table::*')
                 gen.nl()
@@ -1096,7 +1161,7 @@ class RustGenerator:
         self._generate_command_signature(command, gen, safe=True, with_return=False)
         result_convert = ''
         if out_param and command.returns == TypeRef.RESULT:
-            gen(' -> Result<', out_typename_return,', VkResult>')
+            gen(' -> VkResult<', out_typename_return,'>')
         elif command.returns == TypeRef.BOOL:
             gen(' -> bool')
             result_convert = ' != 0'
@@ -1156,9 +1221,9 @@ class RustGenerator:
                         all_args = ', '.join(all_params_as_raw[:-1] + ['::std::ptr::null_mut()'])
                         gen('_t.', command.name, '.unwrap()(', all_args, ');').nl()
                         if enumerate_with_incomplete:
-                            gen('if _r == VkResult::INCOMPLETE { continue; }').nl()
+                            gen('if _r == Err(VkError::INCOMPLETE) { continue; }').nl()
                         if is_check_result:
-                            gen('if _r != VkResult::SUCCESS { return Err(_r); }').nl()
+                            gen('if let Err(_e) = _r { return Err(_e); }').nl()
                         gen('if ', self.rust_param_name(enumerate_len_param) ,' == 0 {').nl()
                         with gen.open_indention():
                             if is_check_result:
@@ -1177,13 +1242,13 @@ class RustGenerator:
                     if out_param:
                         gen(';').nl()
                         if enumerate_with_incomplete:
-                            gen('if _r == VkResult::INCOMPLETE { continue; }').nl()
+                            gen('if _r == Err(VkError::INCOMPLETE) { continue; }').nl()
                         if is_check_result:
-                            gen('if _r != VkResult::SUCCESS { return Err(_r); }').nl()
+                            gen('if let Err(_e) = _r { return Err(_e); }').nl()
                     elif is_create:
                         gen(';').nl()
                         if is_check_result:
-                            gen('if _r != VkResult::SUCCESS { return _r; }').nl()
+                            gen('if let Err(_e) = _r { return Err(_e); }').nl()
                     else:
                         gen.nl()
                     
@@ -1208,8 +1273,6 @@ class RustGenerator:
                 gen('})', result_convert)
                 if is_destroy:
                     gen(';').nl()
-                    if is_check_result:
-                        gen('if _r != VkResult::SUCCESS { return _r; }').nl()
                     gen('Vk', table_name, 'DispatchTable::destroy(', handle_arg, ');')
                     if is_check_result:
                         gen('return _r;')
@@ -1242,6 +1305,8 @@ class RustGenerator:
                     gen('pub use enums::', enum_item.name, ';').nl()
 
                 for ty in f.types:
+                    if ty.name == 'VkResult':
+                        gen('pub use enums::VkError;').nl()
                     if ty.name in PREDEFINED_UTILS:
                         name, _ = PREDEFINED_UTILS[ty.name]
                         gen('pub use utils::', name, ';').nl()

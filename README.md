@@ -53,6 +53,7 @@ Some topics, that might come in the future ([x] = already done):
  - safe enums:
    - [x] usage of `enum` for enums and not `u32`
    - [x] usage of `crate bitflags` for bitmasks
+   - [x] own `VkError` enum (VkResult items, but without `VK_SUCCESS`), `VkResult = Result<(),VkError>`
  - safe structs:
    - [x] hide length- and array-pointer pairs
      - provide safe setter with `slice` parameter

@@ -1360,8 +1360,7 @@ define_enum! {
 define_enum! {
 
   /// Vulkan command return codes
-  pub enum VkResult {
-    SUCCESS = 0,
+  pub enum VkError {
     NOT_READY = 1,
     TIMEOUT = 2,
     EVENT_SET = 3,
@@ -1417,6 +1416,132 @@ define_enum! {
     ERROR_NOT_PERMITTED_EXT = !1000174000
   }
 }
+
+impl ::std::error::Error for VkError {
+  fn description(&self) -> &str {
+    if *self == VkError::NOT_READY {
+      return "A fence or query has not yet completed";
+    }
+    if *self == VkError::TIMEOUT {
+      return "A wait operation has not completed in the specified time";
+    }
+    if *self == VkError::EVENT_SET {
+      return "An event is signaled";
+    }
+    if *self == VkError::EVENT_RESET {
+      return "An event is unsignaled";
+    }
+    if *self == VkError::INCOMPLETE {
+      return "A return array was too small for the result";
+    }
+    if *self == VkError::ERROR_OUT_OF_HOST_MEMORY {
+      return "A host memory allocation has failed";
+    }
+    if *self == VkError::ERROR_OUT_OF_DEVICE_MEMORY {
+      return "A device memory allocation has failed";
+    }
+    if *self == VkError::ERROR_INITIALIZATION_FAILED {
+      return "Initialization of a object has failed";
+    }
+    if *self == VkError::ERROR_DEVICE_LOST {
+      return "The logical device has been lost";
+    }
+    if *self == VkError::ERROR_MEMORY_MAP_FAILED {
+      return "Mapping of a memory object has failed";
+    }
+    if *self == VkError::ERROR_LAYER_NOT_PRESENT {
+      return "Layer specified does not exist";
+    }
+    if *self == VkError::ERROR_EXTENSION_NOT_PRESENT {
+      return "Extension specified does not exist";
+    }
+    if *self == VkError::ERROR_FEATURE_NOT_PRESENT {
+      return "Requested feature is not available on this device";
+    }
+    if *self == VkError::ERROR_INCOMPATIBLE_DRIVER {
+      return "Unable to find a Vulkan driver";
+    }
+    if *self == VkError::ERROR_TOO_MANY_OBJECTS {
+      return "Too many objects of the type have already been created";
+    }
+    if *self == VkError::ERROR_FORMAT_NOT_SUPPORTED {
+      return "Requested format is not supported on this device";
+    }
+    if *self == VkError::ERROR_FRAGMENTED_POOL {
+      return "A requested pool allocation has failed due to fragmentation of the pool's memory";
+    }
+    #[cfg(feature = "VK_KHR_surface")]
+    {
+      if *self == VkError::ERROR_SURFACE_LOST_KHR {
+        return "surface_lost_khr";
+      }
+    }
+    #[cfg(feature = "VK_KHR_surface")]
+    {
+      if *self == VkError::ERROR_NATIVE_WINDOW_IN_USE_KHR {
+        return "native_window_in_use_khr";
+      }
+    }
+    #[cfg(feature = "VK_KHR_swapchain")]
+    {
+      if *self == VkError::SUBOPTIMAL_KHR {
+        return "suboptimal_khr";
+      }
+    }
+    #[cfg(feature = "VK_KHR_swapchain")]
+    {
+      if *self == VkError::ERROR_OUT_OF_DATE_KHR {
+        return "out_of_date_khr";
+      }
+    }
+    #[cfg(feature = "VK_KHR_display_swapchain")]
+    {
+      if *self == VkError::ERROR_INCOMPATIBLE_DISPLAY_KHR {
+        return "incompatible_display_khr";
+      }
+    }
+    #[cfg(feature = "VK_EXT_debug_report")]
+    {
+      if *self == VkError::ERROR_VALIDATION_FAILED_EXT {
+        return "validation_failed_ext";
+      }
+    }
+    #[cfg(feature = "VK_NV_glsl_shader")]
+    {
+      if *self == VkError::ERROR_INVALID_SHADER_NV {
+        return "invalid_shader_nv";
+      }
+    }
+    #[cfg(feature = "VK_KHR_maintenance1")]
+    {
+      if *self == VkError::ERROR_OUT_OF_POOL_MEMORY_KHR {
+        return "out_of_pool_memory_khr";
+      }
+    }
+    #[cfg(feature = "VK_KHR_external_memory")]
+    {
+      if *self == VkError::ERROR_INVALID_EXTERNAL_HANDLE_KHR {
+        return "invalid_external_handle_khr";
+      }
+    }
+    #[cfg(feature = "VK_EXT_global_priority")]
+    {
+      if *self == VkError::ERROR_NOT_PERMITTED_EXT {
+        return "not_permitted_ext";
+      }
+    }
+    "unknown"
+  }
+}
+impl ::std::fmt::Display for VkError {
+  fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    write!(f, "{} ({})", ::std::error::Error::description(self), *self as i32)
+  }
+}
+
+/// Vulkan command return codes
+pub type VkResult<V = ()> = Result<V, VkError>;
+// feature: VK_VERSION_1_0
 
 define_enum! {
 

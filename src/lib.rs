@@ -1,5 +1,6 @@
 #![cfg_attr(nightly, feature(core))]
 #![cfg_attr(nightly, feature(nonzero))]
+#![cfg_attr(nightly, feature(try_trait))]
 
 #[cfg(nightly)]
 extern crate core;
@@ -20,6 +21,7 @@ extern crate bitflags;
 
 use std::os::raw::c_char;
 use std::ffi::CStr;
+use std::fmt;
 
 #[cfg(test)]
 macro_rules! assert_eq {
@@ -330,3 +332,357 @@ impl<'a> types::VkDeviceCreateInfo<'a> {
     }
   }
 }
+
+impl types::VkExtent2D {
+  pub const ZERO: Self = Self {
+    width: 0,
+    height: 0,
+  };
+  pub const MAX: Self = Self {
+    width: ::std::u32::MAX,
+    height: ::std::u32::MAX,
+  };
+  #[inline]
+  pub fn of(width: u32, height: u32) -> Self {
+    Self { width, height }
+  }
+
+  #[inline]
+  pub fn with_depth(self, depth: u32) -> types::VkExtent3D {
+    types::VkExtent3D {
+      width: self.width,
+      height: self.height,
+      depth,
+    }
+  }
+}
+
+impl From<(u32, u32)> for types::VkExtent2D {
+  #[inline]
+  fn from(value: (u32, u32)) -> Self {
+    Self {
+      width: value.0,
+      height: value.1,
+    }
+  }
+}
+
+impl From<types::VkExtent2D> for (u32, u32) {
+  #[inline]
+  fn from(value: types::VkExtent2D) -> Self {
+    (value.width, value.height)
+  }
+}
+
+impl From<[u32; 2]> for types::VkExtent2D {
+  #[inline]
+  fn from(value: [u32; 2]) -> Self {
+    Self {
+      width: value[0],
+      height: value[1],
+    }
+  }
+}
+
+impl From<types::VkExtent2D> for [u32; 2] {
+  #[inline]
+  fn from(value: types::VkExtent2D) -> Self {
+    [value.width, value.height]
+  }
+}
+
+impl fmt::Debug for types::VkExtent2D {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "VkExtent2D({:?},{:?})", self.width, self.height)
+  }
+}
+
+impl types::VkExtent3D {
+  pub const ZERO: Self = Self {
+    width: 0,
+    height: 0,
+    depth: 0,
+  };
+  pub const MAX: Self = Self {
+    width: ::std::u32::MAX,
+    height: ::std::u32::MAX,
+    depth: ::std::u32::MAX,
+  };
+  #[inline]
+  pub fn of(width: u32, height: u32, depth: u32) -> Self {
+    Self {
+      width,
+      height,
+      depth,
+    }
+  }
+}
+
+impl From<(u32, u32, u32)> for types::VkExtent3D {
+  #[inline]
+  fn from(value: (u32, u32, u32)) -> Self {
+    Self {
+      width: value.0,
+      height: value.1,
+      depth: value.2,
+    }
+  }
+}
+
+impl From<types::VkExtent3D> for (u32, u32, u32) {
+  #[inline]
+  fn from(value: types::VkExtent3D) -> Self {
+    (value.width, value.height, value.depth)
+  }
+}
+
+impl From<[u32; 3]> for types::VkExtent3D {
+  #[inline]
+  fn from(value: [u32; 3]) -> Self {
+    Self {
+      width: value[0],
+      height: value[1],
+      depth: value[2],
+    }
+  }
+}
+
+impl From<types::VkExtent3D> for [u32; 3] {
+  #[inline]
+  fn from(value: types::VkExtent3D) -> Self {
+    [value.width, value.height, value.depth]
+  }
+}
+
+impl fmt::Debug for types::VkExtent3D {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(
+      f,
+      "VkExtent3D({:?},{:?},{:?})",
+      self.width, self.height, self.depth
+    )
+  }
+}
+
+impl types::VkOffset2D {
+  pub const ZERO: Self = Self { x: 0, y: 0 };
+  pub const MIN: Self = Self {
+    x: ::std::i32::MIN,
+    y: ::std::i32::MIN,
+  };
+  pub const MAX: Self = Self {
+    x: ::std::i32::MAX,
+    y: ::std::i32::MAX,
+  };
+  #[inline]
+  pub fn of(x: i32, y: i32) -> Self {
+    Self { x, y }
+  }
+
+  #[inline]
+  pub fn with_z(self, z: i32) -> types::VkOffset3D {
+    types::VkOffset3D {
+      x: self.x,
+      y: self.y,
+      z,
+    }
+  }
+}
+
+impl From<(i32, i32)> for types::VkOffset2D {
+  #[inline]
+  fn from(value: (i32, i32)) -> Self {
+    Self {
+      x: value.0,
+      y: value.1,
+    }
+  }
+}
+
+impl From<types::VkOffset2D> for (i32, i32) {
+  #[inline]
+  fn from(value: types::VkOffset2D) -> Self {
+    (value.x, value.y)
+  }
+}
+
+impl From<[i32; 2]> for types::VkOffset2D {
+  #[inline]
+  fn from(value: [i32; 2]) -> Self {
+    Self {
+      x: value[0],
+      y: value[1],
+    }
+  }
+}
+
+impl From<types::VkOffset2D> for [i32; 2] {
+  #[inline]
+  fn from(value: types::VkOffset2D) -> Self {
+    [value.x, value.y]
+  }
+}
+
+impl fmt::Debug for types::VkOffset2D {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "VkOffset2D({:?},{:?})", self.x, self.y)
+  }
+}
+
+impl types::VkOffset3D {
+  pub const ZERO: Self = Self { x: 0, y: 0, z: 0 };
+  pub const MIN: Self = Self {
+    x: ::std::i32::MIN,
+    y: ::std::i32::MIN,
+    z: ::std::i32::MIN,
+  };
+  pub const MAX: Self = Self {
+    x: ::std::i32::MAX,
+    y: ::std::i32::MAX,
+    z: ::std::i32::MAX,
+  };
+  #[inline]
+  pub fn of(x: i32, y: i32, z: i32) -> Self {
+    Self { x, y, z }
+  }
+}
+
+impl From<(i32, i32, i32)> for types::VkOffset3D {
+  #[inline]
+  fn from(value: (i32, i32, i32)) -> Self {
+    Self {
+      x: value.0,
+      y: value.1,
+      z: value.2,
+    }
+  }
+}
+
+impl From<types::VkOffset3D> for (i32, i32, i32) {
+  #[inline]
+  fn from(value: types::VkOffset3D) -> Self {
+    (value.x, value.y, value.z)
+  }
+}
+
+impl From<[i32; 3]> for types::VkOffset3D {
+  #[inline]
+  fn from(value: [i32; 3]) -> Self {
+    Self {
+      x: value[0],
+      y: value[1],
+      z: value[2],
+    }
+  }
+}
+
+impl From<types::VkOffset3D> for [i32; 3] {
+  #[inline]
+  fn from(value: types::VkOffset3D) -> Self {
+    [value.x, value.y, value.z]
+  }
+}
+
+impl fmt::Debug for types::VkOffset3D {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "VkOffset3D({:?},{:?},{:?})", self.x, self.y, self.z)
+  }
+}
+
+impl types::VkRect2D {
+  pub const ZERO: Self = Self {
+    offset: types::VkOffset2D::ZERO,
+    extent: types::VkExtent2D::ZERO,
+  };
+  pub const MAX: Self = Self {
+    offset: types::VkOffset2D::MIN,
+    extent: types::VkExtent2D::MAX,
+  };
+  #[inline]
+  pub fn of<O, E>(offset: O, extent: E) -> Self
+  where
+    O: Into<types::VkOffset2D>,
+    E: Into<types::VkExtent2D>,
+  {
+    Self {
+      offset: offset.into(),
+      extent: extent.into(),
+    }
+  }
+}
+
+impl fmt::Debug for types::VkRect2D {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "VkRect2D({:?},{:?})", self.offset, self.extent)
+  }
+}
+
+impl types::VkComponentMapping {
+  pub const IDENTITY: Self = Self {
+    r: enums::VkComponentSwizzle::R,
+    g: enums::VkComponentSwizzle::G,
+    b: enums::VkComponentSwizzle::B,
+    a: enums::VkComponentSwizzle::A,
+  };
+}
+
+impl fmt::Debug for types::VkComponentMapping {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "[{:?},{:?},{:?},{:?}]", self.r, self.g, self.b, self.a)
+  }
+}
+
+impl types::VkClearColorValue {
+  pub const BLACK: Self = Self {
+    uint32: [0, 0, 0, 0],
+  };
+}
+
+impl From<(u32, u32, u32, u32)> for types::VkClearColorValue {
+  #[inline]
+  fn from(value: (u32, u32, u32, u32)) -> Self {
+    Self {
+      uint32: [value.0, value.1, value.2, value.3],
+    }
+  }
+}
+
+impl From<[u32; 4]> for types::VkClearColorValue {
+  #[inline]
+  fn from(value: [u32; 4]) -> Self {
+    Self { uint32: value }
+  }
+}
+
+impl From<(i32, i32, i32, i32)> for types::VkClearColorValue {
+  #[inline]
+  fn from(value: (i32, i32, i32, i32)) -> Self {
+    Self {
+      int32: [value.0, value.1, value.2, value.3],
+    }
+  }
+}
+
+impl From<[i32; 4]> for types::VkClearColorValue {
+  #[inline]
+  fn from(value: [i32; 4]) -> Self {
+    Self { int32: value }
+  }
+}
+
+impl From<(f32, f32, f32, f32)> for types::VkClearColorValue {
+  #[inline]
+  fn from(value: (f32, f32, f32, f32)) -> Self {
+    Self {
+      float32: [value.0, value.1, value.2, value.3],
+    }
+  }
+}
+
+impl From<[f32; 4]> for types::VkClearColorValue {
+  #[inline]
+  fn from(value: [f32; 4]) -> Self {
+    Self { float32: value }
+  }
+}
+

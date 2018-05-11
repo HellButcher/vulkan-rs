@@ -7,7 +7,7 @@ use std::ffi::CString;
 
 use vulkan_rs::prelude::*;
 
-fn create_instance(app_name: &str, _exts: &[&str]) -> Result<VkInstance, VkResult> {
+fn create_instance(app_name: &str, _exts: &[&str]) -> VkResult<VkInstance> {
   let app_name = CString::new(app_name).unwrap();
   //TODO:let exts: Vec<CString> = exts.iter().map(|s| CString::new(*s).unwrap()).collect();
   //TODO:let exts_p: Vec<*const c_char> = exts.iter().map(|s| s.as_ptr()).collect();

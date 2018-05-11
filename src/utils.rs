@@ -118,7 +118,7 @@ impl<T: Copy> Hash for VkNonDispatchableHandle<T> {
 #[test]
 fn test_handle_size() {
   // This test just checks, that some my assumptions are valid.
-  // I habe done sone magic with the NonZero value optimization.
+  // I have done sone magic with the NonZero value optimization.
   use types::{VkDevice, VkImage};
   assert_size!(*const u8, VkDispatchableHandle<u8>);
   assert_size!(8, VkNonDispatchableHandle<u8>);
@@ -135,7 +135,7 @@ fn test_handle_size() {
 #[test]
 fn test_handle_assignment() {
   // This test just checks, that some my assumptions are valid.
-  // I habe done sone magic with the NonZero value optimization.
+  // I have done sone magic with the NonZero value optimization.
   use std::mem::transmute as t;
   unsafe {
     let h1: VkDispatchableHandle<u8> = t(!0usize);
@@ -190,6 +190,46 @@ fn test_handle_assignment() {
     assert_eq!(true, h2o.is_some());
     assert_eq!(false, h2o.is_none());
     assert_eq!(1336u64, h2o.unwrap().value());
+  }
+}
+
+#[cfg(test)]
+#[test]
+fn test_result_size() {
+  // This test just checks, that some my assumptions are valid.
+  // I have done sone magic with the NonZero value optimization.
+  use enums::{VkResult, VkError};
+  assert_size!(4, VkError);
+  assert_size!(4, VkResult);
+  assert_size!(8, VkResult<u32>);
+}
+
+#[cfg(test)]
+#[test]
+fn test_result_assignment() {
+  // This test just checks, that some my assumptions are valid.
+  // I have done sone magic with the NonZero value optimization.
+  use std::mem::transmute as t;
+  use enums::{VkResult, VkError};
+  unsafe {
+    let r0: VkResult = t(0u32);
+    assert_eq!(Ok(()), r0);
+    let r1: VkResult = t(1u32);
+    assert_eq!(Err(VkError::NOT_READY), r1);
+    let r2: VkResult = t(2u32);
+    assert_eq!(Err(VkError::TIMEOUT), r2);
+    let r3: VkResult = t(3u32);
+    assert_eq!(Err(VkError::EVENT_SET), r3);
+    let r4: VkResult = t(4u32);
+    assert_eq!(Err(VkError::EVENT_RESET), r4);
+    let r5: VkResult = t(5u32);
+    assert_eq!(Err(VkError::INCOMPLETE), r5);
+
+    let r6: VkResult = t(!0u32);
+    assert_eq!(Err(VkError::ERROR_OUT_OF_HOST_MEMORY), r6);
+    let r7: VkResult = t(!2u32);
+    assert_eq!(Err(VkError::ERROR_INITIALIZATION_FAILED), r7);
+    
   }
 }
 

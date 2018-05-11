@@ -2,13 +2,13 @@
 
 #![allow(non_snake_case)]
 
-pub use types_base::*;
 use AsRaw;
 use RawStruct;
 use StructExtends;
 use enums;
 use platform::*;
 use std::cell::Cell;
+pub use types_base::*;
 use types_raw;
 use utils::VkDispatchableHandle;
 use utils::VkNonDispatchableHandle;
@@ -183,10 +183,7 @@ unsafe impl RawStruct for VkDispatchIndirectCommand {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_dispatch_indirect_command() {
-  assert_size!(
-    types_raw::VkDispatchIndirectCommand,
-    VkDispatchIndirectCommand
-  );
+  assert_size!(types_raw::VkDispatchIndirectCommand, VkDispatchIndirectCommand);
 }
 
 /// Structure specifying a draw indexed indirect command
@@ -261,10 +258,7 @@ unsafe impl RawStruct for VkDrawIndexedIndirectCommand {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_draw_indexed_indirect_command() {
-  assert_size!(
-    types_raw::VkDrawIndexedIndirectCommand,
-    VkDrawIndexedIndirectCommand
-  );
+  assert_size!(types_raw::VkDrawIndexedIndirectCommand, VkDrawIndexedIndirectCommand);
 }
 
 /// Structure specifying a draw indirect command
@@ -1498,10 +1492,7 @@ unsafe impl RawStruct for VkPhysicalDeviceFeatures {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_physical_device_features() {
-  assert_size!(
-    types_raw::VkPhysicalDeviceFeatures,
-    VkPhysicalDeviceFeatures
-  );
+  assert_size!(types_raw::VkPhysicalDeviceFeatures, VkPhysicalDeviceFeatures);
 }
 
 /// Structure specifying image format properties
@@ -2279,10 +2270,7 @@ unsafe impl RawStruct for VkPhysicalDeviceProperties {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_physical_device_properties() {
-  assert_size!(
-    types_raw::VkPhysicalDeviceProperties,
-    VkPhysicalDeviceProperties
-  );
+  assert_size!(types_raw::VkPhysicalDeviceProperties, VkPhysicalDeviceProperties);
 }
 
 /// Structure providing information about a queue family
@@ -2936,10 +2924,7 @@ unsafe impl RawStruct for VkSparseImageFormatProperties {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_sparse_image_format_properties() {
-  assert_size!(
-    types_raw::VkSparseImageFormatProperties,
-    VkSparseImageFormatProperties
-  );
+  assert_size!(types_raw::VkSparseImageFormatProperties, VkSparseImageFormatProperties);
 }
 
 /// Structure specifying sparse image memory requirements
@@ -3107,10 +3092,7 @@ unsafe impl<'a> RawStruct for VkSparseBufferMemoryBindInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_sparse_buffer_memory_bind_info() {
-  assert_size!(
-    types_raw::VkSparseBufferMemoryBindInfo,
-    VkSparseBufferMemoryBindInfo
-  );
+  assert_size!(types_raw::VkSparseBufferMemoryBindInfo, VkSparseBufferMemoryBindInfo);
 }
 
 /// Structure specifying sparse image opaque memory bind info
@@ -3406,10 +3388,7 @@ unsafe impl<'a> RawStruct for VkSparseImageMemoryBindInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_sparse_image_memory_bind_info() {
-  assert_size!(
-    types_raw::VkSparseImageMemoryBindInfo,
-    VkSparseImageMemoryBindInfo
-  );
+  assert_size!(types_raw::VkSparseImageMemoryBindInfo, VkSparseImageMemoryBindInfo);
 }
 
 /// Structure specifying a sparse binding operation
@@ -4388,10 +4367,7 @@ unsafe impl<'a> RawStruct for VkShaderModuleCreateInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_shader_module_create_info() {
-  assert_size!(
-    types_raw::VkShaderModuleCreateInfo,
-    VkShaderModuleCreateInfo
-  );
+  assert_size!(types_raw::VkShaderModuleCreateInfo, VkShaderModuleCreateInfo);
 }
 #[doc(hidden)]
 #[derive(Copy, Clone)]
@@ -4461,10 +4437,7 @@ unsafe impl<'a> RawStruct for VkPipelineCacheCreateInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_pipeline_cache_create_info() {
-  assert_size!(
-    types_raw::VkPipelineCacheCreateInfo,
-    VkPipelineCacheCreateInfo
-  );
+  assert_size!(types_raw::VkPipelineCacheCreateInfo, VkPipelineCacheCreateInfo);
 }
 #[doc(hidden)]
 #[derive(Copy, Clone)]
@@ -4525,10 +4498,7 @@ unsafe impl RawStruct for VkSpecializationMapEntry {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_specialization_map_entry() {
-  assert_size!(
-    types_raw::VkSpecializationMapEntry,
-    VkSpecializationMapEntry
-  );
+  assert_size!(types_raw::VkSpecializationMapEntry, VkSpecializationMapEntry);
 }
 
 /// Structure specifying specialization info
@@ -6320,10 +6290,7 @@ unsafe impl<'a> RawStruct for VkGraphicsPipelineCreateInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_graphics_pipeline_create_info() {
-  assert_size!(
-    types_raw::VkGraphicsPipelineCreateInfo,
-    VkGraphicsPipelineCreateInfo
-  );
+  assert_size!(types_raw::VkGraphicsPipelineCreateInfo, VkGraphicsPipelineCreateInfo);
 }
 
 /// Structure specifying parameters of a newly created compute pipeline
@@ -6412,10 +6379,7 @@ unsafe impl<'a> RawStruct for VkComputePipelineCreateInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_compute_pipeline_create_info() {
-  assert_size!(
-    types_raw::VkComputePipelineCreateInfo,
-    VkComputePipelineCreateInfo
-  );
+  assert_size!(types_raw::VkComputePipelineCreateInfo, VkComputePipelineCreateInfo);
 }
 #[doc(hidden)]
 #[derive(Copy, Clone)]
@@ -6554,10 +6518,7 @@ unsafe impl<'a> RawStruct for VkPipelineLayoutCreateInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_pipeline_layout_create_info() {
-  assert_size!(
-    types_raw::VkPipelineLayoutCreateInfo,
-    VkPipelineLayoutCreateInfo
-  );
+  assert_size!(types_raw::VkPipelineLayoutCreateInfo, VkPipelineLayoutCreateInfo);
 }
 
 /// Structure specifying parameters of a newly created sampler
@@ -6835,10 +6796,7 @@ unsafe impl<'a> RawStruct for VkDescriptorSetLayoutBinding<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_descriptor_set_layout_binding() {
-  assert_size!(
-    types_raw::VkDescriptorSetLayoutBinding,
-    VkDescriptorSetLayoutBinding
-  );
+  assert_size!(types_raw::VkDescriptorSetLayoutBinding, VkDescriptorSetLayoutBinding);
 }
 
 /// Structure specifying parameters of a newly created descriptor set layout
@@ -7024,10 +6982,7 @@ unsafe impl<'a> RawStruct for VkDescriptorPoolCreateInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_descriptor_pool_create_info() {
-  assert_size!(
-    types_raw::VkDescriptorPoolCreateInfo,
-    VkDescriptorPoolCreateInfo
-  );
+  assert_size!(types_raw::VkDescriptorPoolCreateInfo, VkDescriptorPoolCreateInfo);
 }
 #[doc(hidden)]
 #[derive(Copy, Clone)]
@@ -7097,10 +7052,7 @@ unsafe impl<'a> RawStruct for VkDescriptorSetAllocateInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_descriptor_set_allocate_info() {
-  assert_size!(
-    types_raw::VkDescriptorSetAllocateInfo,
-    VkDescriptorSetAllocateInfo
-  );
+  assert_size!(types_raw::VkDescriptorSetAllocateInfo, VkDescriptorSetAllocateInfo);
 }
 #[doc(hidden)]
 #[derive(Copy, Clone)]
@@ -8096,10 +8048,7 @@ unsafe impl<'a> RawStruct for VkCommandBufferAllocateInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_command_buffer_allocate_info() {
-  assert_size!(
-    types_raw::VkCommandBufferAllocateInfo,
-    VkCommandBufferAllocateInfo
-  );
+  assert_size!(types_raw::VkCommandBufferAllocateInfo, VkCommandBufferAllocateInfo);
 }
 
 /// Structure specifying command buffer inheritance info
@@ -8262,10 +8211,7 @@ unsafe impl<'a> RawStruct for VkCommandBufferBeginInfo<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_command_buffer_begin_info() {
-  assert_size!(
-    types_raw::VkCommandBufferBeginInfo,
-    VkCommandBufferBeginInfo
-  );
+  assert_size!(types_raw::VkCommandBufferBeginInfo, VkCommandBufferBeginInfo);
 }
 
 /// Structure specifying a buffer copy operation
@@ -8385,10 +8331,7 @@ unsafe impl RawStruct for VkImageSubresourceLayers {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_image_subresource_layers() {
-  assert_size!(
-    types_raw::VkImageSubresourceLayers,
-    VkImageSubresourceLayers
-  );
+  assert_size!(types_raw::VkImageSubresourceLayers, VkImageSubresourceLayers);
 }
 
 /// Structure specifying an image copy operation
@@ -8675,10 +8618,7 @@ unsafe impl RawStruct for VkClearDepthStencilValue {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_clear_depth_stencil_value() {
-  assert_size!(
-    types_raw::VkClearDepthStencilValue,
-    VkClearDepthStencilValue
-  );
+  assert_size!(types_raw::VkClearDepthStencilValue, VkClearDepthStencilValue);
 }
 
 /// Structure specifying a clear value
@@ -9043,10 +8983,7 @@ unsafe impl RawStruct for VkSurfaceCapabilitiesKHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_surface_capabilities_khr() {
-  assert_size!(
-    types_raw::VkSurfaceCapabilitiesKHR,
-    VkSurfaceCapabilitiesKHR
-  );
+  assert_size!(types_raw::VkSurfaceCapabilitiesKHR, VkSurfaceCapabilitiesKHR);
 }
 
 /// Structure describing a supported swapchain format-color space pair
@@ -9286,10 +9223,7 @@ unsafe impl<'a> RawStruct for VkSwapchainCreateInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_swapchain_create_info_khr() {
-  assert_size!(
-    types_raw::VkSwapchainCreateInfoKHR,
-    VkSwapchainCreateInfoKHR
-  );
+  assert_size!(types_raw::VkSwapchainCreateInfoKHR, VkSwapchainCreateInfoKHR);
 }
 
 /// Structure describing parameters of a queue presentation
@@ -9471,10 +9405,7 @@ unsafe impl RawStruct for VkDisplayModeParametersKHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_display_mode_parameters_khr() {
-  assert_size!(
-    types_raw::VkDisplayModeParametersKHR,
-    VkDisplayModeParametersKHR
-  );
+  assert_size!(types_raw::VkDisplayModeParametersKHR, VkDisplayModeParametersKHR);
 }
 #[cfg(feature = "VK_KHR_display")]
 #[doc(hidden)]
@@ -9512,10 +9443,7 @@ unsafe impl RawStruct for VkDisplayModePropertiesKHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_display_mode_properties_khr() {
-  assert_size!(
-    types_raw::VkDisplayModePropertiesKHR,
-    VkDisplayModePropertiesKHR
-  );
+  assert_size!(types_raw::VkDisplayModePropertiesKHR, VkDisplayModePropertiesKHR);
 }
 
 /// Structure specifying parameters of a newly created display mode object
@@ -9580,10 +9508,7 @@ unsafe impl<'a> RawStruct for VkDisplayModeCreateInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_display_mode_create_info_khr() {
-  assert_size!(
-    types_raw::VkDisplayModeCreateInfoKHR,
-    VkDisplayModeCreateInfoKHR
-  );
+  assert_size!(types_raw::VkDisplayModeCreateInfoKHR, VkDisplayModeCreateInfoKHR);
 }
 
 /// Structure describing capabilities of a mode and plane combination
@@ -9648,10 +9573,7 @@ unsafe impl RawStruct for VkDisplayPlaneCapabilitiesKHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_display_plane_capabilities_khr() {
-  assert_size!(
-    types_raw::VkDisplayPlaneCapabilitiesKHR,
-    VkDisplayPlaneCapabilitiesKHR
-  );
+  assert_size!(types_raw::VkDisplayPlaneCapabilitiesKHR, VkDisplayPlaneCapabilitiesKHR);
 }
 
 /// Structure describing display plane properties
@@ -9681,10 +9603,7 @@ unsafe impl RawStruct for VkDisplayPlanePropertiesKHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_display_plane_properties_khr() {
-  assert_size!(
-    types_raw::VkDisplayPlanePropertiesKHR,
-    VkDisplayPlanePropertiesKHR
-  );
+  assert_size!(types_raw::VkDisplayPlanePropertiesKHR, VkDisplayPlanePropertiesKHR);
 }
 
 /// Structure specifying parameters of a newly created display plane surface object
@@ -9809,10 +9728,7 @@ unsafe impl<'a> RawStruct for VkDisplaySurfaceCreateInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_display_surface_create_info_khr() {
-  assert_size!(
-    types_raw::VkDisplaySurfaceCreateInfoKHR,
-    VkDisplaySurfaceCreateInfoKHR
-  );
+  assert_size!(types_raw::VkDisplaySurfaceCreateInfoKHR, VkDisplaySurfaceCreateInfoKHR);
 }
 
 // feature: VK_KHR_display_swapchain
@@ -9973,10 +9889,7 @@ unsafe impl<'a> RawStruct for VkXlibSurfaceCreateInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_xlib_surface_create_info_khr() {
-  assert_size!(
-    types_raw::VkXlibSurfaceCreateInfoKHR,
-    VkXlibSurfaceCreateInfoKHR
-  );
+  assert_size!(types_raw::VkXlibSurfaceCreateInfoKHR, VkXlibSurfaceCreateInfoKHR);
 }
 
 // feature: VK_KHR_xcb_surface
@@ -10058,10 +9971,7 @@ unsafe impl<'a> RawStruct for VkXcbSurfaceCreateInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_xcb_surface_create_info_khr() {
-  assert_size!(
-    types_raw::VkXcbSurfaceCreateInfoKHR,
-    VkXcbSurfaceCreateInfoKHR
-  );
+  assert_size!(types_raw::VkXcbSurfaceCreateInfoKHR, VkXcbSurfaceCreateInfoKHR);
 }
 
 // feature: VK_KHR_wayland_surface
@@ -10143,10 +10053,7 @@ unsafe impl<'a> RawStruct for VkWaylandSurfaceCreateInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_wayland_surface_create_info_khr() {
-  assert_size!(
-    types_raw::VkWaylandSurfaceCreateInfoKHR,
-    VkWaylandSurfaceCreateInfoKHR
-  );
+  assert_size!(types_raw::VkWaylandSurfaceCreateInfoKHR, VkWaylandSurfaceCreateInfoKHR);
 }
 
 // feature: VK_KHR_mir_surface
@@ -10228,10 +10135,7 @@ unsafe impl<'a> RawStruct for VkMirSurfaceCreateInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_mir_surface_create_info_khr() {
-  assert_size!(
-    types_raw::VkMirSurfaceCreateInfoKHR,
-    VkMirSurfaceCreateInfoKHR
-  );
+  assert_size!(types_raw::VkMirSurfaceCreateInfoKHR, VkMirSurfaceCreateInfoKHR);
 }
 
 // feature: VK_KHR_android_surface
@@ -10303,10 +10207,7 @@ unsafe impl<'a> RawStruct for VkAndroidSurfaceCreateInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_android_surface_create_info_khr() {
-  assert_size!(
-    types_raw::VkAndroidSurfaceCreateInfoKHR,
-    VkAndroidSurfaceCreateInfoKHR
-  );
+  assert_size!(types_raw::VkAndroidSurfaceCreateInfoKHR, VkAndroidSurfaceCreateInfoKHR);
 }
 
 // feature: VK_KHR_win32_surface
@@ -10388,10 +10289,7 @@ unsafe impl<'a> RawStruct for VkWin32SurfaceCreateInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_win32_surface_create_info_khr() {
-  assert_size!(
-    types_raw::VkWin32SurfaceCreateInfoKHR,
-    VkWin32SurfaceCreateInfoKHR
-  );
+  assert_size!(types_raw::VkWin32SurfaceCreateInfoKHR, VkWin32SurfaceCreateInfoKHR);
 }
 
 // feature: VK_EXT_debug_report
@@ -10718,10 +10616,7 @@ unsafe impl<'a> RawStruct for VkDebugMarkerObjectTagInfoEXT<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_debug_marker_object_tag_info_ext() {
-  assert_size!(
-    types_raw::VkDebugMarkerObjectTagInfoEXT,
-    VkDebugMarkerObjectTagInfoEXT
-  );
+  assert_size!(types_raw::VkDebugMarkerObjectTagInfoEXT, VkDebugMarkerObjectTagInfoEXT);
 }
 
 /// Specify parameters of a command buffer marker region
@@ -10788,10 +10683,7 @@ unsafe impl<'a> RawStruct for VkDebugMarkerMarkerInfoEXT<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_debug_marker_marker_info_ext() {
-  assert_size!(
-    types_raw::VkDebugMarkerMarkerInfoEXT,
-    VkDebugMarkerMarkerInfoEXT
-  );
+  assert_size!(types_raw::VkDebugMarkerMarkerInfoEXT, VkDebugMarkerMarkerInfoEXT);
 }
 
 // feature: VK_NV_dedicated_allocation
@@ -11050,10 +10942,7 @@ unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDeviceFeatur
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_physical_device_features2_khr() {
-  assert_size!(
-    types_raw::VkPhysicalDeviceFeatures2KHR,
-    VkPhysicalDeviceFeatures2KHR
-  );
+  assert_size!(types_raw::VkPhysicalDeviceFeatures2KHR, VkPhysicalDeviceFeatures2KHR);
 }
 
 /// Structure specifying physical device properties
@@ -11149,10 +11038,7 @@ unsafe impl RawStruct for VkImageFormatProperties2KHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_image_format_properties2_khr() {
-  assert_size!(
-    types_raw::VkImageFormatProperties2KHR,
-    VkImageFormatProperties2KHR
-  );
+  assert_size!(types_raw::VkImageFormatProperties2KHR, VkImageFormatProperties2KHR);
 }
 
 /// Structure specifying image creation parameters
@@ -11281,10 +11167,7 @@ unsafe impl RawStruct for VkQueueFamilyProperties2KHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_queue_family_properties2_khr() {
-  assert_size!(
-    types_raw::VkQueueFamilyProperties2KHR,
-    VkQueueFamilyProperties2KHR
-  );
+  assert_size!(types_raw::VkQueueFamilyProperties2KHR, VkQueueFamilyProperties2KHR);
 }
 
 /// Structure specifying physical device memory properties
@@ -11543,10 +11426,7 @@ unsafe impl RawStruct for VkShaderResourceUsageAMD {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_shader_resource_usage_amd() {
-  assert_size!(
-    types_raw::VkShaderResourceUsageAMD,
-    VkShaderResourceUsageAMD
-  );
+  assert_size!(types_raw::VkShaderResourceUsageAMD, VkShaderResourceUsageAMD);
 }
 
 /// Statistical information about a particular shader within a pipeline
@@ -11601,10 +11481,7 @@ unsafe impl RawStruct for VkShaderStatisticsInfoAMD {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_shader_statistics_info_amd() {
-  assert_size!(
-    types_raw::VkShaderStatisticsInfoAMD,
-    VkShaderStatisticsInfoAMD
-  );
+  assert_size!(types_raw::VkShaderStatisticsInfoAMD, VkShaderStatisticsInfoAMD);
 }
 
 // feature: VK_KHX_multiview
@@ -12008,10 +11885,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemo
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_export_memory_allocate_info_nv() {
-  assert_size!(
-    types_raw::VkExportMemoryAllocateInfoNV,
-    VkExportMemoryAllocateInfoNV
-  );
+  assert_size!(types_raw::VkExportMemoryAllocateInfoNV, VkExportMemoryAllocateInfoNV);
 }
 
 // feature: VK_NV_external_memory_win32
@@ -12412,10 +12286,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkMemoryAllo
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_memory_allocate_flags_info_khx() {
-  assert_size!(
-    types_raw::VkMemoryAllocateFlagsInfoKHX,
-    VkMemoryAllocateFlagsInfoKHX
-  );
+  assert_size!(types_raw::VkMemoryAllocateFlagsInfoKHX, VkMemoryAllocateFlagsInfoKHX);
 }
 
 /// Set the initial device mask and render areas for a render pass instance
@@ -12636,10 +12507,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkDeviceGroupSubmitI
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_device_group_submit_info_khx() {
-  assert_size!(
-    types_raw::VkDeviceGroupSubmitInfoKHX,
-    VkDeviceGroupSubmitInfoKHX
-  );
+  assert_size!(types_raw::VkDeviceGroupSubmitInfoKHX, VkDeviceGroupSubmitInfoKHX);
 }
 
 /// Structure indicating which instances are bound
@@ -12947,10 +12815,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkImageSwapchai
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_image_swapchain_create_info_khx() {
-  assert_size!(
-    types_raw::VkImageSwapchainCreateInfoKHX,
-    VkImageSwapchainCreateInfoKHX
-  );
+  assert_size!(types_raw::VkImageSwapchainCreateInfoKHX, VkImageSwapchainCreateInfoKHX);
 }
 
 /// Structure specifying swapchain image memory to bind to
@@ -13114,10 +12979,7 @@ unsafe impl<'a> RawStruct for VkAcquireNextImageInfoKHX<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_acquire_next_image_info_khx() {
-  assert_size!(
-    types_raw::VkAcquireNextImageInfoKHX,
-    VkAcquireNextImageInfoKHX
-  );
+  assert_size!(types_raw::VkAcquireNextImageInfoKHX, VkAcquireNextImageInfoKHX);
 }
 
 /// Mode and mask controlling which physical devices\' images are presented
@@ -13187,10 +13049,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkDeviceGroupPre
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_device_group_present_info_khx() {
-  assert_size!(
-    types_raw::VkDeviceGroupPresentInfoKHX,
-    VkDeviceGroupPresentInfoKHX
-  );
+  assert_size!(types_raw::VkDeviceGroupPresentInfoKHX, VkDeviceGroupPresentInfoKHX);
 }
 
 /// Structure specifying parameters of a newly created swapchain object
@@ -13420,10 +13279,7 @@ unsafe impl RawStruct for VkExternalMemoryPropertiesKHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_external_memory_properties_khr() {
-  assert_size!(
-    types_raw::VkExternalMemoryPropertiesKHR,
-    VkExternalMemoryPropertiesKHR
-  );
+  assert_size!(types_raw::VkExternalMemoryPropertiesKHR, VkExternalMemoryPropertiesKHR);
 }
 
 /// Structure specifying external image creation parameters
@@ -13636,10 +13492,7 @@ unsafe impl RawStruct for VkExternalBufferPropertiesKHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_external_buffer_properties_khr() {
-  assert_size!(
-    types_raw::VkExternalBufferPropertiesKHR,
-    VkExternalBufferPropertiesKHR
-  );
+  assert_size!(types_raw::VkExternalBufferPropertiesKHR, VkExternalBufferPropertiesKHR);
 }
 
 /// Structure specifying IDs related to the physical device
@@ -13878,10 +13731,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemo
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_export_memory_allocate_info_khr() {
-  assert_size!(
-    types_raw::VkExportMemoryAllocateInfoKHR,
-    VkExportMemoryAllocateInfoKHR
-  );
+  assert_size!(types_raw::VkExportMemoryAllocateInfoKHR, VkExportMemoryAllocateInfoKHR);
 }
 
 // feature: VK_KHR_external_memory_win32
@@ -14162,10 +14012,7 @@ unsafe impl<'a> RawStruct for VkMemoryGetWin32HandleInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_memory_get_win32_handle_info_khr() {
-  assert_size!(
-    types_raw::VkMemoryGetWin32HandleInfoKHR,
-    VkMemoryGetWin32HandleInfoKHR
-  );
+  assert_size!(types_raw::VkMemoryGetWin32HandleInfoKHR, VkMemoryGetWin32HandleInfoKHR);
 }
 
 // feature: VK_KHR_external_memory_fd
@@ -14837,10 +14684,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkD3D12FenceSubmitIn
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_d3_d12_fence_submit_info_khr() {
-  assert_size!(
-    types_raw::VkD3D12FenceSubmitInfoKHR,
-    VkD3D12FenceSubmitInfoKHR
-  );
+  assert_size!(types_raw::VkD3D12FenceSubmitInfoKHR, VkD3D12FenceSubmitInfoKHR);
 }
 
 /// Structure describing a Win32 handle semaphore export operation
@@ -15000,10 +14844,7 @@ unsafe impl<'a> RawStruct for VkImportSemaphoreFdInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_import_semaphore_fd_info_khr() {
-  assert_size!(
-    types_raw::VkImportSemaphoreFdInfoKHR,
-    VkImportSemaphoreFdInfoKHR
-  );
+  assert_size!(types_raw::VkImportSemaphoreFdInfoKHR, VkImportSemaphoreFdInfoKHR);
 }
 
 /// Structure describing a POSIX FD semaphore export operation
@@ -15879,10 +15720,7 @@ unsafe impl RawStruct for VkIndirectCommandsTokenNVX {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_indirect_commands_token_nvx() {
-  assert_size!(
-    types_raw::VkIndirectCommandsTokenNVX,
-    VkIndirectCommandsTokenNVX
-  );
+  assert_size!(types_raw::VkIndirectCommandsTokenNVX, VkIndirectCommandsTokenNVX);
 }
 
 /// Struct specifying the details of an indirect command layout token
@@ -16177,10 +16015,7 @@ unsafe impl<'a> RawStruct for VkCmdProcessCommandsInfoNVX<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_cmd_process_commands_info_nvx() {
-  assert_size!(
-    types_raw::VkCmdProcessCommandsInfoNVX,
-    VkCmdProcessCommandsInfoNVX
-  );
+  assert_size!(types_raw::VkCmdProcessCommandsInfoNVX, VkCmdProcessCommandsInfoNVX);
 }
 
 /// Structure specifying parameters for the reservation of command buffer space
@@ -16361,10 +16196,7 @@ unsafe impl<'a> RawStruct for VkObjectTableCreateInfoNVX<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_object_table_create_info_nvx() {
-  assert_size!(
-    types_raw::VkObjectTableCreateInfoNVX,
-    VkObjectTableCreateInfoNVX
-  );
+  assert_size!(types_raw::VkObjectTableCreateInfoNVX, VkObjectTableCreateInfoNVX);
 }
 
 /// Common parameters of an object table resource entry
@@ -16474,10 +16306,7 @@ unsafe impl RawStruct for VkObjectTablePipelineEntryNVX {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_object_table_pipeline_entry_nvx() {
-  assert_size!(
-    types_raw::VkObjectTablePipelineEntryNVX,
-    VkObjectTablePipelineEntryNVX
-  );
+  assert_size!(types_raw::VkObjectTablePipelineEntryNVX, VkObjectTablePipelineEntryNVX);
 }
 
 /// Parameters of an object table descriptor set entry
@@ -16971,10 +16800,7 @@ unsafe impl RawStruct for VkSurfaceCapabilities2EXT {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_surface_capabilities2_ext() {
-  assert_size!(
-    types_raw::VkSurfaceCapabilities2EXT,
-    VkSurfaceCapabilities2EXT
-  );
+  assert_size!(types_raw::VkSurfaceCapabilities2EXT, VkSurfaceCapabilities2EXT);
 }
 
 // feature: VK_EXT_display_control
@@ -17242,10 +17068,7 @@ unsafe impl RawStruct for VkRefreshCycleDurationGOOGLE {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_refresh_cycle_duration_google() {
-  assert_size!(
-    types_raw::VkRefreshCycleDurationGOOGLE,
-    VkRefreshCycleDurationGOOGLE
-  );
+  assert_size!(types_raw::VkRefreshCycleDurationGOOGLE, VkRefreshCycleDurationGOOGLE);
 }
 
 /// Structure containing timing information about a previously-presented image
@@ -17438,10 +17261,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkPresentTimesIn
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_present_times_info_google() {
-  assert_size!(
-    types_raw::VkPresentTimesInfoGOOGLE,
-    VkPresentTimesInfoGOOGLE
-  );
+  assert_size!(types_raw::VkPresentTimesInfoGOOGLE, VkPresentTimesInfoGOOGLE);
 }
 
 // feature: VK_NVX_multiview_per_view_attributes
@@ -18295,10 +18115,7 @@ unsafe impl RawStruct for VkSurfaceCapabilities2KHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_surface_capabilities2_khr() {
-  assert_size!(
-    types_raw::VkSurfaceCapabilities2KHR,
-    VkSurfaceCapabilities2KHR
-  );
+  assert_size!(types_raw::VkSurfaceCapabilities2KHR, VkSurfaceCapabilities2KHR);
 }
 
 /// Structure describing a supported swapchain format tuple
@@ -18475,10 +18292,7 @@ unsafe impl RawStruct for VkExternalFencePropertiesKHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_external_fence_properties_khr() {
-  assert_size!(
-    types_raw::VkExternalFencePropertiesKHR,
-    VkExternalFencePropertiesKHR
-  );
+  assert_size!(types_raw::VkExternalFencePropertiesKHR, VkExternalFencePropertiesKHR);
 }
 
 // feature: VK_KHR_external_fence
@@ -18536,10 +18350,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkFenceCreateInfo<'b>> for VkExportFenceCr
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_export_fence_create_info_khr() {
-  assert_size!(
-    types_raw::VkExportFenceCreateInfoKHR,
-    VkExportFenceCreateInfoKHR
-  );
+  assert_size!(types_raw::VkExportFenceCreateInfoKHR, VkExportFenceCreateInfoKHR);
 }
 
 // feature: VK_KHR_external_fence_win32
@@ -18800,10 +18611,7 @@ unsafe impl<'a> RawStruct for VkFenceGetWin32HandleInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_fence_get_win32_handle_info_khr() {
-  assert_size!(
-    types_raw::VkFenceGetWin32HandleInfoKHR,
-    VkFenceGetWin32HandleInfoKHR
-  );
+  assert_size!(types_raw::VkFenceGetWin32HandleInfoKHR, VkFenceGetWin32HandleInfoKHR);
 }
 
 // feature: VK_KHR_external_fence_fd
@@ -19186,10 +18994,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkImageViewCreateInfo<'b>> for VkImageView
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_image_view_usage_create_info_khr() {
-  assert_size!(
-    types_raw::VkImageViewUsageCreateInfoKHR,
-    VkImageViewUsageCreateInfoKHR
-  );
+  assert_size!(types_raw::VkImageViewUsageCreateInfoKHR, VkImageViewUsageCreateInfoKHR);
 }
 
 /// Structure specifying the orientation of the tessellation domain
@@ -19414,10 +19219,7 @@ unsafe impl<'a> RawStruct for VkIOSSurfaceCreateInfoMVK<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_ios_surface_create_info_mvk() {
-  assert_size!(
-    types_raw::VkIOSSurfaceCreateInfoMVK,
-    VkIOSSurfaceCreateInfoMVK
-  );
+  assert_size!(types_raw::VkIOSSurfaceCreateInfoMVK, VkIOSSurfaceCreateInfoMVK);
 }
 
 // feature: VK_MVK_macos_surface
@@ -19489,10 +19291,7 @@ unsafe impl<'a> RawStruct for VkMacOSSurfaceCreateInfoMVK<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_mac_os_surface_create_info_mvk() {
-  assert_size!(
-    types_raw::VkMacOSSurfaceCreateInfoMVK,
-    VkMacOSSurfaceCreateInfoMVK
-  );
+  assert_size!(types_raw::VkMacOSSurfaceCreateInfoMVK, VkMacOSSurfaceCreateInfoMVK);
 }
 
 // feature: VK_KHR_get_memory_requirements2
@@ -19697,10 +19496,7 @@ unsafe impl RawStruct for VkMemoryRequirements2KHR {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_memory_requirements2_khr() {
-  assert_size!(
-    types_raw::VkMemoryRequirements2KHR,
-    VkMemoryRequirements2KHR
-  );
+  assert_size!(types_raw::VkMemoryRequirements2KHR, VkMemoryRequirements2KHR);
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -20094,10 +19890,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkImageMemoryBarrier<'b>> for VkSampleLoca
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_sample_locations_info_ext() {
-  assert_size!(
-    types_raw::VkSampleLocationsInfoEXT,
-    VkSampleLocationsInfoEXT
-  );
+  assert_size!(types_raw::VkSampleLocationsInfoEXT, VkSampleLocationsInfoEXT);
 }
 
 /// Structure specifying the sample locations state to use in the initial layout
@@ -20200,10 +19993,7 @@ unsafe impl<'a> RawStruct for VkSubpassSampleLocationsEXT<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_subpass_sample_locations_ext() {
-  assert_size!(
-    types_raw::VkSubpassSampleLocationsEXT,
-    VkSubpassSampleLocationsEXT
-  );
+  assert_size!(types_raw::VkSubpassSampleLocationsEXT, VkSubpassSampleLocationsEXT);
 }
 
 /// Structure specifying sample locations to use for the layout transition of custom
@@ -20448,10 +20238,7 @@ unsafe impl RawStruct for VkMultisamplePropertiesEXT {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_multisample_properties_ext() {
-  assert_size!(
-    types_raw::VkMultisamplePropertiesEXT,
-    VkMultisamplePropertiesEXT
-  );
+  assert_size!(types_raw::VkMultisamplePropertiesEXT, VkMultisamplePropertiesEXT);
 }
 
 // feature: VK_KHR_image_format_list
@@ -20999,10 +20786,7 @@ unsafe impl<'a> RawStruct for VkBindBufferMemoryInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_bind_buffer_memory_info_khr() {
-  assert_size!(
-    types_raw::VkBindBufferMemoryInfoKHR,
-    VkBindBufferMemoryInfoKHR
-  );
+  assert_size!(types_raw::VkBindBufferMemoryInfoKHR, VkBindBufferMemoryInfoKHR);
 }
 
 /// Structure specifying how to bind an image to memory
@@ -21077,10 +20861,7 @@ unsafe impl<'a> RawStruct for VkBindImageMemoryInfoKHR<'a> {
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_bind_image_memory_info_khr() {
-  assert_size!(
-    types_raw::VkBindImageMemoryInfoKHR,
-    VkBindImageMemoryInfoKHR
-  );
+  assert_size!(types_raw::VkBindImageMemoryInfoKHR, VkBindImageMemoryInfoKHR);
 }
 
 // feature: VK_KHR_sampler_ycbcr_conversion
@@ -21342,10 +21123,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkBindImageMemoryInfoKHR<'b>> for VkBindIm
 #[cfg(test)]
 #[test]
 fn test_struct_size_vk_bind_image_plane_memory_info_khr() {
-  assert_size!(
-    types_raw::VkBindImagePlaneMemoryInfoKHR,
-    VkBindImagePlaneMemoryInfoKHR
-  );
+  assert_size!(types_raw::VkBindImagePlaneMemoryInfoKHR, VkBindImagePlaneMemoryInfoKHR);
 }
 
 /// Structure specifying image plane for memory requirements
