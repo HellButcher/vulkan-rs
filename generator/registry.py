@@ -292,6 +292,11 @@ class TypeRef(metaclass=_TypeRefMeta):
         return False
     def is_ptr(self):
         return False
+    def base(self):
+        arg = getattr(self, 'arg', None)
+        if arg is None:
+            raise KeyError('type has no base-type', self)
+        return arg.base()
 class NamedTypeRef(TypeRef):
     _ORD_=0
     def __init__(self, name):
@@ -309,6 +314,8 @@ class NamedTypeRef(TypeRef):
             return self.name
         else:
             return '%s %s' % (self.name, decl)
+    def base(self):
+        return self.resolved_type
 class ConstTypeRef(TypeRef):
     def __init__(self, arg):
         self.arg = arg
@@ -503,12 +510,15 @@ class HandleType(BaseTypeElem):
     _CATEGORY_ = 'handle'
     def __init__(self, registry, elem):
         BaseTypeElem.__init__(self, registry, elem.find(_NAME_).text, elem)
+        self.parent = _split_attrib(elem.get('parent'))
         self.non_dispatchable = elem.find(_TYPE_).text == 'VK_DEFINE_NON_DISPATCHABLE_HANDLE'
         if not self.non_dispatchable:
             if self.name in ['VkInstance', 'VkPhysicalDevice']:
                 self.dispatch_table = DispatchTable.Instance
             else:
                 self.dispatch_table = DispatchTable.Device
+    def _resolve(self, registry):
+        self.resolved_parent = [registry.types[name] for name in self.parent]
 
 class EnumType(BaseTypeElem):
     _CATEGORY_ = 'enum'

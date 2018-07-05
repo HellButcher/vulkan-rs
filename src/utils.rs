@@ -1,15 +1,14 @@
-use std::fmt;
 use std::cmp;
+use std::fmt;
 use std::hash::{Hash, Hasher};
-use std::ptr::NonNull;
 use {AsRaw, RawStruct};
 
 #[derive(Copy, Clone)]
-pub struct VkDispatchableHandle<T>(NonNull<T>);
+pub struct VkDispatchableHandle<'l,T: 'l>(&'l T);
 
 #[cfg(target_pointer_width = "64")]
 #[derive(Copy, Clone)]
-pub struct VkNonDispatchableHandle<T>(NonNull<T>);
+pub struct VkNonDispatchableHandle<'l,T: 'l>(&'l T);
 
 #[cfg(nightly)]
 #[cfg(target_pointer_width = "32")]
@@ -27,77 +26,77 @@ enum NonZeroU64 {
 
 #[cfg(target_pointer_width = "32")]
 #[derive(Copy, Clone)]
-pub struct VkNonDispatchableHandle<T>(NonZeroU64, ::std::marker::PhantomData<*const T>);
+pub struct VkNonDispatchableHandle<'l, T>(NonZeroU64, ::std::marker::PhantomData<&'l T>);
 
-impl<T> VkDispatchableHandle<T> {
+impl<'l, T> VkDispatchableHandle<'l, T> {
   #[inline]
-  pub fn value(self) -> usize {
-    unsafe { ::std::mem::transmute(self) }
+  pub fn value(&self) -> usize {
+    unsafe { *(self as *const Self as *const usize) }
   }
 }
 
-impl<T> VkNonDispatchableHandle<T> {
+impl<'l, T> VkNonDispatchableHandle<'l , T> {
   #[inline]
-  pub fn value(self) -> u64 {
-    unsafe { ::std::mem::transmute(self) }
+  pub fn value(&self) -> u64 {
+    unsafe { *(self as *const Self as *const u64) }
   }
 }
 
-unsafe impl<T> RawStruct for VkDispatchableHandle<T> {
+unsafe impl<'l, T> RawStruct for VkDispatchableHandle<'l, T> {
   type Raw = usize;
 }
 
-unsafe impl<T> RawStruct for VkNonDispatchableHandle<T> {
+unsafe impl<'l, T> RawStruct for VkNonDispatchableHandle<'l, T> {
   type Raw = u64;
 }
 
 // implement PartialEq, Eq, PartialOrd, Ord, Hash and Debug in the value field
 
-impl<T: Copy> fmt::Debug for VkDispatchableHandle<T> {
+impl<'l, T: Copy> fmt::Debug for VkDispatchableHandle<'l, T> {
   fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
     write!(f, "{:#x}", self.value())
   }
 }
 
-impl<T: Copy> fmt::Debug for VkNonDispatchableHandle<T> {
+impl<'l, T: Copy> fmt::Debug for VkNonDispatchableHandle<'l, T> {
   fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
     write!(f, "{:#x}", self.value())
   }
 }
 
-impl<T: Copy> PartialEq for VkDispatchableHandle<T> {
+impl<'l, T: Copy> PartialEq for VkDispatchableHandle<'l, T> {
   fn eq(&self, other: &Self) -> bool {
     self.value() == other.value()
   }
 }
-impl<T: Copy> PartialEq for VkNonDispatchableHandle<T> {
+impl<'l, T: Copy> PartialEq for VkNonDispatchableHandle<'l, T> {
   fn eq(&self, other: &Self) -> bool {
     self.value() == other.value()
   }
 }
-impl<T: Copy> PartialOrd for VkDispatchableHandle<T> {
+impl<'l, T: Copy> PartialOrd for VkDispatchableHandle<'l, T> {
   fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
     self.value().partial_cmp(&other.value())
   }
 }
-impl<T: Copy> PartialOrd for VkNonDispatchableHandle<T> {
+impl<'l, T: Copy> PartialOrd for VkNonDispatchableHandle<'l, T> {
   fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
     self.value().partial_cmp(&other.value())
   }
 }
-impl<T: Copy> Eq for VkDispatchableHandle<T> {}
-impl<T: Copy> Eq for VkNonDispatchableHandle<T> {}
-impl<T: Copy> Ord for VkDispatchableHandle<T> {
+impl<'l, T: Copy> Eq for VkDispatchableHandle<'l, T> {}
+impl<'l, T: Copy> Eq for VkNonDispatchableHandle<'l, T> {}
+impl<'l, T: Copy> Ord for VkDispatchableHandle<'l, T> {
   fn cmp(&self, other: &Self) -> cmp::Ordering {
     self.value().cmp(&other.value())
   }
 }
-impl<T: Copy> Ord for VkNonDispatchableHandle<T> {
+impl<'l, T: Copy> Ord for VkNonDispatchableHandle<'l, T> {
   fn cmp(&self, other: &Self) -> cmp::Ordering {
     self.value().cmp(&other.value())
   }
 }
-impl<T: Copy> Hash for VkDispatchableHandle<T> {
+impl<'l, T: Copy> Hash for VkDispatchableHandle<'l, T> {
   fn hash<H>(&self, state: &mut H)
   where
     H: Hasher,
@@ -105,7 +104,7 @@ impl<T: Copy> Hash for VkDispatchableHandle<T> {
     self.value().hash(state)
   }
 }
-impl<T: Copy> Hash for VkNonDispatchableHandle<T> {
+impl<'l, T: Copy> Hash for VkNonDispatchableHandle<'l, T> {
   fn hash<H>(&self, state: &mut H)
   where
     H: Hasher,
@@ -198,7 +197,7 @@ fn test_handle_assignment() {
 fn test_result_size() {
   // This test just checks, that some my assumptions are valid.
   // I have done sone magic with the NonZero value optimization.
-  use enums::{VkResult, VkError};
+  use enums::{VkError, VkResult};
   assert_size!(4, VkError);
   assert_size!(4, VkResult);
   assert_size!(8, VkResult<u32>);
@@ -209,8 +208,8 @@ fn test_result_size() {
 fn test_result_assignment() {
   // This test just checks, that some my assumptions are valid.
   // I have done sone magic with the NonZero value optimization.
+  use enums::{VkError, VkResult};
   use std::mem::transmute as t;
-  use enums::{VkResult, VkError};
   unsafe {
     let r0: VkResult = t(0u32);
     assert_eq!(Ok(()), r0);
@@ -229,7 +228,6 @@ fn test_result_assignment() {
     assert_eq!(Err(VkError::ERROR_OUT_OF_HOST_MEMORY), r6);
     let r7: VkResult = t(!2u32);
     assert_eq!(Err(VkError::ERROR_INITIALIZATION_FAILED), r7);
-    
   }
 }
 
@@ -237,7 +235,7 @@ pub fn vk_make_version(major: u16, minor: u16, patch: u16) -> u32 {
   (((major as u32) << 22) | ((minor as u32) << 12) | (patch as u32))
 }
 
-impl<T> AsRaw for VkDispatchableHandle<T> {
+impl<'h, T> AsRaw for VkDispatchableHandle<'h, T> {
   type Output = usize;
   #[inline]
   unsafe fn as_raw(self) -> usize {
@@ -245,7 +243,7 @@ impl<T> AsRaw for VkDispatchableHandle<T> {
   }
 }
 
-impl<T> AsRaw for VkNonDispatchableHandle<T> {
+impl<'h, T> AsRaw for VkNonDispatchableHandle<'h, T> {
   type Output = u64;
   #[inline]
   unsafe fn as_raw(self) -> u64 {

@@ -56,8 +56,6 @@ def update_cargo_toml(reg):
                             )))
     os.rename(_CARGO_TOML_ + '.tmp', _CARGO_TOML_)
 
-
-
 def main(args):
     registry = Registry.load_file(_VULKAN_SPEC_DIR_ + 'vk.xml')
     initialize_docs(registry, short=True)

@@ -19,37 +19,49 @@ extern crate log;
 #[macro_use]
 extern crate bitflags;
 
-use std::os::raw::c_char;
 use std::ffi::CStr;
 use std::fmt;
+use std::os::raw::c_char;
 
 #[cfg(test)]
 macro_rules! assert_eq {
-    ($expected:expr, $actual:expr) => {
-        {
-            let expected = $expected;
-            let actual = $actual;
-            assert!(expected == actual, "{}: expected = {:?}, actual = {:?}", stringify!($actual), expected, actual);
-        }
-    };
+  ($expected:expr, $actual:expr) => {{
+    let expected = $expected;
+    let actual = $actual;
+    assert!(
+      expected == actual,
+      "{}: expected = {:?}, actual = {:?}",
+      stringify!($actual),
+      expected,
+      actual
+    );
+  }};
 }
 
 #[cfg(test)]
 macro_rules! assert_size {
-    ($expected:ty, $actual:ty) => {
-        {
-            let expected = ::std::mem::size_of::<$expected>();
-            let actual = ::std::mem::size_of::<$actual>();
-            assert!(expected == actual, "{}: expected size = {:?}, actual = {:?}", stringify!($actual), expected, actual);
-        }
-    };
-    ($expected:expr, $actual:ty) => {
-        {
-            let expected : usize = $expected;
-            let actual = ::std::mem::size_of::<$actual>();
-            assert!(expected == actual, "{}: expected size = {:?}, actual = {:?}", stringify!($actual), expected, actual);
-        }
-    };
+  ($expected:ty, $actual:ty) => {{
+    let expected = ::std::mem::size_of::<$expected>();
+    let actual = ::std::mem::size_of::<$actual>();
+    assert!(
+      expected == actual,
+      "{}: expected size = {:?}, actual = {:?}",
+      stringify!($actual),
+      expected,
+      actual
+    );
+  }};
+  ($expected:expr, $actual:ty) => {{
+    let expected: usize = $expected;
+    let actual = ::std::mem::size_of::<$actual>();
+    assert!(
+      expected == actual,
+      "{}: expected size = {:?}, actual = {:?}",
+      stringify!($actual),
+      expected,
+      actual
+    );
+  }};
 }
 
 macro_rules! define_enum {
@@ -108,18 +120,18 @@ macro_rules! vk_make_version {
   };
 }
 
-pub mod utils;
 pub mod platform;
+pub mod utils;
 
 // generated modules
+pub mod dispatch_commands;
+mod dispatch_table;
 pub mod enums;
+pub mod prelude;
+mod protos;
+pub mod types;
 pub mod types_base;
 pub mod types_raw;
-pub mod types;
-mod protos;
-mod dispatch_table;
-pub mod dispatch_commands;
-pub mod prelude;
 // end of generated modules
 
 mod dl;
@@ -334,10 +346,7 @@ impl<'a> types::VkDeviceCreateInfo<'a> {
 }
 
 impl types::VkExtent2D {
-  pub const ZERO: Self = Self {
-    width: 0,
-    height: 0,
-  };
+  pub const ZERO: Self = Self { width: 0, height: 0 };
   pub const MAX: Self = Self {
     width: ::std::u32::MAX,
     height: ::std::u32::MAX,
@@ -355,39 +364,18 @@ impl types::VkExtent2D {
       depth,
     }
   }
-}
 
-impl From<(u32, u32)> for types::VkExtent2D {
   #[inline]
-  fn from(value: (u32, u32)) -> Self {
-    Self {
-      width: value.0,
-      height: value.1,
-    }
+  pub fn as_tuple(self) -> (u32, u32) {
+    (self.width, self.height)
   }
 }
 
-impl From<types::VkExtent2D> for (u32, u32) {
+impl<I: Into<(u32, u32)>> From<I> for types::VkExtent2D {
   #[inline]
-  fn from(value: types::VkExtent2D) -> Self {
-    (value.width, value.height)
-  }
-}
-
-impl From<[u32; 2]> for types::VkExtent2D {
-  #[inline]
-  fn from(value: [u32; 2]) -> Self {
-    Self {
-      width: value[0],
-      height: value[1],
-    }
-  }
-}
-
-impl From<types::VkExtent2D> for [u32; 2] {
-  #[inline]
-  fn from(value: types::VkExtent2D) -> Self {
-    [value.width, value.height]
+  fn from(value: I) -> Self {
+    let (width, height) = value.into();
+    Self { width, height }
   }
 }
 
@@ -410,57 +398,26 @@ impl types::VkExtent3D {
   };
   #[inline]
   pub fn of(width: u32, height: u32, depth: u32) -> Self {
-    Self {
-      width,
-      height,
-      depth,
-    }
+    Self { width, height, depth }
+  }
+
+  #[inline]
+  pub fn as_triple(self) -> (u32, u32, u32) {
+    (self.width, self.height, self.depth)
   }
 }
 
-impl From<(u32, u32, u32)> for types::VkExtent3D {
+impl<I: Into<(u32, u32, u32)>> From<I> for types::VkExtent3D {
   #[inline]
-  fn from(value: (u32, u32, u32)) -> Self {
-    Self {
-      width: value.0,
-      height: value.1,
-      depth: value.2,
-    }
-  }
-}
-
-impl From<types::VkExtent3D> for (u32, u32, u32) {
-  #[inline]
-  fn from(value: types::VkExtent3D) -> Self {
-    (value.width, value.height, value.depth)
-  }
-}
-
-impl From<[u32; 3]> for types::VkExtent3D {
-  #[inline]
-  fn from(value: [u32; 3]) -> Self {
-    Self {
-      width: value[0],
-      height: value[1],
-      depth: value[2],
-    }
-  }
-}
-
-impl From<types::VkExtent3D> for [u32; 3] {
-  #[inline]
-  fn from(value: types::VkExtent3D) -> Self {
-    [value.width, value.height, value.depth]
+  fn from(value: I) -> Self {
+    let (width, height, depth) = value.into();
+    Self { width, height, depth }
   }
 }
 
 impl fmt::Debug for types::VkExtent3D {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(
-      f,
-      "VkExtent3D({:?},{:?},{:?})",
-      self.width, self.height, self.depth
-    )
+    write!(f, "VkExtent3D({:?},{:?},{:?})", self.width, self.height, self.depth)
   }
 }
 
@@ -487,39 +444,18 @@ impl types::VkOffset2D {
       z,
     }
   }
-}
 
-impl From<(i32, i32)> for types::VkOffset2D {
   #[inline]
-  fn from(value: (i32, i32)) -> Self {
-    Self {
-      x: value.0,
-      y: value.1,
-    }
+  pub fn as_tuple(self) -> (i32, i32) {
+    (self.x, self.y)
   }
 }
 
-impl From<types::VkOffset2D> for (i32, i32) {
+impl<I: Into<(i32, i32)>> From<I> for types::VkOffset2D {
   #[inline]
-  fn from(value: types::VkOffset2D) -> Self {
-    (value.x, value.y)
-  }
-}
-
-impl From<[i32; 2]> for types::VkOffset2D {
-  #[inline]
-  fn from(value: [i32; 2]) -> Self {
-    Self {
-      x: value[0],
-      y: value[1],
-    }
-  }
-}
-
-impl From<types::VkOffset2D> for [i32; 2] {
-  #[inline]
-  fn from(value: types::VkOffset2D) -> Self {
-    [value.x, value.y]
+  fn from(value: I) -> Self {
+    let (x, y) = value.into();
+    Self { x, y }
   }
 }
 
@@ -545,41 +481,18 @@ impl types::VkOffset3D {
   pub fn of(x: i32, y: i32, z: i32) -> Self {
     Self { x, y, z }
   }
-}
 
-impl From<(i32, i32, i32)> for types::VkOffset3D {
   #[inline]
-  fn from(value: (i32, i32, i32)) -> Self {
-    Self {
-      x: value.0,
-      y: value.1,
-      z: value.2,
-    }
+  pub fn as_triple(self) -> (i32, i32) {
+    (self.x, self.y)
   }
 }
 
-impl From<types::VkOffset3D> for (i32, i32, i32) {
+impl<I: Into<(i32, i32, i32)>> From<I> for types::VkOffset3D {
   #[inline]
-  fn from(value: types::VkOffset3D) -> Self {
-    (value.x, value.y, value.z)
-  }
-}
-
-impl From<[i32; 3]> for types::VkOffset3D {
-  #[inline]
-  fn from(value: [i32; 3]) -> Self {
-    Self {
-      x: value[0],
-      y: value[1],
-      z: value[2],
-    }
-  }
-}
-
-impl From<types::VkOffset3D> for [i32; 3] {
-  #[inline]
-  fn from(value: types::VkOffset3D) -> Self {
-    [value.x, value.y, value.z]
+  fn from(value: I) -> Self {
+    let (x, y, z) = value.into();
+    Self { x, y, z }
   }
 }
 
@@ -633,9 +546,7 @@ impl fmt::Debug for types::VkComponentMapping {
 }
 
 impl types::VkClearColorValue {
-  pub const BLACK: Self = Self {
-    uint32: [0, 0, 0, 0],
-  };
+  pub const BLACK: Self = Self { uint32: [0, 0, 0, 0] };
 }
 
 impl From<(u32, u32, u32, u32)> for types::VkClearColorValue {
@@ -685,4 +596,3 @@ impl From<[f32; 4]> for types::VkClearColorValue {
     Self { float32: value }
   }
 }
-

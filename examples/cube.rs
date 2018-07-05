@@ -4,15 +4,15 @@ extern crate log;
 extern crate vulkan_rs;
 extern crate winit;
 
-use vulkan_rs::prelude::*;
-use vulkan_rs::prelude::vk_khr_swapchain::*;
 use vulkan_rs::prelude::vk_khr_surface::*;
+use vulkan_rs::prelude::vk_khr_swapchain::*;
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
 use vulkan_rs::prelude::vk_khr_wayland_surface::*;
-#[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-use vulkan_rs::prelude::vk_khr_xcb_surface::*;
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 use vulkan_rs::prelude::vk_khr_win32_surface::*;
+#[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
+use vulkan_rs::prelude::vk_khr_xcb_surface::*;
+use vulkan_rs::prelude::*;
 
 use vulkan_rs::utils::cstr_from_bytes_until_nul;
 
@@ -50,7 +50,7 @@ fn get_required_device_extensions() -> Vec<&'static str> {
   return vec![VK_KHR_SWAPCHAIN_EXTENSION_NAME];
 }
 
-fn create_instance(app_name: &str, exts: &[&str]) -> VkResult<VkInstance> {
+fn create_instance<'h>(app_name: &str, exts: &[&str]) -> VkResult<VkInstance<'h>> {
   let app_name = cstr_from_bytes_until_nul(app_name);
   let exts_cstr: Vec<_> = exts.iter().map(cstr_from_bytes_until_nul).collect(); //TODO: better
   let exts_p: Vec<*const ::std::os::raw::c_char> = exts_cstr.iter().map(|s| s.as_ptr()).collect();
@@ -66,11 +66,11 @@ fn create_instance(app_name: &str, exts: &[&str]) -> VkResult<VkInstance> {
   vkCreateInstance(&create_info, None)
 }
 
-fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResult<VkSurfaceKHR> {
+fn create_surface<'h>(instance: VkInstance<'h>, w: &winit::Window) -> VkResult<VkSurfaceKHR<'h>> {
   #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
   {
-    use winit::os::unix::WindowExt;
     use vulkan_rs::platform::wsi::wayland::*;
+    use winit::os::unix::WindowExt;
     if let Some(wl_sfc) = w.get_wayland_surface() {
       let wl_dpy = w.get_wayland_display().unwrap();
       let create_info = VkWaylandSurfaceCreateInfoKHR::new()
@@ -82,8 +82,8 @@ fn create_surface(instance: VkInstance, w: &winit::Window) -> VkResult<VkSurface
 
   #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
   {
-    use winit::os::unix::WindowExt;
     use vulkan_rs::platform::wsi::xcb::*;
+    use winit::os::unix::WindowExt;
     if let Some(xcb_win) = w.get_xlib_window() {
       let xcb_con = w.get_xcb_connection().unwrap();
       let create_info = VkXcbSurfaceCreateInfoKHR::new()
@@ -127,12 +127,11 @@ fn choose_queue_families(gpu: VkPhysicalDevice, surface: Option<VkSurfaceKHR>) -
   None
 }
 
-fn choose_physical_device_and_queue_families(
-  instance: VkInstance,
-  surface: Option<VkSurfaceKHR>,
-) -> VkResult<(VkPhysicalDevice, u32, u32)> {
-  for (gpu_idx, gpu) in vkEnumeratePhysicalDevices(instance)?.into_iter().enumerate()
-  {
+fn choose_physical_device_and_queue_families<'h>(
+  instance: VkInstance<'h>,
+  surface: Option<VkSurfaceKHR<'h>>,
+) -> VkResult<(VkPhysicalDevice<'h>, u32, u32)> {
+  for (gpu_idx, gpu) in vkEnumeratePhysicalDevices(instance)?.into_iter().enumerate() {
     let gpu_idx = gpu_idx as u32;
     if let Some(queue_family_idx) = choose_queue_families(gpu, surface) {
       return Ok((gpu, gpu_idx, queue_family_idx));
@@ -189,14 +188,12 @@ fn choose_surface_properties(gpu: VkPhysicalDevice, surface: VkSurfaceKHR) -> Vk
   })
 }
 
-fn create_device(gpu: VkPhysicalDevice, queue_family_idx: u32, exts: &[&str]) -> VkResult<(VkDevice, VkQueue)> {
+fn create_device<'h>(gpu: VkPhysicalDevice<'h>, queue_family_idx: u32, exts: &[&str]) -> VkResult<(VkDevice<'h>, VkQueue<'h>)> {
   let exts_cstr: Vec<_> = exts.iter().map(cstr_from_bytes_until_nul).collect(); //TODO: better
   let exts_p: Vec<*const ::std::os::raw::c_char> = exts_cstr.iter().map(|s| s.as_ptr()).collect();
-  let queue_create_info = &[
-    VkDeviceQueueCreateInfo::new()
-      .set_queue_family_index(queue_family_idx)
-      .set_queue_priorities(&[0.0]),
-  ];
+  let queue_create_info = &[VkDeviceQueueCreateInfo::new()
+    .set_queue_family_index(queue_family_idx)
+    .set_queue_priorities(&[0.0])];
   let create_info = VkDeviceCreateInfo::new()
     .set_queue_create_infos(queue_create_info)
     .set_enabled_extension_names(&exts_p);
@@ -205,7 +202,7 @@ fn create_device(gpu: VkPhysicalDevice, queue_family_idx: u32, exts: &[&str]) ->
   Ok((device, queue))
 }
 
-fn create_command_pool(device: VkDevice, queue_family_idx: u32) -> VkResult<VkCommandPool> {
+fn create_command_pool<'h>(device: VkDevice<'h>, queue_family_idx: u32) -> VkResult<VkCommandPool<'h>> {
   let create_info = VkCommandPoolCreateInfo::new().set_queue_family_index(queue_family_idx);
   vkCreateCommandPool(device, &create_info, None)
 }
@@ -270,21 +267,19 @@ fn choose_swapchain_composite_alpha(capabilities: &VkSurfaceCapabilitiesKHR) -> 
   Bits::OPAQUE_BIT_KHR
 }
 
-fn create_swapchain(
-  device: VkDevice,
-  surface: VkSurfaceKHR,
+fn create_swapchain<'h>(
+  device: VkDevice<'h>,
+  surface: VkSurfaceKHR<'h>,
   surface_props: SurfaceProperties,
   extent: VkExtent2D,
-) -> VkResult<(VkSwapchainKHR, Vec<(VkImage, VkImageView)>)> {
+) -> VkResult<(VkSwapchainKHR<'h>, Vec<(VkImage<'h>, VkImageView<'h>)>)> {
   let create_info = VkSwapchainCreateInfoKHR::new()
     .set_surface(surface)
     .set_min_image_count(choose_swapchain_image_count(&surface_props.capabilities))
     .set_image_format(surface_props.surface_format.format)
     .set_image_extent(choose_swapchain_extent(&surface_props.capabilities, extent))
     .set_pre_transform(choose_swapchain_pre_transform(&surface_props.capabilities))
-    .set_composite_alpha(choose_swapchain_composite_alpha(
-      &surface_props.capabilities,
-    ))
+    .set_composite_alpha(choose_swapchain_composite_alpha(&surface_props.capabilities))
     .set_image_array_layers(1)
     .set_present_mode(surface_props.present_mode)
     .set_clipped(true)
@@ -363,7 +358,7 @@ fn choose_memory_type_index(
   None
 }
 
-fn create_image(device: VkDevice, extent: VkExtent2D, format: VkFormat, tiling: VkImageTiling) -> VkResult<VkImage> {
+fn create_image<'h>(device: VkDevice<'h>, extent: VkExtent2D, format: VkFormat, tiling: VkImageTiling) -> VkResult<VkImage<'h>> {
   let create_info = VkImageCreateInfo::new()
     .set_image_type(VkImageType::E_2D)
     .set_format(format)
@@ -376,29 +371,27 @@ fn create_image(device: VkDevice, extent: VkExtent2D, format: VkFormat, tiling: 
   vkCreateImage(device, &create_info, None)
 }
 
-fn allocate_memory(
-  device: VkDevice,
+fn allocate_memory<'h>(
+  device: VkDevice<'h>,
   memory_requirements: &VkMemoryRequirements,
   required_properties: VkMemoryPropertyFlags,
   memory_properties: &VkPhysicalDeviceMemoryProperties,
-) -> VkResult<VkDeviceMemory> {
+) -> VkResult<VkDeviceMemory<'h>> {
   let alloc_info = VkMemoryAllocateInfo::new()
     .set_allocation_size(memory_requirements.size)
-    .set_memory_type_index(
-      choose_memory_type_index(
-        memory_requirements.memoryTypeBits,
-        required_properties,
-        memory_properties,
-      ).ok_or(VkError::ERROR_INITIALIZATION_FAILED)?,
-    );
+    .set_memory_type_index(choose_memory_type_index(
+      memory_requirements.memoryTypeBits,
+      required_properties,
+      memory_properties,
+    ).ok_or(VkError::ERROR_INITIALIZATION_FAILED)?);
   vkAllocateMemory(device, &alloc_info, None)
 }
 
-fn allocate_image_memory(
-  device: VkDevice,
-  image: VkImage,
+fn allocate_image_memory<'h>(
+  device: VkDevice<'h>,
+  image: VkImage<'h>,
   memory_properties: &VkPhysicalDeviceMemoryProperties,
-) -> VkResult<VkDeviceMemory> {
+) -> VkResult<VkDeviceMemory<'h>> {
   let memory_requirements = vkGetImageMemoryRequirements(device, image);
   let memory = allocate_memory(
     device,
@@ -410,12 +403,12 @@ fn allocate_image_memory(
   Ok(memory)
 }
 
-fn create_image_view(
-  device: VkDevice,
-  image: VkImage,
+fn create_image_view<'h>(
+  device: VkDevice<'h>,
+  image: VkImage<'h>,
   format: VkFormat,
   aspect_mask: VkImageAspectFlags,
-) -> VkResult<VkImageView> {
+) -> VkResult<VkImageView<'h>> {
   let view_create_info = VkImageViewCreateInfo::new()
     .set_image(image)
     .set_format(format)
@@ -431,7 +424,7 @@ fn create_image_view(
   vkCreateImageView(device, &view_create_info, None)
 }
 
-fn allocate_command_buffer(device: VkDevice, cmd_pool: VkCommandPool) -> VkResult<VkCommandBuffer> {
+fn allocate_command_buffer<'h>(device: VkDevice<'h>, cmd_pool: VkCommandPool<'h>) -> VkResult<VkCommandBuffer<'h>> {
   let allc_info = VkCommandBufferAllocateInfo::new()
     .set_command_pool(cmd_pool)
     .set_level(VkCommandBufferLevel::PRIMARY)
@@ -472,16 +465,17 @@ fn main() -> VkResult {
   info!("got device queue {:?}", queue);
 
   let surface_props = choose_surface_properties(gpu, surface)?;
-  info!(
-    "choosed surface format {:?}",
-    surface_props.surface_format.format
-  );
+  info!("choosed surface format {:?}", surface_props.surface_format.format);
 
   let window_extent = get_window_extents(&window);
   info!("window_extent {:?}", window_extent);
 
   let (swapchain, swapchain_images) = create_swapchain(device, surface, surface_props, window_extent)?;
-  info!("created swapchain {:?} with {} images", swapchain, swapchain_images.len());
+  info!(
+    "created swapchain {:?} with {} images",
+    swapchain,
+    swapchain_images.len()
+  );
 
   let depth_format = choose_depth_stencil_format(gpu).ok_or(VkError::ERROR_INITIALIZATION_FAILED)?;
   info!("choosed depth/stencil format {:?}", depth_format);
@@ -492,12 +486,7 @@ fn main() -> VkResult {
   let depth_memory = allocate_image_memory(device, depth_image, &memory_properties)?;
   info!("created depth/stencil memory {:?}", depth_memory);
 
-  let depth_image_view = create_image_view(
-    device,
-    depth_image,
-    depth_format,
-    VkImageAspectFlags::DEPTH_BIT,
-  )?;
+  let depth_image_view = create_image_view(device, depth_image, depth_format, VkImageAspectFlags::DEPTH_BIT)?;
   info!("created depth/stencil image view {:?}", depth_image_view);
 
   let cmd_pool = create_command_pool(device, queue_family_idx)?;
@@ -563,19 +552,19 @@ fn main() -> VkResult {
 
   info!("destroying swapchain {:?}", swapchain);
   vkDestroySwapchainKHR(device, Some(swapchain), None);
-
+  
   info!("destroying device {:?}", device);
   vkDestroyDevice(device, None);
-
+  
   info!("destroying surface {:?}", surface);
   vkDestroySurfaceKHR(instance, Some(surface), None);
-
+  
   info!("destroying window {:?}", window.id());
   drop(window);
 
   info!("destroying instance {:?}", instance);
   vkDestroyInstance(instance, None);
-
+  
   drop(events_loop);
   info!("done");
 

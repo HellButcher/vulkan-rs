@@ -2,9 +2,6 @@
 
 #![allow(non_snake_case)]
 
-use AsRaw;
-use RawStruct;
-use StructExtends;
 use enums;
 use platform::*;
 use std::cell::Cell;
@@ -12,6 +9,9 @@ pub use types_base::*;
 use types_raw;
 use utils::VkDispatchableHandle;
 use utils::VkNonDispatchableHandle;
+use AsRaw;
+use RawStruct;
+use StructExtends;
 
 // feature: VK_VERSION_1_0
 #[doc(hidden)]
@@ -19,25 +19,25 @@ use utils::VkNonDispatchableHandle;
 pub enum VkBuffer__ {}
 
 /// Opaque handle to a buffer object
-pub type VkBuffer = VkNonDispatchableHandle<VkBuffer__>;
+pub type VkBuffer<'l> = VkNonDispatchableHandle<'l, VkBuffer__>;
 
 /// Structure specifying a buffer memory barrier
 #[repr(C)]
-pub struct VkBufferMemoryBarrier<'a> {
+pub struct VkBufferMemoryBarrier<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub srcAccessMask: VkAccessFlags,
   pub dstAccessMask: VkAccessFlags,
   pub srcQueueFamilyIndex: u32,
   pub dstQueueFamilyIndex: u32,
-  pub buffer: VkBuffer,
+  pub buffer: VkBuffer<'h>,
   pub offset: VkDeviceSize,
   pub size: VkDeviceSize,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkBufferMemoryBarrier<'a> {
+impl<'l, 'h: 'l> VkBufferMemoryBarrier<'l, 'h> {
   #[inline]
-  pub fn new() -> VkBufferMemoryBarrier<'a> {
+  pub fn new() -> VkBufferMemoryBarrier<'l, 'h> {
     unsafe {
       VkBufferMemoryBarrier {
         sType: VkStructureType::BUFFER_MEMORY_BARRIER,
@@ -66,7 +66,7 @@ impl<'a> VkBufferMemoryBarrier<'a> {
     self
   }
   #[inline]
-  pub fn set_buffer(mut self, value: VkBuffer) -> Self {
+  pub fn set_buffer(mut self, value: VkBuffer<'h>) -> Self {
     self.buffer = value;
     self
   }
@@ -97,7 +97,7 @@ impl<'a> VkBufferMemoryBarrier<'a> {
     self.dstQueueFamilyIndex
   }
   #[inline]
-  pub fn buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer<'h> {
     self.buffer
   }
   #[inline]
@@ -117,12 +117,12 @@ impl<'a> VkBufferMemoryBarrier<'a> {
     self
   }
 }
-impl<'a> Default for VkBufferMemoryBarrier<'a> {
-  fn default() -> VkBufferMemoryBarrier<'a> {
+impl<'l, 'h: 'l> Default for VkBufferMemoryBarrier<'l, 'h> {
+  fn default() -> VkBufferMemoryBarrier<'l, 'h> {
     VkBufferMemoryBarrier::new()
   }
 }
-unsafe impl<'a> RawStruct for VkBufferMemoryBarrier<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkBufferMemoryBarrier<'l, 'h> {
   type Raw = types_raw::VkBufferMemoryBarrier;
 }
 #[cfg(test)]
@@ -330,7 +330,7 @@ fn test_struct_size_vk_draw_indirect_command() {
 pub enum VkImage__ {}
 
 /// Opaque handle to a image object
-pub type VkImage = VkNonDispatchableHandle<VkImage__>;
+pub type VkImage<'l> = VkNonDispatchableHandle<'l, VkImage__>;
 
 /// Structure specifying a image subresource range
 #[repr(C)]
@@ -409,7 +409,7 @@ fn test_struct_size_vk_image_subresource_range() {
 
 /// Structure specifying the parameters of an image memory barrier
 #[repr(C)]
-pub struct VkImageMemoryBarrier<'a> {
+pub struct VkImageMemoryBarrier<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub srcAccessMask: VkAccessFlags,
@@ -418,13 +418,13 @@ pub struct VkImageMemoryBarrier<'a> {
   pub newLayout: VkImageLayout,
   pub srcQueueFamilyIndex: u32,
   pub dstQueueFamilyIndex: u32,
-  pub image: VkImage,
+  pub image: VkImage<'h>,
   pub subresourceRange: VkImageSubresourceRange,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkImageMemoryBarrier<'a> {
+impl<'l, 'h: 'l> VkImageMemoryBarrier<'l, 'h> {
   #[inline]
-  pub fn new() -> VkImageMemoryBarrier<'a> {
+  pub fn new() -> VkImageMemoryBarrier<'l, 'h> {
     unsafe {
       VkImageMemoryBarrier {
         sType: VkStructureType::IMAGE_MEMORY_BARRIER,
@@ -463,7 +463,7 @@ impl<'a> VkImageMemoryBarrier<'a> {
     self
   }
   #[inline]
-  pub fn set_image(mut self, value: VkImage) -> Self {
+  pub fn set_image(mut self, value: VkImage<'h>) -> Self {
     self.image = value;
     self
   }
@@ -497,7 +497,7 @@ impl<'a> VkImageMemoryBarrier<'a> {
     self.dstQueueFamilyIndex
   }
   #[inline]
-  pub fn image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage<'h> {
     self.image
   }
   #[inline]
@@ -513,12 +513,12 @@ impl<'a> VkImageMemoryBarrier<'a> {
     self
   }
 }
-impl<'a> Default for VkImageMemoryBarrier<'a> {
-  fn default() -> VkImageMemoryBarrier<'a> {
+impl<'l, 'h: 'l> Default for VkImageMemoryBarrier<'l, 'h> {
+  fn default() -> VkImageMemoryBarrier<'l, 'h> {
     VkImageMemoryBarrier::new()
   }
 }
-unsafe impl<'a> RawStruct for VkImageMemoryBarrier<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkImageMemoryBarrier<'l, 'h> {
   type Raw = types_raw::VkImageMemoryBarrier;
 }
 #[cfg(test)]
@@ -529,16 +529,16 @@ fn test_struct_size_vk_image_memory_barrier() {
 
 /// Structure specifying a global memory barrier
 #[repr(C)]
-pub struct VkMemoryBarrier<'a> {
+pub struct VkMemoryBarrier<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub srcAccessMask: VkAccessFlags,
   pub dstAccessMask: VkAccessFlags,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkMemoryBarrier<'a> {
+impl<'l> VkMemoryBarrier<'l> {
   #[inline]
-  pub fn new() -> VkMemoryBarrier<'a> {
+  pub fn new() -> VkMemoryBarrier<'l> {
     unsafe {
       VkMemoryBarrier {
         sType: VkStructureType::MEMORY_BARRIER,
@@ -573,12 +573,12 @@ impl<'a> VkMemoryBarrier<'a> {
     self
   }
 }
-impl<'a> Default for VkMemoryBarrier<'a> {
-  fn default() -> VkMemoryBarrier<'a> {
+impl<'l> Default for VkMemoryBarrier<'l> {
+  fn default() -> VkMemoryBarrier<'l> {
     VkMemoryBarrier::new()
   }
 }
-unsafe impl<'a> RawStruct for VkMemoryBarrier<'a> {
+unsafe impl<'l> RawStruct for VkMemoryBarrier<'l> {
   type Raw = types_raw::VkMemoryBarrier;
 }
 #[cfg(test)]
@@ -589,7 +589,7 @@ fn test_struct_size_vk_memory_barrier() {
 
 /// Structure specifying application info
 #[repr(C)]
-pub struct VkApplicationInfo<'a> {
+pub struct VkApplicationInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pApplicationName: *const c_char,
@@ -597,11 +597,11 @@ pub struct VkApplicationInfo<'a> {
   pEngineName: *const c_char,
   pub engineVersion: u32,
   pub apiVersion: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkApplicationInfo<'a> {
+impl<'l> VkApplicationInfo<'l> {
   #[inline]
-  pub fn new() -> VkApplicationInfo<'a> {
+  pub fn new() -> VkApplicationInfo<'l> {
     unsafe {
       VkApplicationInfo {
         sType: VkStructureType::APPLICATION_INFO,
@@ -610,7 +610,7 @@ impl<'a> VkApplicationInfo<'a> {
     }
   }
   #[inline]
-  pub fn set_application_name(mut self, value: Option<&'a AsRef<CStr>>) -> Self {
+  pub fn set_application_name(mut self, value: Option<&'l AsRef<CStr>>) -> Self {
     unsafe {
       self.pApplicationName = value.as_raw();
     }
@@ -622,7 +622,7 @@ impl<'a> VkApplicationInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_engine_name(mut self, value: Option<&'a AsRef<CStr>>) -> Self {
+  pub fn set_engine_name(mut self, value: Option<&'l AsRef<CStr>>) -> Self {
     unsafe {
       self.pEngineName = value.as_raw();
     }
@@ -667,12 +667,12 @@ impl<'a> VkApplicationInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkApplicationInfo<'a> {
-  fn default() -> VkApplicationInfo<'a> {
+impl<'l> Default for VkApplicationInfo<'l> {
+  fn default() -> VkApplicationInfo<'l> {
     VkApplicationInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkApplicationInfo<'a> {
+unsafe impl<'l> RawStruct for VkApplicationInfo<'l> {
   type Raw = types_raw::VkApplicationInfo;
 }
 #[cfg(test)]
@@ -683,19 +683,19 @@ fn test_struct_size_vk_application_info() {
 
 /// Structure specifying parameters of a newly created instance
 #[repr(C)]
-pub struct VkInstanceCreateInfo<'a> {
+pub struct VkInstanceCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkInstanceCreateFlags,
-  pub pApplicationInfo: Option<&'a VkApplicationInfo<'a>>,
+  pub pApplicationInfo: Option<&'l VkApplicationInfo<'l>>,
   enabledLayerCount: u32,
   ppEnabledLayerNames: *const *const c_char,
   enabledExtensionCount: u32,
   ppEnabledExtensionNames: *const *const c_char,
 }
-impl<'a> VkInstanceCreateInfo<'a> {
+impl<'l> VkInstanceCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkInstanceCreateInfo<'a> {
+  pub fn new() -> VkInstanceCreateInfo<'l> {
     unsafe {
       VkInstanceCreateInfo {
         sType: VkStructureType::INSTANCE_CREATE_INFO,
@@ -709,7 +709,7 @@ impl<'a> VkInstanceCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_application_info(mut self, value: Option<&'a VkApplicationInfo<'a>>) -> Self {
+  pub fn set_application_info(mut self, value: Option<&'l VkApplicationInfo<'l>>) -> Self {
     self.pApplicationInfo = value;
     self
   }
@@ -718,7 +718,7 @@ impl<'a> VkInstanceCreateInfo<'a> {
     self.flags
   }
   #[inline]
-  pub fn application_info(&self) -> Option<&'a VkApplicationInfo<'a>> {
+  pub fn application_info(&self) -> Option<&'l VkApplicationInfo<'l>> {
     self.pApplicationInfo
   }
   #[inline]
@@ -738,12 +738,12 @@ impl<'a> VkInstanceCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkInstanceCreateInfo<'a> {
-  fn default() -> VkInstanceCreateInfo<'a> {
+impl<'l> Default for VkInstanceCreateInfo<'l> {
+  fn default() -> VkInstanceCreateInfo<'l> {
     VkInstanceCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkInstanceCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkInstanceCreateInfo<'l> {
   type Raw = types_raw::VkInstanceCreateInfo;
 }
 #[cfg(test)]
@@ -856,13 +856,13 @@ fn test_struct_size_vk_allocation_callbacks() {
 pub enum VkInstance__ {}
 
 /// Opaque handle to a instance object
-pub type VkInstance = VkDispatchableHandle<VkInstance__>;
+pub type VkInstance<'l> = VkDispatchableHandle<'l, VkInstance__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkPhysicalDevice__ {}
 
 /// Opaque handle to a physical device object
-pub type VkPhysicalDevice = VkDispatchableHandle<VkPhysicalDevice__>;
+pub type VkPhysicalDevice<'l> = VkDispatchableHandle<'l, VkPhysicalDevice__>;
 
 /// Structure describing the fine-grained features that can be supported by an
 /// implementation
@@ -2407,22 +2407,22 @@ pub use types_raw::PFN_vkVoidFunction;
 pub enum VkDevice__ {}
 
 /// Opaque handle to a device object
-pub type VkDevice = VkDispatchableHandle<VkDevice__>;
+pub type VkDevice<'l> = VkDispatchableHandle<'l, VkDevice__>;
 
 /// Structure specifying parameters of a newly created device queue
 #[repr(C)]
-pub struct VkDeviceQueueCreateInfo<'a> {
+pub struct VkDeviceQueueCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkDeviceQueueCreateFlags,
   pub queueFamilyIndex: u32,
   queueCount: u32,
   pQueuePriorities: *const f32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkDeviceQueueCreateInfo<'a> {
+impl<'l> VkDeviceQueueCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkDeviceQueueCreateInfo<'a> {
+  pub fn new() -> VkDeviceQueueCreateInfo<'l> {
     unsafe {
       VkDeviceQueueCreateInfo {
         sType: VkStructureType::DEVICE_QUEUE_CREATE_INFO,
@@ -2441,7 +2441,7 @@ impl<'a> VkDeviceQueueCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_queue_priorities(mut self, value: &'a [f32]) -> Self {
+  pub fn set_queue_priorities(mut self, value: &'l [f32]) -> Self {
     self.queueCount = value.len() as u32;
     unsafe {
       self.pQueuePriorities = value.as_raw();
@@ -2469,12 +2469,12 @@ impl<'a> VkDeviceQueueCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkDeviceQueueCreateInfo<'a> {
-  fn default() -> VkDeviceQueueCreateInfo<'a> {
+impl<'l> Default for VkDeviceQueueCreateInfo<'l> {
+  fn default() -> VkDeviceQueueCreateInfo<'l> {
     VkDeviceQueueCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkDeviceQueueCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkDeviceQueueCreateInfo<'l> {
   type Raw = types_raw::VkDeviceQueueCreateInfo;
 }
 #[cfg(test)]
@@ -2485,7 +2485,7 @@ fn test_struct_size_vk_device_queue_create_info() {
 
 /// Structure specifying parameters of a newly created device
 #[repr(C)]
-pub struct VkDeviceCreateInfo<'a> {
+pub struct VkDeviceCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkDeviceCreateFlags,
@@ -2495,11 +2495,11 @@ pub struct VkDeviceCreateInfo<'a> {
   ppEnabledLayerNames: *const *const c_char,
   enabledExtensionCount: u32,
   ppEnabledExtensionNames: *const *const c_char,
-  pub pEnabledFeatures: Option<&'a VkPhysicalDeviceFeatures>,
+  pub pEnabledFeatures: Option<&'l VkPhysicalDeviceFeatures>,
 }
-impl<'a> VkDeviceCreateInfo<'a> {
+impl<'l> VkDeviceCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkDeviceCreateInfo<'a> {
+  pub fn new() -> VkDeviceCreateInfo<'l> {
     unsafe {
       VkDeviceCreateInfo {
         sType: VkStructureType::DEVICE_CREATE_INFO,
@@ -2513,7 +2513,7 @@ impl<'a> VkDeviceCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_queue_create_infos(mut self, value: &'a [VkDeviceQueueCreateInfo<'a>]) -> Self {
+  pub fn set_queue_create_infos(mut self, value: &'l [VkDeviceQueueCreateInfo<'l>]) -> Self {
     self.queueCreateInfoCount = value.len() as u32;
     unsafe {
       self.pQueueCreateInfos = value.as_raw();
@@ -2521,7 +2521,7 @@ impl<'a> VkDeviceCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_enabled_features(mut self, value: Option<&'a VkPhysicalDeviceFeatures>) -> Self {
+  pub fn set_enabled_features(mut self, value: Option<&'l VkPhysicalDeviceFeatures>) -> Self {
     self.pEnabledFeatures = value;
     self
   }
@@ -2542,7 +2542,7 @@ impl<'a> VkDeviceCreateInfo<'a> {
     self.enabledExtensionCount
   }
   #[inline]
-  pub fn enabled_features(&self) -> Option<&'a VkPhysicalDeviceFeatures> {
+  pub fn enabled_features(&self) -> Option<&'l VkPhysicalDeviceFeatures> {
     self.pEnabledFeatures
   }
   #[inline]
@@ -2554,12 +2554,12 @@ impl<'a> VkDeviceCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkDeviceCreateInfo<'a> {
-  fn default() -> VkDeviceCreateInfo<'a> {
+impl<'l> Default for VkDeviceCreateInfo<'l> {
+  fn default() -> VkDeviceCreateInfo<'l> {
     VkDeviceCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkDeviceCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkDeviceCreateInfo<'l> {
   type Raw = types_raw::VkDeviceCreateInfo;
 }
 #[cfg(test)]
@@ -2634,23 +2634,23 @@ fn test_struct_size_vk_layer_properties() {
 pub enum VkQueue__ {}
 
 /// Opaque handle to a queue object
-pub type VkQueue = VkDispatchableHandle<VkQueue__>;
+pub type VkQueue<'l> = VkDispatchableHandle<'l, VkQueue__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkSemaphore__ {}
 
 /// Opaque handle to a semaphore object
-pub type VkSemaphore = VkNonDispatchableHandle<VkSemaphore__>;
+pub type VkSemaphore<'l> = VkNonDispatchableHandle<'l, VkSemaphore__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkCommandBuffer__ {}
 
 /// Opaque handle to a command buffer object
-pub type VkCommandBuffer = VkDispatchableHandle<VkCommandBuffer__>;
+pub type VkCommandBuffer<'l> = VkDispatchableHandle<'l, VkCommandBuffer__>;
 
 /// Structure specifying a queue submit operation
 #[repr(C)]
-pub struct VkSubmitInfo<'a> {
+pub struct VkSubmitInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   waitSemaphoreCount: u32,
@@ -2660,11 +2660,11 @@ pub struct VkSubmitInfo<'a> {
   pCommandBuffers: *const types_raw::VkCommandBuffer,
   signalSemaphoreCount: u32,
   pSignalSemaphores: *const types_raw::VkSemaphore,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
 }
-impl<'a> VkSubmitInfo<'a> {
+impl<'l, 'h: 'l> VkSubmitInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkSubmitInfo<'a> {
+  pub fn new() -> VkSubmitInfo<'l, 'h> {
     unsafe {
       VkSubmitInfo {
         sType: VkStructureType::SUBMIT_INFO,
@@ -2673,7 +2673,7 @@ impl<'a> VkSubmitInfo<'a> {
     }
   }
   #[inline]
-  pub fn set_command_buffers(mut self, value: &'a [VkCommandBuffer]) -> Self {
+  pub fn set_command_buffers(mut self, value: &'l [VkCommandBuffer<'h>]) -> Self {
     self.commandBufferCount = value.len() as u32;
     unsafe {
       self.pCommandBuffers = value.as_raw();
@@ -2681,7 +2681,7 @@ impl<'a> VkSubmitInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_signal_semaphores(mut self, value: &'a [VkSemaphore]) -> Self {
+  pub fn set_signal_semaphores(mut self, value: &'l [VkSemaphore<'h>]) -> Self {
     self.signalSemaphoreCount = value.len() as u32;
     unsafe {
       self.pSignalSemaphores = value.as_raw();
@@ -2709,12 +2709,12 @@ impl<'a> VkSubmitInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkSubmitInfo<'a> {
-  fn default() -> VkSubmitInfo<'a> {
+impl<'l, 'h: 'l> Default for VkSubmitInfo<'l, 'h> {
+  fn default() -> VkSubmitInfo<'l, 'h> {
     VkSubmitInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkSubmitInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkSubmitInfo<'l, 'h> {
   type Raw = types_raw::VkSubmitInfo;
 }
 #[cfg(test)]
@@ -2727,20 +2727,20 @@ fn test_struct_size_vk_submit_info() {
 pub enum VkFence__ {}
 
 /// Opaque handle to a fence object
-pub type VkFence = VkNonDispatchableHandle<VkFence__>;
+pub type VkFence<'l> = VkNonDispatchableHandle<'l, VkFence__>;
 
 /// Structure containing parameters of a memory allocation
 #[repr(C)]
-pub struct VkMemoryAllocateInfo<'a> {
+pub struct VkMemoryAllocateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub allocationSize: VkDeviceSize,
   pub memoryTypeIndex: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkMemoryAllocateInfo<'a> {
+impl<'l> VkMemoryAllocateInfo<'l> {
   #[inline]
-  pub fn new() -> VkMemoryAllocateInfo<'a> {
+  pub fn new() -> VkMemoryAllocateInfo<'l> {
     unsafe {
       VkMemoryAllocateInfo {
         sType: VkStructureType::MEMORY_ALLOCATE_INFO,
@@ -2775,12 +2775,12 @@ impl<'a> VkMemoryAllocateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkMemoryAllocateInfo<'a> {
-  fn default() -> VkMemoryAllocateInfo<'a> {
+impl<'l> Default for VkMemoryAllocateInfo<'l> {
+  fn default() -> VkMemoryAllocateInfo<'l> {
     VkMemoryAllocateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkMemoryAllocateInfo<'a> {
+unsafe impl<'l> RawStruct for VkMemoryAllocateInfo<'l> {
   type Raw = types_raw::VkMemoryAllocateInfo;
 }
 #[cfg(test)]
@@ -2793,21 +2793,21 @@ fn test_struct_size_vk_memory_allocate_info() {
 pub enum VkDeviceMemory__ {}
 
 /// Opaque handle to a device memory object
-pub type VkDeviceMemory = VkNonDispatchableHandle<VkDeviceMemory__>;
+pub type VkDeviceMemory<'l> = VkNonDispatchableHandle<'l, VkDeviceMemory__>;
 
 /// Structure specifying a mapped memory range
 #[repr(C)]
-pub struct VkMappedMemoryRange<'a> {
+pub struct VkMappedMemoryRange<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub memory: VkDeviceMemory,
+  pub memory: VkDeviceMemory<'h>,
   pub offset: VkDeviceSize,
   pub size: VkDeviceSize,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkMappedMemoryRange<'a> {
+impl<'l, 'h: 'l> VkMappedMemoryRange<'l, 'h> {
   #[inline]
-  pub fn new() -> VkMappedMemoryRange<'a> {
+  pub fn new() -> VkMappedMemoryRange<'l, 'h> {
     unsafe {
       VkMappedMemoryRange {
         sType: VkStructureType::MAPPED_MEMORY_RANGE,
@@ -2816,7 +2816,7 @@ impl<'a> VkMappedMemoryRange<'a> {
     }
   }
   #[inline]
-  pub fn set_memory(mut self, value: VkDeviceMemory) -> Self {
+  pub fn set_memory(mut self, value: VkDeviceMemory<'h>) -> Self {
     self.memory = value;
     self
   }
@@ -2831,7 +2831,7 @@ impl<'a> VkMappedMemoryRange<'a> {
     self
   }
   #[inline]
-  pub fn memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory<'h> {
     self.memory
   }
   #[inline]
@@ -2851,12 +2851,12 @@ impl<'a> VkMappedMemoryRange<'a> {
     self
   }
 }
-impl<'a> Default for VkMappedMemoryRange<'a> {
-  fn default() -> VkMappedMemoryRange<'a> {
+impl<'l, 'h: 'l> Default for VkMappedMemoryRange<'l, 'h> {
+  fn default() -> VkMappedMemoryRange<'l, 'h> {
     VkMappedMemoryRange::new()
   }
 }
-unsafe impl<'a> RawStruct for VkMappedMemoryRange<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkMappedMemoryRange<'l, 'h> {
   type Raw = types_raw::VkMappedMemoryRange;
 }
 #[cfg(test)]
@@ -2973,17 +2973,16 @@ fn test_struct_size_vk_sparse_image_memory_requirements() {
 
 /// Structure specifying a sparse memory bind operation
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkSparseMemoryBind {
+pub struct VkSparseMemoryBind<'h> {
   pub resourceOffset: VkDeviceSize,
   pub size: VkDeviceSize,
-  pub memory: Option<VkDeviceMemory>,
+  pub memory: Option<VkDeviceMemory<'h>>,
   pub memoryOffset: VkDeviceSize,
   pub flags: VkSparseMemoryBindFlags,
 }
-impl VkSparseMemoryBind {
+impl<'h> VkSparseMemoryBind<'h> {
   #[inline]
-  pub fn new() -> VkSparseMemoryBind {
+  pub fn new() -> VkSparseMemoryBind<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -2997,7 +2996,7 @@ impl VkSparseMemoryBind {
     self
   }
   #[inline]
-  pub fn set_memory(mut self, value: Option<VkDeviceMemory>) -> Self {
+  pub fn set_memory(mut self, value: Option<VkDeviceMemory<'h>>) -> Self {
     self.memory = value;
     self
   }
@@ -3020,7 +3019,7 @@ impl VkSparseMemoryBind {
     self.size
   }
   #[inline]
-  pub fn memory(&self) -> Option<VkDeviceMemory> {
+  pub fn memory(&self) -> Option<VkDeviceMemory<'h>> {
     self.memory
   }
   #[inline]
@@ -3032,12 +3031,12 @@ impl VkSparseMemoryBind {
     self.flags
   }
 }
-impl Default for VkSparseMemoryBind {
-  fn default() -> VkSparseMemoryBind {
+impl<'h> Default for VkSparseMemoryBind<'h> {
+  fn default() -> VkSparseMemoryBind<'h> {
     VkSparseMemoryBind::new()
   }
 }
-unsafe impl RawStruct for VkSparseMemoryBind {
+unsafe impl<'h> RawStruct for VkSparseMemoryBind<'h> {
   type Raw = types_raw::VkSparseMemoryBind;
 }
 #[cfg(test)]
@@ -3048,24 +3047,24 @@ fn test_struct_size_vk_sparse_memory_bind() {
 
 /// Structure specifying a sparse buffer memory bind operation
 #[repr(C)]
-pub struct VkSparseBufferMemoryBindInfo<'a> {
-  pub buffer: VkBuffer,
+pub struct VkSparseBufferMemoryBindInfo<'l, 'h: 'l> {
+  pub buffer: VkBuffer<'h>,
   bindCount: u32,
   pBinds: *const types_raw::VkSparseMemoryBind,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkSparseBufferMemoryBindInfo<'a> {
+impl<'l, 'h: 'l> VkSparseBufferMemoryBindInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkSparseBufferMemoryBindInfo<'a> {
+  pub fn new() -> VkSparseBufferMemoryBindInfo<'l, 'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_buffer(mut self, value: VkBuffer) -> Self {
+  pub fn set_buffer(mut self, value: VkBuffer<'h>) -> Self {
     self.buffer = value;
     self
   }
   #[inline]
-  pub fn set_binds(mut self, value: &'a [VkSparseMemoryBind]) -> Self {
+  pub fn set_binds(mut self, value: &'l [VkSparseMemoryBind<'h>]) -> Self {
     self.bindCount = value.len() as u32;
     unsafe {
       self.pBinds = value.as_raw();
@@ -3073,7 +3072,7 @@ impl<'a> VkSparseBufferMemoryBindInfo<'a> {
     self
   }
   #[inline]
-  pub fn buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer<'h> {
     self.buffer
   }
   #[inline]
@@ -3081,12 +3080,12 @@ impl<'a> VkSparseBufferMemoryBindInfo<'a> {
     self.bindCount
   }
 }
-impl<'a> Default for VkSparseBufferMemoryBindInfo<'a> {
-  fn default() -> VkSparseBufferMemoryBindInfo<'a> {
+impl<'l, 'h: 'l> Default for VkSparseBufferMemoryBindInfo<'l, 'h> {
+  fn default() -> VkSparseBufferMemoryBindInfo<'l, 'h> {
     VkSparseBufferMemoryBindInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkSparseBufferMemoryBindInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkSparseBufferMemoryBindInfo<'l, 'h> {
   type Raw = types_raw::VkSparseBufferMemoryBindInfo;
 }
 #[cfg(test)]
@@ -3097,24 +3096,24 @@ fn test_struct_size_vk_sparse_buffer_memory_bind_info() {
 
 /// Structure specifying sparse image opaque memory bind info
 #[repr(C)]
-pub struct VkSparseImageOpaqueMemoryBindInfo<'a> {
-  pub image: VkImage,
+pub struct VkSparseImageOpaqueMemoryBindInfo<'l, 'h: 'l> {
+  pub image: VkImage<'h>,
   bindCount: u32,
   pBinds: *const types_raw::VkSparseMemoryBind,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkSparseImageOpaqueMemoryBindInfo<'a> {
+impl<'l, 'h: 'l> VkSparseImageOpaqueMemoryBindInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkSparseImageOpaqueMemoryBindInfo<'a> {
+  pub fn new() -> VkSparseImageOpaqueMemoryBindInfo<'l, 'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_image(mut self, value: VkImage) -> Self {
+  pub fn set_image(mut self, value: VkImage<'h>) -> Self {
     self.image = value;
     self
   }
   #[inline]
-  pub fn set_binds(mut self, value: &'a [VkSparseMemoryBind]) -> Self {
+  pub fn set_binds(mut self, value: &'l [VkSparseMemoryBind<'h>]) -> Self {
     self.bindCount = value.len() as u32;
     unsafe {
       self.pBinds = value.as_raw();
@@ -3122,7 +3121,7 @@ impl<'a> VkSparseImageOpaqueMemoryBindInfo<'a> {
     self
   }
   #[inline]
-  pub fn image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage<'h> {
     self.image
   }
   #[inline]
@@ -3130,12 +3129,12 @@ impl<'a> VkSparseImageOpaqueMemoryBindInfo<'a> {
     self.bindCount
   }
 }
-impl<'a> Default for VkSparseImageOpaqueMemoryBindInfo<'a> {
-  fn default() -> VkSparseImageOpaqueMemoryBindInfo<'a> {
+impl<'l, 'h: 'l> Default for VkSparseImageOpaqueMemoryBindInfo<'l, 'h> {
+  fn default() -> VkSparseImageOpaqueMemoryBindInfo<'l, 'h> {
     VkSparseImageOpaqueMemoryBindInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkSparseImageOpaqueMemoryBindInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkSparseImageOpaqueMemoryBindInfo<'l, 'h> {
   type Raw = types_raw::VkSparseImageOpaqueMemoryBindInfo;
 }
 #[cfg(test)]
@@ -3259,18 +3258,17 @@ fn test_struct_size_vk_offset3_d() {
 
 /// Structure specifying sparse image memory bind
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkSparseImageMemoryBind {
+pub struct VkSparseImageMemoryBind<'h> {
   pub subresource: VkImageSubresource,
   pub offset: VkOffset3D,
   pub extent: VkExtent3D,
-  pub memory: Option<VkDeviceMemory>,
+  pub memory: Option<VkDeviceMemory<'h>>,
   pub memoryOffset: VkDeviceSize,
   pub flags: VkSparseMemoryBindFlags,
 }
-impl VkSparseImageMemoryBind {
+impl<'h> VkSparseImageMemoryBind<'h> {
   #[inline]
-  pub fn new() -> VkSparseImageMemoryBind {
+  pub fn new() -> VkSparseImageMemoryBind<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -3289,7 +3287,7 @@ impl VkSparseImageMemoryBind {
     self
   }
   #[inline]
-  pub fn set_memory(mut self, value: Option<VkDeviceMemory>) -> Self {
+  pub fn set_memory(mut self, value: Option<VkDeviceMemory<'h>>) -> Self {
     self.memory = value;
     self
   }
@@ -3316,7 +3314,7 @@ impl VkSparseImageMemoryBind {
     &self.extent
   }
   #[inline]
-  pub fn memory(&self) -> Option<VkDeviceMemory> {
+  pub fn memory(&self) -> Option<VkDeviceMemory<'h>> {
     self.memory
   }
   #[inline]
@@ -3328,12 +3326,12 @@ impl VkSparseImageMemoryBind {
     self.flags
   }
 }
-impl Default for VkSparseImageMemoryBind {
-  fn default() -> VkSparseImageMemoryBind {
+impl<'h> Default for VkSparseImageMemoryBind<'h> {
+  fn default() -> VkSparseImageMemoryBind<'h> {
     VkSparseImageMemoryBind::new()
   }
 }
-unsafe impl RawStruct for VkSparseImageMemoryBind {
+unsafe impl<'h> RawStruct for VkSparseImageMemoryBind<'h> {
   type Raw = types_raw::VkSparseImageMemoryBind;
 }
 #[cfg(test)]
@@ -3344,24 +3342,24 @@ fn test_struct_size_vk_sparse_image_memory_bind() {
 
 /// Structure specifying sparse image memory bind info
 #[repr(C)]
-pub struct VkSparseImageMemoryBindInfo<'a> {
-  pub image: VkImage,
+pub struct VkSparseImageMemoryBindInfo<'l, 'h: 'l> {
+  pub image: VkImage<'h>,
   bindCount: u32,
   pBinds: *const types_raw::VkSparseImageMemoryBind,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkSparseImageMemoryBindInfo<'a> {
+impl<'l, 'h: 'l> VkSparseImageMemoryBindInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkSparseImageMemoryBindInfo<'a> {
+  pub fn new() -> VkSparseImageMemoryBindInfo<'l, 'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_image(mut self, value: VkImage) -> Self {
+  pub fn set_image(mut self, value: VkImage<'h>) -> Self {
     self.image = value;
     self
   }
   #[inline]
-  pub fn set_binds(mut self, value: &'a [VkSparseImageMemoryBind]) -> Self {
+  pub fn set_binds(mut self, value: &'l [VkSparseImageMemoryBind<'h>]) -> Self {
     self.bindCount = value.len() as u32;
     unsafe {
       self.pBinds = value.as_raw();
@@ -3369,7 +3367,7 @@ impl<'a> VkSparseImageMemoryBindInfo<'a> {
     self
   }
   #[inline]
-  pub fn image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage<'h> {
     self.image
   }
   #[inline]
@@ -3377,12 +3375,12 @@ impl<'a> VkSparseImageMemoryBindInfo<'a> {
     self.bindCount
   }
 }
-impl<'a> Default for VkSparseImageMemoryBindInfo<'a> {
-  fn default() -> VkSparseImageMemoryBindInfo<'a> {
+impl<'l, 'h: 'l> Default for VkSparseImageMemoryBindInfo<'l, 'h> {
+  fn default() -> VkSparseImageMemoryBindInfo<'l, 'h> {
     VkSparseImageMemoryBindInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkSparseImageMemoryBindInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkSparseImageMemoryBindInfo<'l, 'h> {
   type Raw = types_raw::VkSparseImageMemoryBindInfo;
 }
 #[cfg(test)]
@@ -3393,7 +3391,7 @@ fn test_struct_size_vk_sparse_image_memory_bind_info() {
 
 /// Structure specifying a sparse binding operation
 #[repr(C)]
-pub struct VkBindSparseInfo<'a> {
+pub struct VkBindSparseInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   waitSemaphoreCount: u32,
@@ -3406,11 +3404,11 @@ pub struct VkBindSparseInfo<'a> {
   pImageBinds: *const types_raw::VkSparseImageMemoryBindInfo,
   signalSemaphoreCount: u32,
   pSignalSemaphores: *const types_raw::VkSemaphore,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
 }
-impl<'a> VkBindSparseInfo<'a> {
+impl<'l, 'h: 'l> VkBindSparseInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkBindSparseInfo<'a> {
+  pub fn new() -> VkBindSparseInfo<'l, 'h> {
     unsafe {
       VkBindSparseInfo {
         sType: VkStructureType::BIND_SPARSE_INFO,
@@ -3419,7 +3417,7 @@ impl<'a> VkBindSparseInfo<'a> {
     }
   }
   #[inline]
-  pub fn set_wait_semaphores(mut self, value: &'a [VkSemaphore]) -> Self {
+  pub fn set_wait_semaphores(mut self, value: &'l [VkSemaphore<'h>]) -> Self {
     self.waitSemaphoreCount = value.len() as u32;
     unsafe {
       self.pWaitSemaphores = value.as_raw();
@@ -3427,7 +3425,7 @@ impl<'a> VkBindSparseInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_buffer_binds(mut self, value: &'a [VkSparseBufferMemoryBindInfo<'a>]) -> Self {
+  pub fn set_buffer_binds(mut self, value: &'l [VkSparseBufferMemoryBindInfo<'l, 'h>]) -> Self {
     self.bufferBindCount = value.len() as u32;
     unsafe {
       self.pBufferBinds = value.as_raw();
@@ -3435,7 +3433,7 @@ impl<'a> VkBindSparseInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_image_opaque_binds(mut self, value: &'a [VkSparseImageOpaqueMemoryBindInfo<'a>]) -> Self {
+  pub fn set_image_opaque_binds(mut self, value: &'l [VkSparseImageOpaqueMemoryBindInfo<'l, 'h>]) -> Self {
     self.imageOpaqueBindCount = value.len() as u32;
     unsafe {
       self.pImageOpaqueBinds = value.as_raw();
@@ -3443,7 +3441,7 @@ impl<'a> VkBindSparseInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_image_binds(mut self, value: &'a [VkSparseImageMemoryBindInfo<'a>]) -> Self {
+  pub fn set_image_binds(mut self, value: &'l [VkSparseImageMemoryBindInfo<'l, 'h>]) -> Self {
     self.imageBindCount = value.len() as u32;
     unsafe {
       self.pImageBinds = value.as_raw();
@@ -3451,7 +3449,7 @@ impl<'a> VkBindSparseInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_signal_semaphores(mut self, value: &'a [VkSemaphore]) -> Self {
+  pub fn set_signal_semaphores(mut self, value: &'l [VkSemaphore<'h>]) -> Self {
     self.signalSemaphoreCount = value.len() as u32;
     unsafe {
       self.pSignalSemaphores = value.as_raw();
@@ -3487,12 +3485,12 @@ impl<'a> VkBindSparseInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkBindSparseInfo<'a> {
-  fn default() -> VkBindSparseInfo<'a> {
+impl<'l, 'h: 'l> Default for VkBindSparseInfo<'l, 'h> {
+  fn default() -> VkBindSparseInfo<'l, 'h> {
     VkBindSparseInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkBindSparseInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkBindSparseInfo<'l, 'h> {
   type Raw = types_raw::VkBindSparseInfo;
 }
 #[cfg(test)]
@@ -3503,15 +3501,15 @@ fn test_struct_size_vk_bind_sparse_info() {
 
 /// Structure specifying parameters of a newly created fence
 #[repr(C)]
-pub struct VkFenceCreateInfo<'a> {
+pub struct VkFenceCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkFenceCreateFlags,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkFenceCreateInfo<'a> {
+impl<'l> VkFenceCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkFenceCreateInfo<'a> {
+  pub fn new() -> VkFenceCreateInfo<'l> {
     unsafe {
       VkFenceCreateInfo {
         sType: VkStructureType::FENCE_CREATE_INFO,
@@ -3537,12 +3535,12 @@ impl<'a> VkFenceCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkFenceCreateInfo<'a> {
-  fn default() -> VkFenceCreateInfo<'a> {
+impl<'l> Default for VkFenceCreateInfo<'l> {
+  fn default() -> VkFenceCreateInfo<'l> {
     VkFenceCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkFenceCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkFenceCreateInfo<'l> {
   type Raw = types_raw::VkFenceCreateInfo;
 }
 #[cfg(test)]
@@ -3553,15 +3551,15 @@ fn test_struct_size_vk_fence_create_info() {
 
 /// Structure specifying parameters of a newly created semaphore
 #[repr(C)]
-pub struct VkSemaphoreCreateInfo<'a> {
+pub struct VkSemaphoreCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkSemaphoreCreateFlags,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkSemaphoreCreateInfo<'a> {
+impl<'l> VkSemaphoreCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkSemaphoreCreateInfo<'a> {
+  pub fn new() -> VkSemaphoreCreateInfo<'l> {
     unsafe {
       VkSemaphoreCreateInfo {
         sType: VkStructureType::SEMAPHORE_CREATE_INFO,
@@ -3587,12 +3585,12 @@ impl<'a> VkSemaphoreCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkSemaphoreCreateInfo<'a> {
-  fn default() -> VkSemaphoreCreateInfo<'a> {
+impl<'l> Default for VkSemaphoreCreateInfo<'l> {
+  fn default() -> VkSemaphoreCreateInfo<'l> {
     VkSemaphoreCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkSemaphoreCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkSemaphoreCreateInfo<'l> {
   type Raw = types_raw::VkSemaphoreCreateInfo;
 }
 #[cfg(test)]
@@ -3603,15 +3601,15 @@ fn test_struct_size_vk_semaphore_create_info() {
 
 /// Structure specifying parameters of a newly created event
 #[repr(C)]
-pub struct VkEventCreateInfo<'a> {
+pub struct VkEventCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkEventCreateFlags,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkEventCreateInfo<'a> {
+impl<'l> VkEventCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkEventCreateInfo<'a> {
+  pub fn new() -> VkEventCreateInfo<'l> {
     unsafe {
       VkEventCreateInfo {
         sType: VkStructureType::EVENT_CREATE_INFO,
@@ -3637,12 +3635,12 @@ impl<'a> VkEventCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkEventCreateInfo<'a> {
-  fn default() -> VkEventCreateInfo<'a> {
+impl<'l> Default for VkEventCreateInfo<'l> {
+  fn default() -> VkEventCreateInfo<'l> {
     VkEventCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkEventCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkEventCreateInfo<'l> {
   type Raw = types_raw::VkEventCreateInfo;
 }
 #[cfg(test)]
@@ -3655,22 +3653,22 @@ fn test_struct_size_vk_event_create_info() {
 pub enum VkEvent__ {}
 
 /// Opaque handle to a event object
-pub type VkEvent = VkNonDispatchableHandle<VkEvent__>;
+pub type VkEvent<'l> = VkNonDispatchableHandle<'l, VkEvent__>;
 
 /// Structure specifying parameters of a newly created query pool
 #[repr(C)]
-pub struct VkQueryPoolCreateInfo<'a> {
+pub struct VkQueryPoolCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkQueryPoolCreateFlags,
   pub queryType: VkQueryType,
   pub queryCount: u32,
   pub pipelineStatistics: VkQueryPipelineStatisticFlags,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkQueryPoolCreateInfo<'a> {
+impl<'l> VkQueryPoolCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkQueryPoolCreateInfo<'a> {
+  pub fn new() -> VkQueryPoolCreateInfo<'l> {
     unsafe {
       VkQueryPoolCreateInfo {
         sType: VkStructureType::QUERY_POOL_CREATE_INFO,
@@ -3723,12 +3721,12 @@ impl<'a> VkQueryPoolCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkQueryPoolCreateInfo<'a> {
-  fn default() -> VkQueryPoolCreateInfo<'a> {
+impl<'l> Default for VkQueryPoolCreateInfo<'l> {
+  fn default() -> VkQueryPoolCreateInfo<'l> {
     VkQueryPoolCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkQueryPoolCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkQueryPoolCreateInfo<'l> {
   type Raw = types_raw::VkQueryPoolCreateInfo;
 }
 #[cfg(test)]
@@ -3741,11 +3739,11 @@ fn test_struct_size_vk_query_pool_create_info() {
 pub enum VkQueryPool__ {}
 
 /// Opaque handle to a query pool object
-pub type VkQueryPool = VkNonDispatchableHandle<VkQueryPool__>;
+pub type VkQueryPool<'l> = VkNonDispatchableHandle<'l, VkQueryPool__>;
 
 /// Structure specifying the parameters of a newly created buffer object
 #[repr(C)]
-pub struct VkBufferCreateInfo<'a> {
+pub struct VkBufferCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkBufferCreateFlags,
@@ -3754,11 +3752,11 @@ pub struct VkBufferCreateInfo<'a> {
   pub sharingMode: VkSharingMode,
   queueFamilyIndexCount: u32,
   pQueueFamilyIndices: *const u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkBufferCreateInfo<'a> {
+impl<'l> VkBufferCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkBufferCreateInfo<'a> {
+  pub fn new() -> VkBufferCreateInfo<'l> {
     unsafe {
       VkBufferCreateInfo {
         sType: VkStructureType::BUFFER_CREATE_INFO,
@@ -3787,7 +3785,7 @@ impl<'a> VkBufferCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_queue_family_indices(mut self, value: &'a [u32]) -> Self {
+  pub fn set_queue_family_indices(mut self, value: &'l [u32]) -> Self {
     self.queueFamilyIndexCount = value.len() as u32;
     unsafe {
       self.pQueueFamilyIndices = value.as_raw();
@@ -3823,12 +3821,12 @@ impl<'a> VkBufferCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkBufferCreateInfo<'a> {
-  fn default() -> VkBufferCreateInfo<'a> {
+impl<'l> Default for VkBufferCreateInfo<'l> {
+  fn default() -> VkBufferCreateInfo<'l> {
     VkBufferCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkBufferCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkBufferCreateInfo<'l> {
   type Raw = types_raw::VkBufferCreateInfo;
 }
 #[cfg(test)]
@@ -3839,19 +3837,19 @@ fn test_struct_size_vk_buffer_create_info() {
 
 /// Structure specifying parameters of a newly created buffer view
 #[repr(C)]
-pub struct VkBufferViewCreateInfo<'a> {
+pub struct VkBufferViewCreateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkBufferViewCreateFlags,
-  pub buffer: VkBuffer,
+  pub buffer: VkBuffer<'h>,
   pub format: VkFormat,
   pub offset: VkDeviceSize,
   pub range: VkDeviceSize,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkBufferViewCreateInfo<'a> {
+impl<'l, 'h: 'l> VkBufferViewCreateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkBufferViewCreateInfo<'a> {
+  pub fn new() -> VkBufferViewCreateInfo<'l, 'h> {
     unsafe {
       VkBufferViewCreateInfo {
         sType: VkStructureType::BUFFER_VIEW_CREATE_INFO,
@@ -3865,7 +3863,7 @@ impl<'a> VkBufferViewCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_buffer(mut self, value: VkBuffer) -> Self {
+  pub fn set_buffer(mut self, value: VkBuffer<'h>) -> Self {
     self.buffer = value;
     self
   }
@@ -3889,7 +3887,7 @@ impl<'a> VkBufferViewCreateInfo<'a> {
     self.flags
   }
   #[inline]
-  pub fn buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer<'h> {
     self.buffer
   }
   #[inline]
@@ -3913,12 +3911,12 @@ impl<'a> VkBufferViewCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkBufferViewCreateInfo<'a> {
-  fn default() -> VkBufferViewCreateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkBufferViewCreateInfo<'l, 'h> {
+  fn default() -> VkBufferViewCreateInfo<'l, 'h> {
     VkBufferViewCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkBufferViewCreateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkBufferViewCreateInfo<'l, 'h> {
   type Raw = types_raw::VkBufferViewCreateInfo;
 }
 #[cfg(test)]
@@ -3931,11 +3929,11 @@ fn test_struct_size_vk_buffer_view_create_info() {
 pub enum VkBufferView__ {}
 
 /// Opaque handle to a buffer view object
-pub type VkBufferView = VkNonDispatchableHandle<VkBufferView__>;
+pub type VkBufferView<'l> = VkNonDispatchableHandle<'l, VkBufferView__>;
 
 /// Structure specifying the parameters of a newly created image object
 #[repr(C)]
-pub struct VkImageCreateInfo<'a> {
+pub struct VkImageCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkImageCreateFlags,
@@ -3951,11 +3949,11 @@ pub struct VkImageCreateInfo<'a> {
   queueFamilyIndexCount: u32,
   pQueueFamilyIndices: *const u32,
   pub initialLayout: VkImageLayout,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkImageCreateInfo<'a> {
+impl<'l> VkImageCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkImageCreateInfo<'a> {
+  pub fn new() -> VkImageCreateInfo<'l> {
     unsafe {
       VkImageCreateInfo {
         sType: VkStructureType::IMAGE_CREATE_INFO,
@@ -4014,7 +4012,7 @@ impl<'a> VkImageCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_queue_family_indices(mut self, value: &'a [u32]) -> Self {
+  pub fn set_queue_family_indices(mut self, value: &'l [u32]) -> Self {
     self.queueFamilyIndexCount = value.len() as u32;
     unsafe {
       self.pQueueFamilyIndices = value.as_raw();
@@ -4083,12 +4081,12 @@ impl<'a> VkImageCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkImageCreateInfo<'a> {
-  fn default() -> VkImageCreateInfo<'a> {
+impl<'l> Default for VkImageCreateInfo<'l> {
+  fn default() -> VkImageCreateInfo<'l> {
     VkImageCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkImageCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkImageCreateInfo<'l> {
   type Raw = types_raw::VkImageCreateInfo;
 }
 #[cfg(test)]
@@ -4205,20 +4203,20 @@ fn test_struct_size_vk_component_mapping() {
 
 /// Structure specifying parameters of a newly created image view
 #[repr(C)]
-pub struct VkImageViewCreateInfo<'a> {
+pub struct VkImageViewCreateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkImageViewCreateFlags,
-  pub image: VkImage,
+  pub image: VkImage<'h>,
   pub viewType: VkImageViewType,
   pub format: VkFormat,
   pub components: VkComponentMapping,
   pub subresourceRange: VkImageSubresourceRange,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkImageViewCreateInfo<'a> {
+impl<'l, 'h: 'l> VkImageViewCreateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkImageViewCreateInfo<'a> {
+  pub fn new() -> VkImageViewCreateInfo<'l, 'h> {
     unsafe {
       VkImageViewCreateInfo {
         sType: VkStructureType::IMAGE_VIEW_CREATE_INFO,
@@ -4232,7 +4230,7 @@ impl<'a> VkImageViewCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_image(mut self, value: VkImage) -> Self {
+  pub fn set_image(mut self, value: VkImage<'h>) -> Self {
     self.image = value;
     self
   }
@@ -4261,7 +4259,7 @@ impl<'a> VkImageViewCreateInfo<'a> {
     self.flags
   }
   #[inline]
-  pub fn image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage<'h> {
     self.image
   }
   #[inline]
@@ -4289,12 +4287,12 @@ impl<'a> VkImageViewCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkImageViewCreateInfo<'a> {
-  fn default() -> VkImageViewCreateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkImageViewCreateInfo<'l, 'h> {
+  fn default() -> VkImageViewCreateInfo<'l, 'h> {
     VkImageViewCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkImageViewCreateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkImageViewCreateInfo<'l, 'h> {
   type Raw = types_raw::VkImageViewCreateInfo;
 }
 #[cfg(test)]
@@ -4307,21 +4305,21 @@ fn test_struct_size_vk_image_view_create_info() {
 pub enum VkImageView__ {}
 
 /// Opaque handle to a image view object
-pub type VkImageView = VkNonDispatchableHandle<VkImageView__>;
+pub type VkImageView<'l> = VkNonDispatchableHandle<'l, VkImageView__>;
 
 /// Structure specifying parameters of a newly created shader module
 #[repr(C)]
-pub struct VkShaderModuleCreateInfo<'a> {
+pub struct VkShaderModuleCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkShaderModuleCreateFlags,
   pub codeSize: usize,
   pCode: *const u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkShaderModuleCreateInfo<'a> {
+impl<'l> VkShaderModuleCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkShaderModuleCreateInfo<'a> {
+  pub fn new() -> VkShaderModuleCreateInfo<'l> {
     unsafe {
       VkShaderModuleCreateInfo {
         sType: VkStructureType::SHADER_MODULE_CREATE_INFO,
@@ -4356,12 +4354,12 @@ impl<'a> VkShaderModuleCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkShaderModuleCreateInfo<'a> {
-  fn default() -> VkShaderModuleCreateInfo<'a> {
+impl<'l> Default for VkShaderModuleCreateInfo<'l> {
+  fn default() -> VkShaderModuleCreateInfo<'l> {
     VkShaderModuleCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkShaderModuleCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkShaderModuleCreateInfo<'l> {
   type Raw = types_raw::VkShaderModuleCreateInfo;
 }
 #[cfg(test)]
@@ -4374,21 +4372,21 @@ fn test_struct_size_vk_shader_module_create_info() {
 pub enum VkShaderModule__ {}
 
 /// Opaque handle to a shader module object
-pub type VkShaderModule = VkNonDispatchableHandle<VkShaderModule__>;
+pub type VkShaderModule<'l> = VkNonDispatchableHandle<'l, VkShaderModule__>;
 
 /// Structure specifying parameters of a newly created pipeline cache
 #[repr(C)]
-pub struct VkPipelineCacheCreateInfo<'a> {
+pub struct VkPipelineCacheCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineCacheCreateFlags,
   initialDataSize: usize,
   pInitialData: *const c_void,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineCacheCreateInfo<'a> {
+impl<'l> VkPipelineCacheCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineCacheCreateInfo<'a> {
+  pub fn new() -> VkPipelineCacheCreateInfo<'l> {
     unsafe {
       VkPipelineCacheCreateInfo {
         sType: VkStructureType::PIPELINE_CACHE_CREATE_INFO,
@@ -4402,7 +4400,7 @@ impl<'a> VkPipelineCacheCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_initial_data(mut self, value: &'a [u8]) -> Self {
+  pub fn set_initial_data(mut self, value: &'l [u8]) -> Self {
     self.initialDataSize = value.len() as usize;
     unsafe {
       self.pInitialData = value.as_raw() as *const c_void;
@@ -4426,12 +4424,12 @@ impl<'a> VkPipelineCacheCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineCacheCreateInfo<'a> {
-  fn default() -> VkPipelineCacheCreateInfo<'a> {
+impl<'l> Default for VkPipelineCacheCreateInfo<'l> {
+  fn default() -> VkPipelineCacheCreateInfo<'l> {
     VkPipelineCacheCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineCacheCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineCacheCreateInfo<'l> {
   type Raw = types_raw::VkPipelineCacheCreateInfo;
 }
 #[cfg(test)]
@@ -4444,7 +4442,7 @@ fn test_struct_size_vk_pipeline_cache_create_info() {
 pub enum VkPipelineCache__ {}
 
 /// Opaque handle to a pipeline cache object
-pub type VkPipelineCache = VkNonDispatchableHandle<VkPipelineCache__>;
+pub type VkPipelineCache<'l> = VkNonDispatchableHandle<'l, VkPipelineCache__>;
 
 /// Structure specifying a specialization map entry
 #[repr(C)]
@@ -4503,20 +4501,20 @@ fn test_struct_size_vk_specialization_map_entry() {
 
 /// Structure specifying specialization info
 #[repr(C)]
-pub struct VkSpecializationInfo<'a> {
+pub struct VkSpecializationInfo<'l> {
   mapEntryCount: u32,
   pMapEntries: *const types_raw::VkSpecializationMapEntry,
   dataSize: usize,
   pData: *const c_void,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkSpecializationInfo<'a> {
+impl<'l> VkSpecializationInfo<'l> {
   #[inline]
-  pub fn new() -> VkSpecializationInfo<'a> {
+  pub fn new() -> VkSpecializationInfo<'l> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_map_entries(mut self, value: &'a [VkSpecializationMapEntry]) -> Self {
+  pub fn set_map_entries(mut self, value: &'l [VkSpecializationMapEntry]) -> Self {
     self.mapEntryCount = value.len() as u32;
     unsafe {
       self.pMapEntries = value.as_raw();
@@ -4524,7 +4522,7 @@ impl<'a> VkSpecializationInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_data(mut self, value: &'a [u8]) -> Self {
+  pub fn set_data(mut self, value: &'l [u8]) -> Self {
     self.dataSize = value.len() as usize;
     unsafe {
       self.pData = value.as_raw() as *const c_void;
@@ -4540,12 +4538,12 @@ impl<'a> VkSpecializationInfo<'a> {
     self.dataSize
   }
 }
-impl<'a> Default for VkSpecializationInfo<'a> {
-  fn default() -> VkSpecializationInfo<'a> {
+impl<'l> Default for VkSpecializationInfo<'l> {
+  fn default() -> VkSpecializationInfo<'l> {
     VkSpecializationInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkSpecializationInfo<'a> {
+unsafe impl<'l> RawStruct for VkSpecializationInfo<'l> {
   type Raw = types_raw::VkSpecializationInfo;
 }
 #[cfg(test)]
@@ -4556,18 +4554,18 @@ fn test_struct_size_vk_specialization_info() {
 
 /// Structure specifying parameters of a newly created pipeline shader stage
 #[repr(C)]
-pub struct VkPipelineShaderStageCreateInfo<'a> {
+pub struct VkPipelineShaderStageCreateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineShaderStageCreateFlags,
   pub stage: VkShaderStageFlagBits,
-  pub module: VkShaderModule,
+  pub module: VkShaderModule<'h>,
   pName: *const c_char,
-  pub pSpecializationInfo: Option<&'a VkSpecializationInfo<'a>>,
+  pub pSpecializationInfo: Option<&'l VkSpecializationInfo<'l>>,
 }
-impl<'a> VkPipelineShaderStageCreateInfo<'a> {
+impl<'l, 'h: 'l> VkPipelineShaderStageCreateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkPipelineShaderStageCreateInfo<'a> {
+  pub fn new() -> VkPipelineShaderStageCreateInfo<'l, 'h> {
     unsafe {
       VkPipelineShaderStageCreateInfo {
         sType: VkStructureType::PIPELINE_SHADER_STAGE_CREATE_INFO,
@@ -4586,19 +4584,19 @@ impl<'a> VkPipelineShaderStageCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_module(mut self, value: VkShaderModule) -> Self {
+  pub fn set_module(mut self, value: VkShaderModule<'h>) -> Self {
     self.module = value;
     self
   }
   #[inline]
-  pub fn set_name(mut self, value: &'a AsRef<CStr>) -> Self {
+  pub fn set_name(mut self, value: &'l AsRef<CStr>) -> Self {
     unsafe {
       self.pName = value.as_raw();
     }
     self
   }
   #[inline]
-  pub fn set_specialization_info(mut self, value: Option<&'a VkSpecializationInfo<'a>>) -> Self {
+  pub fn set_specialization_info(mut self, value: Option<&'l VkSpecializationInfo<'l>>) -> Self {
     self.pSpecializationInfo = value;
     self
   }
@@ -4611,7 +4609,7 @@ impl<'a> VkPipelineShaderStageCreateInfo<'a> {
     self.stage
   }
   #[inline]
-  pub fn module(&self) -> VkShaderModule {
+  pub fn module(&self) -> VkShaderModule<'h> {
     self.module
   }
   #[inline]
@@ -4619,7 +4617,7 @@ impl<'a> VkPipelineShaderStageCreateInfo<'a> {
     unsafe { ::std::ffi::CStr::from_ptr(self.pName) }
   }
   #[inline]
-  pub fn specialization_info(&self) -> Option<&'a VkSpecializationInfo<'a>> {
+  pub fn specialization_info(&self) -> Option<&'l VkSpecializationInfo<'l>> {
     self.pSpecializationInfo
   }
   #[inline]
@@ -4631,12 +4629,12 @@ impl<'a> VkPipelineShaderStageCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineShaderStageCreateInfo<'a> {
-  fn default() -> VkPipelineShaderStageCreateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkPipelineShaderStageCreateInfo<'l, 'h> {
+  fn default() -> VkPipelineShaderStageCreateInfo<'l, 'h> {
     VkPipelineShaderStageCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineShaderStageCreateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkPipelineShaderStageCreateInfo<'l, 'h> {
   type Raw = types_raw::VkPipelineShaderStageCreateInfo;
 }
 #[cfg(test)]
@@ -4776,7 +4774,7 @@ fn test_struct_size_vk_vertex_input_attribute_description() {
 
 /// Structure specifying parameters of a newly created pipeline vertex input state
 #[repr(C)]
-pub struct VkPipelineVertexInputStateCreateInfo<'a> {
+pub struct VkPipelineVertexInputStateCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineVertexInputStateCreateFlags,
@@ -4784,11 +4782,11 @@ pub struct VkPipelineVertexInputStateCreateInfo<'a> {
   pVertexBindingDescriptions: *const types_raw::VkVertexInputBindingDescription,
   vertexAttributeDescriptionCount: u32,
   pVertexAttributeDescriptions: *const types_raw::VkVertexInputAttributeDescription,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineVertexInputStateCreateInfo<'a> {
+impl<'l> VkPipelineVertexInputStateCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineVertexInputStateCreateInfo<'a> {
+  pub fn new() -> VkPipelineVertexInputStateCreateInfo<'l> {
     unsafe {
       VkPipelineVertexInputStateCreateInfo {
         sType: VkStructureType::PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
@@ -4802,7 +4800,7 @@ impl<'a> VkPipelineVertexInputStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_vertex_binding_descriptions(mut self, value: &'a [VkVertexInputBindingDescription]) -> Self {
+  pub fn set_vertex_binding_descriptions(mut self, value: &'l [VkVertexInputBindingDescription]) -> Self {
     self.vertexBindingDescriptionCount = value.len() as u32;
     unsafe {
       self.pVertexBindingDescriptions = value.as_raw();
@@ -4810,7 +4808,7 @@ impl<'a> VkPipelineVertexInputStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_vertex_attribute_descriptions(mut self, value: &'a [VkVertexInputAttributeDescription]) -> Self {
+  pub fn set_vertex_attribute_descriptions(mut self, value: &'l [VkVertexInputAttributeDescription]) -> Self {
     self.vertexAttributeDescriptionCount = value.len() as u32;
     unsafe {
       self.pVertexAttributeDescriptions = value.as_raw();
@@ -4838,12 +4836,12 @@ impl<'a> VkPipelineVertexInputStateCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineVertexInputStateCreateInfo<'a> {
-  fn default() -> VkPipelineVertexInputStateCreateInfo<'a> {
+impl<'l> Default for VkPipelineVertexInputStateCreateInfo<'l> {
+  fn default() -> VkPipelineVertexInputStateCreateInfo<'l> {
     VkPipelineVertexInputStateCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineVertexInputStateCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineVertexInputStateCreateInfo<'l> {
   type Raw = types_raw::VkPipelineVertexInputStateCreateInfo;
 }
 #[cfg(test)]
@@ -4857,17 +4855,17 @@ fn test_struct_size_vk_pipeline_vertex_input_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline input assembly state
 #[repr(C)]
-pub struct VkPipelineInputAssemblyStateCreateInfo<'a> {
+pub struct VkPipelineInputAssemblyStateCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineInputAssemblyStateCreateFlags,
   pub topology: VkPrimitiveTopology,
   pub primitiveRestartEnable: VkBool32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineInputAssemblyStateCreateInfo<'a> {
+impl<'l> VkPipelineInputAssemblyStateCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineInputAssemblyStateCreateInfo<'a> {
+  pub fn new() -> VkPipelineInputAssemblyStateCreateInfo<'l> {
     unsafe {
       VkPipelineInputAssemblyStateCreateInfo {
         sType: VkStructureType::PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
@@ -4912,12 +4910,12 @@ impl<'a> VkPipelineInputAssemblyStateCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineInputAssemblyStateCreateInfo<'a> {
-  fn default() -> VkPipelineInputAssemblyStateCreateInfo<'a> {
+impl<'l> Default for VkPipelineInputAssemblyStateCreateInfo<'l> {
+  fn default() -> VkPipelineInputAssemblyStateCreateInfo<'l> {
     VkPipelineInputAssemblyStateCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineInputAssemblyStateCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineInputAssemblyStateCreateInfo<'l> {
   type Raw = types_raw::VkPipelineInputAssemblyStateCreateInfo;
 }
 #[cfg(test)]
@@ -4931,16 +4929,16 @@ fn test_struct_size_vk_pipeline_input_assembly_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline tessellation state
 #[repr(C)]
-pub struct VkPipelineTessellationStateCreateInfo<'a> {
+pub struct VkPipelineTessellationStateCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineTessellationStateCreateFlags,
   pub patchControlPoints: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineTessellationStateCreateInfo<'a> {
+impl<'l> VkPipelineTessellationStateCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineTessellationStateCreateInfo<'a> {
+  pub fn new() -> VkPipelineTessellationStateCreateInfo<'l> {
     unsafe {
       VkPipelineTessellationStateCreateInfo {
         sType: VkStructureType::PIPELINE_TESSELLATION_STATE_CREATE_INFO,
@@ -4975,12 +4973,12 @@ impl<'a> VkPipelineTessellationStateCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineTessellationStateCreateInfo<'a> {
-  fn default() -> VkPipelineTessellationStateCreateInfo<'a> {
+impl<'l> Default for VkPipelineTessellationStateCreateInfo<'l> {
+  fn default() -> VkPipelineTessellationStateCreateInfo<'l> {
     VkPipelineTessellationStateCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineTessellationStateCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineTessellationStateCreateInfo<'l> {
   type Raw = types_raw::VkPipelineTessellationStateCreateInfo;
 }
 #[cfg(test)]
@@ -5214,7 +5212,7 @@ fn test_struct_size_vk_rect2_d() {
 
 /// Structure specifying parameters of a newly created pipeline viewport state
 #[repr(C)]
-pub struct VkPipelineViewportStateCreateInfo<'a> {
+pub struct VkPipelineViewportStateCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineViewportStateCreateFlags,
@@ -5222,11 +5220,11 @@ pub struct VkPipelineViewportStateCreateInfo<'a> {
   pViewports: *const types_raw::VkViewport,
   scissorCount: u32,
   pScissors: *const types_raw::VkRect2D,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineViewportStateCreateInfo<'a> {
+impl<'l> VkPipelineViewportStateCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineViewportStateCreateInfo<'a> {
+  pub fn new() -> VkPipelineViewportStateCreateInfo<'l> {
     unsafe {
       VkPipelineViewportStateCreateInfo {
         sType: VkStructureType::PIPELINE_VIEWPORT_STATE_CREATE_INFO,
@@ -5240,7 +5238,7 @@ impl<'a> VkPipelineViewportStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_viewports(mut self, value: &'a [VkViewport]) -> Self {
+  pub fn set_viewports(mut self, value: &'l [VkViewport]) -> Self {
     self.viewportCount = value.len() as u32;
     unsafe {
       self.pViewports = value.as_raw();
@@ -5248,7 +5246,7 @@ impl<'a> VkPipelineViewportStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_scissors(mut self, value: &'a [VkRect2D]) -> Self {
+  pub fn set_scissors(mut self, value: &'l [VkRect2D]) -> Self {
     self.scissorCount = value.len() as u32;
     unsafe {
       self.pScissors = value.as_raw();
@@ -5276,12 +5274,12 @@ impl<'a> VkPipelineViewportStateCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineViewportStateCreateInfo<'a> {
-  fn default() -> VkPipelineViewportStateCreateInfo<'a> {
+impl<'l> Default for VkPipelineViewportStateCreateInfo<'l> {
+  fn default() -> VkPipelineViewportStateCreateInfo<'l> {
     VkPipelineViewportStateCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineViewportStateCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineViewportStateCreateInfo<'l> {
   type Raw = types_raw::VkPipelineViewportStateCreateInfo;
 }
 #[cfg(test)]
@@ -5295,7 +5293,7 @@ fn test_struct_size_vk_pipeline_viewport_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline rasterization state
 #[repr(C)]
-pub struct VkPipelineRasterizationStateCreateInfo<'a> {
+pub struct VkPipelineRasterizationStateCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineRasterizationStateCreateFlags,
@@ -5309,11 +5307,11 @@ pub struct VkPipelineRasterizationStateCreateInfo<'a> {
   pub depthBiasClamp: f32,
   pub depthBiasSlopeFactor: f32,
   pub lineWidth: f32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineRasterizationStateCreateInfo<'a> {
+impl<'l> VkPipelineRasterizationStateCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineRasterizationStateCreateInfo<'a> {
+  pub fn new() -> VkPipelineRasterizationStateCreateInfo<'l> {
     unsafe {
       VkPipelineRasterizationStateCreateInfo {
         sType: VkStructureType::PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
@@ -5432,12 +5430,12 @@ impl<'a> VkPipelineRasterizationStateCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineRasterizationStateCreateInfo<'a> {
-  fn default() -> VkPipelineRasterizationStateCreateInfo<'a> {
+impl<'l> Default for VkPipelineRasterizationStateCreateInfo<'l> {
+  fn default() -> VkPipelineRasterizationStateCreateInfo<'l> {
     VkPipelineRasterizationStateCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineRasterizationStateCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineRasterizationStateCreateInfo<'l> {
   type Raw = types_raw::VkPipelineRasterizationStateCreateInfo;
 }
 #[cfg(test)]
@@ -5451,7 +5449,7 @@ fn test_struct_size_vk_pipeline_rasterization_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline multisample state
 #[repr(C)]
-pub struct VkPipelineMultisampleStateCreateInfo<'a> {
+pub struct VkPipelineMultisampleStateCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineMultisampleStateCreateFlags,
@@ -5461,11 +5459,11 @@ pub struct VkPipelineMultisampleStateCreateInfo<'a> {
   pSampleMask: *const VkSampleMask,
   pub alphaToCoverageEnable: VkBool32,
   pub alphaToOneEnable: VkBool32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
+impl<'l> VkPipelineMultisampleStateCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineMultisampleStateCreateInfo<'a> {
+  pub fn new() -> VkPipelineMultisampleStateCreateInfo<'l> {
     unsafe {
       VkPipelineMultisampleStateCreateInfo {
         sType: VkStructureType::PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
@@ -5539,12 +5537,12 @@ impl<'a> VkPipelineMultisampleStateCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineMultisampleStateCreateInfo<'a> {
-  fn default() -> VkPipelineMultisampleStateCreateInfo<'a> {
+impl<'l> Default for VkPipelineMultisampleStateCreateInfo<'l> {
+  fn default() -> VkPipelineMultisampleStateCreateInfo<'l> {
     VkPipelineMultisampleStateCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineMultisampleStateCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineMultisampleStateCreateInfo<'l> {
   type Raw = types_raw::VkPipelineMultisampleStateCreateInfo;
 }
 #[cfg(test)]
@@ -5653,7 +5651,7 @@ fn test_struct_size_vk_stencil_op_state() {
 
 /// Structure specifying parameters of a newly created pipeline depth stencil state
 #[repr(C)]
-pub struct VkPipelineDepthStencilStateCreateInfo<'a> {
+pub struct VkPipelineDepthStencilStateCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineDepthStencilStateCreateFlags,
@@ -5666,11 +5664,11 @@ pub struct VkPipelineDepthStencilStateCreateInfo<'a> {
   pub back: VkStencilOpState,
   pub minDepthBounds: f32,
   pub maxDepthBounds: f32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineDepthStencilStateCreateInfo<'a> {
+impl<'l> VkPipelineDepthStencilStateCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineDepthStencilStateCreateInfo<'a> {
+  pub fn new() -> VkPipelineDepthStencilStateCreateInfo<'l> {
     unsafe {
       VkPipelineDepthStencilStateCreateInfo {
         sType: VkStructureType::PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
@@ -5781,12 +5779,12 @@ impl<'a> VkPipelineDepthStencilStateCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineDepthStencilStateCreateInfo<'a> {
-  fn default() -> VkPipelineDepthStencilStateCreateInfo<'a> {
+impl<'l> Default for VkPipelineDepthStencilStateCreateInfo<'l> {
+  fn default() -> VkPipelineDepthStencilStateCreateInfo<'l> {
     VkPipelineDepthStencilStateCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineDepthStencilStateCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineDepthStencilStateCreateInfo<'l> {
   type Raw = types_raw::VkPipelineDepthStencilStateCreateInfo;
 }
 #[cfg(test)]
@@ -5909,7 +5907,7 @@ fn test_struct_size_vk_pipeline_color_blend_attachment_state() {
 
 /// Structure specifying parameters of a newly created pipeline color blend state
 #[repr(C)]
-pub struct VkPipelineColorBlendStateCreateInfo<'a> {
+pub struct VkPipelineColorBlendStateCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineColorBlendStateCreateFlags,
@@ -5918,11 +5916,11 @@ pub struct VkPipelineColorBlendStateCreateInfo<'a> {
   attachmentCount: u32,
   pAttachments: *const types_raw::VkPipelineColorBlendAttachmentState,
   pub blendConstants: [f32; 4],
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
+impl<'l> VkPipelineColorBlendStateCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineColorBlendStateCreateInfo<'a> {
+  pub fn new() -> VkPipelineColorBlendStateCreateInfo<'l> {
     unsafe {
       VkPipelineColorBlendStateCreateInfo {
         sType: VkStructureType::PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
@@ -5947,7 +5945,7 @@ impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_attachments(mut self, value: &'a [VkPipelineColorBlendAttachmentState]) -> Self {
+  pub fn set_attachments(mut self, value: &'l [VkPipelineColorBlendAttachmentState]) -> Self {
     self.attachmentCount = value.len() as u32;
     unsafe {
       self.pAttachments = value.as_raw();
@@ -5988,12 +5986,12 @@ impl<'a> VkPipelineColorBlendStateCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineColorBlendStateCreateInfo<'a> {
-  fn default() -> VkPipelineColorBlendStateCreateInfo<'a> {
+impl<'l> Default for VkPipelineColorBlendStateCreateInfo<'l> {
+  fn default() -> VkPipelineColorBlendStateCreateInfo<'l> {
     VkPipelineColorBlendStateCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineColorBlendStateCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineColorBlendStateCreateInfo<'l> {
   type Raw = types_raw::VkPipelineColorBlendStateCreateInfo;
 }
 #[cfg(test)]
@@ -6007,17 +6005,17 @@ fn test_struct_size_vk_pipeline_color_blend_state_create_info() {
 
 /// Structure specifying parameters of a newly created pipeline dynamic state
 #[repr(C)]
-pub struct VkPipelineDynamicStateCreateInfo<'a> {
+pub struct VkPipelineDynamicStateCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineDynamicStateCreateFlags,
   dynamicStateCount: u32,
   pDynamicStates: *const VkDynamicState,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkPipelineDynamicStateCreateInfo<'a> {
+impl<'l> VkPipelineDynamicStateCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkPipelineDynamicStateCreateInfo<'a> {
+  pub fn new() -> VkPipelineDynamicStateCreateInfo<'l> {
     unsafe {
       VkPipelineDynamicStateCreateInfo {
         sType: VkStructureType::PIPELINE_DYNAMIC_STATE_CREATE_INFO,
@@ -6031,7 +6029,7 @@ impl<'a> VkPipelineDynamicStateCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_dynamic_states(mut self, value: &'a [VkDynamicState]) -> Self {
+  pub fn set_dynamic_states(mut self, value: &'l [VkDynamicState]) -> Self {
     self.dynamicStateCount = value.len() as u32;
     unsafe {
       self.pDynamicStates = value.as_raw();
@@ -6055,12 +6053,12 @@ impl<'a> VkPipelineDynamicStateCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineDynamicStateCreateInfo<'a> {
-  fn default() -> VkPipelineDynamicStateCreateInfo<'a> {
+impl<'l> Default for VkPipelineDynamicStateCreateInfo<'l> {
+  fn default() -> VkPipelineDynamicStateCreateInfo<'l> {
     VkPipelineDynamicStateCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineDynamicStateCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkPipelineDynamicStateCreateInfo<'l> {
   type Raw = types_raw::VkPipelineDynamicStateCreateInfo;
 }
 #[cfg(test)]
@@ -6076,46 +6074,46 @@ fn test_struct_size_vk_pipeline_dynamic_state_create_info() {
 pub enum VkPipelineLayout__ {}
 
 /// Opaque handle to a pipeline layout object
-pub type VkPipelineLayout = VkNonDispatchableHandle<VkPipelineLayout__>;
+pub type VkPipelineLayout<'l> = VkNonDispatchableHandle<'l, VkPipelineLayout__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkRenderPass__ {}
 
 /// Opaque handle to a render pass object
-pub type VkRenderPass = VkNonDispatchableHandle<VkRenderPass__>;
+pub type VkRenderPass<'l> = VkNonDispatchableHandle<'l, VkRenderPass__>;
 #[doc(hidden)]
 #[derive(Copy, Clone)]
 pub enum VkPipeline__ {}
 
 /// Opaque handle to a pipeline object
-pub type VkPipeline = VkNonDispatchableHandle<VkPipeline__>;
+pub type VkPipeline<'l> = VkNonDispatchableHandle<'l, VkPipeline__>;
 
 /// Structure specifying parameters of a newly created graphics pipeline
 #[repr(C)]
-pub struct VkGraphicsPipelineCreateInfo<'a> {
+pub struct VkGraphicsPipelineCreateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineCreateFlags,
   stageCount: u32,
   pStages: *const types_raw::VkPipelineShaderStageCreateInfo,
-  pub pVertexInputState: &'a VkPipelineVertexInputStateCreateInfo<'a>,
-  pub pInputAssemblyState: &'a VkPipelineInputAssemblyStateCreateInfo<'a>,
-  pub pTessellationState: Option<&'a VkPipelineTessellationStateCreateInfo<'a>>,
-  pub pViewportState: Option<&'a VkPipelineViewportStateCreateInfo<'a>>,
-  pub pRasterizationState: &'a VkPipelineRasterizationStateCreateInfo<'a>,
-  pub pMultisampleState: Option<&'a VkPipelineMultisampleStateCreateInfo<'a>>,
-  pub pDepthStencilState: Option<&'a VkPipelineDepthStencilStateCreateInfo<'a>>,
-  pub pColorBlendState: Option<&'a VkPipelineColorBlendStateCreateInfo<'a>>,
-  pub pDynamicState: Option<&'a VkPipelineDynamicStateCreateInfo<'a>>,
-  pub layout: VkPipelineLayout,
-  pub renderPass: VkRenderPass,
+  pub pVertexInputState: &'l VkPipelineVertexInputStateCreateInfo<'l>,
+  pub pInputAssemblyState: &'l VkPipelineInputAssemblyStateCreateInfo<'l>,
+  pub pTessellationState: Option<&'l VkPipelineTessellationStateCreateInfo<'l>>,
+  pub pViewportState: Option<&'l VkPipelineViewportStateCreateInfo<'l>>,
+  pub pRasterizationState: &'l VkPipelineRasterizationStateCreateInfo<'l>,
+  pub pMultisampleState: Option<&'l VkPipelineMultisampleStateCreateInfo<'l>>,
+  pub pDepthStencilState: Option<&'l VkPipelineDepthStencilStateCreateInfo<'l>>,
+  pub pColorBlendState: Option<&'l VkPipelineColorBlendStateCreateInfo<'l>>,
+  pub pDynamicState: Option<&'l VkPipelineDynamicStateCreateInfo<'l>>,
+  pub layout: VkPipelineLayout<'h>,
+  pub renderPass: VkRenderPass<'h>,
   pub subpass: u32,
-  pub basePipelineHandle: Option<VkPipeline>,
+  pub basePipelineHandle: Option<VkPipeline<'h>>,
   pub basePipelineIndex: i32,
 }
-impl<'a> VkGraphicsPipelineCreateInfo<'a> {
+impl<'l, 'h: 'l> VkGraphicsPipelineCreateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkGraphicsPipelineCreateInfo<'a> {
+  pub fn new() -> VkGraphicsPipelineCreateInfo<'l, 'h> {
     unsafe {
       VkGraphicsPipelineCreateInfo {
         sType: VkStructureType::GRAPHICS_PIPELINE_CREATE_INFO,
@@ -6129,7 +6127,7 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_stages(mut self, value: &'a [VkPipelineShaderStageCreateInfo<'a>]) -> Self {
+  pub fn set_stages(mut self, value: &'l [VkPipelineShaderStageCreateInfo<'l, 'h>]) -> Self {
     self.stageCount = value.len() as u32;
     unsafe {
       self.pStages = value.as_raw();
@@ -6137,57 +6135,57 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_vertex_input_state(mut self, value: &'a VkPipelineVertexInputStateCreateInfo<'a>) -> Self {
+  pub fn set_vertex_input_state(mut self, value: &'l VkPipelineVertexInputStateCreateInfo<'l>) -> Self {
     self.pVertexInputState = value;
     self
   }
   #[inline]
-  pub fn set_input_assembly_state(mut self, value: &'a VkPipelineInputAssemblyStateCreateInfo<'a>) -> Self {
+  pub fn set_input_assembly_state(mut self, value: &'l VkPipelineInputAssemblyStateCreateInfo<'l>) -> Self {
     self.pInputAssemblyState = value;
     self
   }
   #[inline]
-  pub fn set_tessellation_state(mut self, value: Option<&'a VkPipelineTessellationStateCreateInfo<'a>>) -> Self {
+  pub fn set_tessellation_state(mut self, value: Option<&'l VkPipelineTessellationStateCreateInfo<'l>>) -> Self {
     self.pTessellationState = value;
     self
   }
   #[inline]
-  pub fn set_viewport_state(mut self, value: Option<&'a VkPipelineViewportStateCreateInfo<'a>>) -> Self {
+  pub fn set_viewport_state(mut self, value: Option<&'l VkPipelineViewportStateCreateInfo<'l>>) -> Self {
     self.pViewportState = value;
     self
   }
   #[inline]
-  pub fn set_rasterization_state(mut self, value: &'a VkPipelineRasterizationStateCreateInfo<'a>) -> Self {
+  pub fn set_rasterization_state(mut self, value: &'l VkPipelineRasterizationStateCreateInfo<'l>) -> Self {
     self.pRasterizationState = value;
     self
   }
   #[inline]
-  pub fn set_multisample_state(mut self, value: Option<&'a VkPipelineMultisampleStateCreateInfo<'a>>) -> Self {
+  pub fn set_multisample_state(mut self, value: Option<&'l VkPipelineMultisampleStateCreateInfo<'l>>) -> Self {
     self.pMultisampleState = value;
     self
   }
   #[inline]
-  pub fn set_depth_stencil_state(mut self, value: Option<&'a VkPipelineDepthStencilStateCreateInfo<'a>>) -> Self {
+  pub fn set_depth_stencil_state(mut self, value: Option<&'l VkPipelineDepthStencilStateCreateInfo<'l>>) -> Self {
     self.pDepthStencilState = value;
     self
   }
   #[inline]
-  pub fn set_color_blend_state(mut self, value: Option<&'a VkPipelineColorBlendStateCreateInfo<'a>>) -> Self {
+  pub fn set_color_blend_state(mut self, value: Option<&'l VkPipelineColorBlendStateCreateInfo<'l>>) -> Self {
     self.pColorBlendState = value;
     self
   }
   #[inline]
-  pub fn set_dynamic_state(mut self, value: Option<&'a VkPipelineDynamicStateCreateInfo<'a>>) -> Self {
+  pub fn set_dynamic_state(mut self, value: Option<&'l VkPipelineDynamicStateCreateInfo<'l>>) -> Self {
     self.pDynamicState = value;
     self
   }
   #[inline]
-  pub fn set_layout(mut self, value: VkPipelineLayout) -> Self {
+  pub fn set_layout(mut self, value: VkPipelineLayout<'h>) -> Self {
     self.layout = value;
     self
   }
   #[inline]
-  pub fn set_render_pass(mut self, value: VkRenderPass) -> Self {
+  pub fn set_render_pass(mut self, value: VkRenderPass<'h>) -> Self {
     self.renderPass = value;
     self
   }
@@ -6197,7 +6195,7 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_base_pipeline_handle(mut self, value: Option<VkPipeline>) -> Self {
+  pub fn set_base_pipeline_handle(mut self, value: Option<VkPipeline<'h>>) -> Self {
     self.basePipelineHandle = value;
     self
   }
@@ -6215,47 +6213,47 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self.stageCount
   }
   #[inline]
-  pub fn vertex_input_state(&self) -> &'a VkPipelineVertexInputStateCreateInfo<'a> {
+  pub fn vertex_input_state(&self) -> &'l VkPipelineVertexInputStateCreateInfo<'l> {
     self.pVertexInputState
   }
   #[inline]
-  pub fn input_assembly_state(&self) -> &'a VkPipelineInputAssemblyStateCreateInfo<'a> {
+  pub fn input_assembly_state(&self) -> &'l VkPipelineInputAssemblyStateCreateInfo<'l> {
     self.pInputAssemblyState
   }
   #[inline]
-  pub fn tessellation_state(&self) -> Option<&'a VkPipelineTessellationStateCreateInfo<'a>> {
+  pub fn tessellation_state(&self) -> Option<&'l VkPipelineTessellationStateCreateInfo<'l>> {
     self.pTessellationState
   }
   #[inline]
-  pub fn viewport_state(&self) -> Option<&'a VkPipelineViewportStateCreateInfo<'a>> {
+  pub fn viewport_state(&self) -> Option<&'l VkPipelineViewportStateCreateInfo<'l>> {
     self.pViewportState
   }
   #[inline]
-  pub fn rasterization_state(&self) -> &'a VkPipelineRasterizationStateCreateInfo<'a> {
+  pub fn rasterization_state(&self) -> &'l VkPipelineRasterizationStateCreateInfo<'l> {
     self.pRasterizationState
   }
   #[inline]
-  pub fn multisample_state(&self) -> Option<&'a VkPipelineMultisampleStateCreateInfo<'a>> {
+  pub fn multisample_state(&self) -> Option<&'l VkPipelineMultisampleStateCreateInfo<'l>> {
     self.pMultisampleState
   }
   #[inline]
-  pub fn depth_stencil_state(&self) -> Option<&'a VkPipelineDepthStencilStateCreateInfo<'a>> {
+  pub fn depth_stencil_state(&self) -> Option<&'l VkPipelineDepthStencilStateCreateInfo<'l>> {
     self.pDepthStencilState
   }
   #[inline]
-  pub fn color_blend_state(&self) -> Option<&'a VkPipelineColorBlendStateCreateInfo<'a>> {
+  pub fn color_blend_state(&self) -> Option<&'l VkPipelineColorBlendStateCreateInfo<'l>> {
     self.pColorBlendState
   }
   #[inline]
-  pub fn dynamic_state(&self) -> Option<&'a VkPipelineDynamicStateCreateInfo<'a>> {
+  pub fn dynamic_state(&self) -> Option<&'l VkPipelineDynamicStateCreateInfo<'l>> {
     self.pDynamicState
   }
   #[inline]
-  pub fn layout(&self) -> VkPipelineLayout {
+  pub fn layout(&self) -> VkPipelineLayout<'h> {
     self.layout
   }
   #[inline]
-  pub fn render_pass(&self) -> VkRenderPass {
+  pub fn render_pass(&self) -> VkRenderPass<'h> {
     self.renderPass
   }
   #[inline]
@@ -6263,7 +6261,7 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self.subpass
   }
   #[inline]
-  pub fn base_pipeline_handle(&self) -> Option<VkPipeline> {
+  pub fn base_pipeline_handle(&self) -> Option<VkPipeline<'h>> {
     self.basePipelineHandle
   }
   #[inline]
@@ -6279,12 +6277,12 @@ impl<'a> VkGraphicsPipelineCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkGraphicsPipelineCreateInfo<'a> {
-  fn default() -> VkGraphicsPipelineCreateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkGraphicsPipelineCreateInfo<'l, 'h> {
+  fn default() -> VkGraphicsPipelineCreateInfo<'l, 'h> {
     VkGraphicsPipelineCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkGraphicsPipelineCreateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkGraphicsPipelineCreateInfo<'l, 'h> {
   type Raw = types_raw::VkGraphicsPipelineCreateInfo;
 }
 #[cfg(test)]
@@ -6295,18 +6293,18 @@ fn test_struct_size_vk_graphics_pipeline_create_info() {
 
 /// Structure specifying parameters of a newly created compute pipeline
 #[repr(C)]
-pub struct VkComputePipelineCreateInfo<'a> {
+pub struct VkComputePipelineCreateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineCreateFlags,
-  pub stage: VkPipelineShaderStageCreateInfo<'a>,
-  pub layout: VkPipelineLayout,
-  pub basePipelineHandle: Option<VkPipeline>,
+  pub stage: VkPipelineShaderStageCreateInfo<'l, 'h>,
+  pub layout: VkPipelineLayout<'h>,
+  pub basePipelineHandle: Option<VkPipeline<'h>>,
   pub basePipelineIndex: i32,
 }
-impl<'a> VkComputePipelineCreateInfo<'a> {
+impl<'l, 'h: 'l> VkComputePipelineCreateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkComputePipelineCreateInfo<'a> {
+  pub fn new() -> VkComputePipelineCreateInfo<'l, 'h> {
     unsafe {
       VkComputePipelineCreateInfo {
         sType: VkStructureType::COMPUTE_PIPELINE_CREATE_INFO,
@@ -6320,17 +6318,17 @@ impl<'a> VkComputePipelineCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_stage(mut self, value: VkPipelineShaderStageCreateInfo<'a>) -> Self {
+  pub fn set_stage(mut self, value: VkPipelineShaderStageCreateInfo<'l, 'h>) -> Self {
     self.stage = value;
     self
   }
   #[inline]
-  pub fn set_layout(mut self, value: VkPipelineLayout) -> Self {
+  pub fn set_layout(mut self, value: VkPipelineLayout<'h>) -> Self {
     self.layout = value;
     self
   }
   #[inline]
-  pub fn set_base_pipeline_handle(mut self, value: Option<VkPipeline>) -> Self {
+  pub fn set_base_pipeline_handle(mut self, value: Option<VkPipeline<'h>>) -> Self {
     self.basePipelineHandle = value;
     self
   }
@@ -6344,15 +6342,15 @@ impl<'a> VkComputePipelineCreateInfo<'a> {
     self.flags
   }
   #[inline]
-  pub fn stage(&self) -> &VkPipelineShaderStageCreateInfo<'a> {
+  pub fn stage(&self) -> &VkPipelineShaderStageCreateInfo<'l, 'h> {
     &self.stage
   }
   #[inline]
-  pub fn layout(&self) -> VkPipelineLayout {
+  pub fn layout(&self) -> VkPipelineLayout<'h> {
     self.layout
   }
   #[inline]
-  pub fn base_pipeline_handle(&self) -> Option<VkPipeline> {
+  pub fn base_pipeline_handle(&self) -> Option<VkPipeline<'h>> {
     self.basePipelineHandle
   }
   #[inline]
@@ -6368,12 +6366,12 @@ impl<'a> VkComputePipelineCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkComputePipelineCreateInfo<'a> {
-  fn default() -> VkComputePipelineCreateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkComputePipelineCreateInfo<'l, 'h> {
+  fn default() -> VkComputePipelineCreateInfo<'l, 'h> {
     VkComputePipelineCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkComputePipelineCreateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkComputePipelineCreateInfo<'l, 'h> {
   type Raw = types_raw::VkComputePipelineCreateInfo;
 }
 #[cfg(test)]
@@ -6386,7 +6384,7 @@ fn test_struct_size_vk_compute_pipeline_create_info() {
 pub enum VkDescriptorSetLayout__ {}
 
 /// Opaque handle to a descriptor set layout object
-pub type VkDescriptorSetLayout = VkNonDispatchableHandle<VkDescriptorSetLayout__>;
+pub type VkDescriptorSetLayout<'l> = VkNonDispatchableHandle<'l, VkDescriptorSetLayout__>;
 
 /// Structure specifying a push constant range
 #[repr(C)]
@@ -6445,7 +6443,7 @@ fn test_struct_size_vk_push_constant_range() {
 
 /// Structure specifying the parameters of a newly created pipeline layout object
 #[repr(C)]
-pub struct VkPipelineLayoutCreateInfo<'a> {
+pub struct VkPipelineLayoutCreateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineLayoutCreateFlags,
@@ -6453,11 +6451,11 @@ pub struct VkPipelineLayoutCreateInfo<'a> {
   pSetLayouts: *const types_raw::VkDescriptorSetLayout,
   pushConstantRangeCount: u32,
   pPushConstantRanges: *const types_raw::VkPushConstantRange,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
 }
-impl<'a> VkPipelineLayoutCreateInfo<'a> {
+impl<'l, 'h: 'l> VkPipelineLayoutCreateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkPipelineLayoutCreateInfo<'a> {
+  pub fn new() -> VkPipelineLayoutCreateInfo<'l, 'h> {
     unsafe {
       VkPipelineLayoutCreateInfo {
         sType: VkStructureType::PIPELINE_LAYOUT_CREATE_INFO,
@@ -6471,7 +6469,7 @@ impl<'a> VkPipelineLayoutCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_set_layouts(mut self, value: &'a [VkDescriptorSetLayout]) -> Self {
+  pub fn set_set_layouts(mut self, value: &'l [VkDescriptorSetLayout<'h>]) -> Self {
     self.setLayoutCount = value.len() as u32;
     unsafe {
       self.pSetLayouts = value.as_raw();
@@ -6479,7 +6477,7 @@ impl<'a> VkPipelineLayoutCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_push_constant_ranges(mut self, value: &'a [VkPushConstantRange]) -> Self {
+  pub fn set_push_constant_ranges(mut self, value: &'l [VkPushConstantRange]) -> Self {
     self.pushConstantRangeCount = value.len() as u32;
     unsafe {
       self.pPushConstantRanges = value.as_raw();
@@ -6507,12 +6505,12 @@ impl<'a> VkPipelineLayoutCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkPipelineLayoutCreateInfo<'a> {
-  fn default() -> VkPipelineLayoutCreateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkPipelineLayoutCreateInfo<'l, 'h> {
+  fn default() -> VkPipelineLayoutCreateInfo<'l, 'h> {
     VkPipelineLayoutCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkPipelineLayoutCreateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkPipelineLayoutCreateInfo<'l, 'h> {
   type Raw = types_raw::VkPipelineLayoutCreateInfo;
 }
 #[cfg(test)]
@@ -6523,7 +6521,7 @@ fn test_struct_size_vk_pipeline_layout_create_info() {
 
 /// Structure specifying parameters of a newly created sampler
 #[repr(C)]
-pub struct VkSamplerCreateInfo<'a> {
+pub struct VkSamplerCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkSamplerCreateFlags,
@@ -6542,11 +6540,11 @@ pub struct VkSamplerCreateInfo<'a> {
   pub maxLod: f32,
   pub borderColor: VkBorderColor,
   pub unnormalizedCoordinates: VkBool32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkSamplerCreateInfo<'a> {
+impl<'l> VkSamplerCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkSamplerCreateInfo<'a> {
+  pub fn new() -> VkSamplerCreateInfo<'l> {
     unsafe {
       VkSamplerCreateInfo {
         sType: VkStructureType::SAMPLER_CREATE_INFO,
@@ -6710,12 +6708,12 @@ impl<'a> VkSamplerCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkSamplerCreateInfo<'a> {
-  fn default() -> VkSamplerCreateInfo<'a> {
+impl<'l> Default for VkSamplerCreateInfo<'l> {
+  fn default() -> VkSamplerCreateInfo<'l> {
     VkSamplerCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkSamplerCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkSamplerCreateInfo<'l> {
   type Raw = types_raw::VkSamplerCreateInfo;
 }
 #[cfg(test)]
@@ -6728,21 +6726,21 @@ fn test_struct_size_vk_sampler_create_info() {
 pub enum VkSampler__ {}
 
 /// Opaque handle to a sampler object
-pub type VkSampler = VkNonDispatchableHandle<VkSampler__>;
+pub type VkSampler<'l> = VkNonDispatchableHandle<'l, VkSampler__>;
 
 /// Structure specifying a descriptor set layout binding
 #[repr(C)]
-pub struct VkDescriptorSetLayoutBinding<'a> {
+pub struct VkDescriptorSetLayoutBinding<'l, 'h: 'l> {
   pub binding: u32,
   pub descriptorType: VkDescriptorType,
   descriptorCount: u32,
   pub stageFlags: VkShaderStageFlags,
   pImmutableSamplers: *const types_raw::VkSampler,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
 }
-impl<'a> VkDescriptorSetLayoutBinding<'a> {
+impl<'l, 'h: 'l> VkDescriptorSetLayoutBinding<'l, 'h> {
   #[inline]
-  pub fn new() -> VkDescriptorSetLayoutBinding<'a> {
+  pub fn new() -> VkDescriptorSetLayoutBinding<'l, 'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -6761,7 +6759,7 @@ impl<'a> VkDescriptorSetLayoutBinding<'a> {
     self
   }
   #[inline]
-  pub fn set_immutable_samplers(mut self, value: &'a [VkSampler]) -> Self {
+  pub fn set_immutable_samplers(mut self, value: &'l [VkSampler<'h>]) -> Self {
     self.descriptorCount = value.len() as u32;
     unsafe {
       self.pImmutableSamplers = value.as_raw();
@@ -6785,12 +6783,12 @@ impl<'a> VkDescriptorSetLayoutBinding<'a> {
     self.stageFlags
   }
 }
-impl<'a> Default for VkDescriptorSetLayoutBinding<'a> {
-  fn default() -> VkDescriptorSetLayoutBinding<'a> {
+impl<'l, 'h: 'l> Default for VkDescriptorSetLayoutBinding<'l, 'h> {
+  fn default() -> VkDescriptorSetLayoutBinding<'l, 'h> {
     VkDescriptorSetLayoutBinding::new()
   }
 }
-unsafe impl<'a> RawStruct for VkDescriptorSetLayoutBinding<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkDescriptorSetLayoutBinding<'l, 'h> {
   type Raw = types_raw::VkDescriptorSetLayoutBinding;
 }
 #[cfg(test)]
@@ -6801,17 +6799,17 @@ fn test_struct_size_vk_descriptor_set_layout_binding() {
 
 /// Structure specifying parameters of a newly created descriptor set layout
 #[repr(C)]
-pub struct VkDescriptorSetLayoutCreateInfo<'a> {
+pub struct VkDescriptorSetLayoutCreateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkDescriptorSetLayoutCreateFlags,
   bindingCount: u32,
   pBindings: *const types_raw::VkDescriptorSetLayoutBinding,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
 }
-impl<'a> VkDescriptorSetLayoutCreateInfo<'a> {
+impl<'l, 'h: 'l> VkDescriptorSetLayoutCreateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkDescriptorSetLayoutCreateInfo<'a> {
+  pub fn new() -> VkDescriptorSetLayoutCreateInfo<'l, 'h> {
     unsafe {
       VkDescriptorSetLayoutCreateInfo {
         sType: VkStructureType::DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
@@ -6825,7 +6823,7 @@ impl<'a> VkDescriptorSetLayoutCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_bindings(mut self, value: &'a [VkDescriptorSetLayoutBinding<'a>]) -> Self {
+  pub fn set_bindings(mut self, value: &'l [VkDescriptorSetLayoutBinding<'l, 'h>]) -> Self {
     self.bindingCount = value.len() as u32;
     unsafe {
       self.pBindings = value.as_raw();
@@ -6849,12 +6847,12 @@ impl<'a> VkDescriptorSetLayoutCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkDescriptorSetLayoutCreateInfo<'a> {
-  fn default() -> VkDescriptorSetLayoutCreateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkDescriptorSetLayoutCreateInfo<'l, 'h> {
+  fn default() -> VkDescriptorSetLayoutCreateInfo<'l, 'h> {
     VkDescriptorSetLayoutCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkDescriptorSetLayoutCreateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkDescriptorSetLayoutCreateInfo<'l, 'h> {
   type Raw = types_raw::VkDescriptorSetLayoutCreateInfo;
 }
 #[cfg(test)]
@@ -6913,18 +6911,18 @@ fn test_struct_size_vk_descriptor_pool_size() {
 
 /// Structure specifying parameters of a newly created descriptor pool
 #[repr(C)]
-pub struct VkDescriptorPoolCreateInfo<'a> {
+pub struct VkDescriptorPoolCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkDescriptorPoolCreateFlags,
   pub maxSets: u32,
   poolSizeCount: u32,
   pPoolSizes: *const types_raw::VkDescriptorPoolSize,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkDescriptorPoolCreateInfo<'a> {
+impl<'l> VkDescriptorPoolCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkDescriptorPoolCreateInfo<'a> {
+  pub fn new() -> VkDescriptorPoolCreateInfo<'l> {
     unsafe {
       VkDescriptorPoolCreateInfo {
         sType: VkStructureType::DESCRIPTOR_POOL_CREATE_INFO,
@@ -6943,7 +6941,7 @@ impl<'a> VkDescriptorPoolCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_pool_sizes(mut self, value: &'a [VkDescriptorPoolSize]) -> Self {
+  pub fn set_pool_sizes(mut self, value: &'l [VkDescriptorPoolSize]) -> Self {
     self.poolSizeCount = value.len() as u32;
     unsafe {
       self.pPoolSizes = value.as_raw();
@@ -6971,12 +6969,12 @@ impl<'a> VkDescriptorPoolCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkDescriptorPoolCreateInfo<'a> {
-  fn default() -> VkDescriptorPoolCreateInfo<'a> {
+impl<'l> Default for VkDescriptorPoolCreateInfo<'l> {
+  fn default() -> VkDescriptorPoolCreateInfo<'l> {
     VkDescriptorPoolCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkDescriptorPoolCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkDescriptorPoolCreateInfo<'l> {
   type Raw = types_raw::VkDescriptorPoolCreateInfo;
 }
 #[cfg(test)]
@@ -6989,21 +6987,21 @@ fn test_struct_size_vk_descriptor_pool_create_info() {
 pub enum VkDescriptorPool__ {}
 
 /// Opaque handle to a descriptor pool object
-pub type VkDescriptorPool = VkNonDispatchableHandle<VkDescriptorPool__>;
+pub type VkDescriptorPool<'l> = VkNonDispatchableHandle<'l, VkDescriptorPool__>;
 
 /// Structure specifying the allocation parameters for descriptor sets
 #[repr(C)]
-pub struct VkDescriptorSetAllocateInfo<'a> {
+pub struct VkDescriptorSetAllocateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub descriptorPool: VkDescriptorPool,
+  pub descriptorPool: VkDescriptorPool<'h>,
   descriptorSetCount: u32,
   pSetLayouts: *const types_raw::VkDescriptorSetLayout,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkDescriptorSetAllocateInfo<'a> {
+impl<'l, 'h: 'l> VkDescriptorSetAllocateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkDescriptorSetAllocateInfo<'a> {
+  pub fn new() -> VkDescriptorSetAllocateInfo<'l, 'h> {
     unsafe {
       VkDescriptorSetAllocateInfo {
         sType: VkStructureType::DESCRIPTOR_SET_ALLOCATE_INFO,
@@ -7012,12 +7010,12 @@ impl<'a> VkDescriptorSetAllocateInfo<'a> {
     }
   }
   #[inline]
-  pub fn set_descriptor_pool(mut self, value: VkDescriptorPool) -> Self {
+  pub fn set_descriptor_pool(mut self, value: VkDescriptorPool<'h>) -> Self {
     self.descriptorPool = value;
     self
   }
   #[inline]
-  pub fn set_set_layouts(mut self, value: &'a [VkDescriptorSetLayout]) -> Self {
+  pub fn set_set_layouts(mut self, value: &'l [VkDescriptorSetLayout<'h>]) -> Self {
     self.descriptorSetCount = value.len() as u32;
     unsafe {
       self.pSetLayouts = value.as_raw();
@@ -7025,7 +7023,7 @@ impl<'a> VkDescriptorSetAllocateInfo<'a> {
     self
   }
   #[inline]
-  pub fn descriptor_pool(&self) -> VkDescriptorPool {
+  pub fn descriptor_pool(&self) -> VkDescriptorPool<'h> {
     self.descriptorPool
   }
   #[inline]
@@ -7041,12 +7039,12 @@ impl<'a> VkDescriptorSetAllocateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkDescriptorSetAllocateInfo<'a> {
-  fn default() -> VkDescriptorSetAllocateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkDescriptorSetAllocateInfo<'l, 'h> {
+  fn default() -> VkDescriptorSetAllocateInfo<'l, 'h> {
     VkDescriptorSetAllocateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkDescriptorSetAllocateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkDescriptorSetAllocateInfo<'l, 'h> {
   type Raw = types_raw::VkDescriptorSetAllocateInfo;
 }
 #[cfg(test)]
@@ -7059,28 +7057,27 @@ fn test_struct_size_vk_descriptor_set_allocate_info() {
 pub enum VkDescriptorSet__ {}
 
 /// Opaque handle to a descriptor set object
-pub type VkDescriptorSet = VkNonDispatchableHandle<VkDescriptorSet__>;
+pub type VkDescriptorSet<'l> = VkNonDispatchableHandle<'l, VkDescriptorSet__>;
 
 /// Structure specifying descriptor image info
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkDescriptorImageInfo {
-  pub sampler: VkSampler,
-  pub imageView: VkImageView,
+pub struct VkDescriptorImageInfo<'h> {
+  pub sampler: VkSampler<'h>,
+  pub imageView: VkImageView<'h>,
   pub imageLayout: VkImageLayout,
 }
-impl VkDescriptorImageInfo {
+impl<'h> VkDescriptorImageInfo<'h> {
   #[inline]
-  pub fn new() -> VkDescriptorImageInfo {
+  pub fn new() -> VkDescriptorImageInfo<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_sampler(mut self, value: VkSampler) -> Self {
+  pub fn set_sampler(mut self, value: VkSampler<'h>) -> Self {
     self.sampler = value;
     self
   }
   #[inline]
-  pub fn set_image_view(mut self, value: VkImageView) -> Self {
+  pub fn set_image_view(mut self, value: VkImageView<'h>) -> Self {
     self.imageView = value;
     self
   }
@@ -7090,11 +7087,11 @@ impl VkDescriptorImageInfo {
     self
   }
   #[inline]
-  pub fn sampler(&self) -> VkSampler {
+  pub fn sampler(&self) -> VkSampler<'h> {
     self.sampler
   }
   #[inline]
-  pub fn image_view(&self) -> VkImageView {
+  pub fn image_view(&self) -> VkImageView<'h> {
     self.imageView
   }
   #[inline]
@@ -7102,12 +7099,12 @@ impl VkDescriptorImageInfo {
     self.imageLayout
   }
 }
-impl Default for VkDescriptorImageInfo {
-  fn default() -> VkDescriptorImageInfo {
+impl<'h> Default for VkDescriptorImageInfo<'h> {
+  fn default() -> VkDescriptorImageInfo<'h> {
     VkDescriptorImageInfo::new()
   }
 }
-unsafe impl RawStruct for VkDescriptorImageInfo {
+unsafe impl<'h> RawStruct for VkDescriptorImageInfo<'h> {
   type Raw = types_raw::VkDescriptorImageInfo;
 }
 #[cfg(test)]
@@ -7118,19 +7115,18 @@ fn test_struct_size_vk_descriptor_image_info() {
 
 /// Structure specifying descriptor buffer info
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct VkDescriptorBufferInfo {
-  pub buffer: VkBuffer,
+pub struct VkDescriptorBufferInfo<'h> {
+  pub buffer: VkBuffer<'h>,
   pub offset: VkDeviceSize,
   pub range: VkDeviceSize,
 }
-impl VkDescriptorBufferInfo {
+impl<'h> VkDescriptorBufferInfo<'h> {
   #[inline]
-  pub fn new() -> VkDescriptorBufferInfo {
+  pub fn new() -> VkDescriptorBufferInfo<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_buffer(mut self, value: VkBuffer) -> Self {
+  pub fn set_buffer(mut self, value: VkBuffer<'h>) -> Self {
     self.buffer = value;
     self
   }
@@ -7145,7 +7141,7 @@ impl VkDescriptorBufferInfo {
     self
   }
   #[inline]
-  pub fn buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer<'h> {
     self.buffer
   }
   #[inline]
@@ -7157,12 +7153,12 @@ impl VkDescriptorBufferInfo {
     self.range
   }
 }
-impl Default for VkDescriptorBufferInfo {
-  fn default() -> VkDescriptorBufferInfo {
+impl<'h> Default for VkDescriptorBufferInfo<'h> {
+  fn default() -> VkDescriptorBufferInfo<'h> {
     VkDescriptorBufferInfo::new()
   }
 }
-unsafe impl RawStruct for VkDescriptorBufferInfo {
+unsafe impl<'h> RawStruct for VkDescriptorBufferInfo<'h> {
   type Raw = types_raw::VkDescriptorBufferInfo;
 }
 #[cfg(test)]
@@ -7173,10 +7169,10 @@ fn test_struct_size_vk_descriptor_buffer_info() {
 
 /// Structure specifying the parameters of a descriptor set write operation
 #[repr(C)]
-pub struct VkWriteDescriptorSet<'a> {
+pub struct VkWriteDescriptorSet<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub dstSet: VkDescriptorSet,
+  pub dstSet: VkDescriptorSet<'h>,
   pub dstBinding: u32,
   pub dstArrayElement: u32,
   descriptorCount: u32,
@@ -7184,11 +7180,11 @@ pub struct VkWriteDescriptorSet<'a> {
   pImageInfo: *const types_raw::VkDescriptorImageInfo,
   pBufferInfo: *const types_raw::VkDescriptorBufferInfo,
   pTexelBufferView: *const types_raw::VkBufferView,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkWriteDescriptorSet<'a> {
+impl<'l, 'h: 'l> VkWriteDescriptorSet<'l, 'h> {
   #[inline]
-  pub fn new() -> VkWriteDescriptorSet<'a> {
+  pub fn new() -> VkWriteDescriptorSet<'l, 'h> {
     unsafe {
       VkWriteDescriptorSet {
         sType: VkStructureType::WRITE_DESCRIPTOR_SET,
@@ -7197,7 +7193,7 @@ impl<'a> VkWriteDescriptorSet<'a> {
     }
   }
   #[inline]
-  pub fn set_dst_set(mut self, value: VkDescriptorSet) -> Self {
+  pub fn set_dst_set(mut self, value: VkDescriptorSet<'h>) -> Self {
     self.dstSet = value;
     self
   }
@@ -7217,7 +7213,7 @@ impl<'a> VkWriteDescriptorSet<'a> {
     self
   }
   #[inline]
-  pub fn dst_set(&self) -> VkDescriptorSet {
+  pub fn dst_set(&self) -> VkDescriptorSet<'h> {
     self.dstSet
   }
   #[inline]
@@ -7245,12 +7241,12 @@ impl<'a> VkWriteDescriptorSet<'a> {
     self
   }
 }
-impl<'a> Default for VkWriteDescriptorSet<'a> {
-  fn default() -> VkWriteDescriptorSet<'a> {
+impl<'l, 'h: 'l> Default for VkWriteDescriptorSet<'l, 'h> {
+  fn default() -> VkWriteDescriptorSet<'l, 'h> {
     VkWriteDescriptorSet::new()
   }
 }
-unsafe impl<'a> RawStruct for VkWriteDescriptorSet<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkWriteDescriptorSet<'l, 'h> {
   type Raw = types_raw::VkWriteDescriptorSet;
 }
 #[cfg(test)]
@@ -7261,21 +7257,21 @@ fn test_struct_size_vk_write_descriptor_set() {
 
 /// Structure specifying a copy descriptor set operation
 #[repr(C)]
-pub struct VkCopyDescriptorSet<'a> {
+pub struct VkCopyDescriptorSet<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub srcSet: VkDescriptorSet,
+  pub srcSet: VkDescriptorSet<'h>,
   pub srcBinding: u32,
   pub srcArrayElement: u32,
-  pub dstSet: VkDescriptorSet,
+  pub dstSet: VkDescriptorSet<'h>,
   pub dstBinding: u32,
   pub dstArrayElement: u32,
   pub descriptorCount: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkCopyDescriptorSet<'a> {
+impl<'l, 'h: 'l> VkCopyDescriptorSet<'l, 'h> {
   #[inline]
-  pub fn new() -> VkCopyDescriptorSet<'a> {
+  pub fn new() -> VkCopyDescriptorSet<'l, 'h> {
     unsafe {
       VkCopyDescriptorSet {
         sType: VkStructureType::COPY_DESCRIPTOR_SET,
@@ -7284,7 +7280,7 @@ impl<'a> VkCopyDescriptorSet<'a> {
     }
   }
   #[inline]
-  pub fn set_src_set(mut self, value: VkDescriptorSet) -> Self {
+  pub fn set_src_set(mut self, value: VkDescriptorSet<'h>) -> Self {
     self.srcSet = value;
     self
   }
@@ -7299,7 +7295,7 @@ impl<'a> VkCopyDescriptorSet<'a> {
     self
   }
   #[inline]
-  pub fn set_dst_set(mut self, value: VkDescriptorSet) -> Self {
+  pub fn set_dst_set(mut self, value: VkDescriptorSet<'h>) -> Self {
     self.dstSet = value;
     self
   }
@@ -7319,7 +7315,7 @@ impl<'a> VkCopyDescriptorSet<'a> {
     self
   }
   #[inline]
-  pub fn src_set(&self) -> VkDescriptorSet {
+  pub fn src_set(&self) -> VkDescriptorSet<'h> {
     self.srcSet
   }
   #[inline]
@@ -7331,7 +7327,7 @@ impl<'a> VkCopyDescriptorSet<'a> {
     self.srcArrayElement
   }
   #[inline]
-  pub fn dst_set(&self) -> VkDescriptorSet {
+  pub fn dst_set(&self) -> VkDescriptorSet<'h> {
     self.dstSet
   }
   #[inline]
@@ -7355,12 +7351,12 @@ impl<'a> VkCopyDescriptorSet<'a> {
     self
   }
 }
-impl<'a> Default for VkCopyDescriptorSet<'a> {
-  fn default() -> VkCopyDescriptorSet<'a> {
+impl<'l, 'h: 'l> Default for VkCopyDescriptorSet<'l, 'h> {
+  fn default() -> VkCopyDescriptorSet<'l, 'h> {
     VkCopyDescriptorSet::new()
   }
 }
-unsafe impl<'a> RawStruct for VkCopyDescriptorSet<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkCopyDescriptorSet<'l, 'h> {
   type Raw = types_raw::VkCopyDescriptorSet;
 }
 #[cfg(test)]
@@ -7371,21 +7367,21 @@ fn test_struct_size_vk_copy_descriptor_set() {
 
 /// Structure specifying parameters of a newly created framebuffer
 #[repr(C)]
-pub struct VkFramebufferCreateInfo<'a> {
+pub struct VkFramebufferCreateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkFramebufferCreateFlags,
-  pub renderPass: VkRenderPass,
+  pub renderPass: VkRenderPass<'h>,
   attachmentCount: u32,
   pAttachments: *const types_raw::VkImageView,
   pub width: u32,
   pub height: u32,
   pub layers: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkFramebufferCreateInfo<'a> {
+impl<'l, 'h: 'l> VkFramebufferCreateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkFramebufferCreateInfo<'a> {
+  pub fn new() -> VkFramebufferCreateInfo<'l, 'h> {
     unsafe {
       VkFramebufferCreateInfo {
         sType: VkStructureType::FRAMEBUFFER_CREATE_INFO,
@@ -7399,12 +7395,12 @@ impl<'a> VkFramebufferCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_render_pass(mut self, value: VkRenderPass) -> Self {
+  pub fn set_render_pass(mut self, value: VkRenderPass<'h>) -> Self {
     self.renderPass = value;
     self
   }
   #[inline]
-  pub fn set_attachments(mut self, value: &'a [VkImageView]) -> Self {
+  pub fn set_attachments(mut self, value: &'l [VkImageView<'h>]) -> Self {
     self.attachmentCount = value.len() as u32;
     unsafe {
       self.pAttachments = value.as_raw();
@@ -7431,7 +7427,7 @@ impl<'a> VkFramebufferCreateInfo<'a> {
     self.flags
   }
   #[inline]
-  pub fn render_pass(&self) -> VkRenderPass {
+  pub fn render_pass(&self) -> VkRenderPass<'h> {
     self.renderPass
   }
   #[inline]
@@ -7459,12 +7455,12 @@ impl<'a> VkFramebufferCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkFramebufferCreateInfo<'a> {
-  fn default() -> VkFramebufferCreateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkFramebufferCreateInfo<'l, 'h> {
+  fn default() -> VkFramebufferCreateInfo<'l, 'h> {
     VkFramebufferCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkFramebufferCreateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkFramebufferCreateInfo<'l, 'h> {
   type Raw = types_raw::VkFramebufferCreateInfo;
 }
 #[cfg(test)]
@@ -7477,7 +7473,7 @@ fn test_struct_size_vk_framebuffer_create_info() {
 pub enum VkFramebuffer__ {}
 
 /// Opaque handle to a framebuffer object
-pub type VkFramebuffer = VkNonDispatchableHandle<VkFramebuffer__>;
+pub type VkFramebuffer<'l> = VkNonDispatchableHandle<'l, VkFramebuffer__>;
 
 /// Structure specifying an attachment description
 #[repr(C)]
@@ -7641,7 +7637,7 @@ fn test_struct_size_vk_attachment_reference() {
 
 /// Structure specifying a subpass description
 #[repr(C)]
-pub struct VkSubpassDescription<'a> {
+pub struct VkSubpassDescription<'l> {
   pub flags: VkSubpassDescriptionFlags,
   pub pipelineBindPoint: VkPipelineBindPoint,
   inputAttachmentCount: u32,
@@ -7649,13 +7645,13 @@ pub struct VkSubpassDescription<'a> {
   colorAttachmentCount: u32,
   pColorAttachments: *const types_raw::VkAttachmentReference,
   pResolveAttachments: *const types_raw::VkAttachmentReference,
-  pub pDepthStencilAttachment: Option<&'a VkAttachmentReference>,
+  pub pDepthStencilAttachment: Option<&'l VkAttachmentReference>,
   preserveAttachmentCount: u32,
   pPreserveAttachments: *const u32,
 }
-impl<'a> VkSubpassDescription<'a> {
+impl<'l> VkSubpassDescription<'l> {
   #[inline]
-  pub fn new() -> VkSubpassDescription<'a> {
+  pub fn new() -> VkSubpassDescription<'l> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -7669,7 +7665,7 @@ impl<'a> VkSubpassDescription<'a> {
     self
   }
   #[inline]
-  pub fn set_input_attachments(mut self, value: &'a [VkAttachmentReference]) -> Self {
+  pub fn set_input_attachments(mut self, value: &'l [VkAttachmentReference]) -> Self {
     self.inputAttachmentCount = value.len() as u32;
     unsafe {
       self.pInputAttachments = value.as_raw();
@@ -7677,12 +7673,12 @@ impl<'a> VkSubpassDescription<'a> {
     self
   }
   #[inline]
-  pub fn set_depth_stencil_attachment(mut self, value: Option<&'a VkAttachmentReference>) -> Self {
+  pub fn set_depth_stencil_attachment(mut self, value: Option<&'l VkAttachmentReference>) -> Self {
     self.pDepthStencilAttachment = value;
     self
   }
   #[inline]
-  pub fn set_preserve_attachments(mut self, value: &'a [u32]) -> Self {
+  pub fn set_preserve_attachments(mut self, value: &'l [u32]) -> Self {
     self.preserveAttachmentCount = value.len() as u32;
     unsafe {
       self.pPreserveAttachments = value.as_raw();
@@ -7706,7 +7702,7 @@ impl<'a> VkSubpassDescription<'a> {
     self.colorAttachmentCount
   }
   #[inline]
-  pub fn depth_stencil_attachment(&self) -> Option<&'a VkAttachmentReference> {
+  pub fn depth_stencil_attachment(&self) -> Option<&'l VkAttachmentReference> {
     self.pDepthStencilAttachment
   }
   #[inline]
@@ -7714,12 +7710,12 @@ impl<'a> VkSubpassDescription<'a> {
     self.preserveAttachmentCount
   }
 }
-impl<'a> Default for VkSubpassDescription<'a> {
-  fn default() -> VkSubpassDescription<'a> {
+impl<'l> Default for VkSubpassDescription<'l> {
+  fn default() -> VkSubpassDescription<'l> {
     VkSubpassDescription::new()
   }
 }
-unsafe impl<'a> RawStruct for VkSubpassDescription<'a> {
+unsafe impl<'l> RawStruct for VkSubpassDescription<'l> {
   type Raw = types_raw::VkSubpassDescription;
 }
 #[cfg(test)]
@@ -7825,7 +7821,7 @@ fn test_struct_size_vk_subpass_dependency() {
 
 /// Structure specifying parameters of a newly created render pass
 #[repr(C)]
-pub struct VkRenderPassCreateInfo<'a> {
+pub struct VkRenderPassCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkRenderPassCreateFlags,
@@ -7835,11 +7831,11 @@ pub struct VkRenderPassCreateInfo<'a> {
   pSubpasses: *const types_raw::VkSubpassDescription,
   dependencyCount: u32,
   pDependencies: *const types_raw::VkSubpassDependency,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkRenderPassCreateInfo<'a> {
+impl<'l> VkRenderPassCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkRenderPassCreateInfo<'a> {
+  pub fn new() -> VkRenderPassCreateInfo<'l> {
     unsafe {
       VkRenderPassCreateInfo {
         sType: VkStructureType::RENDER_PASS_CREATE_INFO,
@@ -7853,7 +7849,7 @@ impl<'a> VkRenderPassCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_attachments(mut self, value: &'a [VkAttachmentDescription]) -> Self {
+  pub fn set_attachments(mut self, value: &'l [VkAttachmentDescription]) -> Self {
     self.attachmentCount = value.len() as u32;
     unsafe {
       self.pAttachments = value.as_raw();
@@ -7861,7 +7857,7 @@ impl<'a> VkRenderPassCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_subpasses(mut self, value: &'a [VkSubpassDescription<'a>]) -> Self {
+  pub fn set_subpasses(mut self, value: &'l [VkSubpassDescription<'l>]) -> Self {
     self.subpassCount = value.len() as u32;
     unsafe {
       self.pSubpasses = value.as_raw();
@@ -7869,7 +7865,7 @@ impl<'a> VkRenderPassCreateInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_dependencies(mut self, value: &'a [VkSubpassDependency]) -> Self {
+  pub fn set_dependencies(mut self, value: &'l [VkSubpassDependency]) -> Self {
     self.dependencyCount = value.len() as u32;
     unsafe {
       self.pDependencies = value.as_raw();
@@ -7901,12 +7897,12 @@ impl<'a> VkRenderPassCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkRenderPassCreateInfo<'a> {
-  fn default() -> VkRenderPassCreateInfo<'a> {
+impl<'l> Default for VkRenderPassCreateInfo<'l> {
+  fn default() -> VkRenderPassCreateInfo<'l> {
     VkRenderPassCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkRenderPassCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkRenderPassCreateInfo<'l> {
   type Raw = types_raw::VkRenderPassCreateInfo;
 }
 #[cfg(test)]
@@ -7917,16 +7913,16 @@ fn test_struct_size_vk_render_pass_create_info() {
 
 /// Structure specifying parameters of a newly created command pool
 #[repr(C)]
-pub struct VkCommandPoolCreateInfo<'a> {
+pub struct VkCommandPoolCreateInfo<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkCommandPoolCreateFlags,
   pub queueFamilyIndex: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkCommandPoolCreateInfo<'a> {
+impl<'l> VkCommandPoolCreateInfo<'l> {
   #[inline]
-  pub fn new() -> VkCommandPoolCreateInfo<'a> {
+  pub fn new() -> VkCommandPoolCreateInfo<'l> {
     unsafe {
       VkCommandPoolCreateInfo {
         sType: VkStructureType::COMMAND_POOL_CREATE_INFO,
@@ -7961,12 +7957,12 @@ impl<'a> VkCommandPoolCreateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkCommandPoolCreateInfo<'a> {
-  fn default() -> VkCommandPoolCreateInfo<'a> {
+impl<'l> Default for VkCommandPoolCreateInfo<'l> {
+  fn default() -> VkCommandPoolCreateInfo<'l> {
     VkCommandPoolCreateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkCommandPoolCreateInfo<'a> {
+unsafe impl<'l> RawStruct for VkCommandPoolCreateInfo<'l> {
   type Raw = types_raw::VkCommandPoolCreateInfo;
 }
 #[cfg(test)]
@@ -7979,21 +7975,21 @@ fn test_struct_size_vk_command_pool_create_info() {
 pub enum VkCommandPool__ {}
 
 /// Opaque handle to a command pool object
-pub type VkCommandPool = VkNonDispatchableHandle<VkCommandPool__>;
+pub type VkCommandPool<'l> = VkNonDispatchableHandle<'l, VkCommandPool__>;
 
 /// Structure specifying the allocation parameters for command buffer object
 #[repr(C)]
-pub struct VkCommandBufferAllocateInfo<'a> {
+pub struct VkCommandBufferAllocateInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub commandPool: VkCommandPool,
+  pub commandPool: VkCommandPool<'h>,
   pub level: VkCommandBufferLevel,
   pub commandBufferCount: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkCommandBufferAllocateInfo<'a> {
+impl<'l, 'h: 'l> VkCommandBufferAllocateInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkCommandBufferAllocateInfo<'a> {
+  pub fn new() -> VkCommandBufferAllocateInfo<'l, 'h> {
     unsafe {
       VkCommandBufferAllocateInfo {
         sType: VkStructureType::COMMAND_BUFFER_ALLOCATE_INFO,
@@ -8002,7 +7998,7 @@ impl<'a> VkCommandBufferAllocateInfo<'a> {
     }
   }
   #[inline]
-  pub fn set_command_pool(mut self, value: VkCommandPool) -> Self {
+  pub fn set_command_pool(mut self, value: VkCommandPool<'h>) -> Self {
     self.commandPool = value;
     self
   }
@@ -8017,7 +8013,7 @@ impl<'a> VkCommandBufferAllocateInfo<'a> {
     self
   }
   #[inline]
-  pub fn command_pool(&self) -> VkCommandPool {
+  pub fn command_pool(&self) -> VkCommandPool<'h> {
     self.commandPool
   }
   #[inline]
@@ -8037,12 +8033,12 @@ impl<'a> VkCommandBufferAllocateInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkCommandBufferAllocateInfo<'a> {
-  fn default() -> VkCommandBufferAllocateInfo<'a> {
+impl<'l, 'h: 'l> Default for VkCommandBufferAllocateInfo<'l, 'h> {
+  fn default() -> VkCommandBufferAllocateInfo<'l, 'h> {
     VkCommandBufferAllocateInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkCommandBufferAllocateInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkCommandBufferAllocateInfo<'l, 'h> {
   type Raw = types_raw::VkCommandBufferAllocateInfo;
 }
 #[cfg(test)]
@@ -8053,20 +8049,20 @@ fn test_struct_size_vk_command_buffer_allocate_info() {
 
 /// Structure specifying command buffer inheritance info
 #[repr(C)]
-pub struct VkCommandBufferInheritanceInfo<'a> {
+pub struct VkCommandBufferInheritanceInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub renderPass: Option<VkRenderPass>,
+  pub renderPass: Option<VkRenderPass<'h>>,
   pub subpass: u32,
-  pub framebuffer: Option<VkFramebuffer>,
+  pub framebuffer: Option<VkFramebuffer<'h>>,
   pub occlusionQueryEnable: VkBool32,
   pub queryFlags: VkQueryControlFlags,
   pub pipelineStatistics: VkQueryPipelineStatisticFlags,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkCommandBufferInheritanceInfo<'a> {
+impl<'l, 'h: 'l> VkCommandBufferInheritanceInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkCommandBufferInheritanceInfo<'a> {
+  pub fn new() -> VkCommandBufferInheritanceInfo<'l, 'h> {
     unsafe {
       VkCommandBufferInheritanceInfo {
         sType: VkStructureType::COMMAND_BUFFER_INHERITANCE_INFO,
@@ -8075,7 +8071,7 @@ impl<'a> VkCommandBufferInheritanceInfo<'a> {
     }
   }
   #[inline]
-  pub fn set_render_pass(mut self, value: Option<VkRenderPass>) -> Self {
+  pub fn set_render_pass(mut self, value: Option<VkRenderPass<'h>>) -> Self {
     self.renderPass = value;
     self
   }
@@ -8085,7 +8081,7 @@ impl<'a> VkCommandBufferInheritanceInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_framebuffer(mut self, value: Option<VkFramebuffer>) -> Self {
+  pub fn set_framebuffer(mut self, value: Option<VkFramebuffer<'h>>) -> Self {
     self.framebuffer = value;
     self
   }
@@ -8106,7 +8102,7 @@ impl<'a> VkCommandBufferInheritanceInfo<'a> {
     self
   }
   #[inline]
-  pub fn render_pass(&self) -> Option<VkRenderPass> {
+  pub fn render_pass(&self) -> Option<VkRenderPass<'h>> {
     self.renderPass
   }
   #[inline]
@@ -8114,7 +8110,7 @@ impl<'a> VkCommandBufferInheritanceInfo<'a> {
     self.subpass
   }
   #[inline]
-  pub fn framebuffer(&self) -> Option<VkFramebuffer> {
+  pub fn framebuffer(&self) -> Option<VkFramebuffer<'h>> {
     self.framebuffer
   }
   #[inline]
@@ -8138,12 +8134,12 @@ impl<'a> VkCommandBufferInheritanceInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkCommandBufferInheritanceInfo<'a> {
-  fn default() -> VkCommandBufferInheritanceInfo<'a> {
+impl<'l, 'h: 'l> Default for VkCommandBufferInheritanceInfo<'l, 'h> {
+  fn default() -> VkCommandBufferInheritanceInfo<'l, 'h> {
     VkCommandBufferInheritanceInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkCommandBufferInheritanceInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkCommandBufferInheritanceInfo<'l, 'h> {
   type Raw = types_raw::VkCommandBufferInheritanceInfo;
 }
 #[cfg(test)]
@@ -8157,15 +8153,15 @@ fn test_struct_size_vk_command_buffer_inheritance_info() {
 
 /// Structure specifying a command buffer begin operation
 #[repr(C)]
-pub struct VkCommandBufferBeginInfo<'a> {
+pub struct VkCommandBufferBeginInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkCommandBufferUsageFlags,
-  pub pInheritanceInfo: Option<&'a VkCommandBufferInheritanceInfo<'a>>,
+  pub pInheritanceInfo: Option<&'l VkCommandBufferInheritanceInfo<'l, 'h>>,
 }
-impl<'a> VkCommandBufferBeginInfo<'a> {
+impl<'l, 'h: 'l> VkCommandBufferBeginInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkCommandBufferBeginInfo<'a> {
+  pub fn new() -> VkCommandBufferBeginInfo<'l, 'h> {
     unsafe {
       VkCommandBufferBeginInfo {
         sType: VkStructureType::COMMAND_BUFFER_BEGIN_INFO,
@@ -8179,7 +8175,7 @@ impl<'a> VkCommandBufferBeginInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_inheritance_info(mut self, value: Option<&'a VkCommandBufferInheritanceInfo<'a>>) -> Self {
+  pub fn set_inheritance_info(mut self, value: Option<&'l VkCommandBufferInheritanceInfo<'l, 'h>>) -> Self {
     self.pInheritanceInfo = value;
     self
   }
@@ -8188,7 +8184,7 @@ impl<'a> VkCommandBufferBeginInfo<'a> {
     self.flags
   }
   #[inline]
-  pub fn inheritance_info(&self) -> Option<&'a VkCommandBufferInheritanceInfo<'a>> {
+  pub fn inheritance_info(&self) -> Option<&'l VkCommandBufferInheritanceInfo<'l, 'h>> {
     self.pInheritanceInfo
   }
   #[inline]
@@ -8200,12 +8196,12 @@ impl<'a> VkCommandBufferBeginInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkCommandBufferBeginInfo<'a> {
-  fn default() -> VkCommandBufferBeginInfo<'a> {
+impl<'l, 'h: 'l> Default for VkCommandBufferBeginInfo<'l, 'h> {
+  fn default() -> VkCommandBufferBeginInfo<'l, 'h> {
     VkCommandBufferBeginInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkCommandBufferBeginInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkCommandBufferBeginInfo<'l, 'h> {
   type Raw = types_raw::VkCommandBufferBeginInfo;
 }
 #[cfg(test)]
@@ -8824,19 +8820,19 @@ fn test_struct_size_vk_image_resolve() {
 
 /// Structure specifying render pass begin info
 #[repr(C)]
-pub struct VkRenderPassBeginInfo<'a> {
+pub struct VkRenderPassBeginInfo<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub renderPass: VkRenderPass,
-  pub framebuffer: VkFramebuffer,
+  pub renderPass: VkRenderPass<'h>,
+  pub framebuffer: VkFramebuffer<'h>,
   pub renderArea: VkRect2D,
   clearValueCount: u32,
   pClearValues: *const types_raw::VkClearValue,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
-impl<'a> VkRenderPassBeginInfo<'a> {
+impl<'l, 'h: 'l> VkRenderPassBeginInfo<'l, 'h> {
   #[inline]
-  pub fn new() -> VkRenderPassBeginInfo<'a> {
+  pub fn new() -> VkRenderPassBeginInfo<'l, 'h> {
     unsafe {
       VkRenderPassBeginInfo {
         sType: VkStructureType::RENDER_PASS_BEGIN_INFO,
@@ -8845,12 +8841,12 @@ impl<'a> VkRenderPassBeginInfo<'a> {
     }
   }
   #[inline]
-  pub fn set_render_pass(mut self, value: VkRenderPass) -> Self {
+  pub fn set_render_pass(mut self, value: VkRenderPass<'h>) -> Self {
     self.renderPass = value;
     self
   }
   #[inline]
-  pub fn set_framebuffer(mut self, value: VkFramebuffer) -> Self {
+  pub fn set_framebuffer(mut self, value: VkFramebuffer<'h>) -> Self {
     self.framebuffer = value;
     self
   }
@@ -8860,7 +8856,7 @@ impl<'a> VkRenderPassBeginInfo<'a> {
     self
   }
   #[inline]
-  pub fn set_clear_values(mut self, value: &'a [VkClearValue]) -> Self {
+  pub fn set_clear_values(mut self, value: &'l [VkClearValue]) -> Self {
     self.clearValueCount = value.len() as u32;
     unsafe {
       self.pClearValues = value.as_raw();
@@ -8868,11 +8864,11 @@ impl<'a> VkRenderPassBeginInfo<'a> {
     self
   }
   #[inline]
-  pub fn render_pass(&self) -> VkRenderPass {
+  pub fn render_pass(&self) -> VkRenderPass<'h> {
     self.renderPass
   }
   #[inline]
-  pub fn framebuffer(&self) -> VkFramebuffer {
+  pub fn framebuffer(&self) -> VkFramebuffer<'h> {
     self.framebuffer
   }
   #[inline]
@@ -8892,12 +8888,12 @@ impl<'a> VkRenderPassBeginInfo<'a> {
     self
   }
 }
-impl<'a> Default for VkRenderPassBeginInfo<'a> {
-  fn default() -> VkRenderPassBeginInfo<'a> {
+impl<'l, 'h: 'l> Default for VkRenderPassBeginInfo<'l, 'h> {
+  fn default() -> VkRenderPassBeginInfo<'l, 'h> {
     VkRenderPassBeginInfo::new()
   }
 }
-unsafe impl<'a> RawStruct for VkRenderPassBeginInfo<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkRenderPassBeginInfo<'l, 'h> {
   type Raw = types_raw::VkRenderPassBeginInfo;
 }
 #[cfg(test)]
@@ -8914,7 +8910,7 @@ pub enum VkSurfaceKHR__ {}
 
 /// Opaque handle to a surface object
 #[cfg(feature = "VK_KHR_surface")]
-pub type VkSurfaceKHR = VkNonDispatchableHandle<VkSurfaceKHR__>;
+pub type VkSurfaceKHR<'l> = VkNonDispatchableHandle<'l, VkSurfaceKHR__>;
 
 /// Structure describing capabilities of a surface
 #[repr(C)]
@@ -9024,16 +9020,16 @@ pub enum VkSwapchainKHR__ {}
 
 /// Opaque handle to a swapchain object
 #[cfg(feature = "VK_KHR_swapchain")]
-pub type VkSwapchainKHR = VkNonDispatchableHandle<VkSwapchainKHR__>;
+pub type VkSwapchainKHR<'l> = VkNonDispatchableHandle<'l, VkSwapchainKHR__>;
 
 /// Structure specifying parameters of a newly created swapchain object
 #[repr(C)]
 #[cfg(feature = "VK_KHR_swapchain")]
-pub struct VkSwapchainCreateInfoKHR<'a> {
+pub struct VkSwapchainCreateInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkSwapchainCreateFlagsKHR,
-  pub surface: VkSurfaceKHR,
+  pub surface: VkSurfaceKHR<'h>,
   pub minImageCount: u32,
   pub imageFormat: VkFormat,
   pub imageColorSpace: VkColorSpaceKHR,
@@ -9047,13 +9043,13 @@ pub struct VkSwapchainCreateInfoKHR<'a> {
   pub compositeAlpha: VkCompositeAlphaFlagBitsKHR,
   pub presentMode: VkPresentModeKHR,
   pub clipped: VkBool32,
-  pub oldSwapchain: Option<VkSwapchainKHR>,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub oldSwapchain: Option<VkSwapchainKHR<'h>>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_swapchain")]
-impl<'a> VkSwapchainCreateInfoKHR<'a> {
+impl<'l, 'h: 'l> VkSwapchainCreateInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkSwapchainCreateInfoKHR<'a> {
+  pub fn new() -> VkSwapchainCreateInfoKHR<'l, 'h> {
     unsafe {
       VkSwapchainCreateInfoKHR {
         sType: VkStructureType::SWAPCHAIN_CREATE_INFO_KHR,
@@ -9067,7 +9063,7 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_surface(mut self, value: VkSurfaceKHR) -> Self {
+  pub fn set_surface(mut self, value: VkSurfaceKHR<'h>) -> Self {
     self.surface = value;
     self
   }
@@ -9107,7 +9103,7 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_queue_family_indices(mut self, value: &'a [u32]) -> Self {
+  pub fn set_queue_family_indices(mut self, value: &'l [u32]) -> Self {
     self.queueFamilyIndexCount = value.len() as u32;
     unsafe {
       self.pQueueFamilyIndices = value.as_raw();
@@ -9136,7 +9132,7 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_old_swapchain(mut self, value: Option<VkSwapchainKHR>) -> Self {
+  pub fn set_old_swapchain(mut self, value: Option<VkSwapchainKHR<'h>>) -> Self {
     self.oldSwapchain = value;
     self
   }
@@ -9145,7 +9141,7 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self.flags
   }
   #[inline]
-  pub fn surface(&self) -> VkSurfaceKHR {
+  pub fn surface(&self) -> VkSurfaceKHR<'h> {
     self.surface
   }
   #[inline]
@@ -9197,7 +9193,7 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
     self.clipped != 0
   }
   #[inline]
-  pub fn old_swapchain(&self) -> Option<VkSwapchainKHR> {
+  pub fn old_swapchain(&self) -> Option<VkSwapchainKHR<'h>> {
     self.oldSwapchain
   }
   #[inline]
@@ -9210,13 +9206,13 @@ impl<'a> VkSwapchainCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_swapchain")]
-impl<'a> Default for VkSwapchainCreateInfoKHR<'a> {
-  fn default() -> VkSwapchainCreateInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkSwapchainCreateInfoKHR<'l, 'h> {
+  fn default() -> VkSwapchainCreateInfoKHR<'l, 'h> {
     VkSwapchainCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_swapchain")]
-unsafe impl<'a> RawStruct for VkSwapchainCreateInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkSwapchainCreateInfoKHR<'l, 'h> {
   type Raw = types_raw::VkSwapchainCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_swapchain")]
@@ -9229,7 +9225,7 @@ fn test_struct_size_vk_swapchain_create_info_khr() {
 /// Structure describing parameters of a queue presentation
 #[repr(C)]
 #[cfg(feature = "VK_KHR_swapchain")]
-pub struct VkPresentInfoKHR<'a> {
+pub struct VkPresentInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   waitSemaphoreCount: u32,
@@ -9238,12 +9234,12 @@ pub struct VkPresentInfoKHR<'a> {
   pSwapchains: *const types_raw::VkSwapchainKHR,
   pImageIndices: *const u32,
   pResults: *mut VkResult,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
 }
 #[cfg(feature = "VK_KHR_swapchain")]
-impl<'a> VkPresentInfoKHR<'a> {
+impl<'l, 'h: 'l> VkPresentInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkPresentInfoKHR<'a> {
+  pub fn new() -> VkPresentInfoKHR<'l, 'h> {
     unsafe {
       VkPresentInfoKHR {
         sType: VkStructureType::PRESENT_INFO_KHR,
@@ -9252,7 +9248,7 @@ impl<'a> VkPresentInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_wait_semaphores(mut self, value: &'a [VkSemaphore]) -> Self {
+  pub fn set_wait_semaphores(mut self, value: &'l [VkSemaphore<'h>]) -> Self {
     self.waitSemaphoreCount = value.len() as u32;
     unsafe {
       self.pWaitSemaphores = value.as_raw();
@@ -9277,13 +9273,13 @@ impl<'a> VkPresentInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_swapchain")]
-impl<'a> Default for VkPresentInfoKHR<'a> {
-  fn default() -> VkPresentInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkPresentInfoKHR<'l, 'h> {
+  fn default() -> VkPresentInfoKHR<'l, 'h> {
     VkPresentInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_swapchain")]
-unsafe impl<'a> RawStruct for VkPresentInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkPresentInfoKHR<'l, 'h> {
   type Raw = types_raw::VkPresentInfoKHR;
 }
 #[cfg(feature = "VK_KHR_swapchain")]
@@ -9301,25 +9297,25 @@ pub enum VkDisplayKHR__ {}
 
 /// Opaque handle to a display object
 #[cfg(feature = "VK_KHR_display")]
-pub type VkDisplayKHR = VkNonDispatchableHandle<VkDisplayKHR__>;
+pub type VkDisplayKHR<'l> = VkNonDispatchableHandle<'l, VkDisplayKHR__>;
 
 /// Structure describing an available display device
 #[repr(C)]
 #[cfg(feature = "VK_KHR_display")]
-pub struct VkDisplayPropertiesKHR<'a> {
-  pub display: VkDisplayKHR,
+pub struct VkDisplayPropertiesKHR<'l, 'h: 'l> {
+  pub display: VkDisplayKHR<'h>,
   displayName: *const c_char,
   pub physicalDimensions: VkExtent2D,
   pub physicalResolution: VkExtent2D,
   pub supportedTransforms: VkSurfaceTransformFlagsKHR,
   pub planeReorderPossible: VkBool32,
   pub persistentContent: VkBool32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_display")]
-impl<'a> VkDisplayPropertiesKHR<'a> {
+impl<'l, 'h: 'l> VkDisplayPropertiesKHR<'l, 'h> {
   #[inline]
-  pub fn display(&self) -> VkDisplayKHR {
+  pub fn display(&self) -> VkDisplayKHR<'h> {
     self.display
   }
   #[inline]
@@ -9348,7 +9344,7 @@ impl<'a> VkDisplayPropertiesKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-unsafe impl<'a> RawStruct for VkDisplayPropertiesKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkDisplayPropertiesKHR<'l, 'h> {
   type Raw = types_raw::VkDisplayPropertiesKHR;
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -9414,20 +9410,19 @@ pub enum VkDisplayModeKHR__ {}
 
 /// Opaque handle to a display mode object
 #[cfg(feature = "VK_KHR_display")]
-pub type VkDisplayModeKHR = VkNonDispatchableHandle<VkDisplayModeKHR__>;
+pub type VkDisplayModeKHR<'l> = VkNonDispatchableHandle<'l, VkDisplayModeKHR__>;
 
 /// Structure describing display mode properties
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
-pub struct VkDisplayModePropertiesKHR {
-  pub displayMode: VkDisplayModeKHR,
+pub struct VkDisplayModePropertiesKHR<'h> {
+  pub displayMode: VkDisplayModeKHR<'h>,
   pub parameters: VkDisplayModeParametersKHR,
 }
 #[cfg(feature = "VK_KHR_display")]
-impl VkDisplayModePropertiesKHR {
+impl<'h> VkDisplayModePropertiesKHR<'h> {
   #[inline]
-  pub fn display_mode(&self) -> VkDisplayModeKHR {
+  pub fn display_mode(&self) -> VkDisplayModeKHR<'h> {
     self.displayMode
   }
   #[inline]
@@ -9436,7 +9431,7 @@ impl VkDisplayModePropertiesKHR {
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-unsafe impl RawStruct for VkDisplayModePropertiesKHR {
+unsafe impl<'h> RawStruct for VkDisplayModePropertiesKHR<'h> {
   type Raw = types_raw::VkDisplayModePropertiesKHR;
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -9449,17 +9444,17 @@ fn test_struct_size_vk_display_mode_properties_khr() {
 /// Structure specifying parameters of a newly created display mode object
 #[repr(C)]
 #[cfg(feature = "VK_KHR_display")]
-pub struct VkDisplayModeCreateInfoKHR<'a> {
+pub struct VkDisplayModeCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkDisplayModeCreateFlagsKHR,
   pub parameters: VkDisplayModeParametersKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_display")]
-impl<'a> VkDisplayModeCreateInfoKHR<'a> {
+impl<'l> VkDisplayModeCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkDisplayModeCreateInfoKHR<'a> {
+  pub fn new() -> VkDisplayModeCreateInfoKHR<'l> {
     unsafe {
       VkDisplayModeCreateInfoKHR {
         sType: VkStructureType::DISPLAY_MODE_CREATE_INFO_KHR,
@@ -9495,13 +9490,13 @@ impl<'a> VkDisplayModeCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-impl<'a> Default for VkDisplayModeCreateInfoKHR<'a> {
-  fn default() -> VkDisplayModeCreateInfoKHR<'a> {
+impl<'l> Default for VkDisplayModeCreateInfoKHR<'l> {
+  fn default() -> VkDisplayModeCreateInfoKHR<'l> {
     VkDisplayModeCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-unsafe impl<'a> RawStruct for VkDisplayModeCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkDisplayModeCreateInfoKHR<'l> {
   type Raw = types_raw::VkDisplayModeCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -9578,16 +9573,15 @@ fn test_struct_size_vk_display_plane_capabilities_khr() {
 
 /// Structure describing display plane properties
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHR_display")]
-pub struct VkDisplayPlanePropertiesKHR {
-  pub currentDisplay: VkDisplayKHR,
+pub struct VkDisplayPlanePropertiesKHR<'h> {
+  pub currentDisplay: VkDisplayKHR<'h>,
   pub currentStackIndex: u32,
 }
 #[cfg(feature = "VK_KHR_display")]
-impl VkDisplayPlanePropertiesKHR {
+impl<'h> VkDisplayPlanePropertiesKHR<'h> {
   #[inline]
-  pub fn current_display(&self) -> VkDisplayKHR {
+  pub fn current_display(&self) -> VkDisplayKHR<'h> {
     self.currentDisplay
   }
   #[inline]
@@ -9596,7 +9590,7 @@ impl VkDisplayPlanePropertiesKHR {
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-unsafe impl RawStruct for VkDisplayPlanePropertiesKHR {
+unsafe impl<'h> RawStruct for VkDisplayPlanePropertiesKHR<'h> {
   type Raw = types_raw::VkDisplayPlanePropertiesKHR;
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -9609,23 +9603,23 @@ fn test_struct_size_vk_display_plane_properties_khr() {
 /// Structure specifying parameters of a newly created display plane surface object
 #[repr(C)]
 #[cfg(feature = "VK_KHR_display")]
-pub struct VkDisplaySurfaceCreateInfoKHR<'a> {
+pub struct VkDisplaySurfaceCreateInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkDisplaySurfaceCreateFlagsKHR,
-  pub displayMode: VkDisplayModeKHR,
+  pub displayMode: VkDisplayModeKHR<'h>,
   pub planeIndex: u32,
   pub planeStackIndex: u32,
   pub transform: VkSurfaceTransformFlagBitsKHR,
   pub globalAlpha: f32,
   pub alphaMode: VkDisplayPlaneAlphaFlagBitsKHR,
   pub imageExtent: VkExtent2D,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_display")]
-impl<'a> VkDisplaySurfaceCreateInfoKHR<'a> {
+impl<'l, 'h: 'l> VkDisplaySurfaceCreateInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkDisplaySurfaceCreateInfoKHR<'a> {
+  pub fn new() -> VkDisplaySurfaceCreateInfoKHR<'l, 'h> {
     unsafe {
       VkDisplaySurfaceCreateInfoKHR {
         sType: VkStructureType::DISPLAY_SURFACE_CREATE_INFO_KHR,
@@ -9639,7 +9633,7 @@ impl<'a> VkDisplaySurfaceCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_display_mode(mut self, value: VkDisplayModeKHR) -> Self {
+  pub fn set_display_mode(mut self, value: VkDisplayModeKHR<'h>) -> Self {
     self.displayMode = value;
     self
   }
@@ -9678,7 +9672,7 @@ impl<'a> VkDisplaySurfaceCreateInfoKHR<'a> {
     self.flags
   }
   #[inline]
-  pub fn display_mode(&self) -> VkDisplayModeKHR {
+  pub fn display_mode(&self) -> VkDisplayModeKHR<'h> {
     self.displayMode
   }
   #[inline]
@@ -9715,13 +9709,13 @@ impl<'a> VkDisplaySurfaceCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-impl<'a> Default for VkDisplaySurfaceCreateInfoKHR<'a> {
-  fn default() -> VkDisplaySurfaceCreateInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkDisplaySurfaceCreateInfoKHR<'l, 'h> {
+  fn default() -> VkDisplaySurfaceCreateInfoKHR<'l, 'h> {
     VkDisplaySurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display")]
-unsafe impl<'a> RawStruct for VkDisplaySurfaceCreateInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkDisplaySurfaceCreateInfoKHR<'l, 'h> {
   type Raw = types_raw::VkDisplaySurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_display")]
@@ -9736,18 +9730,18 @@ fn test_struct_size_vk_display_surface_create_info_khr() {
 /// Structure describing parameters of a queue presentation to a swapchain
 #[repr(C)]
 #[cfg(feature = "VK_KHR_display_swapchain")]
-pub struct VkDisplayPresentInfoKHR<'a> {
+pub struct VkDisplayPresentInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub srcRect: VkRect2D,
   pub dstRect: VkRect2D,
   pub persistent: VkBool32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
-impl<'a> VkDisplayPresentInfoKHR<'a> {
+impl<'l> VkDisplayPresentInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkDisplayPresentInfoKHR<'a> {
+  pub fn new() -> VkDisplayPresentInfoKHR<'l> {
     unsafe {
       VkDisplayPresentInfoKHR {
         sType: VkStructureType::DISPLAY_PRESENT_INFO_KHR,
@@ -9785,17 +9779,17 @@ impl<'a> VkDisplayPresentInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
-impl<'a> Default for VkDisplayPresentInfoKHR<'a> {
-  fn default() -> VkDisplayPresentInfoKHR<'a> {
+impl<'l> Default for VkDisplayPresentInfoKHR<'l> {
+  fn default() -> VkDisplayPresentInfoKHR<'l> {
     VkDisplayPresentInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
-unsafe impl<'a> RawStruct for VkDisplayPresentInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkDisplayPresentInfoKHR<'l> {
   type Raw = types_raw::VkDisplayPresentInfoKHR;
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkDisplayPresentInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkPresentInfoKHR<'l, 'h>> for VkDisplayPresentInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -9816,19 +9810,19 @@ fn test_struct_size_vk_display_present_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-pub struct VkXlibSurfaceCreateInfoKHR<'a> {
+pub struct VkXlibSurfaceCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkXlibSurfaceCreateFlagsKHR,
   pub dpy: *mut wsi::xlib::Display,
   pub window: wsi::xlib::Window,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-impl<'a> VkXlibSurfaceCreateInfoKHR<'a> {
+impl<'l> VkXlibSurfaceCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkXlibSurfaceCreateInfoKHR<'a> {
+  pub fn new() -> VkXlibSurfaceCreateInfoKHR<'l> {
     unsafe {
       VkXlibSurfaceCreateInfoKHR {
         sType: VkStructureType::XLIB_SURFACE_CREATE_INFO_KHR,
@@ -9874,14 +9868,14 @@ impl<'a> VkXlibSurfaceCreateInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-impl<'a> Default for VkXlibSurfaceCreateInfoKHR<'a> {
-  fn default() -> VkXlibSurfaceCreateInfoKHR<'a> {
+impl<'l> Default for VkXlibSurfaceCreateInfoKHR<'l> {
+  fn default() -> VkXlibSurfaceCreateInfoKHR<'l> {
     VkXlibSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
-unsafe impl<'a> RawStruct for VkXlibSurfaceCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkXlibSurfaceCreateInfoKHR<'l> {
   type Raw = types_raw::VkXlibSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_xlib_surface")]
@@ -9898,19 +9892,19 @@ fn test_struct_size_vk_xlib_surface_create_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-pub struct VkXcbSurfaceCreateInfoKHR<'a> {
+pub struct VkXcbSurfaceCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkXcbSurfaceCreateFlagsKHR,
   pub connection: *mut wsi::xcb::xcb_connection_t,
   pub window: wsi::xcb::xcb_window_t,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-impl<'a> VkXcbSurfaceCreateInfoKHR<'a> {
+impl<'l> VkXcbSurfaceCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkXcbSurfaceCreateInfoKHR<'a> {
+  pub fn new() -> VkXcbSurfaceCreateInfoKHR<'l> {
     unsafe {
       VkXcbSurfaceCreateInfoKHR {
         sType: VkStructureType::XCB_SURFACE_CREATE_INFO_KHR,
@@ -9956,14 +9950,14 @@ impl<'a> VkXcbSurfaceCreateInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-impl<'a> Default for VkXcbSurfaceCreateInfoKHR<'a> {
-  fn default() -> VkXcbSurfaceCreateInfoKHR<'a> {
+impl<'l> Default for VkXcbSurfaceCreateInfoKHR<'l> {
+  fn default() -> VkXcbSurfaceCreateInfoKHR<'l> {
     VkXcbSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
-unsafe impl<'a> RawStruct for VkXcbSurfaceCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkXcbSurfaceCreateInfoKHR<'l> {
   type Raw = types_raw::VkXcbSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_xcb_surface")]
@@ -9980,19 +9974,19 @@ fn test_struct_size_vk_xcb_surface_create_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-pub struct VkWaylandSurfaceCreateInfoKHR<'a> {
+pub struct VkWaylandSurfaceCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkWaylandSurfaceCreateFlagsKHR,
   pub display: *mut wsi::wayland::wl_display,
   pub surface: *mut wsi::wayland::wl_surface,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-impl<'a> VkWaylandSurfaceCreateInfoKHR<'a> {
+impl<'l> VkWaylandSurfaceCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkWaylandSurfaceCreateInfoKHR<'a> {
+  pub fn new() -> VkWaylandSurfaceCreateInfoKHR<'l> {
     unsafe {
       VkWaylandSurfaceCreateInfoKHR {
         sType: VkStructureType::WAYLAND_SURFACE_CREATE_INFO_KHR,
@@ -10038,14 +10032,14 @@ impl<'a> VkWaylandSurfaceCreateInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-impl<'a> Default for VkWaylandSurfaceCreateInfoKHR<'a> {
-  fn default() -> VkWaylandSurfaceCreateInfoKHR<'a> {
+impl<'l> Default for VkWaylandSurfaceCreateInfoKHR<'l> {
+  fn default() -> VkWaylandSurfaceCreateInfoKHR<'l> {
     VkWaylandSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
-unsafe impl<'a> RawStruct for VkWaylandSurfaceCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkWaylandSurfaceCreateInfoKHR<'l> {
   type Raw = types_raw::VkWaylandSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_wayland_surface")]
@@ -10062,19 +10056,19 @@ fn test_struct_size_vk_wayland_surface_create_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-pub struct VkMirSurfaceCreateInfoKHR<'a> {
+pub struct VkMirSurfaceCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkMirSurfaceCreateFlagsKHR,
   pub connection: *mut wsi::mir::MirConnection,
   pub mirSurface: *mut wsi::mir::MirSurface,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-impl<'a> VkMirSurfaceCreateInfoKHR<'a> {
+impl<'l> VkMirSurfaceCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkMirSurfaceCreateInfoKHR<'a> {
+  pub fn new() -> VkMirSurfaceCreateInfoKHR<'l> {
     unsafe {
       VkMirSurfaceCreateInfoKHR {
         sType: VkStructureType::MIR_SURFACE_CREATE_INFO_KHR,
@@ -10120,14 +10114,14 @@ impl<'a> VkMirSurfaceCreateInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-impl<'a> Default for VkMirSurfaceCreateInfoKHR<'a> {
-  fn default() -> VkMirSurfaceCreateInfoKHR<'a> {
+impl<'l> Default for VkMirSurfaceCreateInfoKHR<'l> {
+  fn default() -> VkMirSurfaceCreateInfoKHR<'l> {
     VkMirSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
-unsafe impl<'a> RawStruct for VkMirSurfaceCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkMirSurfaceCreateInfoKHR<'l> {
   type Raw = types_raw::VkMirSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_mir_surface")]
@@ -10144,18 +10138,18 @@ fn test_struct_size_vk_mir_surface_create_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-pub struct VkAndroidSurfaceCreateInfoKHR<'a> {
+pub struct VkAndroidSurfaceCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkAndroidSurfaceCreateFlagsKHR,
   pub window: *mut wsi::android::ANativeWindow,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-impl<'a> VkAndroidSurfaceCreateInfoKHR<'a> {
+impl<'l> VkAndroidSurfaceCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkAndroidSurfaceCreateInfoKHR<'a> {
+  pub fn new() -> VkAndroidSurfaceCreateInfoKHR<'l> {
     unsafe {
       VkAndroidSurfaceCreateInfoKHR {
         sType: VkStructureType::ANDROID_SURFACE_CREATE_INFO_KHR,
@@ -10192,14 +10186,14 @@ impl<'a> VkAndroidSurfaceCreateInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-impl<'a> Default for VkAndroidSurfaceCreateInfoKHR<'a> {
-  fn default() -> VkAndroidSurfaceCreateInfoKHR<'a> {
+impl<'l> Default for VkAndroidSurfaceCreateInfoKHR<'l> {
+  fn default() -> VkAndroidSurfaceCreateInfoKHR<'l> {
     VkAndroidSurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
-unsafe impl<'a> RawStruct for VkAndroidSurfaceCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkAndroidSurfaceCreateInfoKHR<'l> {
   type Raw = types_raw::VkAndroidSurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_android_surface")]
@@ -10216,19 +10210,19 @@ fn test_struct_size_vk_android_surface_create_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkWin32SurfaceCreateInfoKHR<'a> {
+pub struct VkWin32SurfaceCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkWin32SurfaceCreateFlagsKHR,
   pub hinstance: wsi::win32::HINSTANCE,
   pub hwnd: wsi::win32::HWND,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkWin32SurfaceCreateInfoKHR<'a> {
+impl<'l> VkWin32SurfaceCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkWin32SurfaceCreateInfoKHR<'a> {
+  pub fn new() -> VkWin32SurfaceCreateInfoKHR<'l> {
     unsafe {
       VkWin32SurfaceCreateInfoKHR {
         sType: VkStructureType::WIN32_SURFACE_CREATE_INFO_KHR,
@@ -10274,14 +10268,14 @@ impl<'a> VkWin32SurfaceCreateInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkWin32SurfaceCreateInfoKHR<'a> {
-  fn default() -> VkWin32SurfaceCreateInfoKHR<'a> {
+impl<'l> Default for VkWin32SurfaceCreateInfoKHR<'l> {
+  fn default() -> VkWin32SurfaceCreateInfoKHR<'l> {
     VkWin32SurfaceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkWin32SurfaceCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkWin32SurfaceCreateInfoKHR<'l> {
   type Raw = types_raw::VkWin32SurfaceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_win32_surface")]
@@ -10301,18 +10295,18 @@ pub use types_raw::PFN_vkDebugReportCallbackEXT;
 /// Structure specifying parameters of a newly created debug report callback
 #[repr(C)]
 #[cfg(feature = "VK_EXT_debug_report")]
-pub struct VkDebugReportCallbackCreateInfoEXT<'a> {
+pub struct VkDebugReportCallbackCreateInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkDebugReportFlagsEXT,
   pub pfnCallback: PFN_vkDebugReportCallbackEXT,
   pUserData: *mut c_void,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_debug_report")]
-impl<'a> VkDebugReportCallbackCreateInfoEXT<'a> {
+impl<'l> VkDebugReportCallbackCreateInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkDebugReportCallbackCreateInfoEXT<'a> {
+  pub fn new() -> VkDebugReportCallbackCreateInfoEXT<'l> {
     unsafe {
       VkDebugReportCallbackCreateInfoEXT {
         sType: VkStructureType::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
@@ -10349,17 +10343,17 @@ impl<'a> VkDebugReportCallbackCreateInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_debug_report")]
-impl<'a> Default for VkDebugReportCallbackCreateInfoEXT<'a> {
-  fn default() -> VkDebugReportCallbackCreateInfoEXT<'a> {
+impl<'l> Default for VkDebugReportCallbackCreateInfoEXT<'l> {
+  fn default() -> VkDebugReportCallbackCreateInfoEXT<'l> {
     VkDebugReportCallbackCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_debug_report")]
-unsafe impl<'a> RawStruct for VkDebugReportCallbackCreateInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkDebugReportCallbackCreateInfoEXT<'l> {
   type Raw = types_raw::VkDebugReportCallbackCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_debug_report")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkInstanceCreateInfo<'b>> for VkDebugReportCallbackCreateInfoEXT<'a> {
+unsafe impl<'l> StructExtends<VkInstanceCreateInfo<'l>> for VkDebugReportCallbackCreateInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -10383,23 +10377,23 @@ pub enum VkDebugReportCallbackEXT__ {}
 
 /// Opaque handle to a debug report callback object
 #[cfg(feature = "VK_EXT_debug_report")]
-pub type VkDebugReportCallbackEXT = VkNonDispatchableHandle<VkDebugReportCallbackEXT__>;
+pub type VkDebugReportCallbackEXT<'l> = VkNonDispatchableHandle<'l, VkDebugReportCallbackEXT__>;
 
 // feature: VK_AMD_rasterization_order
 
 /// Structure defining rasterization order for a graphics pipeline
 #[repr(C)]
 #[cfg(feature = "VK_AMD_rasterization_order")]
-pub struct VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
+pub struct VkPipelineRasterizationStateRasterizationOrderAMD<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub rasterizationOrder: VkRasterizationOrderAMD,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_AMD_rasterization_order")]
-impl<'a> VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
+impl<'l> VkPipelineRasterizationStateRasterizationOrderAMD<'l> {
   #[inline]
-  pub fn new() -> VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
+  pub fn new() -> VkPipelineRasterizationStateRasterizationOrderAMD<'l> {
     unsafe {
       VkPipelineRasterizationStateRasterizationOrderAMD {
         sType: VkStructureType::PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD,
@@ -10418,18 +10412,18 @@ impl<'a> VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
   }
 }
 #[cfg(feature = "VK_AMD_rasterization_order")]
-impl<'a> Default for VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
-  fn default() -> VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
+impl<'l> Default for VkPipelineRasterizationStateRasterizationOrderAMD<'l> {
+  fn default() -> VkPipelineRasterizationStateRasterizationOrderAMD<'l> {
     VkPipelineRasterizationStateRasterizationOrderAMD::new()
   }
 }
 #[cfg(feature = "VK_AMD_rasterization_order")]
-unsafe impl<'a> RawStruct for VkPipelineRasterizationStateRasterizationOrderAMD<'a> {
+unsafe impl<'l> RawStruct for VkPipelineRasterizationStateRasterizationOrderAMD<'l> {
   type Raw = types_raw::VkPipelineRasterizationStateRasterizationOrderAMD;
 }
 #[cfg(feature = "VK_AMD_rasterization_order")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineRasterizationStateCreateInfo<'b>>
-  for VkPipelineRasterizationStateRasterizationOrderAMD<'a>
+unsafe impl<'l> StructExtends<VkPipelineRasterizationStateCreateInfo<'l>>
+  for VkPipelineRasterizationStateRasterizationOrderAMD<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -10453,18 +10447,18 @@ fn test_struct_size_vk_pipeline_rasterization_state_rasterization_order_amd() {
 /// Specify parameters of a name to give to an object
 #[repr(C)]
 #[cfg(feature = "VK_EXT_debug_marker")]
-pub struct VkDebugMarkerObjectNameInfoEXT<'a> {
+pub struct VkDebugMarkerObjectNameInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub objectType: VkDebugReportObjectTypeEXT,
   pub object: u64,
   pObjectName: *const c_char,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
-impl<'a> VkDebugMarkerObjectNameInfoEXT<'a> {
+impl<'l> VkDebugMarkerObjectNameInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkDebugMarkerObjectNameInfoEXT<'a> {
+  pub fn new() -> VkDebugMarkerObjectNameInfoEXT<'l> {
     unsafe {
       VkDebugMarkerObjectNameInfoEXT {
         sType: VkStructureType::DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
@@ -10483,7 +10477,7 @@ impl<'a> VkDebugMarkerObjectNameInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn set_object_name(mut self, value: &'a AsRef<CStr>) -> Self {
+  pub fn set_object_name(mut self, value: &'l AsRef<CStr>) -> Self {
     unsafe {
       self.pObjectName = value.as_raw();
     }
@@ -10511,13 +10505,13 @@ impl<'a> VkDebugMarkerObjectNameInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
-impl<'a> Default for VkDebugMarkerObjectNameInfoEXT<'a> {
-  fn default() -> VkDebugMarkerObjectNameInfoEXT<'a> {
+impl<'l> Default for VkDebugMarkerObjectNameInfoEXT<'l> {
+  fn default() -> VkDebugMarkerObjectNameInfoEXT<'l> {
     VkDebugMarkerObjectNameInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
-unsafe impl<'a> RawStruct for VkDebugMarkerObjectNameInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkDebugMarkerObjectNameInfoEXT<'l> {
   type Raw = types_raw::VkDebugMarkerObjectNameInfoEXT;
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
@@ -10533,7 +10527,7 @@ fn test_struct_size_vk_debug_marker_object_name_info_ext() {
 /// Specify parameters of a tag to attach to an object
 #[repr(C)]
 #[cfg(feature = "VK_EXT_debug_marker")]
-pub struct VkDebugMarkerObjectTagInfoEXT<'a> {
+pub struct VkDebugMarkerObjectTagInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub objectType: VkDebugReportObjectTypeEXT,
@@ -10541,12 +10535,12 @@ pub struct VkDebugMarkerObjectTagInfoEXT<'a> {
   pub tagName: u64,
   tagSize: usize,
   pTag: *const c_void,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
-impl<'a> VkDebugMarkerObjectTagInfoEXT<'a> {
+impl<'l> VkDebugMarkerObjectTagInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkDebugMarkerObjectTagInfoEXT<'a> {
+  pub fn new() -> VkDebugMarkerObjectTagInfoEXT<'l> {
     unsafe {
       VkDebugMarkerObjectTagInfoEXT {
         sType: VkStructureType::DEBUG_MARKER_OBJECT_TAG_INFO_EXT,
@@ -10570,7 +10564,7 @@ impl<'a> VkDebugMarkerObjectTagInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn set_tag(mut self, value: &'a [u8]) -> Self {
+  pub fn set_tag(mut self, value: &'l [u8]) -> Self {
     self.tagSize = value.len() as usize;
     unsafe {
       self.pTag = value.as_raw() as *const c_void;
@@ -10603,13 +10597,13 @@ impl<'a> VkDebugMarkerObjectTagInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
-impl<'a> Default for VkDebugMarkerObjectTagInfoEXT<'a> {
-  fn default() -> VkDebugMarkerObjectTagInfoEXT<'a> {
+impl<'l> Default for VkDebugMarkerObjectTagInfoEXT<'l> {
+  fn default() -> VkDebugMarkerObjectTagInfoEXT<'l> {
     VkDebugMarkerObjectTagInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
-unsafe impl<'a> RawStruct for VkDebugMarkerObjectTagInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkDebugMarkerObjectTagInfoEXT<'l> {
   type Raw = types_raw::VkDebugMarkerObjectTagInfoEXT;
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
@@ -10622,17 +10616,17 @@ fn test_struct_size_vk_debug_marker_object_tag_info_ext() {
 /// Specify parameters of a command buffer marker region
 #[repr(C)]
 #[cfg(feature = "VK_EXT_debug_marker")]
-pub struct VkDebugMarkerMarkerInfoEXT<'a> {
+pub struct VkDebugMarkerMarkerInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pMarkerName: *const c_char,
   pub color: [f32; 4],
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
-impl<'a> VkDebugMarkerMarkerInfoEXT<'a> {
+impl<'l> VkDebugMarkerMarkerInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkDebugMarkerMarkerInfoEXT<'a> {
+  pub fn new() -> VkDebugMarkerMarkerInfoEXT<'l> {
     unsafe {
       VkDebugMarkerMarkerInfoEXT {
         sType: VkStructureType::DEBUG_MARKER_MARKER_INFO_EXT,
@@ -10641,7 +10635,7 @@ impl<'a> VkDebugMarkerMarkerInfoEXT<'a> {
     }
   }
   #[inline]
-  pub fn set_marker_name(mut self, value: &'a AsRef<CStr>) -> Self {
+  pub fn set_marker_name(mut self, value: &'l AsRef<CStr>) -> Self {
     unsafe {
       self.pMarkerName = value.as_raw();
     }
@@ -10670,13 +10664,13 @@ impl<'a> VkDebugMarkerMarkerInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
-impl<'a> Default for VkDebugMarkerMarkerInfoEXT<'a> {
-  fn default() -> VkDebugMarkerMarkerInfoEXT<'a> {
+impl<'l> Default for VkDebugMarkerMarkerInfoEXT<'l> {
+  fn default() -> VkDebugMarkerMarkerInfoEXT<'l> {
     VkDebugMarkerMarkerInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
-unsafe impl<'a> RawStruct for VkDebugMarkerMarkerInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkDebugMarkerMarkerInfoEXT<'l> {
   type Raw = types_raw::VkDebugMarkerMarkerInfoEXT;
 }
 #[cfg(feature = "VK_EXT_debug_marker")]
@@ -10691,16 +10685,16 @@ fn test_struct_size_vk_debug_marker_marker_info_ext() {
 /// Specify that an image is bound to a dedicated memory resource
 #[repr(C)]
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-pub struct VkDedicatedAllocationImageCreateInfoNV<'a> {
+pub struct VkDedicatedAllocationImageCreateInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub dedicatedAllocation: VkBool32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl<'a> VkDedicatedAllocationImageCreateInfoNV<'a> {
+impl<'l> VkDedicatedAllocationImageCreateInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkDedicatedAllocationImageCreateInfoNV<'a> {
+  pub fn new() -> VkDedicatedAllocationImageCreateInfoNV<'l> {
     unsafe {
       VkDedicatedAllocationImageCreateInfoNV {
         sType: VkStructureType::DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV,
@@ -10720,17 +10714,17 @@ impl<'a> VkDedicatedAllocationImageCreateInfoNV<'a> {
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl<'a> Default for VkDedicatedAllocationImageCreateInfoNV<'a> {
-  fn default() -> VkDedicatedAllocationImageCreateInfoNV<'a> {
+impl<'l> Default for VkDedicatedAllocationImageCreateInfoNV<'l> {
+  fn default() -> VkDedicatedAllocationImageCreateInfoNV<'l> {
     VkDedicatedAllocationImageCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl<'a> RawStruct for VkDedicatedAllocationImageCreateInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkDedicatedAllocationImageCreateInfoNV<'l> {
   type Raw = types_raw::VkDedicatedAllocationImageCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkDedicatedAllocationImageCreateInfoNV<'a> {
+unsafe impl<'l> StructExtends<VkImageCreateInfo<'l>> for VkDedicatedAllocationImageCreateInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -10751,16 +10745,16 @@ fn test_struct_size_vk_dedicated_allocation_image_create_info_nv() {
 /// Specify that a buffer is bound to a dedicated memory resource
 #[repr(C)]
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-pub struct VkDedicatedAllocationBufferCreateInfoNV<'a> {
+pub struct VkDedicatedAllocationBufferCreateInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub dedicatedAllocation: VkBool32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl<'a> VkDedicatedAllocationBufferCreateInfoNV<'a> {
+impl<'l> VkDedicatedAllocationBufferCreateInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkDedicatedAllocationBufferCreateInfoNV<'a> {
+  pub fn new() -> VkDedicatedAllocationBufferCreateInfoNV<'l> {
     unsafe {
       VkDedicatedAllocationBufferCreateInfoNV {
         sType: VkStructureType::DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV,
@@ -10780,17 +10774,17 @@ impl<'a> VkDedicatedAllocationBufferCreateInfoNV<'a> {
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl<'a> Default for VkDedicatedAllocationBufferCreateInfoNV<'a> {
-  fn default() -> VkDedicatedAllocationBufferCreateInfoNV<'a> {
+impl<'l> Default for VkDedicatedAllocationBufferCreateInfoNV<'l> {
+  fn default() -> VkDedicatedAllocationBufferCreateInfoNV<'l> {
     VkDedicatedAllocationBufferCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl<'a> RawStruct for VkDedicatedAllocationBufferCreateInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkDedicatedAllocationBufferCreateInfoNV<'l> {
   type Raw = types_raw::VkDedicatedAllocationBufferCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkBufferCreateInfo<'b>> for VkDedicatedAllocationBufferCreateInfoNV<'a> {
+unsafe impl<'l> StructExtends<VkBufferCreateInfo<'l>> for VkDedicatedAllocationBufferCreateInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -10811,17 +10805,17 @@ fn test_struct_size_vk_dedicated_allocation_buffer_create_info_nv() {
 /// Specify a dedicated memory allocation resource
 #[repr(C)]
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-pub struct VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
+pub struct VkDedicatedAllocationMemoryAllocateInfoNV<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub image: Option<VkImage>,
-  pub buffer: Option<VkBuffer>,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub image: Option<VkImage<'h>>,
+  pub buffer: Option<VkBuffer<'h>>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl<'a> VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
+impl<'l, 'h: 'l> VkDedicatedAllocationMemoryAllocateInfoNV<'l, 'h> {
   #[inline]
-  pub fn new() -> VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
+  pub fn new() -> VkDedicatedAllocationMemoryAllocateInfoNV<'l, 'h> {
     unsafe {
       VkDedicatedAllocationMemoryAllocateInfoNV {
         sType: VkStructureType::DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV,
@@ -10830,36 +10824,36 @@ impl<'a> VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
     }
   }
   #[inline]
-  pub fn set_image(mut self, value: Option<VkImage>) -> Self {
+  pub fn set_image(mut self, value: Option<VkImage<'h>>) -> Self {
     self.image = value;
     self
   }
   #[inline]
-  pub fn set_buffer(mut self, value: Option<VkBuffer>) -> Self {
+  pub fn set_buffer(mut self, value: Option<VkBuffer<'h>>) -> Self {
     self.buffer = value;
     self
   }
   #[inline]
-  pub fn image(&self) -> Option<VkImage> {
+  pub fn image(&self) -> Option<VkImage<'h>> {
     self.image
   }
   #[inline]
-  pub fn buffer(&self) -> Option<VkBuffer> {
+  pub fn buffer(&self) -> Option<VkBuffer<'h>> {
     self.buffer
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-impl<'a> Default for VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
-  fn default() -> VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
+impl<'l, 'h: 'l> Default for VkDedicatedAllocationMemoryAllocateInfoNV<'l, 'h> {
+  fn default() -> VkDedicatedAllocationMemoryAllocateInfoNV<'l, 'h> {
     VkDedicatedAllocationMemoryAllocateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl<'a> RawStruct for VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkDedicatedAllocationMemoryAllocateInfoNV<'l, 'h> {
   type Raw = types_raw::VkDedicatedAllocationMemoryAllocateInfoNV;
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkDedicatedAllocationMemoryAllocateInfoNV<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkDedicatedAllocationMemoryAllocateInfoNV<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -10930,7 +10924,7 @@ unsafe impl RawStruct for VkPhysicalDeviceFeatures2KHR {
   type Raw = types_raw::VkPhysicalDeviceFeatures2KHR;
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDeviceFeatures2KHR {
+unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDeviceFeatures2KHR {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11044,7 +11038,7 @@ fn test_struct_size_vk_image_format_properties2_khr() {
 /// Structure specifying image creation parameters
 #[repr(C)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-pub struct VkPhysicalDeviceImageFormatInfo2KHR<'a> {
+pub struct VkPhysicalDeviceImageFormatInfo2KHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub format: VkFormat,
@@ -11052,12 +11046,12 @@ pub struct VkPhysicalDeviceImageFormatInfo2KHR<'a> {
   pub tiling: VkImageTiling,
   pub usage: VkImageUsageFlags,
   pub flags: VkImageCreateFlags,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl<'a> VkPhysicalDeviceImageFormatInfo2KHR<'a> {
+impl<'l> VkPhysicalDeviceImageFormatInfo2KHR<'l> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceImageFormatInfo2KHR<'a> {
+  pub fn new() -> VkPhysicalDeviceImageFormatInfo2KHR<'l> {
     unsafe {
       VkPhysicalDeviceImageFormatInfo2KHR {
         sType: VkStructureType::PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2_KHR,
@@ -11120,13 +11114,13 @@ impl<'a> VkPhysicalDeviceImageFormatInfo2KHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl<'a> Default for VkPhysicalDeviceImageFormatInfo2KHR<'a> {
-  fn default() -> VkPhysicalDeviceImageFormatInfo2KHR<'a> {
+impl<'l> Default for VkPhysicalDeviceImageFormatInfo2KHR<'l> {
+  fn default() -> VkPhysicalDeviceImageFormatInfo2KHR<'l> {
     VkPhysicalDeviceImageFormatInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-unsafe impl<'a> RawStruct for VkPhysicalDeviceImageFormatInfo2KHR<'a> {
+unsafe impl<'l> RawStruct for VkPhysicalDeviceImageFormatInfo2KHR<'l> {
   type Raw = types_raw::VkPhysicalDeviceImageFormatInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11241,7 +11235,7 @@ fn test_struct_size_vk_sparse_image_format_properties2_khr() {
 /// Structure specifying sparse image format inputs
 #[repr(C)]
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-pub struct VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
+pub struct VkPhysicalDeviceSparseImageFormatInfo2KHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub format: VkFormat,
@@ -11249,12 +11243,12 @@ pub struct VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
   pub samples: VkSampleCountFlagBits,
   pub usage: VkImageUsageFlags,
   pub tiling: VkImageTiling,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl<'a> VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
+impl<'l> VkPhysicalDeviceSparseImageFormatInfo2KHR<'l> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
+  pub fn new() -> VkPhysicalDeviceSparseImageFormatInfo2KHR<'l> {
     unsafe {
       VkPhysicalDeviceSparseImageFormatInfo2KHR {
         sType: VkStructureType::PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2_KHR,
@@ -11317,13 +11311,13 @@ impl<'a> VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-impl<'a> Default for VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
-  fn default() -> VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
+impl<'l> Default for VkPhysicalDeviceSparseImageFormatInfo2KHR<'l> {
+  fn default() -> VkPhysicalDeviceSparseImageFormatInfo2KHR<'l> {
     VkPhysicalDeviceSparseImageFormatInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-unsafe impl<'a> RawStruct for VkPhysicalDeviceSparseImageFormatInfo2KHR<'a> {
+unsafe impl<'l> RawStruct for VkPhysicalDeviceSparseImageFormatInfo2KHR<'l> {
   type Raw = types_raw::VkPhysicalDeviceSparseImageFormatInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
@@ -11489,7 +11483,7 @@ fn test_struct_size_vk_shader_statistics_info_amd() {
 /// Structure containing multiview info for all subpasses
 #[repr(C)]
 #[cfg(feature = "VK_KHX_multiview")]
-pub struct VkRenderPassMultiviewCreateInfoKHX<'a> {
+pub struct VkRenderPassMultiviewCreateInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   subpassCount: u32,
@@ -11498,12 +11492,12 @@ pub struct VkRenderPassMultiviewCreateInfoKHX<'a> {
   pViewOffsets: *const i32,
   correlationMaskCount: u32,
   pCorrelationMasks: *const u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_multiview")]
-impl<'a> VkRenderPassMultiviewCreateInfoKHX<'a> {
+impl<'l> VkRenderPassMultiviewCreateInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkRenderPassMultiviewCreateInfoKHX<'a> {
+  pub fn new() -> VkRenderPassMultiviewCreateInfoKHX<'l> {
     unsafe {
       VkRenderPassMultiviewCreateInfoKHX {
         sType: VkStructureType::RENDER_PASS_MULTIVIEW_CREATE_INFO_KHX,
@@ -11512,7 +11506,7 @@ impl<'a> VkRenderPassMultiviewCreateInfoKHX<'a> {
     }
   }
   #[inline]
-  pub fn set_view_masks(mut self, value: &'a [u32]) -> Self {
+  pub fn set_view_masks(mut self, value: &'l [u32]) -> Self {
     self.subpassCount = value.len() as u32;
     unsafe {
       self.pViewMasks = value.as_raw();
@@ -11520,7 +11514,7 @@ impl<'a> VkRenderPassMultiviewCreateInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn set_view_offsets(mut self, value: &'a [i32]) -> Self {
+  pub fn set_view_offsets(mut self, value: &'l [i32]) -> Self {
     self.dependencyCount = value.len() as u32;
     unsafe {
       self.pViewOffsets = value.as_raw();
@@ -11528,7 +11522,7 @@ impl<'a> VkRenderPassMultiviewCreateInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn set_correlation_masks(mut self, value: &'a [u32]) -> Self {
+  pub fn set_correlation_masks(mut self, value: &'l [u32]) -> Self {
     self.correlationMaskCount = value.len() as u32;
     unsafe {
       self.pCorrelationMasks = value.as_raw();
@@ -11549,17 +11543,17 @@ impl<'a> VkRenderPassMultiviewCreateInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_multiview")]
-impl<'a> Default for VkRenderPassMultiviewCreateInfoKHX<'a> {
-  fn default() -> VkRenderPassMultiviewCreateInfoKHX<'a> {
+impl<'l> Default for VkRenderPassMultiviewCreateInfoKHX<'l> {
+  fn default() -> VkRenderPassMultiviewCreateInfoKHX<'l> {
     VkRenderPassMultiviewCreateInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_multiview")]
-unsafe impl<'a> RawStruct for VkRenderPassMultiviewCreateInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkRenderPassMultiviewCreateInfoKHX<'l> {
   type Raw = types_raw::VkRenderPassMultiviewCreateInfoKHX;
 }
 #[cfg(feature = "VK_KHX_multiview")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkRenderPassCreateInfo<'b>> for VkRenderPassMultiviewCreateInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkRenderPassCreateInfo<'l>> for VkRenderPassMultiviewCreateInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11660,7 +11654,7 @@ unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceMult
   }
 }
 #[cfg(feature = "VK_KHX_multiview")]
-unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDeviceMultiviewFeaturesKHX {
+unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDeviceMultiviewFeaturesKHX {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11776,16 +11770,16 @@ fn test_struct_size_vk_external_image_format_properties_nv() {
 /// Specify that an image may be backed by external memory
 #[repr(C)]
 #[cfg(feature = "VK_NV_external_memory")]
-pub struct VkExternalMemoryImageCreateInfoNV<'a> {
+pub struct VkExternalMemoryImageCreateInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsNV,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_external_memory")]
-impl<'a> VkExternalMemoryImageCreateInfoNV<'a> {
+impl<'l> VkExternalMemoryImageCreateInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkExternalMemoryImageCreateInfoNV<'a> {
+  pub fn new() -> VkExternalMemoryImageCreateInfoNV<'l> {
     unsafe {
       VkExternalMemoryImageCreateInfoNV {
         sType: VkStructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV,
@@ -11804,17 +11798,17 @@ impl<'a> VkExternalMemoryImageCreateInfoNV<'a> {
   }
 }
 #[cfg(feature = "VK_NV_external_memory")]
-impl<'a> Default for VkExternalMemoryImageCreateInfoNV<'a> {
-  fn default() -> VkExternalMemoryImageCreateInfoNV<'a> {
+impl<'l> Default for VkExternalMemoryImageCreateInfoNV<'l> {
+  fn default() -> VkExternalMemoryImageCreateInfoNV<'l> {
     VkExternalMemoryImageCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_external_memory")]
-unsafe impl<'a> RawStruct for VkExternalMemoryImageCreateInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkExternalMemoryImageCreateInfoNV<'l> {
   type Raw = types_raw::VkExternalMemoryImageCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_external_memory")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkExternalMemoryImageCreateInfoNV<'a> {
+unsafe impl<'l> StructExtends<VkImageCreateInfo<'l>> for VkExternalMemoryImageCreateInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11835,16 +11829,16 @@ fn test_struct_size_vk_external_memory_image_create_info_nv() {
 /// Specify memory handle types that may be exported
 #[repr(C)]
 #[cfg(feature = "VK_NV_external_memory")]
-pub struct VkExportMemoryAllocateInfoNV<'a> {
+pub struct VkExportMemoryAllocateInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsNV,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_external_memory")]
-impl<'a> VkExportMemoryAllocateInfoNV<'a> {
+impl<'l> VkExportMemoryAllocateInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkExportMemoryAllocateInfoNV<'a> {
+  pub fn new() -> VkExportMemoryAllocateInfoNV<'l> {
     unsafe {
       VkExportMemoryAllocateInfoNV {
         sType: VkStructureType::EXPORT_MEMORY_ALLOCATE_INFO_NV,
@@ -11863,17 +11857,17 @@ impl<'a> VkExportMemoryAllocateInfoNV<'a> {
   }
 }
 #[cfg(feature = "VK_NV_external_memory")]
-impl<'a> Default for VkExportMemoryAllocateInfoNV<'a> {
-  fn default() -> VkExportMemoryAllocateInfoNV<'a> {
+impl<'l> Default for VkExportMemoryAllocateInfoNV<'l> {
+  fn default() -> VkExportMemoryAllocateInfoNV<'l> {
     VkExportMemoryAllocateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_external_memory")]
-unsafe impl<'a> RawStruct for VkExportMemoryAllocateInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkExportMemoryAllocateInfoNV<'l> {
   type Raw = types_raw::VkExportMemoryAllocateInfoNV;
 }
 #[cfg(feature = "VK_NV_external_memory")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemoryAllocateInfoNV<'a> {
+unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkExportMemoryAllocateInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11894,18 +11888,18 @@ fn test_struct_size_vk_export_memory_allocate_info_nv() {
 #[repr(C)]
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkImportMemoryWin32HandleInfoNV<'a> {
+pub struct VkImportMemoryWin32HandleInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagsNV,
   pub handle: wsi::win32::HANDLE,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkImportMemoryWin32HandleInfoNV<'a> {
+impl<'l> VkImportMemoryWin32HandleInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkImportMemoryWin32HandleInfoNV<'a> {
+  pub fn new() -> VkImportMemoryWin32HandleInfoNV<'l> {
     unsafe {
       VkImportMemoryWin32HandleInfoNV {
         sType: VkStructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_NV,
@@ -11934,19 +11928,19 @@ impl<'a> VkImportMemoryWin32HandleInfoNV<'a> {
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkImportMemoryWin32HandleInfoNV<'a> {
-  fn default() -> VkImportMemoryWin32HandleInfoNV<'a> {
+impl<'l> Default for VkImportMemoryWin32HandleInfoNV<'l> {
+  fn default() -> VkImportMemoryWin32HandleInfoNV<'l> {
     VkImportMemoryWin32HandleInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkImportMemoryWin32HandleInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkImportMemoryWin32HandleInfoNV<'l> {
   type Raw = types_raw::VkImportMemoryWin32HandleInfoNV;
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkImportMemoryWin32HandleInfoNV<'a> {
+unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkImportMemoryWin32HandleInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11969,18 +11963,18 @@ fn test_struct_size_vk_import_memory_win32_handle_info_nv() {
 #[repr(C)]
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkExportMemoryWin32HandleInfoNV<'a> {
+pub struct VkExportMemoryWin32HandleInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub pAttributes: *const wsi::win32::SECURITY_ATTRIBUTES,
   pub dwAccess: wsi::win32::DWORD,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkExportMemoryWin32HandleInfoNV<'a> {
+impl<'l> VkExportMemoryWin32HandleInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkExportMemoryWin32HandleInfoNV<'a> {
+  pub fn new() -> VkExportMemoryWin32HandleInfoNV<'l> {
     unsafe {
       VkExportMemoryWin32HandleInfoNV {
         sType: VkStructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_NV,
@@ -12009,19 +12003,19 @@ impl<'a> VkExportMemoryWin32HandleInfoNV<'a> {
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkExportMemoryWin32HandleInfoNV<'a> {
-  fn default() -> VkExportMemoryWin32HandleInfoNV<'a> {
+impl<'l> Default for VkExportMemoryWin32HandleInfoNV<'l> {
+  fn default() -> VkExportMemoryWin32HandleInfoNV<'l> {
     VkExportMemoryWin32HandleInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkExportMemoryWin32HandleInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkExportMemoryWin32HandleInfoNV<'l> {
   type Raw = types_raw::VkExportMemoryWin32HandleInfoNV;
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemoryWin32HandleInfoNV<'a> {
+unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkExportMemoryWin32HandleInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12046,7 +12040,7 @@ fn test_struct_size_vk_export_memory_win32_handle_info_nv() {
 #[repr(C)]
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
+pub struct VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   acquireCount: u32,
@@ -12056,13 +12050,13 @@ pub struct VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
   releaseCount: u32,
   pReleaseSyncs: *const types_raw::VkDeviceMemory,
   pReleaseKeys: *const u64,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
 }
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
+impl<'l, 'h: 'l> VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h> {
   #[inline]
-  pub fn new() -> VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
+  pub fn new() -> VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h> {
     unsafe {
       VkWin32KeyedMutexAcquireReleaseInfoNV {
         sType: VkStructureType::WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV,
@@ -12081,19 +12075,19 @@ impl<'a> VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
 }
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
-  fn default() -> VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
+impl<'l, 'h: 'l> Default for VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h> {
+  fn default() -> VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h> {
     VkWin32KeyedMutexAcquireReleaseInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h> {
   type Raw = types_raw::VkWin32KeyedMutexAcquireReleaseInfoNV;
 }
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkWin32KeyedMutexAcquireReleaseInfoNV<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkSubmitInfo<'l, 'h>> for VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12116,17 +12110,16 @@ fn test_struct_size_vk_win32_keyed_mutex_acquire_release_info_nv() {
 
 /// Structure specifying physical device group properties
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_KHX_device_group_creation")]
-pub struct VkPhysicalDeviceGroupPropertiesKHX {
+pub struct VkPhysicalDeviceGroupPropertiesKHX<'h> {
   sType: VkStructureType,
   pNext: *mut c_void,
   pub physicalDeviceCount: u32,
-  pub physicalDevices: [VkPhysicalDevice; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize],
+  pub physicalDevices: [VkPhysicalDevice<'h>; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize],
   pub subsetAllocation: VkBool32,
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
-impl VkPhysicalDeviceGroupPropertiesKHX {
+impl<'h> VkPhysicalDeviceGroupPropertiesKHX<'h> {
   #[inline]
   pub fn next(&self) -> *mut c_void {
     self.pNext
@@ -12136,7 +12129,7 @@ impl VkPhysicalDeviceGroupPropertiesKHX {
     self.physicalDeviceCount
   }
   #[inline]
-  pub fn physical_devices(&self) -> [VkPhysicalDevice; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize] {
+  pub fn physical_devices(&self) -> [VkPhysicalDevice<'h>; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize] {
     self.physicalDevices
   }
   #[inline]
@@ -12145,7 +12138,7 @@ impl VkPhysicalDeviceGroupPropertiesKHX {
   }
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
-unsafe impl RawStruct for VkPhysicalDeviceGroupPropertiesKHX {
+unsafe impl<'h> RawStruct for VkPhysicalDeviceGroupPropertiesKHX<'h> {
   type Raw = types_raw::VkPhysicalDeviceGroupPropertiesKHX;
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
@@ -12161,17 +12154,17 @@ fn test_struct_size_vk_physical_device_group_properties_khx() {
 /// Create a logical device from multiple physical devices
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group_creation")]
-pub struct VkDeviceGroupDeviceCreateInfoKHX<'a> {
+pub struct VkDeviceGroupDeviceCreateInfoKHX<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   physicalDeviceCount: u32,
   pPhysicalDevices: *const types_raw::VkPhysicalDevice,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
-impl<'a> VkDeviceGroupDeviceCreateInfoKHX<'a> {
+impl<'l, 'h: 'l> VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
   #[inline]
-  pub fn new() -> VkDeviceGroupDeviceCreateInfoKHX<'a> {
+  pub fn new() -> VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
     unsafe {
       VkDeviceGroupDeviceCreateInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_DEVICE_CREATE_INFO_KHX,
@@ -12180,7 +12173,7 @@ impl<'a> VkDeviceGroupDeviceCreateInfoKHX<'a> {
     }
   }
   #[inline]
-  pub fn set_physical_devices(mut self, value: &'a [VkPhysicalDevice]) -> Self {
+  pub fn set_physical_devices(mut self, value: &'l [VkPhysicalDevice<'h>]) -> Self {
     self.physicalDeviceCount = value.len() as u32;
     unsafe {
       self.pPhysicalDevices = value.as_raw();
@@ -12193,17 +12186,17 @@ impl<'a> VkDeviceGroupDeviceCreateInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
-impl<'a> Default for VkDeviceGroupDeviceCreateInfoKHX<'a> {
-  fn default() -> VkDeviceGroupDeviceCreateInfoKHX<'a> {
+impl<'l, 'h: 'l> Default for VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
+  fn default() -> VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
     VkDeviceGroupDeviceCreateInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
-unsafe impl<'a> RawStruct for VkDeviceGroupDeviceCreateInfoKHX<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
   type Raw = types_raw::VkDeviceGroupDeviceCreateInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkDeviceCreateInfo<'b>> for VkDeviceGroupDeviceCreateInfoKHX<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkDeviceCreateInfo<'l>> for VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12226,17 +12219,17 @@ fn test_struct_size_vk_device_group_device_create_info_khx() {
 /// Structure controlling how many instances of memory will be allocated
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkMemoryAllocateFlagsInfoKHX<'a> {
+pub struct VkMemoryAllocateFlagsInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkMemoryAllocateFlagsKHX,
   pub deviceMask: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkMemoryAllocateFlagsInfoKHX<'a> {
+impl<'l> VkMemoryAllocateFlagsInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkMemoryAllocateFlagsInfoKHX<'a> {
+  pub fn new() -> VkMemoryAllocateFlagsInfoKHX<'l> {
     unsafe {
       VkMemoryAllocateFlagsInfoKHX {
         sType: VkStructureType::MEMORY_ALLOCATE_FLAGS_INFO_KHX,
@@ -12264,17 +12257,17 @@ impl<'a> VkMemoryAllocateFlagsInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkMemoryAllocateFlagsInfoKHX<'a> {
-  fn default() -> VkMemoryAllocateFlagsInfoKHX<'a> {
+impl<'l> Default for VkMemoryAllocateFlagsInfoKHX<'l> {
+  fn default() -> VkMemoryAllocateFlagsInfoKHX<'l> {
     VkMemoryAllocateFlagsInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkMemoryAllocateFlagsInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkMemoryAllocateFlagsInfoKHX<'l> {
   type Raw = types_raw::VkMemoryAllocateFlagsInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkMemoryAllocateFlagsInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkMemoryAllocateFlagsInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12292,18 +12285,18 @@ fn test_struct_size_vk_memory_allocate_flags_info_khx() {
 /// Set the initial device mask and render areas for a render pass instance
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupRenderPassBeginInfoKHX<'a> {
+pub struct VkDeviceGroupRenderPassBeginInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub deviceMask: u32,
   deviceRenderAreaCount: u32,
   pDeviceRenderAreas: *const types_raw::VkRect2D,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkDeviceGroupRenderPassBeginInfoKHX<'a> {
+impl<'l> VkDeviceGroupRenderPassBeginInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkDeviceGroupRenderPassBeginInfoKHX<'a> {
+  pub fn new() -> VkDeviceGroupRenderPassBeginInfoKHX<'l> {
     unsafe {
       VkDeviceGroupRenderPassBeginInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_RENDER_PASS_BEGIN_INFO_KHX,
@@ -12317,7 +12310,7 @@ impl<'a> VkDeviceGroupRenderPassBeginInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn set_device_render_areas(mut self, value: &'a [VkRect2D]) -> Self {
+  pub fn set_device_render_areas(mut self, value: &'l [VkRect2D]) -> Self {
     self.deviceRenderAreaCount = value.len() as u32;
     unsafe {
       self.pDeviceRenderAreas = value.as_raw();
@@ -12334,17 +12327,17 @@ impl<'a> VkDeviceGroupRenderPassBeginInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkDeviceGroupRenderPassBeginInfoKHX<'a> {
-  fn default() -> VkDeviceGroupRenderPassBeginInfoKHX<'a> {
+impl<'l> Default for VkDeviceGroupRenderPassBeginInfoKHX<'l> {
+  fn default() -> VkDeviceGroupRenderPassBeginInfoKHX<'l> {
     VkDeviceGroupRenderPassBeginInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkDeviceGroupRenderPassBeginInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkDeviceGroupRenderPassBeginInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupRenderPassBeginInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkRenderPassBeginInfo<'b>> for VkDeviceGroupRenderPassBeginInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkRenderPassBeginInfo<'l, 'h>> for VkDeviceGroupRenderPassBeginInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12365,16 +12358,16 @@ fn test_struct_size_vk_device_group_render_pass_begin_info_khx() {
 /// Set the initial device mask for a command buffer
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
+pub struct VkDeviceGroupCommandBufferBeginInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub deviceMask: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
+impl<'l> VkDeviceGroupCommandBufferBeginInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
+  pub fn new() -> VkDeviceGroupCommandBufferBeginInfoKHX<'l> {
     unsafe {
       VkDeviceGroupCommandBufferBeginInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO_KHX,
@@ -12393,17 +12386,17 @@ impl<'a> VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
-  fn default() -> VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
+impl<'l> Default for VkDeviceGroupCommandBufferBeginInfoKHX<'l> {
+  fn default() -> VkDeviceGroupCommandBufferBeginInfoKHX<'l> {
     VkDeviceGroupCommandBufferBeginInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkDeviceGroupCommandBufferBeginInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupCommandBufferBeginInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkCommandBufferBeginInfo<'b>> for VkDeviceGroupCommandBufferBeginInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkCommandBufferBeginInfo<'l, 'h>> for VkDeviceGroupCommandBufferBeginInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12425,7 +12418,7 @@ fn test_struct_size_vk_device_group_command_buffer_begin_info_khx() {
 /// command buffers
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupSubmitInfoKHX<'a> {
+pub struct VkDeviceGroupSubmitInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   waitSemaphoreCount: u32,
@@ -12434,12 +12427,12 @@ pub struct VkDeviceGroupSubmitInfoKHX<'a> {
   pCommandBufferDeviceMasks: *const u32,
   signalSemaphoreCount: u32,
   pSignalSemaphoreDeviceIndices: *const u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkDeviceGroupSubmitInfoKHX<'a> {
+impl<'l> VkDeviceGroupSubmitInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkDeviceGroupSubmitInfoKHX<'a> {
+  pub fn new() -> VkDeviceGroupSubmitInfoKHX<'l> {
     unsafe {
       VkDeviceGroupSubmitInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_SUBMIT_INFO_KHX,
@@ -12448,7 +12441,7 @@ impl<'a> VkDeviceGroupSubmitInfoKHX<'a> {
     }
   }
   #[inline]
-  pub fn set_wait_semaphore_device_indices(mut self, value: &'a [u32]) -> Self {
+  pub fn set_wait_semaphore_device_indices(mut self, value: &'l [u32]) -> Self {
     self.waitSemaphoreCount = value.len() as u32;
     unsafe {
       self.pWaitSemaphoreDeviceIndices = value.as_raw();
@@ -12456,7 +12449,7 @@ impl<'a> VkDeviceGroupSubmitInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn set_command_buffer_device_masks(mut self, value: &'a [u32]) -> Self {
+  pub fn set_command_buffer_device_masks(mut self, value: &'l [u32]) -> Self {
     self.commandBufferCount = value.len() as u32;
     unsafe {
       self.pCommandBufferDeviceMasks = value.as_raw();
@@ -12464,7 +12457,7 @@ impl<'a> VkDeviceGroupSubmitInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn set_signal_semaphore_device_indices(mut self, value: &'a [u32]) -> Self {
+  pub fn set_signal_semaphore_device_indices(mut self, value: &'l [u32]) -> Self {
     self.signalSemaphoreCount = value.len() as u32;
     unsafe {
       self.pSignalSemaphoreDeviceIndices = value.as_raw();
@@ -12485,17 +12478,17 @@ impl<'a> VkDeviceGroupSubmitInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkDeviceGroupSubmitInfoKHX<'a> {
-  fn default() -> VkDeviceGroupSubmitInfoKHX<'a> {
+impl<'l> Default for VkDeviceGroupSubmitInfoKHX<'l> {
+  fn default() -> VkDeviceGroupSubmitInfoKHX<'l> {
     VkDeviceGroupSubmitInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkDeviceGroupSubmitInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkDeviceGroupSubmitInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupSubmitInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkDeviceGroupSubmitInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkSubmitInfo<'l, 'h>> for VkDeviceGroupSubmitInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12513,17 +12506,17 @@ fn test_struct_size_vk_device_group_submit_info_khx() {
 /// Structure indicating which instances are bound
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupBindSparseInfoKHX<'a> {
+pub struct VkDeviceGroupBindSparseInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub resourceDeviceIndex: u32,
   pub memoryDeviceIndex: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkDeviceGroupBindSparseInfoKHX<'a> {
+impl<'l> VkDeviceGroupBindSparseInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkDeviceGroupBindSparseInfoKHX<'a> {
+  pub fn new() -> VkDeviceGroupBindSparseInfoKHX<'l> {
     unsafe {
       VkDeviceGroupBindSparseInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_BIND_SPARSE_INFO_KHX,
@@ -12551,17 +12544,17 @@ impl<'a> VkDeviceGroupBindSparseInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkDeviceGroupBindSparseInfoKHX<'a> {
-  fn default() -> VkDeviceGroupBindSparseInfoKHX<'a> {
+impl<'l> Default for VkDeviceGroupBindSparseInfoKHX<'l> {
+  fn default() -> VkDeviceGroupBindSparseInfoKHX<'l> {
     VkDeviceGroupBindSparseInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkDeviceGroupBindSparseInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkDeviceGroupBindSparseInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupBindSparseInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkBindSparseInfo<'b>> for VkDeviceGroupBindSparseInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkBindSparseInfo<'l, 'h>> for VkDeviceGroupBindSparseInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12582,17 +12575,17 @@ fn test_struct_size_vk_device_group_bind_sparse_info_khx() {
 /// Structure specifying device within a group to bind to
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
+pub struct VkBindBufferMemoryDeviceGroupInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   deviceIndexCount: u32,
   pDeviceIndices: *const u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
+impl<'l> VkBindBufferMemoryDeviceGroupInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
+  pub fn new() -> VkBindBufferMemoryDeviceGroupInfoKHX<'l> {
     unsafe {
       VkBindBufferMemoryDeviceGroupInfoKHX {
         sType: VkStructureType::BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO_KHX,
@@ -12601,7 +12594,7 @@ impl<'a> VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
     }
   }
   #[inline]
-  pub fn set_device_indices(mut self, value: &'a [u32]) -> Self {
+  pub fn set_device_indices(mut self, value: &'l [u32]) -> Self {
     self.deviceIndexCount = value.len() as u32;
     unsafe {
       self.pDeviceIndices = value.as_raw();
@@ -12614,17 +12607,17 @@ impl<'a> VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
-  fn default() -> VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
+impl<'l> Default for VkBindBufferMemoryDeviceGroupInfoKHX<'l> {
+  fn default() -> VkBindBufferMemoryDeviceGroupInfoKHX<'l> {
     VkBindBufferMemoryDeviceGroupInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkBindBufferMemoryDeviceGroupInfoKHX<'l> {
   type Raw = types_raw::VkBindBufferMemoryDeviceGroupInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkBindBufferMemoryInfoKHR<'b>> for VkBindBufferMemoryDeviceGroupInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkBindBufferMemoryInfoKHR<'l, 'h>> for VkBindBufferMemoryDeviceGroupInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12645,19 +12638,19 @@ fn test_struct_size_vk_bind_buffer_memory_device_group_info_khx() {
 /// Structure specifying device within a group to bind to
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkBindImageMemoryDeviceGroupInfoKHX<'a> {
+pub struct VkBindImageMemoryDeviceGroupInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   deviceIndexCount: u32,
   pDeviceIndices: *const u32,
   SFRRectCount: u32,
   pSFRRects: *const types_raw::VkRect2D,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
+impl<'l> VkBindImageMemoryDeviceGroupInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
+  pub fn new() -> VkBindImageMemoryDeviceGroupInfoKHX<'l> {
     unsafe {
       VkBindImageMemoryDeviceGroupInfoKHX {
         sType: VkStructureType::BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO_KHX,
@@ -12666,7 +12659,7 @@ impl<'a> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
     }
   }
   #[inline]
-  pub fn set_device_indices(mut self, value: &'a [u32]) -> Self {
+  pub fn set_device_indices(mut self, value: &'l [u32]) -> Self {
     self.deviceIndexCount = value.len() as u32;
     unsafe {
       self.pDeviceIndices = value.as_raw();
@@ -12674,7 +12667,7 @@ impl<'a> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn set_sfr_rects(mut self, value: &'a [VkRect2D]) -> Self {
+  pub fn set_sfr_rects(mut self, value: &'l [VkRect2D]) -> Self {
     self.SFRRectCount = value.len() as u32;
     unsafe {
       self.pSFRRects = value.as_raw();
@@ -12691,17 +12684,17 @@ impl<'a> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkBindImageMemoryDeviceGroupInfoKHX<'a> {
-  fn default() -> VkBindImageMemoryDeviceGroupInfoKHX<'a> {
+impl<'l> Default for VkBindImageMemoryDeviceGroupInfoKHX<'l> {
+  fn default() -> VkBindImageMemoryDeviceGroupInfoKHX<'l> {
     VkBindImageMemoryDeviceGroupInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkBindImageMemoryDeviceGroupInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkBindImageMemoryDeviceGroupInfoKHX<'l> {
   type Raw = types_raw::VkBindImageMemoryDeviceGroupInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkBindImageMemoryInfoKHR<'b>> for VkBindImageMemoryDeviceGroupInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkBindImageMemoryInfoKHR<'l, 'h>> for VkBindImageMemoryDeviceGroupInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12722,15 +12715,15 @@ fn test_struct_size_vk_bind_image_memory_device_group_info_khx() {
 /// Present capabilities from other physical devices
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupPresentCapabilitiesKHX<'a> {
+pub struct VkDeviceGroupPresentCapabilitiesKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub presentMask: [u32; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize],
   pub modes: VkDeviceGroupPresentModeFlagsKHX,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkDeviceGroupPresentCapabilitiesKHX<'a> {
+impl<'l> VkDeviceGroupPresentCapabilitiesKHX<'l> {
   #[inline]
   pub fn present_mask(&self) -> [u32; enums::VK_MAX_DEVICE_GROUP_SIZE_KHX as usize] {
     self.presentMask
@@ -12749,7 +12742,7 @@ impl<'a> VkDeviceGroupPresentCapabilitiesKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkDeviceGroupPresentCapabilitiesKHX<'a> {
+unsafe impl<'l> RawStruct for VkDeviceGroupPresentCapabilitiesKHX<'l> {
   type Raw = types_raw::VkDeviceGroupPresentCapabilitiesKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
@@ -12765,16 +12758,16 @@ fn test_struct_size_vk_device_group_present_capabilities_khx() {
 /// Specify that an image will be bound to swapchain memory
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkImageSwapchainCreateInfoKHX<'a> {
+pub struct VkImageSwapchainCreateInfoKHX<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub swapchain: Option<VkSwapchainKHR>,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub swapchain: Option<VkSwapchainKHR<'h>>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkImageSwapchainCreateInfoKHX<'a> {
+impl<'l, 'h: 'l> VkImageSwapchainCreateInfoKHX<'l, 'h> {
   #[inline]
-  pub fn new() -> VkImageSwapchainCreateInfoKHX<'a> {
+  pub fn new() -> VkImageSwapchainCreateInfoKHX<'l, 'h> {
     unsafe {
       VkImageSwapchainCreateInfoKHX {
         sType: VkStructureType::IMAGE_SWAPCHAIN_CREATE_INFO_KHX,
@@ -12783,27 +12776,27 @@ impl<'a> VkImageSwapchainCreateInfoKHX<'a> {
     }
   }
   #[inline]
-  pub fn set_swapchain(mut self, value: Option<VkSwapchainKHR>) -> Self {
+  pub fn set_swapchain(mut self, value: Option<VkSwapchainKHR<'h>>) -> Self {
     self.swapchain = value;
     self
   }
   #[inline]
-  pub fn swapchain(&self) -> Option<VkSwapchainKHR> {
+  pub fn swapchain(&self) -> Option<VkSwapchainKHR<'h>> {
     self.swapchain
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkImageSwapchainCreateInfoKHX<'a> {
-  fn default() -> VkImageSwapchainCreateInfoKHX<'a> {
+impl<'l, 'h: 'l> Default for VkImageSwapchainCreateInfoKHX<'l, 'h> {
+  fn default() -> VkImageSwapchainCreateInfoKHX<'l, 'h> {
     VkImageSwapchainCreateInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkImageSwapchainCreateInfoKHX<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkImageSwapchainCreateInfoKHX<'l, 'h> {
   type Raw = types_raw::VkImageSwapchainCreateInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkImageSwapchainCreateInfoKHX<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkImageCreateInfo<'l>> for VkImageSwapchainCreateInfoKHX<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12821,17 +12814,17 @@ fn test_struct_size_vk_image_swapchain_create_info_khx() {
 /// Structure specifying swapchain image memory to bind to
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkBindImageMemorySwapchainInfoKHX<'a> {
+pub struct VkBindImageMemorySwapchainInfoKHX<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub swapchain: VkSwapchainKHR,
+  pub swapchain: VkSwapchainKHR<'h>,
   pub imageIndex: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkBindImageMemorySwapchainInfoKHX<'a> {
+impl<'l, 'h: 'l> VkBindImageMemorySwapchainInfoKHX<'l, 'h> {
   #[inline]
-  pub fn new() -> VkBindImageMemorySwapchainInfoKHX<'a> {
+  pub fn new() -> VkBindImageMemorySwapchainInfoKHX<'l, 'h> {
     unsafe {
       VkBindImageMemorySwapchainInfoKHX {
         sType: VkStructureType::BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHX,
@@ -12840,7 +12833,7 @@ impl<'a> VkBindImageMemorySwapchainInfoKHX<'a> {
     }
   }
   #[inline]
-  pub fn set_swapchain(mut self, value: VkSwapchainKHR) -> Self {
+  pub fn set_swapchain(mut self, value: VkSwapchainKHR<'h>) -> Self {
     self.swapchain = value;
     self
   }
@@ -12850,7 +12843,7 @@ impl<'a> VkBindImageMemorySwapchainInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn swapchain(&self) -> VkSwapchainKHR {
+  pub fn swapchain(&self) -> VkSwapchainKHR<'h> {
     self.swapchain
   }
   #[inline]
@@ -12859,17 +12852,17 @@ impl<'a> VkBindImageMemorySwapchainInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkBindImageMemorySwapchainInfoKHX<'a> {
-  fn default() -> VkBindImageMemorySwapchainInfoKHX<'a> {
+impl<'l, 'h: 'l> Default for VkBindImageMemorySwapchainInfoKHX<'l, 'h> {
+  fn default() -> VkBindImageMemorySwapchainInfoKHX<'l, 'h> {
     VkBindImageMemorySwapchainInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkBindImageMemorySwapchainInfoKHX<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkBindImageMemorySwapchainInfoKHX<'l, 'h> {
   type Raw = types_raw::VkBindImageMemorySwapchainInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkBindImageMemoryInfoKHR<'b>> for VkBindImageMemorySwapchainInfoKHX<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkBindImageMemoryInfoKHR<'l, 'h>> for VkBindImageMemorySwapchainInfoKHX<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12890,20 +12883,20 @@ fn test_struct_size_vk_bind_image_memory_swapchain_info_khx() {
 /// Structure specifying parameters of the acquire
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkAcquireNextImageInfoKHX<'a> {
+pub struct VkAcquireNextImageInfoKHX<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub swapchain: VkSwapchainKHR,
+  pub swapchain: VkSwapchainKHR<'h>,
   pub timeout: u64,
-  pub semaphore: Option<VkSemaphore>,
-  pub fence: Option<VkFence>,
+  pub semaphore: Option<VkSemaphore<'h>>,
+  pub fence: Option<VkFence<'h>>,
   pub deviceMask: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkAcquireNextImageInfoKHX<'a> {
+impl<'l, 'h: 'l> VkAcquireNextImageInfoKHX<'l, 'h> {
   #[inline]
-  pub fn new() -> VkAcquireNextImageInfoKHX<'a> {
+  pub fn new() -> VkAcquireNextImageInfoKHX<'l, 'h> {
     unsafe {
       VkAcquireNextImageInfoKHX {
         sType: VkStructureType::ACQUIRE_NEXT_IMAGE_INFO_KHX,
@@ -12912,7 +12905,7 @@ impl<'a> VkAcquireNextImageInfoKHX<'a> {
     }
   }
   #[inline]
-  pub fn set_swapchain(mut self, value: VkSwapchainKHR) -> Self {
+  pub fn set_swapchain(mut self, value: VkSwapchainKHR<'h>) -> Self {
     self.swapchain = value;
     self
   }
@@ -12922,12 +12915,12 @@ impl<'a> VkAcquireNextImageInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn set_semaphore(mut self, value: Option<VkSemaphore>) -> Self {
+  pub fn set_semaphore(mut self, value: Option<VkSemaphore<'h>>) -> Self {
     self.semaphore = value;
     self
   }
   #[inline]
-  pub fn set_fence(mut self, value: Option<VkFence>) -> Self {
+  pub fn set_fence(mut self, value: Option<VkFence<'h>>) -> Self {
     self.fence = value;
     self
   }
@@ -12937,7 +12930,7 @@ impl<'a> VkAcquireNextImageInfoKHX<'a> {
     self
   }
   #[inline]
-  pub fn swapchain(&self) -> VkSwapchainKHR {
+  pub fn swapchain(&self) -> VkSwapchainKHR<'h> {
     self.swapchain
   }
   #[inline]
@@ -12945,11 +12938,11 @@ impl<'a> VkAcquireNextImageInfoKHX<'a> {
     self.timeout
   }
   #[inline]
-  pub fn semaphore(&self) -> Option<VkSemaphore> {
+  pub fn semaphore(&self) -> Option<VkSemaphore<'h>> {
     self.semaphore
   }
   #[inline]
-  pub fn fence(&self) -> Option<VkFence> {
+  pub fn fence(&self) -> Option<VkFence<'h>> {
     self.fence
   }
   #[inline]
@@ -12966,13 +12959,13 @@ impl<'a> VkAcquireNextImageInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkAcquireNextImageInfoKHX<'a> {
-  fn default() -> VkAcquireNextImageInfoKHX<'a> {
+impl<'l, 'h: 'l> Default for VkAcquireNextImageInfoKHX<'l, 'h> {
+  fn default() -> VkAcquireNextImageInfoKHX<'l, 'h> {
     VkAcquireNextImageInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkAcquireNextImageInfoKHX<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkAcquireNextImageInfoKHX<'l, 'h> {
   type Raw = types_raw::VkAcquireNextImageInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
@@ -12985,18 +12978,18 @@ fn test_struct_size_vk_acquire_next_image_info_khx() {
 /// Mode and mask controlling which physical devices\' images are presented
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupPresentInfoKHX<'a> {
+pub struct VkDeviceGroupPresentInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   swapchainCount: u32,
   pDeviceMasks: *const u32,
   pub mode: VkDeviceGroupPresentModeFlagBitsKHX,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkDeviceGroupPresentInfoKHX<'a> {
+impl<'l> VkDeviceGroupPresentInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkDeviceGroupPresentInfoKHX<'a> {
+  pub fn new() -> VkDeviceGroupPresentInfoKHX<'l> {
     unsafe {
       VkDeviceGroupPresentInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_PRESENT_INFO_KHX,
@@ -13005,7 +12998,7 @@ impl<'a> VkDeviceGroupPresentInfoKHX<'a> {
     }
   }
   #[inline]
-  pub fn set_device_masks(mut self, value: &'a [u32]) -> Self {
+  pub fn set_device_masks(mut self, value: &'l [u32]) -> Self {
     self.swapchainCount = value.len() as u32;
     unsafe {
       self.pDeviceMasks = value.as_raw();
@@ -13027,17 +13020,17 @@ impl<'a> VkDeviceGroupPresentInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkDeviceGroupPresentInfoKHX<'a> {
-  fn default() -> VkDeviceGroupPresentInfoKHX<'a> {
+impl<'l> Default for VkDeviceGroupPresentInfoKHX<'l> {
+  fn default() -> VkDeviceGroupPresentInfoKHX<'l> {
     VkDeviceGroupPresentInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkDeviceGroupPresentInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkDeviceGroupPresentInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupPresentInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkDeviceGroupPresentInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkPresentInfoKHR<'l, 'h>> for VkDeviceGroupPresentInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13055,16 +13048,16 @@ fn test_struct_size_vk_device_group_present_info_khx() {
 /// Structure specifying parameters of a newly created swapchain object
 #[repr(C)]
 #[cfg(feature = "VK_KHX_device_group")]
-pub struct VkDeviceGroupSwapchainCreateInfoKHX<'a> {
+pub struct VkDeviceGroupSwapchainCreateInfoKHX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub modes: VkDeviceGroupPresentModeFlagsKHX,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> VkDeviceGroupSwapchainCreateInfoKHX<'a> {
+impl<'l> VkDeviceGroupSwapchainCreateInfoKHX<'l> {
   #[inline]
-  pub fn new() -> VkDeviceGroupSwapchainCreateInfoKHX<'a> {
+  pub fn new() -> VkDeviceGroupSwapchainCreateInfoKHX<'l> {
     unsafe {
       VkDeviceGroupSwapchainCreateInfoKHX {
         sType: VkStructureType::DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHX,
@@ -13083,17 +13076,17 @@ impl<'a> VkDeviceGroupSwapchainCreateInfoKHX<'a> {
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-impl<'a> Default for VkDeviceGroupSwapchainCreateInfoKHX<'a> {
-  fn default() -> VkDeviceGroupSwapchainCreateInfoKHX<'a> {
+impl<'l> Default for VkDeviceGroupSwapchainCreateInfoKHX<'l> {
+  fn default() -> VkDeviceGroupSwapchainCreateInfoKHX<'l> {
     VkDeviceGroupSwapchainCreateInfoKHX::new()
   }
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'a> RawStruct for VkDeviceGroupSwapchainCreateInfoKHX<'a> {
+unsafe impl<'l> RawStruct for VkDeviceGroupSwapchainCreateInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupSwapchainCreateInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSwapchainCreateInfoKHR<'b>> for VkDeviceGroupSwapchainCreateInfoKHX<'a> {
+unsafe impl<'l> StructExtends<VkSwapchainCreateInfoKHR<'l, 'h>> for VkDeviceGroupSwapchainCreateInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13116,17 +13109,17 @@ fn test_struct_size_vk_device_group_swapchain_create_info_khx() {
 /// Specify validation checks to disable for a Vulkan instance
 #[repr(C)]
 #[cfg(feature = "VK_EXT_validation_flags")]
-pub struct VkValidationFlagsEXT<'a> {
+pub struct VkValidationFlagsEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   disabledValidationCheckCount: u32,
   pDisabledValidationChecks: *mut VkValidationCheckEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_validation_flags")]
-impl<'a> VkValidationFlagsEXT<'a> {
+impl<'l> VkValidationFlagsEXT<'l> {
   #[inline]
-  pub fn new() -> VkValidationFlagsEXT<'a> {
+  pub fn new() -> VkValidationFlagsEXT<'l> {
     unsafe {
       VkValidationFlagsEXT {
         sType: VkStructureType::VALIDATION_FLAGS_EXT,
@@ -13135,7 +13128,7 @@ impl<'a> VkValidationFlagsEXT<'a> {
     }
   }
   #[inline]
-  pub fn set_disabled_validation_checks(mut self, value: &'a mut [VkValidationCheckEXT]) -> Self {
+  pub fn set_disabled_validation_checks(mut self, value: &'l mut [VkValidationCheckEXT]) -> Self {
     self.disabledValidationCheckCount = value.len() as u32;
     unsafe {
       self.pDisabledValidationChecks = value.as_raw();
@@ -13148,17 +13141,17 @@ impl<'a> VkValidationFlagsEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_validation_flags")]
-impl<'a> Default for VkValidationFlagsEXT<'a> {
-  fn default() -> VkValidationFlagsEXT<'a> {
+impl<'l> Default for VkValidationFlagsEXT<'l> {
+  fn default() -> VkValidationFlagsEXT<'l> {
     VkValidationFlagsEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_validation_flags")]
-unsafe impl<'a> RawStruct for VkValidationFlagsEXT<'a> {
+unsafe impl<'l> RawStruct for VkValidationFlagsEXT<'l> {
   type Raw = types_raw::VkValidationFlagsEXT;
 }
 #[cfg(feature = "VK_EXT_validation_flags")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkInstanceCreateInfo<'b>> for VkValidationFlagsEXT<'a> {
+unsafe impl<'l> StructExtends<VkInstanceCreateInfo<'l>> for VkValidationFlagsEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13179,18 +13172,18 @@ fn test_struct_size_vk_validation_flags_ext() {
 #[repr(C)]
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
-pub struct VkViSurfaceCreateInfoNN<'a> {
+pub struct VkViSurfaceCreateInfoNN<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkViSurfaceCreateFlagsNN,
   window: *mut c_void,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
-impl<'a> VkViSurfaceCreateInfoNN<'a> {
+impl<'l> VkViSurfaceCreateInfoNN<'l> {
   #[inline]
-  pub fn new() -> VkViSurfaceCreateInfoNN<'a> {
+  pub fn new() -> VkViSurfaceCreateInfoNN<'l> {
     unsafe {
       VkViSurfaceCreateInfoNN {
         sType: VkStructureType::VI_SURFACE_CREATE_INFO_NN,
@@ -13227,14 +13220,14 @@ impl<'a> VkViSurfaceCreateInfoNN<'a> {
 }
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
-impl<'a> Default for VkViSurfaceCreateInfoNN<'a> {
-  fn default() -> VkViSurfaceCreateInfoNN<'a> {
+impl<'l> Default for VkViSurfaceCreateInfoNN<'l> {
+  fn default() -> VkViSurfaceCreateInfoNN<'l> {
     VkViSurfaceCreateInfoNN::new()
   }
 }
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
-unsafe impl<'a> RawStruct for VkViSurfaceCreateInfoNN<'a> {
+unsafe impl<'l> RawStruct for VkViSurfaceCreateInfoNN<'l> {
   type Raw = types_raw::VkViSurfaceCreateInfoNN;
 }
 #[cfg(feature = "VK_NN_vi_surface")]
@@ -13285,16 +13278,16 @@ fn test_struct_size_vk_external_memory_properties_khr() {
 /// Structure specifying external image creation parameters
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-pub struct VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
+pub struct VkPhysicalDeviceExternalImageFormatInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl<'a> VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
+impl<'l> VkPhysicalDeviceExternalImageFormatInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
+  pub fn new() -> VkPhysicalDeviceExternalImageFormatInfoKHR<'l> {
     unsafe {
       VkPhysicalDeviceExternalImageFormatInfoKHR {
         sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR,
@@ -13313,18 +13306,18 @@ impl<'a> VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl<'a> Default for VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
-  fn default() -> VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
+impl<'l> Default for VkPhysicalDeviceExternalImageFormatInfoKHR<'l> {
+  fn default() -> VkPhysicalDeviceExternalImageFormatInfoKHR<'l> {
     VkPhysicalDeviceExternalImageFormatInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-unsafe impl<'a> RawStruct for VkPhysicalDeviceExternalImageFormatInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkPhysicalDeviceExternalImageFormatInfoKHR<'l> {
   type Raw = types_raw::VkPhysicalDeviceExternalImageFormatInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPhysicalDeviceImageFormatInfo2KHR<'b>>
-  for VkPhysicalDeviceExternalImageFormatInfoKHR<'a>
+unsafe impl<'l> StructExtends<VkPhysicalDeviceImageFormatInfo2KHR<'l>>
+  for VkPhysicalDeviceExternalImageFormatInfoKHR<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -13389,18 +13382,18 @@ fn test_struct_size_vk_external_image_format_properties_khr() {
 /// Structure specifying buffer creation parameters
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-pub struct VkPhysicalDeviceExternalBufferInfoKHR<'a> {
+pub struct VkPhysicalDeviceExternalBufferInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkBufferCreateFlags,
   pub usage: VkBufferUsageFlags,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl<'a> VkPhysicalDeviceExternalBufferInfoKHR<'a> {
+impl<'l> VkPhysicalDeviceExternalBufferInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceExternalBufferInfoKHR<'a> {
+  pub fn new() -> VkPhysicalDeviceExternalBufferInfoKHR<'l> {
     unsafe {
       VkPhysicalDeviceExternalBufferInfoKHR {
         sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHR,
@@ -13445,13 +13438,13 @@ impl<'a> VkPhysicalDeviceExternalBufferInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-impl<'a> Default for VkPhysicalDeviceExternalBufferInfoKHR<'a> {
-  fn default() -> VkPhysicalDeviceExternalBufferInfoKHR<'a> {
+impl<'l> Default for VkPhysicalDeviceExternalBufferInfoKHR<'l> {
+  fn default() -> VkPhysicalDeviceExternalBufferInfoKHR<'l> {
     VkPhysicalDeviceExternalBufferInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-unsafe impl<'a> RawStruct for VkPhysicalDeviceExternalBufferInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkPhysicalDeviceExternalBufferInfoKHR<'l> {
   type Raw = types_raw::VkPhysicalDeviceExternalBufferInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
@@ -13563,16 +13556,16 @@ fn test_struct_size_vk_physical_device_id_properties_khr() {
 /// Specify that an image may be backed by external memory
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory")]
-pub struct VkExternalMemoryImageCreateInfoKHR<'a> {
+pub struct VkExternalMemoryImageCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl<'a> VkExternalMemoryImageCreateInfoKHR<'a> {
+impl<'l> VkExternalMemoryImageCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkExternalMemoryImageCreateInfoKHR<'a> {
+  pub fn new() -> VkExternalMemoryImageCreateInfoKHR<'l> {
     unsafe {
       VkExternalMemoryImageCreateInfoKHR {
         sType: VkStructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHR,
@@ -13591,17 +13584,17 @@ impl<'a> VkExternalMemoryImageCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl<'a> Default for VkExternalMemoryImageCreateInfoKHR<'a> {
-  fn default() -> VkExternalMemoryImageCreateInfoKHR<'a> {
+impl<'l> Default for VkExternalMemoryImageCreateInfoKHR<'l> {
+  fn default() -> VkExternalMemoryImageCreateInfoKHR<'l> {
     VkExternalMemoryImageCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl<'a> RawStruct for VkExternalMemoryImageCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkExternalMemoryImageCreateInfoKHR<'l> {
   type Raw = types_raw::VkExternalMemoryImageCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkExternalMemoryImageCreateInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkImageCreateInfo<'l>> for VkExternalMemoryImageCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13622,16 +13615,16 @@ fn test_struct_size_vk_external_memory_image_create_info_khr() {
 /// Specify that a buffer may be backed by external memory
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory")]
-pub struct VkExternalMemoryBufferCreateInfoKHR<'a> {
+pub struct VkExternalMemoryBufferCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl<'a> VkExternalMemoryBufferCreateInfoKHR<'a> {
+impl<'l> VkExternalMemoryBufferCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkExternalMemoryBufferCreateInfoKHR<'a> {
+  pub fn new() -> VkExternalMemoryBufferCreateInfoKHR<'l> {
     unsafe {
       VkExternalMemoryBufferCreateInfoKHR {
         sType: VkStructureType::EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHR,
@@ -13650,17 +13643,17 @@ impl<'a> VkExternalMemoryBufferCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl<'a> Default for VkExternalMemoryBufferCreateInfoKHR<'a> {
-  fn default() -> VkExternalMemoryBufferCreateInfoKHR<'a> {
+impl<'l> Default for VkExternalMemoryBufferCreateInfoKHR<'l> {
+  fn default() -> VkExternalMemoryBufferCreateInfoKHR<'l> {
     VkExternalMemoryBufferCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl<'a> RawStruct for VkExternalMemoryBufferCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkExternalMemoryBufferCreateInfoKHR<'l> {
   type Raw = types_raw::VkExternalMemoryBufferCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkBufferCreateInfo<'b>> for VkExternalMemoryBufferCreateInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkBufferCreateInfo<'l>> for VkExternalMemoryBufferCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13681,16 +13674,16 @@ fn test_struct_size_vk_external_memory_buffer_create_info_khr() {
 /// Specify exportable handle types for a device memory object
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory")]
-pub struct VkExportMemoryAllocateInfoKHR<'a> {
+pub struct VkExportMemoryAllocateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalMemoryHandleTypeFlagsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl<'a> VkExportMemoryAllocateInfoKHR<'a> {
+impl<'l> VkExportMemoryAllocateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkExportMemoryAllocateInfoKHR<'a> {
+  pub fn new() -> VkExportMemoryAllocateInfoKHR<'l> {
     unsafe {
       VkExportMemoryAllocateInfoKHR {
         sType: VkStructureType::EXPORT_MEMORY_ALLOCATE_INFO_KHR,
@@ -13709,17 +13702,17 @@ impl<'a> VkExportMemoryAllocateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-impl<'a> Default for VkExportMemoryAllocateInfoKHR<'a> {
-  fn default() -> VkExportMemoryAllocateInfoKHR<'a> {
+impl<'l> Default for VkExportMemoryAllocateInfoKHR<'l> {
+  fn default() -> VkExportMemoryAllocateInfoKHR<'l> {
     VkExportMemoryAllocateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl<'a> RawStruct for VkExportMemoryAllocateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkExportMemoryAllocateInfoKHR<'l> {
   type Raw = types_raw::VkExportMemoryAllocateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemoryAllocateInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkExportMemoryAllocateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13740,19 +13733,19 @@ fn test_struct_size_vk_export_memory_allocate_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkImportMemoryWin32HandleInfoKHR<'a> {
+pub struct VkImportMemoryWin32HandleInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
   pub handle: wsi::win32::HANDLE,
   pub name: wsi::win32::LPCWSTR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkImportMemoryWin32HandleInfoKHR<'a> {
+impl<'l> VkImportMemoryWin32HandleInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkImportMemoryWin32HandleInfoKHR<'a> {
+  pub fn new() -> VkImportMemoryWin32HandleInfoKHR<'l> {
     unsafe {
       VkImportMemoryWin32HandleInfoKHR {
         sType: VkStructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
@@ -13790,19 +13783,19 @@ impl<'a> VkImportMemoryWin32HandleInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkImportMemoryWin32HandleInfoKHR<'a> {
-  fn default() -> VkImportMemoryWin32HandleInfoKHR<'a> {
+impl<'l> Default for VkImportMemoryWin32HandleInfoKHR<'l> {
+  fn default() -> VkImportMemoryWin32HandleInfoKHR<'l> {
     VkImportMemoryWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkImportMemoryWin32HandleInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkImportMemoryWin32HandleInfoKHR<'l> {
   type Raw = types_raw::VkImportMemoryWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkImportMemoryWin32HandleInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkImportMemoryWin32HandleInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13826,19 +13819,19 @@ fn test_struct_size_vk_import_memory_win32_handle_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkExportMemoryWin32HandleInfoKHR<'a> {
+pub struct VkExportMemoryWin32HandleInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub pAttributes: *const wsi::win32::SECURITY_ATTRIBUTES,
   pub dwAccess: wsi::win32::DWORD,
   pub name: wsi::win32::LPCWSTR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkExportMemoryWin32HandleInfoKHR<'a> {
+impl<'l> VkExportMemoryWin32HandleInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkExportMemoryWin32HandleInfoKHR<'a> {
+  pub fn new() -> VkExportMemoryWin32HandleInfoKHR<'l> {
     unsafe {
       VkExportMemoryWin32HandleInfoKHR {
         sType: VkStructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
@@ -13876,19 +13869,19 @@ impl<'a> VkExportMemoryWin32HandleInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkExportMemoryWin32HandleInfoKHR<'a> {
-  fn default() -> VkExportMemoryWin32HandleInfoKHR<'a> {
+impl<'l> Default for VkExportMemoryWin32HandleInfoKHR<'l> {
+  fn default() -> VkExportMemoryWin32HandleInfoKHR<'l> {
     VkExportMemoryWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkExportMemoryWin32HandleInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkExportMemoryWin32HandleInfoKHR<'l> {
   type Raw = types_raw::VkExportMemoryWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkExportMemoryWin32HandleInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkExportMemoryWin32HandleInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13949,18 +13942,18 @@ fn test_struct_size_vk_memory_win32_handle_properties_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkMemoryGetWin32HandleInfoKHR<'a> {
+pub struct VkMemoryGetWin32HandleInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub memory: VkDeviceMemory,
+  pub memory: VkDeviceMemory<'h>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkMemoryGetWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> VkMemoryGetWin32HandleInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkMemoryGetWin32HandleInfoKHR<'a> {
+  pub fn new() -> VkMemoryGetWin32HandleInfoKHR<'l, 'h> {
     unsafe {
       VkMemoryGetWin32HandleInfoKHR {
         sType: VkStructureType::MEMORY_GET_WIN32_HANDLE_INFO_KHR,
@@ -13969,7 +13962,7 @@ impl<'a> VkMemoryGetWin32HandleInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_memory(mut self, value: VkDeviceMemory) -> Self {
+  pub fn set_memory(mut self, value: VkDeviceMemory<'h>) -> Self {
     self.memory = value;
     self
   }
@@ -13979,7 +13972,7 @@ impl<'a> VkMemoryGetWin32HandleInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory<'h> {
     self.memory
   }
   #[inline]
@@ -13997,14 +13990,14 @@ impl<'a> VkMemoryGetWin32HandleInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkMemoryGetWin32HandleInfoKHR<'a> {
-  fn default() -> VkMemoryGetWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkMemoryGetWin32HandleInfoKHR<'l, 'h> {
+  fn default() -> VkMemoryGetWin32HandleInfoKHR<'l, 'h> {
     VkMemoryGetWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkMemoryGetWin32HandleInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkMemoryGetWin32HandleInfoKHR<'l, 'h> {
   type Raw = types_raw::VkMemoryGetWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
@@ -14020,17 +14013,17 @@ fn test_struct_size_vk_memory_get_win32_handle_info_khr() {
 /// import memory created on the same physical device from a file descriptor
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-pub struct VkImportMemoryFdInfoKHR<'a> {
+pub struct VkImportMemoryFdInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
   pub fd: c_int,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-impl<'a> VkImportMemoryFdInfoKHR<'a> {
+impl<'l> VkImportMemoryFdInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkImportMemoryFdInfoKHR<'a> {
+  pub fn new() -> VkImportMemoryFdInfoKHR<'l> {
     unsafe {
       VkImportMemoryFdInfoKHR {
         sType: VkStructureType::IMPORT_MEMORY_FD_INFO_KHR,
@@ -14058,17 +14051,17 @@ impl<'a> VkImportMemoryFdInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-impl<'a> Default for VkImportMemoryFdInfoKHR<'a> {
-  fn default() -> VkImportMemoryFdInfoKHR<'a> {
+impl<'l> Default for VkImportMemoryFdInfoKHR<'l> {
+  fn default() -> VkImportMemoryFdInfoKHR<'l> {
     VkImportMemoryFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-unsafe impl<'a> RawStruct for VkImportMemoryFdInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkImportMemoryFdInfoKHR<'l> {
   type Raw = types_raw::VkImportMemoryFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkImportMemoryFdInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkImportMemoryFdInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14117,17 +14110,17 @@ fn test_struct_size_vk_memory_fd_properties_khr() {
 /// Structure describing a POSIX FD semaphore export operation
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-pub struct VkMemoryGetFdInfoKHR<'a> {
+pub struct VkMemoryGetFdInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub memory: VkDeviceMemory,
+  pub memory: VkDeviceMemory<'h>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-impl<'a> VkMemoryGetFdInfoKHR<'a> {
+impl<'l, 'h: 'l> VkMemoryGetFdInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkMemoryGetFdInfoKHR<'a> {
+  pub fn new() -> VkMemoryGetFdInfoKHR<'l, 'h> {
     unsafe {
       VkMemoryGetFdInfoKHR {
         sType: VkStructureType::MEMORY_GET_FD_INFO_KHR,
@@ -14136,7 +14129,7 @@ impl<'a> VkMemoryGetFdInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_memory(mut self, value: VkDeviceMemory) -> Self {
+  pub fn set_memory(mut self, value: VkDeviceMemory<'h>) -> Self {
     self.memory = value;
     self
   }
@@ -14146,7 +14139,7 @@ impl<'a> VkMemoryGetFdInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory<'h> {
     self.memory
   }
   #[inline]
@@ -14163,13 +14156,13 @@ impl<'a> VkMemoryGetFdInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-impl<'a> Default for VkMemoryGetFdInfoKHR<'a> {
-  fn default() -> VkMemoryGetFdInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkMemoryGetFdInfoKHR<'l, 'h> {
+  fn default() -> VkMemoryGetFdInfoKHR<'l, 'h> {
     VkMemoryGetFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-unsafe impl<'a> RawStruct for VkMemoryGetFdInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkMemoryGetFdInfoKHR<'l, 'h> {
   type Raw = types_raw::VkMemoryGetFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
@@ -14185,7 +14178,7 @@ fn test_struct_size_vk_memory_get_fd_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
+pub struct VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   acquireCount: u32,
@@ -14195,13 +14188,13 @@ pub struct VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
   releaseCount: u32,
   pReleaseSyncs: *const types_raw::VkDeviceMemory,
   pReleaseKeys: *const u64,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
 }
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
+impl<'l, 'h: 'l> VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
+  pub fn new() -> VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h> {
     unsafe {
       VkWin32KeyedMutexAcquireReleaseInfoKHR {
         sType: VkStructureType::WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR,
@@ -14220,19 +14213,19 @@ impl<'a> VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
-  fn default() -> VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h> {
+  fn default() -> VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h> {
     VkWin32KeyedMutexAcquireReleaseInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h> {
   type Raw = types_raw::VkWin32KeyedMutexAcquireReleaseInfoKHR;
 }
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkWin32KeyedMutexAcquireReleaseInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkSubmitInfo<'l, 'h>> for VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14256,16 +14249,16 @@ fn test_struct_size_vk_win32_keyed_mutex_acquire_release_info_khr() {
 /// Structure specifying semaphore creation parameters.
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
-pub struct VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
+pub struct VkPhysicalDeviceExternalSemaphoreInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
-impl<'a> VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
+impl<'l> VkPhysicalDeviceExternalSemaphoreInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
+  pub fn new() -> VkPhysicalDeviceExternalSemaphoreInfoKHR<'l> {
     unsafe {
       VkPhysicalDeviceExternalSemaphoreInfoKHR {
         sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR,
@@ -14292,13 +14285,13 @@ impl<'a> VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
-impl<'a> Default for VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
-  fn default() -> VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
+impl<'l> Default for VkPhysicalDeviceExternalSemaphoreInfoKHR<'l> {
+  fn default() -> VkPhysicalDeviceExternalSemaphoreInfoKHR<'l> {
     VkPhysicalDeviceExternalSemaphoreInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
-unsafe impl<'a> RawStruct for VkPhysicalDeviceExternalSemaphoreInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkPhysicalDeviceExternalSemaphoreInfoKHR<'l> {
   type Raw = types_raw::VkPhysicalDeviceExternalSemaphoreInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
@@ -14360,16 +14353,16 @@ fn test_struct_size_vk_external_semaphore_properties_khr() {
 /// Structure specifying handle types that can be exported from a semaphore
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_semaphore")]
-pub struct VkExportSemaphoreCreateInfoKHR<'a> {
+pub struct VkExportSemaphoreCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalSemaphoreHandleTypeFlagsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore")]
-impl<'a> VkExportSemaphoreCreateInfoKHR<'a> {
+impl<'l> VkExportSemaphoreCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkExportSemaphoreCreateInfoKHR<'a> {
+  pub fn new() -> VkExportSemaphoreCreateInfoKHR<'l> {
     unsafe {
       VkExportSemaphoreCreateInfoKHR {
         sType: VkStructureType::EXPORT_SEMAPHORE_CREATE_INFO_KHR,
@@ -14388,17 +14381,17 @@ impl<'a> VkExportSemaphoreCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore")]
-impl<'a> Default for VkExportSemaphoreCreateInfoKHR<'a> {
-  fn default() -> VkExportSemaphoreCreateInfoKHR<'a> {
+impl<'l> Default for VkExportSemaphoreCreateInfoKHR<'l> {
+  fn default() -> VkExportSemaphoreCreateInfoKHR<'l> {
     VkExportSemaphoreCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore")]
-unsafe impl<'a> RawStruct for VkExportSemaphoreCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkExportSemaphoreCreateInfoKHR<'l> {
   type Raw = types_raw::VkExportSemaphoreCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSemaphoreCreateInfo<'b>> for VkExportSemaphoreCreateInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkSemaphoreCreateInfo<'l>> for VkExportSemaphoreCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14422,21 +14415,21 @@ fn test_struct_size_vk_export_semaphore_create_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkImportSemaphoreWin32HandleInfoKHR<'a> {
+pub struct VkImportSemaphoreWin32HandleInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub semaphore: VkSemaphore,
+  pub semaphore: VkSemaphore<'h>,
   pub flags: VkSemaphoreImportFlagsKHR,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
   pub handle: wsi::win32::HANDLE,
   pub name: wsi::win32::LPCWSTR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkImportSemaphoreWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> VkImportSemaphoreWin32HandleInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkImportSemaphoreWin32HandleInfoKHR<'a> {
+  pub fn new() -> VkImportSemaphoreWin32HandleInfoKHR<'l, 'h> {
     unsafe {
       VkImportSemaphoreWin32HandleInfoKHR {
         sType: VkStructureType::IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
@@ -14445,7 +14438,7 @@ impl<'a> VkImportSemaphoreWin32HandleInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_semaphore(mut self, value: VkSemaphore) -> Self {
+  pub fn set_semaphore(mut self, value: VkSemaphore<'h>) -> Self {
     self.semaphore = value;
     self
   }
@@ -14470,7 +14463,7 @@ impl<'a> VkImportSemaphoreWin32HandleInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn semaphore(&self) -> VkSemaphore {
+  pub fn semaphore(&self) -> VkSemaphore<'h> {
     self.semaphore
   }
   #[inline]
@@ -14500,14 +14493,14 @@ impl<'a> VkImportSemaphoreWin32HandleInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkImportSemaphoreWin32HandleInfoKHR<'a> {
-  fn default() -> VkImportSemaphoreWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkImportSemaphoreWin32HandleInfoKHR<'l, 'h> {
+  fn default() -> VkImportSemaphoreWin32HandleInfoKHR<'l, 'h> {
     VkImportSemaphoreWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkImportSemaphoreWin32HandleInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkImportSemaphoreWin32HandleInfoKHR<'l, 'h> {
   type Raw = types_raw::VkImportSemaphoreWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
@@ -14526,19 +14519,19 @@ fn test_struct_size_vk_import_semaphore_win32_handle_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkExportSemaphoreWin32HandleInfoKHR<'a> {
+pub struct VkExportSemaphoreWin32HandleInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub pAttributes: *const wsi::win32::SECURITY_ATTRIBUTES,
   pub dwAccess: wsi::win32::DWORD,
   pub name: wsi::win32::LPCWSTR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkExportSemaphoreWin32HandleInfoKHR<'a> {
+impl<'l> VkExportSemaphoreWin32HandleInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkExportSemaphoreWin32HandleInfoKHR<'a> {
+  pub fn new() -> VkExportSemaphoreWin32HandleInfoKHR<'l> {
     unsafe {
       VkExportSemaphoreWin32HandleInfoKHR {
         sType: VkStructureType::EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
@@ -14576,19 +14569,19 @@ impl<'a> VkExportSemaphoreWin32HandleInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkExportSemaphoreWin32HandleInfoKHR<'a> {
-  fn default() -> VkExportSemaphoreWin32HandleInfoKHR<'a> {
+impl<'l> Default for VkExportSemaphoreWin32HandleInfoKHR<'l> {
+  fn default() -> VkExportSemaphoreWin32HandleInfoKHR<'l> {
     VkExportSemaphoreWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkExportSemaphoreWin32HandleInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkExportSemaphoreWin32HandleInfoKHR<'l> {
   type Raw = types_raw::VkExportSemaphoreWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSemaphoreCreateInfo<'b>> for VkExportSemaphoreWin32HandleInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkSemaphoreCreateInfo<'l>> for VkExportSemaphoreWin32HandleInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14611,20 +14604,20 @@ fn test_struct_size_vk_export_semaphore_win32_handle_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkD3D12FenceSubmitInfoKHR<'a> {
+pub struct VkD3D12FenceSubmitInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   waitSemaphoreValuesCount: u32,
   pWaitSemaphoreValues: *const u64,
   signalSemaphoreValuesCount: u32,
   pSignalSemaphoreValues: *const u64,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkD3D12FenceSubmitInfoKHR<'a> {
+impl<'l> VkD3D12FenceSubmitInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkD3D12FenceSubmitInfoKHR<'a> {
+  pub fn new() -> VkD3D12FenceSubmitInfoKHR<'l> {
     unsafe {
       VkD3D12FenceSubmitInfoKHR {
         sType: VkStructureType::D3D12_FENCE_SUBMIT_INFO_KHR,
@@ -14633,7 +14626,7 @@ impl<'a> VkD3D12FenceSubmitInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_wait_semaphore_values(mut self, value: &'a [u64]) -> Self {
+  pub fn set_wait_semaphore_values(mut self, value: &'l [u64]) -> Self {
     self.waitSemaphoreValuesCount = value.len() as u32;
     unsafe {
       self.pWaitSemaphoreValues = value.as_raw();
@@ -14641,7 +14634,7 @@ impl<'a> VkD3D12FenceSubmitInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_signal_semaphore_values(mut self, value: &'a [u64]) -> Self {
+  pub fn set_signal_semaphore_values(mut self, value: &'l [u64]) -> Self {
     self.signalSemaphoreValuesCount = value.len() as u32;
     unsafe {
       self.pSignalSemaphoreValues = value.as_raw();
@@ -14659,19 +14652,19 @@ impl<'a> VkD3D12FenceSubmitInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkD3D12FenceSubmitInfoKHR<'a> {
-  fn default() -> VkD3D12FenceSubmitInfoKHR<'a> {
+impl<'l> Default for VkD3D12FenceSubmitInfoKHR<'l> {
+  fn default() -> VkD3D12FenceSubmitInfoKHR<'l> {
     VkD3D12FenceSubmitInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkD3D12FenceSubmitInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkD3D12FenceSubmitInfoKHR<'l> {
   type Raw = types_raw::VkD3D12FenceSubmitInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSubmitInfo<'b>> for VkD3D12FenceSubmitInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkSubmitInfo<'l, 'h>> for VkD3D12FenceSubmitInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14691,18 +14684,18 @@ fn test_struct_size_vk_d3_d12_fence_submit_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkSemaphoreGetWin32HandleInfoKHR<'a> {
+pub struct VkSemaphoreGetWin32HandleInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub semaphore: VkSemaphore,
+  pub semaphore: VkSemaphore<'h>,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkSemaphoreGetWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> VkSemaphoreGetWin32HandleInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkSemaphoreGetWin32HandleInfoKHR<'a> {
+  pub fn new() -> VkSemaphoreGetWin32HandleInfoKHR<'l, 'h> {
     unsafe {
       VkSemaphoreGetWin32HandleInfoKHR {
         sType: VkStructureType::SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR,
@@ -14711,7 +14704,7 @@ impl<'a> VkSemaphoreGetWin32HandleInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_semaphore(mut self, value: VkSemaphore) -> Self {
+  pub fn set_semaphore(mut self, value: VkSemaphore<'h>) -> Self {
     self.semaphore = value;
     self
   }
@@ -14721,7 +14714,7 @@ impl<'a> VkSemaphoreGetWin32HandleInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn semaphore(&self) -> VkSemaphore {
+  pub fn semaphore(&self) -> VkSemaphore<'h> {
     self.semaphore
   }
   #[inline]
@@ -14739,14 +14732,14 @@ impl<'a> VkSemaphoreGetWin32HandleInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkSemaphoreGetWin32HandleInfoKHR<'a> {
-  fn default() -> VkSemaphoreGetWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkSemaphoreGetWin32HandleInfoKHR<'l, 'h> {
+  fn default() -> VkSemaphoreGetWin32HandleInfoKHR<'l, 'h> {
     VkSemaphoreGetWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkSemaphoreGetWin32HandleInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkSemaphoreGetWin32HandleInfoKHR<'l, 'h> {
   type Raw = types_raw::VkSemaphoreGetWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
@@ -14765,19 +14758,19 @@ fn test_struct_size_vk_semaphore_get_win32_handle_info_khr() {
 /// Structure specifying POSIX file descriptor to import to a semaphore
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-pub struct VkImportSemaphoreFdInfoKHR<'a> {
+pub struct VkImportSemaphoreFdInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub semaphore: VkSemaphore,
+  pub semaphore: VkSemaphore<'h>,
   pub flags: VkSemaphoreImportFlagsKHR,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
   pub fd: c_int,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-impl<'a> VkImportSemaphoreFdInfoKHR<'a> {
+impl<'l, 'h: 'l> VkImportSemaphoreFdInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkImportSemaphoreFdInfoKHR<'a> {
+  pub fn new() -> VkImportSemaphoreFdInfoKHR<'l, 'h> {
     unsafe {
       VkImportSemaphoreFdInfoKHR {
         sType: VkStructureType::IMPORT_SEMAPHORE_FD_INFO_KHR,
@@ -14786,7 +14779,7 @@ impl<'a> VkImportSemaphoreFdInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_semaphore(mut self, value: VkSemaphore) -> Self {
+  pub fn set_semaphore(mut self, value: VkSemaphore<'h>) -> Self {
     self.semaphore = value;
     self
   }
@@ -14806,7 +14799,7 @@ impl<'a> VkImportSemaphoreFdInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn semaphore(&self) -> VkSemaphore {
+  pub fn semaphore(&self) -> VkSemaphore<'h> {
     self.semaphore
   }
   #[inline]
@@ -14831,13 +14824,13 @@ impl<'a> VkImportSemaphoreFdInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-impl<'a> Default for VkImportSemaphoreFdInfoKHR<'a> {
-  fn default() -> VkImportSemaphoreFdInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkImportSemaphoreFdInfoKHR<'l, 'h> {
+  fn default() -> VkImportSemaphoreFdInfoKHR<'l, 'h> {
     VkImportSemaphoreFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-unsafe impl<'a> RawStruct for VkImportSemaphoreFdInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkImportSemaphoreFdInfoKHR<'l, 'h> {
   type Raw = types_raw::VkImportSemaphoreFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
@@ -14850,17 +14843,17 @@ fn test_struct_size_vk_import_semaphore_fd_info_khr() {
 /// Structure describing a POSIX FD semaphore export operation
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-pub struct VkSemaphoreGetFdInfoKHR<'a> {
+pub struct VkSemaphoreGetFdInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub semaphore: VkSemaphore,
+  pub semaphore: VkSemaphore<'h>,
   pub handleType: VkExternalSemaphoreHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-impl<'a> VkSemaphoreGetFdInfoKHR<'a> {
+impl<'l, 'h: 'l> VkSemaphoreGetFdInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkSemaphoreGetFdInfoKHR<'a> {
+  pub fn new() -> VkSemaphoreGetFdInfoKHR<'l, 'h> {
     unsafe {
       VkSemaphoreGetFdInfoKHR {
         sType: VkStructureType::SEMAPHORE_GET_FD_INFO_KHR,
@@ -14869,7 +14862,7 @@ impl<'a> VkSemaphoreGetFdInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_semaphore(mut self, value: VkSemaphore) -> Self {
+  pub fn set_semaphore(mut self, value: VkSemaphore<'h>) -> Self {
     self.semaphore = value;
     self
   }
@@ -14879,7 +14872,7 @@ impl<'a> VkSemaphoreGetFdInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn semaphore(&self) -> VkSemaphore {
+  pub fn semaphore(&self) -> VkSemaphore<'h> {
     self.semaphore
   }
   #[inline]
@@ -14896,13 +14889,13 @@ impl<'a> VkSemaphoreGetFdInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-impl<'a> Default for VkSemaphoreGetFdInfoKHR<'a> {
-  fn default() -> VkSemaphoreGetFdInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkSemaphoreGetFdInfoKHR<'l, 'h> {
+  fn default() -> VkSemaphoreGetFdInfoKHR<'l, 'h> {
     VkSemaphoreGetFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-unsafe impl<'a> RawStruct for VkSemaphoreGetFdInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkSemaphoreGetFdInfoKHR<'l, 'h> {
   type Raw = types_raw::VkSemaphoreGetFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
@@ -15076,7 +15069,7 @@ unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDevice16Bi
   }
 }
 #[cfg(feature = "VK_KHR_16bit_storage")]
-unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDevice16BitStorageFeaturesKHR {
+unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDevice16BitStorageFeaturesKHR {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -15161,19 +15154,19 @@ fn test_struct_size_vk_rect_layer_khr() {
 /// VkImage
 #[repr(C)]
 #[cfg(feature = "VK_KHR_incremental_present")]
-pub struct VkPresentRegionKHR<'a> {
+pub struct VkPresentRegionKHR<'l> {
   rectangleCount: u32,
   pRectangles: *const types_raw::VkRectLayerKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
-impl<'a> VkPresentRegionKHR<'a> {
+impl<'l> VkPresentRegionKHR<'l> {
   #[inline]
-  pub fn new() -> VkPresentRegionKHR<'a> {
+  pub fn new() -> VkPresentRegionKHR<'l> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
-  pub fn set_rectangles(mut self, value: &'a [VkRectLayerKHR]) -> Self {
+  pub fn set_rectangles(mut self, value: &'l [VkRectLayerKHR]) -> Self {
     self.rectangleCount = value.len() as u32;
     unsafe {
       self.pRectangles = value.as_raw();
@@ -15186,13 +15179,13 @@ impl<'a> VkPresentRegionKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
-impl<'a> Default for VkPresentRegionKHR<'a> {
-  fn default() -> VkPresentRegionKHR<'a> {
+impl<'l> Default for VkPresentRegionKHR<'l> {
+  fn default() -> VkPresentRegionKHR<'l> {
     VkPresentRegionKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
-unsafe impl<'a> RawStruct for VkPresentRegionKHR<'a> {
+unsafe impl<'l> RawStruct for VkPresentRegionKHR<'l> {
   type Raw = types_raw::VkPresentRegionKHR;
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
@@ -15205,17 +15198,17 @@ fn test_struct_size_vk_present_region_khr() {
 /// Structure hint of rectangular regions changed by vkQueuePresentKHR
 #[repr(C)]
 #[cfg(feature = "VK_KHR_incremental_present")]
-pub struct VkPresentRegionsKHR<'a> {
+pub struct VkPresentRegionsKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   swapchainCount: u32,
   pRegions: *const types_raw::VkPresentRegionKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
-impl<'a> VkPresentRegionsKHR<'a> {
+impl<'l> VkPresentRegionsKHR<'l> {
   #[inline]
-  pub fn new() -> VkPresentRegionsKHR<'a> {
+  pub fn new() -> VkPresentRegionsKHR<'l> {
     unsafe {
       VkPresentRegionsKHR {
         sType: VkStructureType::PRESENT_REGIONS_KHR,
@@ -15224,7 +15217,7 @@ impl<'a> VkPresentRegionsKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_regions(mut self, value: &'a [VkPresentRegionKHR<'a>]) -> Self {
+  pub fn set_regions(mut self, value: &'l [VkPresentRegionKHR<'l>]) -> Self {
     self.swapchainCount = value.len() as u32;
     unsafe {
       self.pRegions = value.as_raw();
@@ -15237,17 +15230,17 @@ impl<'a> VkPresentRegionsKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
-impl<'a> Default for VkPresentRegionsKHR<'a> {
-  fn default() -> VkPresentRegionsKHR<'a> {
+impl<'l> Default for VkPresentRegionsKHR<'l> {
+  fn default() -> VkPresentRegionsKHR<'l> {
     VkPresentRegionsKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
-unsafe impl<'a> RawStruct for VkPresentRegionsKHR<'a> {
+unsafe impl<'l> RawStruct for VkPresentRegionsKHR<'l> {
   type Raw = types_raw::VkPresentRegionsKHR;
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkPresentRegionsKHR<'a> {
+unsafe impl<'l> StructExtends<VkPresentInfoKHR<'l, 'h>> for VkPresentRegionsKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -15270,7 +15263,7 @@ pub enum VkDescriptorUpdateTemplateKHR__ {}
 
 /// Opaque handle to a descriptor update template
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
-pub type VkDescriptorUpdateTemplateKHR = VkNonDispatchableHandle<VkDescriptorUpdateTemplateKHR__>;
+pub type VkDescriptorUpdateTemplateKHR<'l> = VkNonDispatchableHandle<'l, VkDescriptorUpdateTemplateKHR__>;
 
 /// Describes a single descriptor update of the descriptor update template
 #[repr(C)]
@@ -15368,23 +15361,23 @@ fn test_struct_size_vk_descriptor_update_template_entry_khr() {
 /// Structure specifying parameters of a newly created descriptor update template
 #[repr(C)]
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
-pub struct VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
+pub struct VkDescriptorUpdateTemplateCreateInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: *mut c_void,
   pub flags: VkDescriptorUpdateTemplateCreateFlagsKHR,
   descriptorUpdateEntryCount: u32,
   pDescriptorUpdateEntries: *const types_raw::VkDescriptorUpdateTemplateEntryKHR,
   pub templateType: VkDescriptorUpdateTemplateTypeKHR,
-  pub descriptorSetLayout: Option<VkDescriptorSetLayout>,
+  pub descriptorSetLayout: Option<VkDescriptorSetLayout<'h>>,
   pub pipelineBindPoint: VkPipelineBindPoint,
-  pub pipelineLayout: Option<VkPipelineLayout>,
+  pub pipelineLayout: Option<VkPipelineLayout<'h>>,
   pub set: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
-impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
+impl<'l, 'h: 'l> VkDescriptorUpdateTemplateCreateInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
+  pub fn new() -> VkDescriptorUpdateTemplateCreateInfoKHR<'l, 'h> {
     unsafe {
       VkDescriptorUpdateTemplateCreateInfoKHR {
         sType: VkStructureType::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR,
@@ -15403,7 +15396,7 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_descriptor_update_entries(mut self, value: &'a [VkDescriptorUpdateTemplateEntryKHR]) -> Self {
+  pub fn set_descriptor_update_entries(mut self, value: &'l [VkDescriptorUpdateTemplateEntryKHR]) -> Self {
     self.descriptorUpdateEntryCount = value.len() as u32;
     unsafe {
       self.pDescriptorUpdateEntries = value.as_raw();
@@ -15416,7 +15409,7 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_descriptor_set_layout(mut self, value: Option<VkDescriptorSetLayout>) -> Self {
+  pub fn set_descriptor_set_layout(mut self, value: Option<VkDescriptorSetLayout<'h>>) -> Self {
     self.descriptorSetLayout = value;
     self
   }
@@ -15426,7 +15419,7 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn set_pipeline_layout(mut self, value: Option<VkPipelineLayout>) -> Self {
+  pub fn set_pipeline_layout(mut self, value: Option<VkPipelineLayout<'h>>) -> Self {
     self.pipelineLayout = value;
     self
   }
@@ -15452,7 +15445,7 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
     self.templateType
   }
   #[inline]
-  pub fn descriptor_set_layout(&self) -> Option<VkDescriptorSetLayout> {
+  pub fn descriptor_set_layout(&self) -> Option<VkDescriptorSetLayout<'h>> {
     self.descriptorSetLayout
   }
   #[inline]
@@ -15460,7 +15453,7 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
     self.pipelineBindPoint
   }
   #[inline]
-  pub fn pipeline_layout(&self) -> Option<VkPipelineLayout> {
+  pub fn pipeline_layout(&self) -> Option<VkPipelineLayout<'h>> {
     self.pipelineLayout
   }
   #[inline]
@@ -15469,13 +15462,13 @@ impl<'a> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
-impl<'a> Default for VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
-  fn default() -> VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkDescriptorUpdateTemplateCreateInfoKHR<'l, 'h> {
+  fn default() -> VkDescriptorUpdateTemplateCreateInfoKHR<'l, 'h> {
     VkDescriptorUpdateTemplateCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
-unsafe impl<'a> RawStruct for VkDescriptorUpdateTemplateCreateInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkDescriptorUpdateTemplateCreateInfoKHR<'l, 'h> {
   type Raw = types_raw::VkDescriptorUpdateTemplateCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
@@ -15496,7 +15489,7 @@ pub enum VkObjectTableNVX__ {}
 
 /// Opaque handle to an object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub type VkObjectTableNVX = VkNonDispatchableHandle<VkObjectTableNVX__>;
+pub type VkObjectTableNVX<'l> = VkNonDispatchableHandle<'l, VkObjectTableNVX__>;
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 #[doc(hidden)]
 #[derive(Copy, Clone)]
@@ -15504,21 +15497,21 @@ pub enum VkIndirectCommandsLayoutNVX__ {}
 
 /// Opaque handle to an indirect commands layout object
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub type VkIndirectCommandsLayoutNVX = VkNonDispatchableHandle<VkIndirectCommandsLayoutNVX__>;
+pub type VkIndirectCommandsLayoutNVX<'l> = VkNonDispatchableHandle<'l, VkIndirectCommandsLayoutNVX__>;
 
 /// Structure specifying physical device support
 #[repr(C)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkDeviceGeneratedCommandsFeaturesNVX<'a> {
+pub struct VkDeviceGeneratedCommandsFeaturesNVX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub computeBindingPointSupport: VkBool32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> VkDeviceGeneratedCommandsFeaturesNVX<'a> {
+impl<'l> VkDeviceGeneratedCommandsFeaturesNVX<'l> {
   #[inline]
-  pub fn new() -> VkDeviceGeneratedCommandsFeaturesNVX<'a> {
+  pub fn new() -> VkDeviceGeneratedCommandsFeaturesNVX<'l> {
     unsafe {
       VkDeviceGeneratedCommandsFeaturesNVX {
         sType: VkStructureType::DEVICE_GENERATED_COMMANDS_FEATURES_NVX,
@@ -15546,13 +15539,13 @@ impl<'a> VkDeviceGeneratedCommandsFeaturesNVX<'a> {
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> Default for VkDeviceGeneratedCommandsFeaturesNVX<'a> {
-  fn default() -> VkDeviceGeneratedCommandsFeaturesNVX<'a> {
+impl<'l> Default for VkDeviceGeneratedCommandsFeaturesNVX<'l> {
+  fn default() -> VkDeviceGeneratedCommandsFeaturesNVX<'l> {
     VkDeviceGeneratedCommandsFeaturesNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl<'a> RawStruct for VkDeviceGeneratedCommandsFeaturesNVX<'a> {
+unsafe impl<'l> RawStruct for VkDeviceGeneratedCommandsFeaturesNVX<'l> {
   type Raw = types_raw::VkDeviceGeneratedCommandsFeaturesNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -15568,7 +15561,7 @@ fn test_struct_size_vk_device_generated_commands_features_nvx() {
 /// Structure specifying physical device limits
 #[repr(C)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkDeviceGeneratedCommandsLimitsNVX<'a> {
+pub struct VkDeviceGeneratedCommandsLimitsNVX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub maxIndirectCommandsLayoutTokenCount: u32,
@@ -15576,12 +15569,12 @@ pub struct VkDeviceGeneratedCommandsLimitsNVX<'a> {
   pub minSequenceCountBufferOffsetAlignment: u32,
   pub minSequenceIndexBufferOffsetAlignment: u32,
   pub minCommandsTokenBufferOffsetAlignment: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> VkDeviceGeneratedCommandsLimitsNVX<'a> {
+impl<'l> VkDeviceGeneratedCommandsLimitsNVX<'l> {
   #[inline]
-  pub fn new() -> VkDeviceGeneratedCommandsLimitsNVX<'a> {
+  pub fn new() -> VkDeviceGeneratedCommandsLimitsNVX<'l> {
     unsafe {
       VkDeviceGeneratedCommandsLimitsNVX {
         sType: VkStructureType::DEVICE_GENERATED_COMMANDS_LIMITS_NVX,
@@ -15644,13 +15637,13 @@ impl<'a> VkDeviceGeneratedCommandsLimitsNVX<'a> {
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> Default for VkDeviceGeneratedCommandsLimitsNVX<'a> {
-  fn default() -> VkDeviceGeneratedCommandsLimitsNVX<'a> {
+impl<'l> Default for VkDeviceGeneratedCommandsLimitsNVX<'l> {
+  fn default() -> VkDeviceGeneratedCommandsLimitsNVX<'l> {
     VkDeviceGeneratedCommandsLimitsNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl<'a> RawStruct for VkDeviceGeneratedCommandsLimitsNVX<'a> {
+unsafe impl<'l> RawStruct for VkDeviceGeneratedCommandsLimitsNVX<'l> {
   type Raw = types_raw::VkDeviceGeneratedCommandsLimitsNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -15665,17 +15658,16 @@ fn test_struct_size_vk_device_generated_commands_limits_nvx() {
 
 /// Structure specifying parameters for the reservation of command buffer space
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkIndirectCommandsTokenNVX {
+pub struct VkIndirectCommandsTokenNVX<'h> {
   pub tokenType: VkIndirectCommandsTokenTypeNVX,
-  pub buffer: VkBuffer,
+  pub buffer: VkBuffer<'h>,
   pub offset: VkDeviceSize,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl VkIndirectCommandsTokenNVX {
+impl<'h> VkIndirectCommandsTokenNVX<'h> {
   #[inline]
-  pub fn new() -> VkIndirectCommandsTokenNVX {
+  pub fn new() -> VkIndirectCommandsTokenNVX<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -15684,7 +15676,7 @@ impl VkIndirectCommandsTokenNVX {
     self
   }
   #[inline]
-  pub fn set_buffer(mut self, value: VkBuffer) -> Self {
+  pub fn set_buffer(mut self, value: VkBuffer<'h>) -> Self {
     self.buffer = value;
     self
   }
@@ -15698,7 +15690,7 @@ impl VkIndirectCommandsTokenNVX {
     self.tokenType
   }
   #[inline]
-  pub fn buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer<'h> {
     self.buffer
   }
   #[inline]
@@ -15707,13 +15699,13 @@ impl VkIndirectCommandsTokenNVX {
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl Default for VkIndirectCommandsTokenNVX {
-  fn default() -> VkIndirectCommandsTokenNVX {
+impl<'h> Default for VkIndirectCommandsTokenNVX<'h> {
+  fn default() -> VkIndirectCommandsTokenNVX<'h> {
     VkIndirectCommandsTokenNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl RawStruct for VkIndirectCommandsTokenNVX {
+unsafe impl<'h> RawStruct for VkIndirectCommandsTokenNVX<'h> {
   type Raw = types_raw::VkIndirectCommandsTokenNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -15800,19 +15792,19 @@ fn test_struct_size_vk_indirect_commands_layout_token_nvx() {
 /// object
 #[repr(C)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkIndirectCommandsLayoutCreateInfoNVX<'a> {
+pub struct VkIndirectCommandsLayoutCreateInfoNVX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub pipelineBindPoint: VkPipelineBindPoint,
   pub flags: VkIndirectCommandsLayoutUsageFlagsNVX,
   tokenCount: u32,
   pTokens: *const types_raw::VkIndirectCommandsLayoutTokenNVX,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
+impl<'l> VkIndirectCommandsLayoutCreateInfoNVX<'l> {
   #[inline]
-  pub fn new() -> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
+  pub fn new() -> VkIndirectCommandsLayoutCreateInfoNVX<'l> {
     unsafe {
       VkIndirectCommandsLayoutCreateInfoNVX {
         sType: VkStructureType::INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX,
@@ -15831,7 +15823,7 @@ impl<'a> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn set_tokens(mut self, value: &'a [VkIndirectCommandsLayoutTokenNVX]) -> Self {
+  pub fn set_tokens(mut self, value: &'l [VkIndirectCommandsLayoutTokenNVX]) -> Self {
     self.tokenCount = value.len() as u32;
     unsafe {
       self.pTokens = value.as_raw();
@@ -15860,13 +15852,13 @@ impl<'a> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> Default for VkIndirectCommandsLayoutCreateInfoNVX<'a> {
-  fn default() -> VkIndirectCommandsLayoutCreateInfoNVX<'a> {
+impl<'l> Default for VkIndirectCommandsLayoutCreateInfoNVX<'l> {
+  fn default() -> VkIndirectCommandsLayoutCreateInfoNVX<'l> {
     VkIndirectCommandsLayoutCreateInfoNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl<'a> RawStruct for VkIndirectCommandsLayoutCreateInfoNVX<'a> {
+unsafe impl<'l> RawStruct for VkIndirectCommandsLayoutCreateInfoNVX<'l> {
   type Raw = types_raw::VkIndirectCommandsLayoutCreateInfoNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -15882,25 +15874,25 @@ fn test_struct_size_vk_indirect_commands_layout_create_info_nvx() {
 /// Structure specifying parameters for the generation of commands
 #[repr(C)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkCmdProcessCommandsInfoNVX<'a> {
+pub struct VkCmdProcessCommandsInfoNVX<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub objectTable: VkObjectTableNVX,
-  pub indirectCommandsLayout: VkIndirectCommandsLayoutNVX,
+  pub objectTable: VkObjectTableNVX<'h>,
+  pub indirectCommandsLayout: VkIndirectCommandsLayoutNVX<'h>,
   indirectCommandsTokenCount: u32,
   pIndirectCommandsTokens: *const types_raw::VkIndirectCommandsTokenNVX,
   pub maxSequencesCount: u32,
-  pub targetCommandBuffer: Option<VkCommandBuffer>,
-  pub sequencesCountBuffer: Option<VkBuffer>,
+  pub targetCommandBuffer: Option<VkCommandBuffer<'h>>,
+  pub sequencesCountBuffer: Option<VkBuffer<'h>>,
   pub sequencesCountOffset: VkDeviceSize,
-  pub sequencesIndexBuffer: Option<VkBuffer>,
+  pub sequencesIndexBuffer: Option<VkBuffer<'h>>,
   pub sequencesIndexOffset: VkDeviceSize,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
+impl<'l, 'h: 'l> VkCmdProcessCommandsInfoNVX<'l, 'h> {
   #[inline]
-  pub fn new() -> VkCmdProcessCommandsInfoNVX<'a> {
+  pub fn new() -> VkCmdProcessCommandsInfoNVX<'l, 'h> {
     unsafe {
       VkCmdProcessCommandsInfoNVX {
         sType: VkStructureType::CMD_PROCESS_COMMANDS_INFO_NVX,
@@ -15909,17 +15901,17 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
     }
   }
   #[inline]
-  pub fn set_object_table(mut self, value: VkObjectTableNVX) -> Self {
+  pub fn set_object_table(mut self, value: VkObjectTableNVX<'h>) -> Self {
     self.objectTable = value;
     self
   }
   #[inline]
-  pub fn set_indirect_commands_layout(mut self, value: VkIndirectCommandsLayoutNVX) -> Self {
+  pub fn set_indirect_commands_layout(mut self, value: VkIndirectCommandsLayoutNVX<'h>) -> Self {
     self.indirectCommandsLayout = value;
     self
   }
   #[inline]
-  pub fn set_indirect_commands_tokens(mut self, value: &'a [VkIndirectCommandsTokenNVX]) -> Self {
+  pub fn set_indirect_commands_tokens(mut self, value: &'l [VkIndirectCommandsTokenNVX<'h>]) -> Self {
     self.indirectCommandsTokenCount = value.len() as u32;
     unsafe {
       self.pIndirectCommandsTokens = value.as_raw();
@@ -15932,12 +15924,12 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn set_target_command_buffer(mut self, value: Option<VkCommandBuffer>) -> Self {
+  pub fn set_target_command_buffer(mut self, value: Option<VkCommandBuffer<'h>>) -> Self {
     self.targetCommandBuffer = value;
     self
   }
   #[inline]
-  pub fn set_sequences_count_buffer(mut self, value: Option<VkBuffer>) -> Self {
+  pub fn set_sequences_count_buffer(mut self, value: Option<VkBuffer<'h>>) -> Self {
     self.sequencesCountBuffer = value;
     self
   }
@@ -15947,7 +15939,7 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn set_sequences_index_buffer(mut self, value: Option<VkBuffer>) -> Self {
+  pub fn set_sequences_index_buffer(mut self, value: Option<VkBuffer<'h>>) -> Self {
     self.sequencesIndexBuffer = value;
     self
   }
@@ -15957,11 +15949,11 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn object_table(&self) -> VkObjectTableNVX {
+  pub fn object_table(&self) -> VkObjectTableNVX<'h> {
     self.objectTable
   }
   #[inline]
-  pub fn indirect_commands_layout(&self) -> VkIndirectCommandsLayoutNVX {
+  pub fn indirect_commands_layout(&self) -> VkIndirectCommandsLayoutNVX<'h> {
     self.indirectCommandsLayout
   }
   #[inline]
@@ -15973,11 +15965,11 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
     self.maxSequencesCount
   }
   #[inline]
-  pub fn target_command_buffer(&self) -> Option<VkCommandBuffer> {
+  pub fn target_command_buffer(&self) -> Option<VkCommandBuffer<'h>> {
     self.targetCommandBuffer
   }
   #[inline]
-  pub fn sequences_count_buffer(&self) -> Option<VkBuffer> {
+  pub fn sequences_count_buffer(&self) -> Option<VkBuffer<'h>> {
     self.sequencesCountBuffer
   }
   #[inline]
@@ -15985,7 +15977,7 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
     self.sequencesCountOffset
   }
   #[inline]
-  pub fn sequences_index_buffer(&self) -> Option<VkBuffer> {
+  pub fn sequences_index_buffer(&self) -> Option<VkBuffer<'h>> {
     self.sequencesIndexBuffer
   }
   #[inline]
@@ -16002,13 +15994,13 @@ impl<'a> VkCmdProcessCommandsInfoNVX<'a> {
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> Default for VkCmdProcessCommandsInfoNVX<'a> {
-  fn default() -> VkCmdProcessCommandsInfoNVX<'a> {
+impl<'l, 'h: 'l> Default for VkCmdProcessCommandsInfoNVX<'l, 'h> {
+  fn default() -> VkCmdProcessCommandsInfoNVX<'l, 'h> {
     VkCmdProcessCommandsInfoNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl<'a> RawStruct for VkCmdProcessCommandsInfoNVX<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkCmdProcessCommandsInfoNVX<'l, 'h> {
   type Raw = types_raw::VkCmdProcessCommandsInfoNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16021,18 +16013,18 @@ fn test_struct_size_vk_cmd_process_commands_info_nvx() {
 /// Structure specifying parameters for the reservation of command buffer space
 #[repr(C)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkCmdReserveSpaceForCommandsInfoNVX<'a> {
+pub struct VkCmdReserveSpaceForCommandsInfoNVX<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub objectTable: VkObjectTableNVX,
-  pub indirectCommandsLayout: VkIndirectCommandsLayoutNVX,
+  pub objectTable: VkObjectTableNVX<'h>,
+  pub indirectCommandsLayout: VkIndirectCommandsLayoutNVX<'h>,
   pub maxSequencesCount: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> VkCmdReserveSpaceForCommandsInfoNVX<'a> {
+impl<'l, 'h: 'l> VkCmdReserveSpaceForCommandsInfoNVX<'l, 'h> {
   #[inline]
-  pub fn new() -> VkCmdReserveSpaceForCommandsInfoNVX<'a> {
+  pub fn new() -> VkCmdReserveSpaceForCommandsInfoNVX<'l, 'h> {
     unsafe {
       VkCmdReserveSpaceForCommandsInfoNVX {
         sType: VkStructureType::CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX,
@@ -16041,12 +16033,12 @@ impl<'a> VkCmdReserveSpaceForCommandsInfoNVX<'a> {
     }
   }
   #[inline]
-  pub fn set_object_table(mut self, value: VkObjectTableNVX) -> Self {
+  pub fn set_object_table(mut self, value: VkObjectTableNVX<'h>) -> Self {
     self.objectTable = value;
     self
   }
   #[inline]
-  pub fn set_indirect_commands_layout(mut self, value: VkIndirectCommandsLayoutNVX) -> Self {
+  pub fn set_indirect_commands_layout(mut self, value: VkIndirectCommandsLayoutNVX<'h>) -> Self {
     self.indirectCommandsLayout = value;
     self
   }
@@ -16056,11 +16048,11 @@ impl<'a> VkCmdReserveSpaceForCommandsInfoNVX<'a> {
     self
   }
   #[inline]
-  pub fn object_table(&self) -> VkObjectTableNVX {
+  pub fn object_table(&self) -> VkObjectTableNVX<'h> {
     self.objectTable
   }
   #[inline]
-  pub fn indirect_commands_layout(&self) -> VkIndirectCommandsLayoutNVX {
+  pub fn indirect_commands_layout(&self) -> VkIndirectCommandsLayoutNVX<'h> {
     self.indirectCommandsLayout
   }
   #[inline]
@@ -16077,13 +16069,13 @@ impl<'a> VkCmdReserveSpaceForCommandsInfoNVX<'a> {
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> Default for VkCmdReserveSpaceForCommandsInfoNVX<'a> {
-  fn default() -> VkCmdReserveSpaceForCommandsInfoNVX<'a> {
+impl<'l, 'h: 'l> Default for VkCmdReserveSpaceForCommandsInfoNVX<'l, 'h> {
+  fn default() -> VkCmdReserveSpaceForCommandsInfoNVX<'l, 'h> {
     VkCmdReserveSpaceForCommandsInfoNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl<'a> RawStruct for VkCmdReserveSpaceForCommandsInfoNVX<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkCmdReserveSpaceForCommandsInfoNVX<'l, 'h> {
   type Raw = types_raw::VkCmdReserveSpaceForCommandsInfoNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16099,7 +16091,7 @@ fn test_struct_size_vk_cmd_reserve_space_for_commands_info_nvx() {
 /// Structure specifying the parameters of a newly created object table
 #[repr(C)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkObjectTableCreateInfoNVX<'a> {
+pub struct VkObjectTableCreateInfoNVX<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   objectCount: u32,
@@ -16111,12 +16103,12 @@ pub struct VkObjectTableCreateInfoNVX<'a> {
   pub maxStorageImagesPerDescriptor: u32,
   pub maxSampledImagesPerDescriptor: u32,
   pub maxPipelineLayouts: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> VkObjectTableCreateInfoNVX<'a> {
+impl<'l> VkObjectTableCreateInfoNVX<'l> {
   #[inline]
-  pub fn new() -> VkObjectTableCreateInfoNVX<'a> {
+  pub fn new() -> VkObjectTableCreateInfoNVX<'l> {
     unsafe {
       VkObjectTableCreateInfoNVX {
         sType: VkStructureType::OBJECT_TABLE_CREATE_INFO_NVX,
@@ -16183,13 +16175,13 @@ impl<'a> VkObjectTableCreateInfoNVX<'a> {
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl<'a> Default for VkObjectTableCreateInfoNVX<'a> {
-  fn default() -> VkObjectTableCreateInfoNVX<'a> {
+impl<'l> Default for VkObjectTableCreateInfoNVX<'l> {
+  fn default() -> VkObjectTableCreateInfoNVX<'l> {
     VkObjectTableCreateInfoNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl<'a> RawStruct for VkObjectTableCreateInfoNVX<'a> {
+unsafe impl<'l> RawStruct for VkObjectTableCreateInfoNVX<'l> {
   type Raw = types_raw::VkObjectTableCreateInfoNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16251,17 +16243,16 @@ fn test_struct_size_vk_object_table_entry_nvx() {
 
 /// Parameters of an object table pipeline entry
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkObjectTablePipelineEntryNVX {
+pub struct VkObjectTablePipelineEntryNVX<'h> {
   pub eType: VkObjectEntryTypeNVX,
   pub flags: VkObjectEntryUsageFlagsNVX,
-  pub pipeline: VkPipeline,
+  pub pipeline: VkPipeline<'h>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl VkObjectTablePipelineEntryNVX {
+impl<'h> VkObjectTablePipelineEntryNVX<'h> {
   #[inline]
-  pub fn new() -> VkObjectTablePipelineEntryNVX {
+  pub fn new() -> VkObjectTablePipelineEntryNVX<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -16275,7 +16266,7 @@ impl VkObjectTablePipelineEntryNVX {
     self
   }
   #[inline]
-  pub fn set_pipeline(mut self, value: VkPipeline) -> Self {
+  pub fn set_pipeline(mut self, value: VkPipeline<'h>) -> Self {
     self.pipeline = value;
     self
   }
@@ -16288,18 +16279,18 @@ impl VkObjectTablePipelineEntryNVX {
     self.flags
   }
   #[inline]
-  pub fn pipeline(&self) -> VkPipeline {
+  pub fn pipeline(&self) -> VkPipeline<'h> {
     self.pipeline
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl Default for VkObjectTablePipelineEntryNVX {
-  fn default() -> VkObjectTablePipelineEntryNVX {
+impl<'h> Default for VkObjectTablePipelineEntryNVX<'h> {
+  fn default() -> VkObjectTablePipelineEntryNVX<'h> {
     VkObjectTablePipelineEntryNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl RawStruct for VkObjectTablePipelineEntryNVX {
+unsafe impl<'h> RawStruct for VkObjectTablePipelineEntryNVX<'h> {
   type Raw = types_raw::VkObjectTablePipelineEntryNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16311,18 +16302,17 @@ fn test_struct_size_vk_object_table_pipeline_entry_nvx() {
 
 /// Parameters of an object table descriptor set entry
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkObjectTableDescriptorSetEntryNVX {
+pub struct VkObjectTableDescriptorSetEntryNVX<'h> {
   pub eType: VkObjectEntryTypeNVX,
   pub flags: VkObjectEntryUsageFlagsNVX,
-  pub pipelineLayout: VkPipelineLayout,
-  pub descriptorSet: VkDescriptorSet,
+  pub pipelineLayout: VkPipelineLayout<'h>,
+  pub descriptorSet: VkDescriptorSet<'h>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl VkObjectTableDescriptorSetEntryNVX {
+impl<'h> VkObjectTableDescriptorSetEntryNVX<'h> {
   #[inline]
-  pub fn new() -> VkObjectTableDescriptorSetEntryNVX {
+  pub fn new() -> VkObjectTableDescriptorSetEntryNVX<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -16336,12 +16326,12 @@ impl VkObjectTableDescriptorSetEntryNVX {
     self
   }
   #[inline]
-  pub fn set_pipeline_layout(mut self, value: VkPipelineLayout) -> Self {
+  pub fn set_pipeline_layout(mut self, value: VkPipelineLayout<'h>) -> Self {
     self.pipelineLayout = value;
     self
   }
   #[inline]
-  pub fn set_descriptor_set(mut self, value: VkDescriptorSet) -> Self {
+  pub fn set_descriptor_set(mut self, value: VkDescriptorSet<'h>) -> Self {
     self.descriptorSet = value;
     self
   }
@@ -16354,22 +16344,22 @@ impl VkObjectTableDescriptorSetEntryNVX {
     self.flags
   }
   #[inline]
-  pub fn pipeline_layout(&self) -> VkPipelineLayout {
+  pub fn pipeline_layout(&self) -> VkPipelineLayout<'h> {
     self.pipelineLayout
   }
   #[inline]
-  pub fn descriptor_set(&self) -> VkDescriptorSet {
+  pub fn descriptor_set(&self) -> VkDescriptorSet<'h> {
     self.descriptorSet
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl Default for VkObjectTableDescriptorSetEntryNVX {
-  fn default() -> VkObjectTableDescriptorSetEntryNVX {
+impl<'h> Default for VkObjectTableDescriptorSetEntryNVX<'h> {
+  fn default() -> VkObjectTableDescriptorSetEntryNVX<'h> {
     VkObjectTableDescriptorSetEntryNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl RawStruct for VkObjectTableDescriptorSetEntryNVX {
+unsafe impl<'h> RawStruct for VkObjectTableDescriptorSetEntryNVX<'h> {
   type Raw = types_raw::VkObjectTableDescriptorSetEntryNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16384,17 +16374,16 @@ fn test_struct_size_vk_object_table_descriptor_set_entry_nvx() {
 
 /// Parameters of an object table vertex buffer entry
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkObjectTableVertexBufferEntryNVX {
+pub struct VkObjectTableVertexBufferEntryNVX<'h> {
   pub eType: VkObjectEntryTypeNVX,
   pub flags: VkObjectEntryUsageFlagsNVX,
-  pub buffer: VkBuffer,
+  pub buffer: VkBuffer<'h>,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl VkObjectTableVertexBufferEntryNVX {
+impl<'h> VkObjectTableVertexBufferEntryNVX<'h> {
   #[inline]
-  pub fn new() -> VkObjectTableVertexBufferEntryNVX {
+  pub fn new() -> VkObjectTableVertexBufferEntryNVX<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -16408,7 +16397,7 @@ impl VkObjectTableVertexBufferEntryNVX {
     self
   }
   #[inline]
-  pub fn set_buffer(mut self, value: VkBuffer) -> Self {
+  pub fn set_buffer(mut self, value: VkBuffer<'h>) -> Self {
     self.buffer = value;
     self
   }
@@ -16421,18 +16410,18 @@ impl VkObjectTableVertexBufferEntryNVX {
     self.flags
   }
   #[inline]
-  pub fn buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer<'h> {
     self.buffer
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl Default for VkObjectTableVertexBufferEntryNVX {
-  fn default() -> VkObjectTableVertexBufferEntryNVX {
+impl<'h> Default for VkObjectTableVertexBufferEntryNVX<'h> {
+  fn default() -> VkObjectTableVertexBufferEntryNVX<'h> {
     VkObjectTableVertexBufferEntryNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl RawStruct for VkObjectTableVertexBufferEntryNVX {
+unsafe impl<'h> RawStruct for VkObjectTableVertexBufferEntryNVX<'h> {
   type Raw = types_raw::VkObjectTableVertexBufferEntryNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16447,18 +16436,17 @@ fn test_struct_size_vk_object_table_vertex_buffer_entry_nvx() {
 
 /// Parameters of an object table index buffer entry
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkObjectTableIndexBufferEntryNVX {
+pub struct VkObjectTableIndexBufferEntryNVX<'h> {
   pub eType: VkObjectEntryTypeNVX,
   pub flags: VkObjectEntryUsageFlagsNVX,
-  pub buffer: VkBuffer,
+  pub buffer: VkBuffer<'h>,
   pub indexType: VkIndexType,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl VkObjectTableIndexBufferEntryNVX {
+impl<'h> VkObjectTableIndexBufferEntryNVX<'h> {
   #[inline]
-  pub fn new() -> VkObjectTableIndexBufferEntryNVX {
+  pub fn new() -> VkObjectTableIndexBufferEntryNVX<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -16472,7 +16460,7 @@ impl VkObjectTableIndexBufferEntryNVX {
     self
   }
   #[inline]
-  pub fn set_buffer(mut self, value: VkBuffer) -> Self {
+  pub fn set_buffer(mut self, value: VkBuffer<'h>) -> Self {
     self.buffer = value;
     self
   }
@@ -16490,7 +16478,7 @@ impl VkObjectTableIndexBufferEntryNVX {
     self.flags
   }
   #[inline]
-  pub fn buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer<'h> {
     self.buffer
   }
   #[inline]
@@ -16499,13 +16487,13 @@ impl VkObjectTableIndexBufferEntryNVX {
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl Default for VkObjectTableIndexBufferEntryNVX {
-  fn default() -> VkObjectTableIndexBufferEntryNVX {
+impl<'h> Default for VkObjectTableIndexBufferEntryNVX<'h> {
+  fn default() -> VkObjectTableIndexBufferEntryNVX<'h> {
     VkObjectTableIndexBufferEntryNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl RawStruct for VkObjectTableIndexBufferEntryNVX {
+unsafe impl<'h> RawStruct for VkObjectTableIndexBufferEntryNVX<'h> {
   type Raw = types_raw::VkObjectTableIndexBufferEntryNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16520,18 +16508,17 @@ fn test_struct_size_vk_object_table_index_buffer_entry_nvx() {
 
 /// Parameters of an object table push constant entry
 #[repr(C)]
-#[derive(Copy, Clone)]
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub struct VkObjectTablePushConstantEntryNVX {
+pub struct VkObjectTablePushConstantEntryNVX<'h> {
   pub eType: VkObjectEntryTypeNVX,
   pub flags: VkObjectEntryUsageFlagsNVX,
-  pub pipelineLayout: VkPipelineLayout,
+  pub pipelineLayout: VkPipelineLayout<'h>,
   pub stageFlags: VkShaderStageFlags,
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl VkObjectTablePushConstantEntryNVX {
+impl<'h> VkObjectTablePushConstantEntryNVX<'h> {
   #[inline]
-  pub fn new() -> VkObjectTablePushConstantEntryNVX {
+  pub fn new() -> VkObjectTablePushConstantEntryNVX<'h> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -16545,7 +16532,7 @@ impl VkObjectTablePushConstantEntryNVX {
     self
   }
   #[inline]
-  pub fn set_pipeline_layout(mut self, value: VkPipelineLayout) -> Self {
+  pub fn set_pipeline_layout(mut self, value: VkPipelineLayout<'h>) -> Self {
     self.pipelineLayout = value;
     self
   }
@@ -16563,7 +16550,7 @@ impl VkObjectTablePushConstantEntryNVX {
     self.flags
   }
   #[inline]
-  pub fn pipeline_layout(&self) -> VkPipelineLayout {
+  pub fn pipeline_layout(&self) -> VkPipelineLayout<'h> {
     self.pipelineLayout
   }
   #[inline]
@@ -16572,13 +16559,13 @@ impl VkObjectTablePushConstantEntryNVX {
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-impl Default for VkObjectTablePushConstantEntryNVX {
-  fn default() -> VkObjectTablePushConstantEntryNVX {
+impl<'h> Default for VkObjectTablePushConstantEntryNVX<'h> {
+  fn default() -> VkObjectTablePushConstantEntryNVX<'h> {
     VkObjectTablePushConstantEntryNVX::new()
   }
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-unsafe impl RawStruct for VkObjectTablePushConstantEntryNVX {
+unsafe impl<'h> RawStruct for VkObjectTablePushConstantEntryNVX<'h> {
   type Raw = types_raw::VkObjectTablePushConstantEntryNVX;
 }
 #[cfg(feature = "VK_NVX_device_generated_commands")]
@@ -16647,18 +16634,18 @@ fn test_struct_size_vk_viewport_w_scaling_nv() {
 /// state
 #[repr(C)]
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
-pub struct VkPipelineViewportWScalingStateCreateInfoNV<'a> {
+pub struct VkPipelineViewportWScalingStateCreateInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub viewportWScalingEnable: VkBool32,
   viewportCount: u32,
   pViewportWScalings: *const types_raw::VkViewportWScalingNV,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
-impl<'a> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
+impl<'l> VkPipelineViewportWScalingStateCreateInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
+  pub fn new() -> VkPipelineViewportWScalingStateCreateInfoNV<'l> {
     unsafe {
       VkPipelineViewportWScalingStateCreateInfoNV {
         sType: VkStructureType::PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV,
@@ -16673,7 +16660,7 @@ impl<'a> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn set_viewport_w_scalings(mut self, value: &'a [VkViewportWScalingNV]) -> Self {
+  pub fn set_viewport_w_scalings(mut self, value: &'l [VkViewportWScalingNV]) -> Self {
     self.viewportCount = value.len() as u32;
     unsafe {
       self.pViewportWScalings = value.as_raw();
@@ -16690,18 +16677,18 @@ impl<'a> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
   }
 }
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
-impl<'a> Default for VkPipelineViewportWScalingStateCreateInfoNV<'a> {
-  fn default() -> VkPipelineViewportWScalingStateCreateInfoNV<'a> {
+impl<'l> Default for VkPipelineViewportWScalingStateCreateInfoNV<'l> {
+  fn default() -> VkPipelineViewportWScalingStateCreateInfoNV<'l> {
     VkPipelineViewportWScalingStateCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
-unsafe impl<'a> RawStruct for VkPipelineViewportWScalingStateCreateInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkPipelineViewportWScalingStateCreateInfoNV<'l> {
   type Raw = types_raw::VkPipelineViewportWScalingStateCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineViewportStateCreateInfo<'b>>
-  for VkPipelineViewportWScalingStateCreateInfoNV<'a>
+unsafe impl<'l> StructExtends<VkPipelineViewportStateCreateInfo<'l>>
+  for VkPipelineViewportWScalingStateCreateInfoNV<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -16808,16 +16795,16 @@ fn test_struct_size_vk_surface_capabilities2_ext() {
 /// Describe the power state of a display
 #[repr(C)]
 #[cfg(feature = "VK_EXT_display_control")]
-pub struct VkDisplayPowerInfoEXT<'a> {
+pub struct VkDisplayPowerInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub powerState: VkDisplayPowerStateEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl<'a> VkDisplayPowerInfoEXT<'a> {
+impl<'l> VkDisplayPowerInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkDisplayPowerInfoEXT<'a> {
+  pub fn new() -> VkDisplayPowerInfoEXT<'l> {
     unsafe {
       VkDisplayPowerInfoEXT {
         sType: VkStructureType::DISPLAY_POWER_INFO_EXT,
@@ -16844,13 +16831,13 @@ impl<'a> VkDisplayPowerInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl<'a> Default for VkDisplayPowerInfoEXT<'a> {
-  fn default() -> VkDisplayPowerInfoEXT<'a> {
+impl<'l> Default for VkDisplayPowerInfoEXT<'l> {
+  fn default() -> VkDisplayPowerInfoEXT<'l> {
     VkDisplayPowerInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl<'a> RawStruct for VkDisplayPowerInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkDisplayPowerInfoEXT<'l> {
   type Raw = types_raw::VkDisplayPowerInfoEXT;
 }
 #[cfg(feature = "VK_EXT_display_control")]
@@ -16863,16 +16850,16 @@ fn test_struct_size_vk_display_power_info_ext() {
 /// Describe a device event to create
 #[repr(C)]
 #[cfg(feature = "VK_EXT_display_control")]
-pub struct VkDeviceEventInfoEXT<'a> {
+pub struct VkDeviceEventInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub deviceEvent: VkDeviceEventTypeEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl<'a> VkDeviceEventInfoEXT<'a> {
+impl<'l> VkDeviceEventInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkDeviceEventInfoEXT<'a> {
+  pub fn new() -> VkDeviceEventInfoEXT<'l> {
     unsafe {
       VkDeviceEventInfoEXT {
         sType: VkStructureType::DEVICE_EVENT_INFO_EXT,
@@ -16899,13 +16886,13 @@ impl<'a> VkDeviceEventInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl<'a> Default for VkDeviceEventInfoEXT<'a> {
-  fn default() -> VkDeviceEventInfoEXT<'a> {
+impl<'l> Default for VkDeviceEventInfoEXT<'l> {
+  fn default() -> VkDeviceEventInfoEXT<'l> {
     VkDeviceEventInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl<'a> RawStruct for VkDeviceEventInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkDeviceEventInfoEXT<'l> {
   type Raw = types_raw::VkDeviceEventInfoEXT;
 }
 #[cfg(feature = "VK_EXT_display_control")]
@@ -16918,16 +16905,16 @@ fn test_struct_size_vk_device_event_info_ext() {
 /// Describe a display event to create
 #[repr(C)]
 #[cfg(feature = "VK_EXT_display_control")]
-pub struct VkDisplayEventInfoEXT<'a> {
+pub struct VkDisplayEventInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub displayEvent: VkDisplayEventTypeEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl<'a> VkDisplayEventInfoEXT<'a> {
+impl<'l> VkDisplayEventInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkDisplayEventInfoEXT<'a> {
+  pub fn new() -> VkDisplayEventInfoEXT<'l> {
     unsafe {
       VkDisplayEventInfoEXT {
         sType: VkStructureType::DISPLAY_EVENT_INFO_EXT,
@@ -16954,13 +16941,13 @@ impl<'a> VkDisplayEventInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl<'a> Default for VkDisplayEventInfoEXT<'a> {
-  fn default() -> VkDisplayEventInfoEXT<'a> {
+impl<'l> Default for VkDisplayEventInfoEXT<'l> {
+  fn default() -> VkDisplayEventInfoEXT<'l> {
     VkDisplayEventInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl<'a> RawStruct for VkDisplayEventInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkDisplayEventInfoEXT<'l> {
   type Raw = types_raw::VkDisplayEventInfoEXT;
 }
 #[cfg(feature = "VK_EXT_display_control")]
@@ -16973,16 +16960,16 @@ fn test_struct_size_vk_display_event_info_ext() {
 /// Specify the surface counters desired
 #[repr(C)]
 #[cfg(feature = "VK_EXT_display_control")]
-pub struct VkSwapchainCounterCreateInfoEXT<'a> {
+pub struct VkSwapchainCounterCreateInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub surfaceCounters: VkSurfaceCounterFlagsEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl<'a> VkSwapchainCounterCreateInfoEXT<'a> {
+impl<'l> VkSwapchainCounterCreateInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkSwapchainCounterCreateInfoEXT<'a> {
+  pub fn new() -> VkSwapchainCounterCreateInfoEXT<'l> {
     unsafe {
       VkSwapchainCounterCreateInfoEXT {
         sType: VkStructureType::SWAPCHAIN_COUNTER_CREATE_INFO_EXT,
@@ -17001,17 +16988,17 @@ impl<'a> VkSwapchainCounterCreateInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-impl<'a> Default for VkSwapchainCounterCreateInfoEXT<'a> {
-  fn default() -> VkSwapchainCounterCreateInfoEXT<'a> {
+impl<'l> Default for VkSwapchainCounterCreateInfoEXT<'l> {
+  fn default() -> VkSwapchainCounterCreateInfoEXT<'l> {
     VkSwapchainCounterCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl<'a> RawStruct for VkSwapchainCounterCreateInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkSwapchainCounterCreateInfoEXT<'l> {
   type Raw = types_raw::VkSwapchainCounterCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSwapchainCreateInfoKHR<'b>> for VkSwapchainCounterCreateInfoEXT<'a> {
+unsafe impl<'l> StructExtends<VkSwapchainCreateInfoKHR<'l, 'h>> for VkSwapchainCounterCreateInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -17207,17 +17194,17 @@ fn test_struct_size_vk_present_time_google() {
 /// The earliest time each image should be presented
 #[repr(C)]
 #[cfg(feature = "VK_GOOGLE_display_timing")]
-pub struct VkPresentTimesInfoGOOGLE<'a> {
+pub struct VkPresentTimesInfoGOOGLE<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   swapchainCount: u32,
   pTimes: *const types_raw::VkPresentTimeGOOGLE,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_GOOGLE_display_timing")]
-impl<'a> VkPresentTimesInfoGOOGLE<'a> {
+impl<'l> VkPresentTimesInfoGOOGLE<'l> {
   #[inline]
-  pub fn new() -> VkPresentTimesInfoGOOGLE<'a> {
+  pub fn new() -> VkPresentTimesInfoGOOGLE<'l> {
     unsafe {
       VkPresentTimesInfoGOOGLE {
         sType: VkStructureType::PRESENT_TIMES_INFO_GOOGLE,
@@ -17226,7 +17213,7 @@ impl<'a> VkPresentTimesInfoGOOGLE<'a> {
     }
   }
   #[inline]
-  pub fn set_times(mut self, value: &'a [VkPresentTimeGOOGLE]) -> Self {
+  pub fn set_times(mut self, value: &'l [VkPresentTimeGOOGLE]) -> Self {
     self.swapchainCount = value.len() as u32;
     unsafe {
       self.pTimes = value.as_raw();
@@ -17239,17 +17226,17 @@ impl<'a> VkPresentTimesInfoGOOGLE<'a> {
   }
 }
 #[cfg(feature = "VK_GOOGLE_display_timing")]
-impl<'a> Default for VkPresentTimesInfoGOOGLE<'a> {
-  fn default() -> VkPresentTimesInfoGOOGLE<'a> {
+impl<'l> Default for VkPresentTimesInfoGOOGLE<'l> {
+  fn default() -> VkPresentTimesInfoGOOGLE<'l> {
     VkPresentTimesInfoGOOGLE::new()
   }
 }
 #[cfg(feature = "VK_GOOGLE_display_timing")]
-unsafe impl<'a> RawStruct for VkPresentTimesInfoGOOGLE<'a> {
+unsafe impl<'l> RawStruct for VkPresentTimesInfoGOOGLE<'l> {
   type Raw = types_raw::VkPresentTimesInfoGOOGLE;
 }
 #[cfg(feature = "VK_GOOGLE_display_timing")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPresentInfoKHR<'b>> for VkPresentTimesInfoGOOGLE<'a> {
+unsafe impl<'l> StructExtends<VkPresentInfoKHR<'l, 'h>> for VkPresentTimesInfoGOOGLE<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -17384,18 +17371,18 @@ fn test_struct_size_vk_viewport_swizzle_nv() {
 /// Structure specifying swizzle applied to primitive clip coordinates
 #[repr(C)]
 #[cfg(feature = "VK_NV_viewport_swizzle")]
-pub struct VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
+pub struct VkPipelineViewportSwizzleStateCreateInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineViewportSwizzleStateCreateFlagsNV,
   viewportCount: u32,
   pViewportSwizzles: *const types_raw::VkViewportSwizzleNV,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_viewport_swizzle")]
-impl<'a> VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
+impl<'l> VkPipelineViewportSwizzleStateCreateInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
+  pub fn new() -> VkPipelineViewportSwizzleStateCreateInfoNV<'l> {
     unsafe {
       VkPipelineViewportSwizzleStateCreateInfoNV {
         sType: VkStructureType::PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV,
@@ -17409,7 +17396,7 @@ impl<'a> VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn set_viewport_swizzles(mut self, value: &'a [VkViewportSwizzleNV]) -> Self {
+  pub fn set_viewport_swizzles(mut self, value: &'l [VkViewportSwizzleNV]) -> Self {
     self.viewportCount = value.len() as u32;
     unsafe {
       self.pViewportSwizzles = value.as_raw();
@@ -17426,18 +17413,18 @@ impl<'a> VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
   }
 }
 #[cfg(feature = "VK_NV_viewport_swizzle")]
-impl<'a> Default for VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
-  fn default() -> VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
+impl<'l> Default for VkPipelineViewportSwizzleStateCreateInfoNV<'l> {
+  fn default() -> VkPipelineViewportSwizzleStateCreateInfoNV<'l> {
     VkPipelineViewportSwizzleStateCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_viewport_swizzle")]
-unsafe impl<'a> RawStruct for VkPipelineViewportSwizzleStateCreateInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkPipelineViewportSwizzleStateCreateInfoNV<'l> {
   type Raw = types_raw::VkPipelineViewportSwizzleStateCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_viewport_swizzle")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineViewportStateCreateInfo<'b>>
-  for VkPipelineViewportSwizzleStateCreateInfoNV<'a>
+unsafe impl<'l> StructExtends<VkPipelineViewportStateCreateInfo<'l>>
+  for VkPipelineViewportSwizzleStateCreateInfoNV<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -17530,19 +17517,19 @@ fn test_struct_size_vk_physical_device_discard_rectangle_properties_ext() {
 /// Structure specifying discard rectangle
 #[repr(C)]
 #[cfg(feature = "VK_EXT_discard_rectangles")]
-pub struct VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
+pub struct VkPipelineDiscardRectangleStateCreateInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineDiscardRectangleStateCreateFlagsEXT,
   pub discardRectangleMode: VkDiscardRectangleModeEXT,
   discardRectangleCount: u32,
   pDiscardRectangles: *const types_raw::VkRect2D,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_discard_rectangles")]
-impl<'a> VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
+impl<'l> VkPipelineDiscardRectangleStateCreateInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
+  pub fn new() -> VkPipelineDiscardRectangleStateCreateInfoEXT<'l> {
     unsafe {
       VkPipelineDiscardRectangleStateCreateInfoEXT {
         sType: VkStructureType::PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT,
@@ -17561,7 +17548,7 @@ impl<'a> VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn set_discard_rectangles(mut self, value: &'a [VkRect2D]) -> Self {
+  pub fn set_discard_rectangles(mut self, value: &'l [VkRect2D]) -> Self {
     self.discardRectangleCount = value.len() as u32;
     unsafe {
       self.pDiscardRectangles = value.as_raw();
@@ -17582,18 +17569,18 @@ impl<'a> VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_discard_rectangles")]
-impl<'a> Default for VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
-  fn default() -> VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
+impl<'l> Default for VkPipelineDiscardRectangleStateCreateInfoEXT<'l> {
+  fn default() -> VkPipelineDiscardRectangleStateCreateInfoEXT<'l> {
     VkPipelineDiscardRectangleStateCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_discard_rectangles")]
-unsafe impl<'a> RawStruct for VkPipelineDiscardRectangleStateCreateInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkPipelineDiscardRectangleStateCreateInfoEXT<'l> {
   type Raw = types_raw::VkPipelineDiscardRectangleStateCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_discard_rectangles")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkGraphicsPipelineCreateInfo<'b>>
-  for VkPipelineDiscardRectangleStateCreateInfoEXT<'a>
+unsafe impl<'l> StructExtends<VkGraphicsPipelineCreateInfo<'l, 'h>>
+  for VkPipelineDiscardRectangleStateCreateInfoEXT<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -17772,18 +17759,18 @@ fn test_struct_size_vk_physical_device_conservative_rasterization_properties_ext
 /// Structure specifying conservative raster state
 #[repr(C)]
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-pub struct VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
+pub struct VkPipelineRasterizationConservativeStateCreateInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineRasterizationConservativeStateCreateFlagsEXT,
   pub conservativeRasterizationMode: VkConservativeRasterizationModeEXT,
   pub extraPrimitiveOverestimationSize: f32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-impl<'a> VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
+impl<'l> VkPipelineRasterizationConservativeStateCreateInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
+  pub fn new() -> VkPipelineRasterizationConservativeStateCreateInfoEXT<'l> {
     unsafe {
       VkPipelineRasterizationConservativeStateCreateInfoEXT {
         sType: VkStructureType::PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT,
@@ -17820,18 +17807,18 @@ impl<'a> VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-impl<'a> Default for VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
-  fn default() -> VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
+impl<'l> Default for VkPipelineRasterizationConservativeStateCreateInfoEXT<'l> {
+  fn default() -> VkPipelineRasterizationConservativeStateCreateInfoEXT<'l> {
     VkPipelineRasterizationConservativeStateCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-unsafe impl<'a> RawStruct for VkPipelineRasterizationConservativeStateCreateInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkPipelineRasterizationConservativeStateCreateInfoEXT<'l> {
   type Raw = types_raw::VkPipelineRasterizationConservativeStateCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineRasterizationStateCreateInfo<'b>>
-  for VkPipelineRasterizationConservativeStateCreateInfoEXT<'a>
+unsafe impl<'l> StructExtends<VkPipelineRasterizationStateCreateInfo<'l>>
+  for VkPipelineRasterizationConservativeStateCreateInfoEXT<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -17905,7 +17892,7 @@ fn test_struct_size_vk_xy_color_ext() {
 /// structure to specify Hdr metadata
 #[repr(C)]
 #[cfg(feature = "VK_EXT_hdr_metadata")]
-pub struct VkHdrMetadataEXT<'a> {
+pub struct VkHdrMetadataEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub displayPrimaryRed: VkXYColorEXT,
@@ -17916,12 +17903,12 @@ pub struct VkHdrMetadataEXT<'a> {
   pub minLuminance: f32,
   pub maxContentLightLevel: f32,
   pub maxFrameAverageLightLevel: f32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_hdr_metadata")]
-impl<'a> VkHdrMetadataEXT<'a> {
+impl<'l> VkHdrMetadataEXT<'l> {
   #[inline]
-  pub fn new() -> VkHdrMetadataEXT<'a> {
+  pub fn new() -> VkHdrMetadataEXT<'l> {
     unsafe {
       VkHdrMetadataEXT {
         sType: VkStructureType::HDR_METADATA_EXT,
@@ -18011,13 +17998,13 @@ impl<'a> VkHdrMetadataEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_hdr_metadata")]
-impl<'a> Default for VkHdrMetadataEXT<'a> {
-  fn default() -> VkHdrMetadataEXT<'a> {
+impl<'l> Default for VkHdrMetadataEXT<'l> {
+  fn default() -> VkHdrMetadataEXT<'l> {
     VkHdrMetadataEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_hdr_metadata")]
-unsafe impl<'a> RawStruct for VkHdrMetadataEXT<'a> {
+unsafe impl<'l> RawStruct for VkHdrMetadataEXT<'l> {
   type Raw = types_raw::VkHdrMetadataEXT;
 }
 #[cfg(feature = "VK_EXT_hdr_metadata")]
@@ -18032,16 +18019,16 @@ fn test_struct_size_vk_hdr_metadata_ext() {
 /// Structure specifying a surface and related swapchain creation parameters
 #[repr(C)]
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-pub struct VkPhysicalDeviceSurfaceInfo2KHR<'a> {
+pub struct VkPhysicalDeviceSurfaceInfo2KHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub surface: VkSurfaceKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub surface: VkSurfaceKHR<'h>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-impl<'a> VkPhysicalDeviceSurfaceInfo2KHR<'a> {
+impl<'l, 'h: 'l> VkPhysicalDeviceSurfaceInfo2KHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceSurfaceInfo2KHR<'a> {
+  pub fn new() -> VkPhysicalDeviceSurfaceInfo2KHR<'l, 'h> {
     unsafe {
       VkPhysicalDeviceSurfaceInfo2KHR {
         sType: VkStructureType::PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
@@ -18050,12 +18037,12 @@ impl<'a> VkPhysicalDeviceSurfaceInfo2KHR<'a> {
     }
   }
   #[inline]
-  pub fn set_surface(mut self, value: VkSurfaceKHR) -> Self {
+  pub fn set_surface(mut self, value: VkSurfaceKHR<'h>) -> Self {
     self.surface = value;
     self
   }
   #[inline]
-  pub fn surface(&self) -> VkSurfaceKHR {
+  pub fn surface(&self) -> VkSurfaceKHR<'h> {
     self.surface
   }
   #[inline]
@@ -18068,13 +18055,13 @@ impl<'a> VkPhysicalDeviceSurfaceInfo2KHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-impl<'a> Default for VkPhysicalDeviceSurfaceInfo2KHR<'a> {
-  fn default() -> VkPhysicalDeviceSurfaceInfo2KHR<'a> {
+impl<'l, 'h: 'l> Default for VkPhysicalDeviceSurfaceInfo2KHR<'l, 'h> {
+  fn default() -> VkPhysicalDeviceSurfaceInfo2KHR<'l, 'h> {
     VkPhysicalDeviceSurfaceInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
-unsafe impl<'a> RawStruct for VkPhysicalDeviceSurfaceInfo2KHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkPhysicalDeviceSurfaceInfo2KHR<'l, 'h> {
   type Raw = types_raw::VkPhysicalDeviceSurfaceInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
@@ -18199,16 +18186,16 @@ fn test_struct_size_vk_shared_present_surface_capabilities_khr() {
 /// Structure specifying fence creation parameters.
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
-pub struct VkPhysicalDeviceExternalFenceInfoKHR<'a> {
+pub struct VkPhysicalDeviceExternalFenceInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
-impl<'a> VkPhysicalDeviceExternalFenceInfoKHR<'a> {
+impl<'l> VkPhysicalDeviceExternalFenceInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkPhysicalDeviceExternalFenceInfoKHR<'a> {
+  pub fn new() -> VkPhysicalDeviceExternalFenceInfoKHR<'l> {
     unsafe {
       VkPhysicalDeviceExternalFenceInfoKHR {
         sType: VkStructureType::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR,
@@ -18235,13 +18222,13 @@ impl<'a> VkPhysicalDeviceExternalFenceInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
-impl<'a> Default for VkPhysicalDeviceExternalFenceInfoKHR<'a> {
-  fn default() -> VkPhysicalDeviceExternalFenceInfoKHR<'a> {
+impl<'l> Default for VkPhysicalDeviceExternalFenceInfoKHR<'l> {
+  fn default() -> VkPhysicalDeviceExternalFenceInfoKHR<'l> {
     VkPhysicalDeviceExternalFenceInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
-unsafe impl<'a> RawStruct for VkPhysicalDeviceExternalFenceInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkPhysicalDeviceExternalFenceInfoKHR<'l> {
   type Raw = types_raw::VkPhysicalDeviceExternalFenceInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
@@ -18300,16 +18287,16 @@ fn test_struct_size_vk_external_fence_properties_khr() {
 /// Structure specifying handle types that can be exported from a fence
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_fence")]
-pub struct VkExportFenceCreateInfoKHR<'a> {
+pub struct VkExportFenceCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleTypes: VkExternalFenceHandleTypeFlagsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_fence")]
-impl<'a> VkExportFenceCreateInfoKHR<'a> {
+impl<'l> VkExportFenceCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkExportFenceCreateInfoKHR<'a> {
+  pub fn new() -> VkExportFenceCreateInfoKHR<'l> {
     unsafe {
       VkExportFenceCreateInfoKHR {
         sType: VkStructureType::EXPORT_FENCE_CREATE_INFO_KHR,
@@ -18328,17 +18315,17 @@ impl<'a> VkExportFenceCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_fence")]
-impl<'a> Default for VkExportFenceCreateInfoKHR<'a> {
-  fn default() -> VkExportFenceCreateInfoKHR<'a> {
+impl<'l> Default for VkExportFenceCreateInfoKHR<'l> {
+  fn default() -> VkExportFenceCreateInfoKHR<'l> {
     VkExportFenceCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence")]
-unsafe impl<'a> RawStruct for VkExportFenceCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkExportFenceCreateInfoKHR<'l> {
   type Raw = types_raw::VkExportFenceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkFenceCreateInfo<'b>> for VkExportFenceCreateInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkFenceCreateInfo<'l>> for VkExportFenceCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -18359,21 +18346,21 @@ fn test_struct_size_vk_export_fence_create_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkImportFenceWin32HandleInfoKHR<'a> {
+pub struct VkImportFenceWin32HandleInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub fence: VkFence,
+  pub fence: VkFence<'h>,
   pub flags: VkFenceImportFlagsKHR,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
   pub handle: wsi::win32::HANDLE,
   pub name: wsi::win32::LPCWSTR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkImportFenceWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> VkImportFenceWin32HandleInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkImportFenceWin32HandleInfoKHR<'a> {
+  pub fn new() -> VkImportFenceWin32HandleInfoKHR<'l, 'h> {
     unsafe {
       VkImportFenceWin32HandleInfoKHR {
         sType: VkStructureType::IMPORT_FENCE_WIN32_HANDLE_INFO_KHR,
@@ -18382,7 +18369,7 @@ impl<'a> VkImportFenceWin32HandleInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_fence(mut self, value: VkFence) -> Self {
+  pub fn set_fence(mut self, value: VkFence<'h>) -> Self {
     self.fence = value;
     self
   }
@@ -18407,7 +18394,7 @@ impl<'a> VkImportFenceWin32HandleInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn fence(&self) -> VkFence {
+  pub fn fence(&self) -> VkFence<'h> {
     self.fence
   }
   #[inline]
@@ -18437,14 +18424,14 @@ impl<'a> VkImportFenceWin32HandleInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkImportFenceWin32HandleInfoKHR<'a> {
-  fn default() -> VkImportFenceWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkImportFenceWin32HandleInfoKHR<'l, 'h> {
+  fn default() -> VkImportFenceWin32HandleInfoKHR<'l, 'h> {
     VkImportFenceWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkImportFenceWin32HandleInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkImportFenceWin32HandleInfoKHR<'l, 'h> {
   type Raw = types_raw::VkImportFenceWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
@@ -18463,19 +18450,19 @@ fn test_struct_size_vk_import_fence_win32_handle_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkExportFenceWin32HandleInfoKHR<'a> {
+pub struct VkExportFenceWin32HandleInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub pAttributes: *const wsi::win32::SECURITY_ATTRIBUTES,
   pub dwAccess: wsi::win32::DWORD,
   pub name: wsi::win32::LPCWSTR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkExportFenceWin32HandleInfoKHR<'a> {
+impl<'l> VkExportFenceWin32HandleInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkExportFenceWin32HandleInfoKHR<'a> {
+  pub fn new() -> VkExportFenceWin32HandleInfoKHR<'l> {
     unsafe {
       VkExportFenceWin32HandleInfoKHR {
         sType: VkStructureType::EXPORT_FENCE_WIN32_HANDLE_INFO_KHR,
@@ -18513,19 +18500,19 @@ impl<'a> VkExportFenceWin32HandleInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkExportFenceWin32HandleInfoKHR<'a> {
-  fn default() -> VkExportFenceWin32HandleInfoKHR<'a> {
+impl<'l> Default for VkExportFenceWin32HandleInfoKHR<'l> {
+  fn default() -> VkExportFenceWin32HandleInfoKHR<'l> {
     VkExportFenceWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkExportFenceWin32HandleInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkExportFenceWin32HandleInfoKHR<'l> {
   type Raw = types_raw::VkExportFenceWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkFenceCreateInfo<'b>> for VkExportFenceWin32HandleInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkFenceCreateInfo<'l>> for VkExportFenceWin32HandleInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -18548,18 +18535,18 @@ fn test_struct_size_vk_export_fence_win32_handle_info_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-pub struct VkFenceGetWin32HandleInfoKHR<'a> {
+pub struct VkFenceGetWin32HandleInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub fence: VkFence,
+  pub fence: VkFence<'h>,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> VkFenceGetWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> VkFenceGetWin32HandleInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkFenceGetWin32HandleInfoKHR<'a> {
+  pub fn new() -> VkFenceGetWin32HandleInfoKHR<'l, 'h> {
     unsafe {
       VkFenceGetWin32HandleInfoKHR {
         sType: VkStructureType::FENCE_GET_WIN32_HANDLE_INFO_KHR,
@@ -18568,7 +18555,7 @@ impl<'a> VkFenceGetWin32HandleInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_fence(mut self, value: VkFence) -> Self {
+  pub fn set_fence(mut self, value: VkFence<'h>) -> Self {
     self.fence = value;
     self
   }
@@ -18578,7 +18565,7 @@ impl<'a> VkFenceGetWin32HandleInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn fence(&self) -> VkFence {
+  pub fn fence(&self) -> VkFence<'h> {
     self.fence
   }
   #[inline]
@@ -18596,14 +18583,14 @@ impl<'a> VkFenceGetWin32HandleInfoKHR<'a> {
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-impl<'a> Default for VkFenceGetWin32HandleInfoKHR<'a> {
-  fn default() -> VkFenceGetWin32HandleInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkFenceGetWin32HandleInfoKHR<'l, 'h> {
+  fn default() -> VkFenceGetWin32HandleInfoKHR<'l, 'h> {
     VkFenceGetWin32HandleInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'a> RawStruct for VkFenceGetWin32HandleInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkFenceGetWin32HandleInfoKHR<'l, 'h> {
   type Raw = types_raw::VkFenceGetWin32HandleInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
@@ -18619,19 +18606,19 @@ fn test_struct_size_vk_fence_get_win32_handle_info_khr() {
 /// (None)
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-pub struct VkImportFenceFdInfoKHR<'a> {
+pub struct VkImportFenceFdInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub fence: VkFence,
+  pub fence: VkFence<'h>,
   pub flags: VkFenceImportFlagsKHR,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
   pub fd: c_int,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-impl<'a> VkImportFenceFdInfoKHR<'a> {
+impl<'l, 'h: 'l> VkImportFenceFdInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkImportFenceFdInfoKHR<'a> {
+  pub fn new() -> VkImportFenceFdInfoKHR<'l, 'h> {
     unsafe {
       VkImportFenceFdInfoKHR {
         sType: VkStructureType::IMPORT_FENCE_FD_INFO_KHR,
@@ -18640,7 +18627,7 @@ impl<'a> VkImportFenceFdInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_fence(mut self, value: VkFence) -> Self {
+  pub fn set_fence(mut self, value: VkFence<'h>) -> Self {
     self.fence = value;
     self
   }
@@ -18660,7 +18647,7 @@ impl<'a> VkImportFenceFdInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn fence(&self) -> VkFence {
+  pub fn fence(&self) -> VkFence<'h> {
     self.fence
   }
   #[inline]
@@ -18685,13 +18672,13 @@ impl<'a> VkImportFenceFdInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-impl<'a> Default for VkImportFenceFdInfoKHR<'a> {
-  fn default() -> VkImportFenceFdInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkImportFenceFdInfoKHR<'l, 'h> {
+  fn default() -> VkImportFenceFdInfoKHR<'l, 'h> {
     VkImportFenceFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-unsafe impl<'a> RawStruct for VkImportFenceFdInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkImportFenceFdInfoKHR<'l, 'h> {
   type Raw = types_raw::VkImportFenceFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
@@ -18704,17 +18691,17 @@ fn test_struct_size_vk_import_fence_fd_info_khr() {
 /// Structure describing a POSIX FD fence export operation
 #[repr(C)]
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-pub struct VkFenceGetFdInfoKHR<'a> {
+pub struct VkFenceGetFdInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub fence: VkFence,
+  pub fence: VkFence<'h>,
   pub handleType: VkExternalFenceHandleTypeFlagBitsKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-impl<'a> VkFenceGetFdInfoKHR<'a> {
+impl<'l, 'h: 'l> VkFenceGetFdInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkFenceGetFdInfoKHR<'a> {
+  pub fn new() -> VkFenceGetFdInfoKHR<'l, 'h> {
     unsafe {
       VkFenceGetFdInfoKHR {
         sType: VkStructureType::FENCE_GET_FD_INFO_KHR,
@@ -18723,7 +18710,7 @@ impl<'a> VkFenceGetFdInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_fence(mut self, value: VkFence) -> Self {
+  pub fn set_fence(mut self, value: VkFence<'h>) -> Self {
     self.fence = value;
     self
   }
@@ -18733,7 +18720,7 @@ impl<'a> VkFenceGetFdInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn fence(&self) -> VkFence {
+  pub fn fence(&self) -> VkFence<'h> {
     self.fence
   }
   #[inline]
@@ -18750,13 +18737,13 @@ impl<'a> VkFenceGetFdInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-impl<'a> Default for VkFenceGetFdInfoKHR<'a> {
-  fn default() -> VkFenceGetFdInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkFenceGetFdInfoKHR<'l, 'h> {
+  fn default() -> VkFenceGetFdInfoKHR<'l, 'h> {
     VkFenceGetFdInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-unsafe impl<'a> RawStruct for VkFenceGetFdInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkFenceGetFdInfoKHR<'l, 'h> {
   type Raw = types_raw::VkFenceGetFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence_fd")]
@@ -18879,17 +18866,17 @@ fn test_struct_size_vk_input_attachment_aspect_reference_khr() {
 /// can: be read.
 #[repr(C)]
 #[cfg(feature = "VK_KHR_maintenance2")]
-pub struct VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
+pub struct VkRenderPassInputAttachmentAspectCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   aspectReferenceCount: u32,
   pAspectReferences: *const types_raw::VkInputAttachmentAspectReferenceKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl<'a> VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
+impl<'l> VkRenderPassInputAttachmentAspectCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
+  pub fn new() -> VkRenderPassInputAttachmentAspectCreateInfoKHR<'l> {
     unsafe {
       VkRenderPassInputAttachmentAspectCreateInfoKHR {
         sType: VkStructureType::RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO_KHR,
@@ -18898,7 +18885,7 @@ impl<'a> VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_aspect_references(mut self, value: &'a [VkInputAttachmentAspectReferenceKHR]) -> Self {
+  pub fn set_aspect_references(mut self, value: &'l [VkInputAttachmentAspectReferenceKHR]) -> Self {
     self.aspectReferenceCount = value.len() as u32;
     unsafe {
       self.pAspectReferences = value.as_raw();
@@ -18911,19 +18898,17 @@ impl<'a> VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl<'a> Default for VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
-  fn default() -> VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
+impl<'l> Default for VkRenderPassInputAttachmentAspectCreateInfoKHR<'l> {
+  fn default() -> VkRenderPassInputAttachmentAspectCreateInfoKHR<'l> {
     VkRenderPassInputAttachmentAspectCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl<'a> RawStruct for VkRenderPassInputAttachmentAspectCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkRenderPassInputAttachmentAspectCreateInfoKHR<'l> {
   type Raw = types_raw::VkRenderPassInputAttachmentAspectCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkRenderPassCreateInfo<'b>>
-  for VkRenderPassInputAttachmentAspectCreateInfoKHR<'a>
-{
+unsafe impl<'l> StructExtends<VkRenderPassCreateInfo<'l>> for VkRenderPassInputAttachmentAspectCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -18944,16 +18929,16 @@ fn test_struct_size_vk_render_pass_input_attachment_aspect_create_info_khr() {
 /// Specify the intended usage of an image view
 #[repr(C)]
 #[cfg(feature = "VK_KHR_maintenance2")]
-pub struct VkImageViewUsageCreateInfoKHR<'a> {
+pub struct VkImageViewUsageCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub usage: VkImageUsageFlags,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl<'a> VkImageViewUsageCreateInfoKHR<'a> {
+impl<'l> VkImageViewUsageCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkImageViewUsageCreateInfoKHR<'a> {
+  pub fn new() -> VkImageViewUsageCreateInfoKHR<'l> {
     unsafe {
       VkImageViewUsageCreateInfoKHR {
         sType: VkStructureType::IMAGE_VIEW_USAGE_CREATE_INFO_KHR,
@@ -18972,17 +18957,17 @@ impl<'a> VkImageViewUsageCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl<'a> Default for VkImageViewUsageCreateInfoKHR<'a> {
-  fn default() -> VkImageViewUsageCreateInfoKHR<'a> {
+impl<'l> Default for VkImageViewUsageCreateInfoKHR<'l> {
+  fn default() -> VkImageViewUsageCreateInfoKHR<'l> {
     VkImageViewUsageCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl<'a> RawStruct for VkImageViewUsageCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkImageViewUsageCreateInfoKHR<'l> {
   type Raw = types_raw::VkImageViewUsageCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkImageViewCreateInfo<'b>> for VkImageViewUsageCreateInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkImageViewCreateInfo<'l, 'h>> for VkImageViewUsageCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -19000,16 +18985,16 @@ fn test_struct_size_vk_image_view_usage_create_info_khr() {
 /// Structure specifying the orientation of the tessellation domain
 #[repr(C)]
 #[cfg(feature = "VK_KHR_maintenance2")]
-pub struct VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
+pub struct VkPipelineTessellationDomainOriginStateCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub domainOrigin: VkTessellationDomainOriginKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl<'a> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
+impl<'l> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
+  pub fn new() -> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'l> {
     unsafe {
       VkPipelineTessellationDomainOriginStateCreateInfoKHR {
         sType: VkStructureType::PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO_KHR,
@@ -19028,18 +19013,18 @@ impl<'a> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-impl<'a> Default for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
-  fn default() -> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
+impl<'l> Default for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'l> {
+  fn default() -> VkPipelineTessellationDomainOriginStateCreateInfoKHR<'l> {
     VkPipelineTessellationDomainOriginStateCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl<'a> RawStruct for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'l> {
   type Raw = types_raw::VkPipelineTessellationDomainOriginStateCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineTessellationStateCreateInfo<'b>>
-  for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'a>
+unsafe impl<'l> StructExtends<VkPipelineTessellationStateCreateInfo<'l>>
+  for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -19132,7 +19117,7 @@ unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceVari
   }
 }
 #[cfg(feature = "VK_KHR_variable_pointers")]
-unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDeviceVariablePointerFeaturesKHR {
+unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDeviceVariablePointerFeaturesKHR {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -19156,18 +19141,18 @@ fn test_struct_size_vk_physical_device_variable_pointer_features_khr() {
 #[repr(C)]
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
-pub struct VkIOSSurfaceCreateInfoMVK<'a> {
+pub struct VkIOSSurfaceCreateInfoMVK<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkIOSSurfaceCreateFlagsMVK,
   pView: *const c_void,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
-impl<'a> VkIOSSurfaceCreateInfoMVK<'a> {
+impl<'l> VkIOSSurfaceCreateInfoMVK<'l> {
   #[inline]
-  pub fn new() -> VkIOSSurfaceCreateInfoMVK<'a> {
+  pub fn new() -> VkIOSSurfaceCreateInfoMVK<'l> {
     unsafe {
       VkIOSSurfaceCreateInfoMVK {
         sType: VkStructureType::IOS_SURFACE_CREATE_INFO_MVK,
@@ -19204,14 +19189,14 @@ impl<'a> VkIOSSurfaceCreateInfoMVK<'a> {
 }
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
-impl<'a> Default for VkIOSSurfaceCreateInfoMVK<'a> {
-  fn default() -> VkIOSSurfaceCreateInfoMVK<'a> {
+impl<'l> Default for VkIOSSurfaceCreateInfoMVK<'l> {
+  fn default() -> VkIOSSurfaceCreateInfoMVK<'l> {
     VkIOSSurfaceCreateInfoMVK::new()
   }
 }
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
-unsafe impl<'a> RawStruct for VkIOSSurfaceCreateInfoMVK<'a> {
+unsafe impl<'l> RawStruct for VkIOSSurfaceCreateInfoMVK<'l> {
   type Raw = types_raw::VkIOSSurfaceCreateInfoMVK;
 }
 #[cfg(feature = "VK_MVK_ios_surface")]
@@ -19228,18 +19213,18 @@ fn test_struct_size_vk_ios_surface_create_info_mvk() {
 #[repr(C)]
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
-pub struct VkMacOSSurfaceCreateInfoMVK<'a> {
+pub struct VkMacOSSurfaceCreateInfoMVK<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkMacOSSurfaceCreateFlagsMVK,
   pView: *const c_void,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
-impl<'a> VkMacOSSurfaceCreateInfoMVK<'a> {
+impl<'l> VkMacOSSurfaceCreateInfoMVK<'l> {
   #[inline]
-  pub fn new() -> VkMacOSSurfaceCreateInfoMVK<'a> {
+  pub fn new() -> VkMacOSSurfaceCreateInfoMVK<'l> {
     unsafe {
       VkMacOSSurfaceCreateInfoMVK {
         sType: VkStructureType::MACOS_SURFACE_CREATE_INFO_MVK,
@@ -19276,14 +19261,14 @@ impl<'a> VkMacOSSurfaceCreateInfoMVK<'a> {
 }
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
-impl<'a> Default for VkMacOSSurfaceCreateInfoMVK<'a> {
-  fn default() -> VkMacOSSurfaceCreateInfoMVK<'a> {
+impl<'l> Default for VkMacOSSurfaceCreateInfoMVK<'l> {
+  fn default() -> VkMacOSSurfaceCreateInfoMVK<'l> {
     VkMacOSSurfaceCreateInfoMVK::new()
   }
 }
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
-unsafe impl<'a> RawStruct for VkMacOSSurfaceCreateInfoMVK<'a> {
+unsafe impl<'l> RawStruct for VkMacOSSurfaceCreateInfoMVK<'l> {
   type Raw = types_raw::VkMacOSSurfaceCreateInfoMVK;
 }
 #[cfg(feature = "VK_MVK_macos_surface")]
@@ -19299,16 +19284,16 @@ fn test_struct_size_vk_mac_os_surface_create_info_mvk() {
 /// (None)
 #[repr(C)]
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-pub struct VkBufferMemoryRequirementsInfo2KHR<'a> {
+pub struct VkBufferMemoryRequirementsInfo2KHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub buffer: VkBuffer,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub buffer: VkBuffer<'h>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl<'a> VkBufferMemoryRequirementsInfo2KHR<'a> {
+impl<'l, 'h: 'l> VkBufferMemoryRequirementsInfo2KHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkBufferMemoryRequirementsInfo2KHR<'a> {
+  pub fn new() -> VkBufferMemoryRequirementsInfo2KHR<'l, 'h> {
     unsafe {
       VkBufferMemoryRequirementsInfo2KHR {
         sType: VkStructureType::BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR,
@@ -19317,12 +19302,12 @@ impl<'a> VkBufferMemoryRequirementsInfo2KHR<'a> {
     }
   }
   #[inline]
-  pub fn set_buffer(mut self, value: VkBuffer) -> Self {
+  pub fn set_buffer(mut self, value: VkBuffer<'h>) -> Self {
     self.buffer = value;
     self
   }
   #[inline]
-  pub fn buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer<'h> {
     self.buffer
   }
   #[inline]
@@ -19335,13 +19320,13 @@ impl<'a> VkBufferMemoryRequirementsInfo2KHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl<'a> Default for VkBufferMemoryRequirementsInfo2KHR<'a> {
-  fn default() -> VkBufferMemoryRequirementsInfo2KHR<'a> {
+impl<'l, 'h: 'l> Default for VkBufferMemoryRequirementsInfo2KHR<'l, 'h> {
+  fn default() -> VkBufferMemoryRequirementsInfo2KHR<'l, 'h> {
     VkBufferMemoryRequirementsInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-unsafe impl<'a> RawStruct for VkBufferMemoryRequirementsInfo2KHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkBufferMemoryRequirementsInfo2KHR<'l, 'h> {
   type Raw = types_raw::VkBufferMemoryRequirementsInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -19357,16 +19342,16 @@ fn test_struct_size_vk_buffer_memory_requirements_info2_khr() {
 /// (None)
 #[repr(C)]
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-pub struct VkImageMemoryRequirementsInfo2KHR<'a> {
+pub struct VkImageMemoryRequirementsInfo2KHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub image: VkImage,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub image: VkImage<'h>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl<'a> VkImageMemoryRequirementsInfo2KHR<'a> {
+impl<'l, 'h: 'l> VkImageMemoryRequirementsInfo2KHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkImageMemoryRequirementsInfo2KHR<'a> {
+  pub fn new() -> VkImageMemoryRequirementsInfo2KHR<'l, 'h> {
     unsafe {
       VkImageMemoryRequirementsInfo2KHR {
         sType: VkStructureType::IMAGE_MEMORY_REQUIREMENTS_INFO_2_KHR,
@@ -19375,12 +19360,12 @@ impl<'a> VkImageMemoryRequirementsInfo2KHR<'a> {
     }
   }
   #[inline]
-  pub fn set_image(mut self, value: VkImage) -> Self {
+  pub fn set_image(mut self, value: VkImage<'h>) -> Self {
     self.image = value;
     self
   }
   #[inline]
-  pub fn image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage<'h> {
     self.image
   }
   #[inline]
@@ -19393,13 +19378,13 @@ impl<'a> VkImageMemoryRequirementsInfo2KHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl<'a> Default for VkImageMemoryRequirementsInfo2KHR<'a> {
-  fn default() -> VkImageMemoryRequirementsInfo2KHR<'a> {
+impl<'l, 'h: 'l> Default for VkImageMemoryRequirementsInfo2KHR<'l, 'h> {
+  fn default() -> VkImageMemoryRequirementsInfo2KHR<'l, 'h> {
     VkImageMemoryRequirementsInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-unsafe impl<'a> RawStruct for VkImageMemoryRequirementsInfo2KHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkImageMemoryRequirementsInfo2KHR<'l, 'h> {
   type Raw = types_raw::VkImageMemoryRequirementsInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -19413,16 +19398,16 @@ fn test_struct_size_vk_image_memory_requirements_info2_khr() {
 }
 #[repr(C)]
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-pub struct VkImageSparseMemoryRequirementsInfo2KHR<'a> {
+pub struct VkImageSparseMemoryRequirementsInfo2KHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub image: VkImage,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub image: VkImage<'h>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl<'a> VkImageSparseMemoryRequirementsInfo2KHR<'a> {
+impl<'l, 'h: 'l> VkImageSparseMemoryRequirementsInfo2KHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkImageSparseMemoryRequirementsInfo2KHR<'a> {
+  pub fn new() -> VkImageSparseMemoryRequirementsInfo2KHR<'l, 'h> {
     unsafe {
       VkImageSparseMemoryRequirementsInfo2KHR {
         sType: VkStructureType::IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2_KHR,
@@ -19431,12 +19416,12 @@ impl<'a> VkImageSparseMemoryRequirementsInfo2KHR<'a> {
     }
   }
   #[inline]
-  pub fn set_image(mut self, value: VkImage) -> Self {
+  pub fn set_image(mut self, value: VkImage<'h>) -> Self {
     self.image = value;
     self
   }
   #[inline]
-  pub fn image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage<'h> {
     self.image
   }
   #[inline]
@@ -19449,13 +19434,13 @@ impl<'a> VkImageSparseMemoryRequirementsInfo2KHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-impl<'a> Default for VkImageSparseMemoryRequirementsInfo2KHR<'a> {
-  fn default() -> VkImageSparseMemoryRequirementsInfo2KHR<'a> {
+impl<'l, 'h: 'l> Default for VkImageSparseMemoryRequirementsInfo2KHR<'l, 'h> {
+  fn default() -> VkImageSparseMemoryRequirementsInfo2KHR<'l, 'h> {
     VkImageSparseMemoryRequirementsInfo2KHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
-unsafe impl<'a> RawStruct for VkImageSparseMemoryRequirementsInfo2KHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkImageSparseMemoryRequirementsInfo2KHR<'l, 'h> {
   type Raw = types_raw::VkImageSparseMemoryRequirementsInfo2KHR;
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
@@ -19585,17 +19570,17 @@ fn test_struct_size_vk_memory_dedicated_requirements_khr() {
 /// Specify a dedicated memory allocation resource
 #[repr(C)]
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-pub struct VkMemoryDedicatedAllocateInfoKHR<'a> {
+pub struct VkMemoryDedicatedAllocateInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub image: Option<VkImage>,
-  pub buffer: Option<VkBuffer>,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub image: Option<VkImage<'h>>,
+  pub buffer: Option<VkBuffer<'h>>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-impl<'a> VkMemoryDedicatedAllocateInfoKHR<'a> {
+impl<'l, 'h: 'l> VkMemoryDedicatedAllocateInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkMemoryDedicatedAllocateInfoKHR<'a> {
+  pub fn new() -> VkMemoryDedicatedAllocateInfoKHR<'l, 'h> {
     unsafe {
       VkMemoryDedicatedAllocateInfoKHR {
         sType: VkStructureType::MEMORY_DEDICATED_ALLOCATE_INFO_KHR,
@@ -19604,36 +19589,36 @@ impl<'a> VkMemoryDedicatedAllocateInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_image(mut self, value: Option<VkImage>) -> Self {
+  pub fn set_image(mut self, value: Option<VkImage<'h>>) -> Self {
     self.image = value;
     self
   }
   #[inline]
-  pub fn set_buffer(mut self, value: Option<VkBuffer>) -> Self {
+  pub fn set_buffer(mut self, value: Option<VkBuffer<'h>>) -> Self {
     self.buffer = value;
     self
   }
   #[inline]
-  pub fn image(&self) -> Option<VkImage> {
+  pub fn image(&self) -> Option<VkImage<'h>> {
     self.image
   }
   #[inline]
-  pub fn buffer(&self) -> Option<VkBuffer> {
+  pub fn buffer(&self) -> Option<VkBuffer<'h>> {
     self.buffer
   }
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-impl<'a> Default for VkMemoryDedicatedAllocateInfoKHR<'a> {
-  fn default() -> VkMemoryDedicatedAllocateInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkMemoryDedicatedAllocateInfoKHR<'l, 'h> {
+  fn default() -> VkMemoryDedicatedAllocateInfoKHR<'l, 'h> {
     VkMemoryDedicatedAllocateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-unsafe impl<'a> RawStruct for VkMemoryDedicatedAllocateInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkMemoryDedicatedAllocateInfoKHR<'l, 'h> {
   type Raw = types_raw::VkMemoryDedicatedAllocateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkMemoryDedicatedAllocateInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkMemoryDedicatedAllocateInfoKHR<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -19656,16 +19641,16 @@ fn test_struct_size_vk_memory_dedicated_allocate_info_khr() {
 /// Structure specifying sampler reduction mode
 #[repr(C)]
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-pub struct VkSamplerReductionModeCreateInfoEXT<'a> {
+pub struct VkSamplerReductionModeCreateInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub reductionMode: VkSamplerReductionModeEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-impl<'a> VkSamplerReductionModeCreateInfoEXT<'a> {
+impl<'l> VkSamplerReductionModeCreateInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkSamplerReductionModeCreateInfoEXT<'a> {
+  pub fn new() -> VkSamplerReductionModeCreateInfoEXT<'l> {
     unsafe {
       VkSamplerReductionModeCreateInfoEXT {
         sType: VkStructureType::SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT,
@@ -19684,17 +19669,17 @@ impl<'a> VkSamplerReductionModeCreateInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-impl<'a> Default for VkSamplerReductionModeCreateInfoEXT<'a> {
-  fn default() -> VkSamplerReductionModeCreateInfoEXT<'a> {
+impl<'l> Default for VkSamplerReductionModeCreateInfoEXT<'l> {
+  fn default() -> VkSamplerReductionModeCreateInfoEXT<'l> {
     VkSamplerReductionModeCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-unsafe impl<'a> RawStruct for VkSamplerReductionModeCreateInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkSamplerReductionModeCreateInfoEXT<'l> {
   type Raw = types_raw::VkSamplerReductionModeCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSamplerCreateInfo<'b>> for VkSamplerReductionModeCreateInfoEXT<'a> {
+unsafe impl<'l> StructExtends<VkSamplerCreateInfo<'l>> for VkSamplerReductionModeCreateInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -19816,19 +19801,19 @@ fn test_struct_size_vk_sample_location_ext() {
 /// Structure specifying a set of sample locations
 #[repr(C)]
 #[cfg(feature = "VK_EXT_sample_locations")]
-pub struct VkSampleLocationsInfoEXT<'a> {
+pub struct VkSampleLocationsInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub sampleLocationsPerPixel: VkSampleCountFlagBits,
   pub sampleLocationGridSize: VkExtent2D,
   sampleLocationsCount: u32,
   pSampleLocations: *const types_raw::VkSampleLocationEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> VkSampleLocationsInfoEXT<'a> {
+impl<'l> VkSampleLocationsInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkSampleLocationsInfoEXT<'a> {
+  pub fn new() -> VkSampleLocationsInfoEXT<'l> {
     unsafe {
       VkSampleLocationsInfoEXT {
         sType: VkStructureType::SAMPLE_LOCATIONS_INFO_EXT,
@@ -19847,7 +19832,7 @@ impl<'a> VkSampleLocationsInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn set_sample_locations(mut self, value: &'a [VkSampleLocationEXT]) -> Self {
+  pub fn set_sample_locations(mut self, value: &'l [VkSampleLocationEXT]) -> Self {
     self.sampleLocationsCount = value.len() as u32;
     unsafe {
       self.pSampleLocations = value.as_raw();
@@ -19868,17 +19853,17 @@ impl<'a> VkSampleLocationsInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> Default for VkSampleLocationsInfoEXT<'a> {
-  fn default() -> VkSampleLocationsInfoEXT<'a> {
+impl<'l> Default for VkSampleLocationsInfoEXT<'l> {
+  fn default() -> VkSampleLocationsInfoEXT<'l> {
     VkSampleLocationsInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'a> RawStruct for VkSampleLocationsInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkSampleLocationsInfoEXT<'l> {
   type Raw = types_raw::VkSampleLocationsInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkImageMemoryBarrier<'b>> for VkSampleLocationsInfoEXT<'a> {
+unsafe impl<'l> StructExtends<VkImageMemoryBarrier<'l, 'h>> for VkSampleLocationsInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -19897,14 +19882,14 @@ fn test_struct_size_vk_sample_locations_info_ext() {
 /// transition of attachments
 #[repr(C)]
 #[cfg(feature = "VK_EXT_sample_locations")]
-pub struct VkAttachmentSampleLocationsEXT<'a> {
+pub struct VkAttachmentSampleLocationsEXT<'l> {
   pub attachmentIndex: u32,
-  pub sampleLocationsInfo: VkSampleLocationsInfoEXT<'a>,
+  pub sampleLocationsInfo: VkSampleLocationsInfoEXT<'l>,
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> VkAttachmentSampleLocationsEXT<'a> {
+impl<'l> VkAttachmentSampleLocationsEXT<'l> {
   #[inline]
-  pub fn new() -> VkAttachmentSampleLocationsEXT<'a> {
+  pub fn new() -> VkAttachmentSampleLocationsEXT<'l> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -19913,7 +19898,7 @@ impl<'a> VkAttachmentSampleLocationsEXT<'a> {
     self
   }
   #[inline]
-  pub fn set_sample_locations_info(mut self, value: VkSampleLocationsInfoEXT<'a>) -> Self {
+  pub fn set_sample_locations_info(mut self, value: VkSampleLocationsInfoEXT<'l>) -> Self {
     self.sampleLocationsInfo = value;
     self
   }
@@ -19922,18 +19907,18 @@ impl<'a> VkAttachmentSampleLocationsEXT<'a> {
     self.attachmentIndex
   }
   #[inline]
-  pub fn sample_locations_info(&self) -> &VkSampleLocationsInfoEXT<'a> {
+  pub fn sample_locations_info(&self) -> &VkSampleLocationsInfoEXT<'l> {
     &self.sampleLocationsInfo
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> Default for VkAttachmentSampleLocationsEXT<'a> {
-  fn default() -> VkAttachmentSampleLocationsEXT<'a> {
+impl<'l> Default for VkAttachmentSampleLocationsEXT<'l> {
+  fn default() -> VkAttachmentSampleLocationsEXT<'l> {
     VkAttachmentSampleLocationsEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'a> RawStruct for VkAttachmentSampleLocationsEXT<'a> {
+unsafe impl<'l> RawStruct for VkAttachmentSampleLocationsEXT<'l> {
   type Raw = types_raw::VkAttachmentSampleLocationsEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -19950,14 +19935,14 @@ fn test_struct_size_vk_attachment_sample_locations_ext() {
 /// attachments performed after a given subpass
 #[repr(C)]
 #[cfg(feature = "VK_EXT_sample_locations")]
-pub struct VkSubpassSampleLocationsEXT<'a> {
+pub struct VkSubpassSampleLocationsEXT<'l> {
   pub subpassIndex: u32,
-  pub sampleLocationsInfo: VkSampleLocationsInfoEXT<'a>,
+  pub sampleLocationsInfo: VkSampleLocationsInfoEXT<'l>,
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> VkSubpassSampleLocationsEXT<'a> {
+impl<'l> VkSubpassSampleLocationsEXT<'l> {
   #[inline]
-  pub fn new() -> VkSubpassSampleLocationsEXT<'a> {
+  pub fn new() -> VkSubpassSampleLocationsEXT<'l> {
     unsafe { ::std::mem::zeroed() }
   }
   #[inline]
@@ -19966,7 +19951,7 @@ impl<'a> VkSubpassSampleLocationsEXT<'a> {
     self
   }
   #[inline]
-  pub fn set_sample_locations_info(mut self, value: VkSampleLocationsInfoEXT<'a>) -> Self {
+  pub fn set_sample_locations_info(mut self, value: VkSampleLocationsInfoEXT<'l>) -> Self {
     self.sampleLocationsInfo = value;
     self
   }
@@ -19975,18 +19960,18 @@ impl<'a> VkSubpassSampleLocationsEXT<'a> {
     self.subpassIndex
   }
   #[inline]
-  pub fn sample_locations_info(&self) -> &VkSampleLocationsInfoEXT<'a> {
+  pub fn sample_locations_info(&self) -> &VkSampleLocationsInfoEXT<'l> {
     &self.sampleLocationsInfo
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> Default for VkSubpassSampleLocationsEXT<'a> {
-  fn default() -> VkSubpassSampleLocationsEXT<'a> {
+impl<'l> Default for VkSubpassSampleLocationsEXT<'l> {
+  fn default() -> VkSubpassSampleLocationsEXT<'l> {
     VkSubpassSampleLocationsEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'a> RawStruct for VkSubpassSampleLocationsEXT<'a> {
+unsafe impl<'l> RawStruct for VkSubpassSampleLocationsEXT<'l> {
   type Raw = types_raw::VkSubpassSampleLocationsEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
@@ -20000,19 +19985,19 @@ fn test_struct_size_vk_subpass_sample_locations_ext() {
 /// sample locations compatible depth/stencil attachments
 #[repr(C)]
 #[cfg(feature = "VK_EXT_sample_locations")]
-pub struct VkRenderPassSampleLocationsBeginInfoEXT<'a> {
+pub struct VkRenderPassSampleLocationsBeginInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   attachmentInitialSampleLocationsCount: u32,
   pAttachmentInitialSampleLocations: *const types_raw::VkAttachmentSampleLocationsEXT,
   postSubpassSampleLocationsCount: u32,
   pPostSubpassSampleLocations: *const types_raw::VkSubpassSampleLocationsEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
+impl<'l> VkRenderPassSampleLocationsBeginInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
+  pub fn new() -> VkRenderPassSampleLocationsBeginInfoEXT<'l> {
     unsafe {
       VkRenderPassSampleLocationsBeginInfoEXT {
         sType: VkStructureType::RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT,
@@ -20021,7 +20006,7 @@ impl<'a> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
     }
   }
   #[inline]
-  pub fn set_attachment_initial_sample_locations(mut self, value: &'a [VkAttachmentSampleLocationsEXT<'a>]) -> Self {
+  pub fn set_attachment_initial_sample_locations(mut self, value: &'l [VkAttachmentSampleLocationsEXT<'l>]) -> Self {
     self.attachmentInitialSampleLocationsCount = value.len() as u32;
     unsafe {
       self.pAttachmentInitialSampleLocations = value.as_raw();
@@ -20029,7 +20014,7 @@ impl<'a> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn set_post_subpass_sample_locations(mut self, value: &'a [VkSubpassSampleLocationsEXT<'a>]) -> Self {
+  pub fn set_post_subpass_sample_locations(mut self, value: &'l [VkSubpassSampleLocationsEXT<'l>]) -> Self {
     self.postSubpassSampleLocationsCount = value.len() as u32;
     unsafe {
       self.pPostSubpassSampleLocations = value.as_raw();
@@ -20046,17 +20031,17 @@ impl<'a> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> Default for VkRenderPassSampleLocationsBeginInfoEXT<'a> {
-  fn default() -> VkRenderPassSampleLocationsBeginInfoEXT<'a> {
+impl<'l> Default for VkRenderPassSampleLocationsBeginInfoEXT<'l> {
+  fn default() -> VkRenderPassSampleLocationsBeginInfoEXT<'l> {
     VkRenderPassSampleLocationsBeginInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'a> RawStruct for VkRenderPassSampleLocationsBeginInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkRenderPassSampleLocationsBeginInfoEXT<'l> {
   type Raw = types_raw::VkRenderPassSampleLocationsBeginInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkRenderPassBeginInfo<'b>> for VkRenderPassSampleLocationsBeginInfoEXT<'a> {
+unsafe impl<'l> StructExtends<VkRenderPassBeginInfo<'l, 'h>> for VkRenderPassSampleLocationsBeginInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -20077,16 +20062,16 @@ fn test_struct_size_vk_render_pass_sample_locations_begin_info_ext() {
 /// Structure specifying sample locations for a pipeline
 #[repr(C)]
 #[cfg(feature = "VK_EXT_sample_locations")]
-pub struct VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
+pub struct VkPipelineSampleLocationsStateCreateInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub sampleLocationsEnable: VkBool32,
-  pub sampleLocationsInfo: VkSampleLocationsInfoEXT<'a>,
+  pub sampleLocationsInfo: VkSampleLocationsInfoEXT<'l>,
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
+impl<'l> VkPipelineSampleLocationsStateCreateInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
+  pub fn new() -> VkPipelineSampleLocationsStateCreateInfoEXT<'l> {
     unsafe {
       VkPipelineSampleLocationsStateCreateInfoEXT {
         sType: VkStructureType::PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT,
@@ -20101,7 +20086,7 @@ impl<'a> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn set_sample_locations_info(mut self, value: VkSampleLocationsInfoEXT<'a>) -> Self {
+  pub fn set_sample_locations_info(mut self, value: VkSampleLocationsInfoEXT<'l>) -> Self {
     self.sampleLocationsInfo = value;
     self
   }
@@ -20110,23 +20095,23 @@ impl<'a> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
     self.sampleLocationsEnable != 0
   }
   #[inline]
-  pub fn sample_locations_info(&self) -> &VkSampleLocationsInfoEXT<'a> {
+  pub fn sample_locations_info(&self) -> &VkSampleLocationsInfoEXT<'l> {
     &self.sampleLocationsInfo
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-impl<'a> Default for VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
-  fn default() -> VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
+impl<'l> Default for VkPipelineSampleLocationsStateCreateInfoEXT<'l> {
+  fn default() -> VkPipelineSampleLocationsStateCreateInfoEXT<'l> {
     VkPipelineSampleLocationsStateCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'a> RawStruct for VkPipelineSampleLocationsStateCreateInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkPipelineSampleLocationsStateCreateInfoEXT<'l> {
   type Raw = types_raw::VkPipelineSampleLocationsStateCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineMultisampleStateCreateInfo<'b>>
-  for VkPipelineSampleLocationsStateCreateInfoEXT<'a>
+unsafe impl<'l> StructExtends<VkPipelineMultisampleStateCreateInfo<'l>>
+  for VkPipelineSampleLocationsStateCreateInfoEXT<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -20246,17 +20231,17 @@ fn test_struct_size_vk_multisample_properties_ext() {
 /// Specify that an image can: be used with a particular set of formats
 #[repr(C)]
 #[cfg(feature = "VK_KHR_image_format_list")]
-pub struct VkImageFormatListCreateInfoKHR<'a> {
+pub struct VkImageFormatListCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   viewFormatCount: u32,
   pViewFormats: *const VkFormat,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_image_format_list")]
-impl<'a> VkImageFormatListCreateInfoKHR<'a> {
+impl<'l> VkImageFormatListCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkImageFormatListCreateInfoKHR<'a> {
+  pub fn new() -> VkImageFormatListCreateInfoKHR<'l> {
     unsafe {
       VkImageFormatListCreateInfoKHR {
         sType: VkStructureType::IMAGE_FORMAT_LIST_CREATE_INFO_KHR,
@@ -20265,7 +20250,7 @@ impl<'a> VkImageFormatListCreateInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_view_formats(mut self, value: &'a [VkFormat]) -> Self {
+  pub fn set_view_formats(mut self, value: &'l [VkFormat]) -> Self {
     self.viewFormatCount = value.len() as u32;
     unsafe {
       self.pViewFormats = value.as_raw();
@@ -20278,17 +20263,17 @@ impl<'a> VkImageFormatListCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_image_format_list")]
-impl<'a> Default for VkImageFormatListCreateInfoKHR<'a> {
-  fn default() -> VkImageFormatListCreateInfoKHR<'a> {
+impl<'l> Default for VkImageFormatListCreateInfoKHR<'l> {
+  fn default() -> VkImageFormatListCreateInfoKHR<'l> {
     VkImageFormatListCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_image_format_list")]
-unsafe impl<'a> RawStruct for VkImageFormatListCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkImageFormatListCreateInfoKHR<'l> {
   type Raw = types_raw::VkImageFormatListCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_image_format_list")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkImageCreateInfo<'b>> for VkImageFormatListCreateInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkImageCreateInfo<'l>> for VkImageFormatListCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -20450,18 +20435,18 @@ fn test_struct_size_vk_physical_device_blend_operation_advanced_properties_ext()
 /// Structure specifying parameters that affect advanced blend operations
 #[repr(C)]
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-pub struct VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
+pub struct VkPipelineColorBlendAdvancedStateCreateInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub srcPremultiplied: VkBool32,
   pub dstPremultiplied: VkBool32,
   pub blendOverlap: VkBlendOverlapEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-impl<'a> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
+impl<'l> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
+  pub fn new() -> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'l> {
     unsafe {
       VkPipelineColorBlendAdvancedStateCreateInfoEXT {
         sType: VkStructureType::PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT,
@@ -20500,18 +20485,18 @@ impl<'a> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-impl<'a> Default for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
-  fn default() -> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
+impl<'l> Default for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'l> {
+  fn default() -> VkPipelineColorBlendAdvancedStateCreateInfoEXT<'l> {
     VkPipelineColorBlendAdvancedStateCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-unsafe impl<'a> RawStruct for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'l> {
   type Raw = types_raw::VkPipelineColorBlendAdvancedStateCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineColorBlendStateCreateInfo<'b>>
-  for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'a>
+unsafe impl<'l> StructExtends<VkPipelineColorBlendStateCreateInfo<'l>>
+  for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -20535,18 +20520,18 @@ fn test_struct_size_vk_pipeline_color_blend_advanced_state_create_info_ext() {
 /// Structure specifying whether fragment coverage replaces a color
 #[repr(C)]
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-pub struct VkPipelineCoverageToColorStateCreateInfoNV<'a> {
+pub struct VkPipelineCoverageToColorStateCreateInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineCoverageToColorStateCreateFlagsNV,
   pub coverageToColorEnable: VkBool32,
   pub coverageToColorLocation: u32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-impl<'a> VkPipelineCoverageToColorStateCreateInfoNV<'a> {
+impl<'l> VkPipelineCoverageToColorStateCreateInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkPipelineCoverageToColorStateCreateInfoNV<'a> {
+  pub fn new() -> VkPipelineCoverageToColorStateCreateInfoNV<'l> {
     unsafe {
       VkPipelineCoverageToColorStateCreateInfoNV {
         sType: VkStructureType::PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV,
@@ -20584,18 +20569,18 @@ impl<'a> VkPipelineCoverageToColorStateCreateInfoNV<'a> {
   }
 }
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-impl<'a> Default for VkPipelineCoverageToColorStateCreateInfoNV<'a> {
-  fn default() -> VkPipelineCoverageToColorStateCreateInfoNV<'a> {
+impl<'l> Default for VkPipelineCoverageToColorStateCreateInfoNV<'l> {
+  fn default() -> VkPipelineCoverageToColorStateCreateInfoNV<'l> {
     VkPipelineCoverageToColorStateCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-unsafe impl<'a> RawStruct for VkPipelineCoverageToColorStateCreateInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkPipelineCoverageToColorStateCreateInfoNV<'l> {
   type Raw = types_raw::VkPipelineCoverageToColorStateCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineMultisampleStateCreateInfo<'b>>
-  for VkPipelineCoverageToColorStateCreateInfoNV<'a>
+unsafe impl<'l> StructExtends<VkPipelineMultisampleStateCreateInfo<'l>>
+  for VkPipelineCoverageToColorStateCreateInfoNV<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -20619,7 +20604,7 @@ fn test_struct_size_vk_pipeline_coverage_to_color_state_create_info_nv() {
 /// Structure specifying parameters controlling coverage modulation
 #[repr(C)]
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
-pub struct VkPipelineCoverageModulationStateCreateInfoNV<'a> {
+pub struct VkPipelineCoverageModulationStateCreateInfoNV<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkPipelineCoverageModulationStateCreateFlagsNV,
@@ -20627,12 +20612,12 @@ pub struct VkPipelineCoverageModulationStateCreateInfoNV<'a> {
   pub coverageModulationTableEnable: VkBool32,
   coverageModulationTableCount: u32,
   pCoverageModulationTable: *const f32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
-impl<'a> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
+impl<'l> VkPipelineCoverageModulationStateCreateInfoNV<'l> {
   #[inline]
-  pub fn new() -> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
+  pub fn new() -> VkPipelineCoverageModulationStateCreateInfoNV<'l> {
     unsafe {
       VkPipelineCoverageModulationStateCreateInfoNV {
         sType: VkStructureType::PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV,
@@ -20657,7 +20642,7 @@ impl<'a> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
     self
   }
   #[inline]
-  pub fn set_coverage_modulation_table(mut self, value: &'a [f32]) -> Self {
+  pub fn set_coverage_modulation_table(mut self, value: &'l [f32]) -> Self {
     self.coverageModulationTableCount = value.len() as u32;
     unsafe {
       self.pCoverageModulationTable = value.as_raw();
@@ -20682,18 +20667,18 @@ impl<'a> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
   }
 }
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
-impl<'a> Default for VkPipelineCoverageModulationStateCreateInfoNV<'a> {
-  fn default() -> VkPipelineCoverageModulationStateCreateInfoNV<'a> {
+impl<'l> Default for VkPipelineCoverageModulationStateCreateInfoNV<'l> {
+  fn default() -> VkPipelineCoverageModulationStateCreateInfoNV<'l> {
     VkPipelineCoverageModulationStateCreateInfoNV::new()
   }
 }
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
-unsafe impl<'a> RawStruct for VkPipelineCoverageModulationStateCreateInfoNV<'a> {
+unsafe impl<'l> RawStruct for VkPipelineCoverageModulationStateCreateInfoNV<'l> {
   type Raw = types_raw::VkPipelineCoverageModulationStateCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkPipelineMultisampleStateCreateInfo<'b>>
-  for VkPipelineCoverageModulationStateCreateInfoNV<'a>
+unsafe impl<'l> StructExtends<VkPipelineMultisampleStateCreateInfo<'l>>
+  for VkPipelineCoverageModulationStateCreateInfoNV<'l>
 {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
@@ -20717,18 +20702,18 @@ fn test_struct_size_vk_pipeline_coverage_modulation_state_create_info_nv() {
 /// Structure specifying how to bind a buffer to memory
 #[repr(C)]
 #[cfg(feature = "VK_KHR_bind_memory2")]
-pub struct VkBindBufferMemoryInfoKHR<'a> {
+pub struct VkBindBufferMemoryInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub buffer: VkBuffer,
-  pub memory: VkDeviceMemory,
+  pub buffer: VkBuffer<'h>,
+  pub memory: VkDeviceMemory<'h>,
   pub memoryOffset: VkDeviceSize,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-impl<'a> VkBindBufferMemoryInfoKHR<'a> {
+impl<'l, 'h: 'l> VkBindBufferMemoryInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkBindBufferMemoryInfoKHR<'a> {
+  pub fn new() -> VkBindBufferMemoryInfoKHR<'l, 'h> {
     unsafe {
       VkBindBufferMemoryInfoKHR {
         sType: VkStructureType::BIND_BUFFER_MEMORY_INFO_KHR,
@@ -20737,12 +20722,12 @@ impl<'a> VkBindBufferMemoryInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_buffer(mut self, value: VkBuffer) -> Self {
+  pub fn set_buffer(mut self, value: VkBuffer<'h>) -> Self {
     self.buffer = value;
     self
   }
   #[inline]
-  pub fn set_memory(mut self, value: VkDeviceMemory) -> Self {
+  pub fn set_memory(mut self, value: VkDeviceMemory<'h>) -> Self {
     self.memory = value;
     self
   }
@@ -20752,11 +20737,11 @@ impl<'a> VkBindBufferMemoryInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn buffer(&self) -> VkBuffer {
+  pub fn buffer(&self) -> VkBuffer<'h> {
     self.buffer
   }
   #[inline]
-  pub fn memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory<'h> {
     self.memory
   }
   #[inline]
@@ -20773,13 +20758,13 @@ impl<'a> VkBindBufferMemoryInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-impl<'a> Default for VkBindBufferMemoryInfoKHR<'a> {
-  fn default() -> VkBindBufferMemoryInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkBindBufferMemoryInfoKHR<'l, 'h> {
+  fn default() -> VkBindBufferMemoryInfoKHR<'l, 'h> {
     VkBindBufferMemoryInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-unsafe impl<'a> RawStruct for VkBindBufferMemoryInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkBindBufferMemoryInfoKHR<'l, 'h> {
   type Raw = types_raw::VkBindBufferMemoryInfoKHR;
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
@@ -20792,18 +20777,18 @@ fn test_struct_size_vk_bind_buffer_memory_info_khr() {
 /// Structure specifying how to bind an image to memory
 #[repr(C)]
 #[cfg(feature = "VK_KHR_bind_memory2")]
-pub struct VkBindImageMemoryInfoKHR<'a> {
+pub struct VkBindImageMemoryInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub image: VkImage,
-  pub memory: VkDeviceMemory,
+  pub image: VkImage<'h>,
+  pub memory: VkDeviceMemory<'h>,
   pub memoryOffset: VkDeviceSize,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-impl<'a> VkBindImageMemoryInfoKHR<'a> {
+impl<'l, 'h: 'l> VkBindImageMemoryInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkBindImageMemoryInfoKHR<'a> {
+  pub fn new() -> VkBindImageMemoryInfoKHR<'l, 'h> {
     unsafe {
       VkBindImageMemoryInfoKHR {
         sType: VkStructureType::BIND_IMAGE_MEMORY_INFO_KHR,
@@ -20812,12 +20797,12 @@ impl<'a> VkBindImageMemoryInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_image(mut self, value: VkImage) -> Self {
+  pub fn set_image(mut self, value: VkImage<'h>) -> Self {
     self.image = value;
     self
   }
   #[inline]
-  pub fn set_memory(mut self, value: VkDeviceMemory) -> Self {
+  pub fn set_memory(mut self, value: VkDeviceMemory<'h>) -> Self {
     self.memory = value;
     self
   }
@@ -20827,11 +20812,11 @@ impl<'a> VkBindImageMemoryInfoKHR<'a> {
     self
   }
   #[inline]
-  pub fn image(&self) -> VkImage {
+  pub fn image(&self) -> VkImage<'h> {
     self.image
   }
   #[inline]
-  pub fn memory(&self) -> VkDeviceMemory {
+  pub fn memory(&self) -> VkDeviceMemory<'h> {
     self.memory
   }
   #[inline]
@@ -20848,13 +20833,13 @@ impl<'a> VkBindImageMemoryInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-impl<'a> Default for VkBindImageMemoryInfoKHR<'a> {
-  fn default() -> VkBindImageMemoryInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkBindImageMemoryInfoKHR<'l, 'h> {
+  fn default() -> VkBindImageMemoryInfoKHR<'l, 'h> {
     VkBindImageMemoryInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
-unsafe impl<'a> RawStruct for VkBindImageMemoryInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkBindImageMemoryInfoKHR<'l, 'h> {
   type Raw = types_raw::VkBindImageMemoryInfoKHR;
 }
 #[cfg(feature = "VK_KHR_bind_memory2")]
@@ -20869,7 +20854,7 @@ fn test_struct_size_vk_bind_image_memory_info_khr() {
 /// Structure specifying the parameters of the newly created conversion
 #[repr(C)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-pub struct VkSamplerYcbcrConversionCreateInfoKHR<'a> {
+pub struct VkSamplerYcbcrConversionCreateInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub format: VkFormat,
@@ -20880,12 +20865,12 @@ pub struct VkSamplerYcbcrConversionCreateInfoKHR<'a> {
   pub yChromaOffset: VkChromaLocationKHR,
   pub chromaFilter: VkFilter,
   pub forceExplicitReconstruction: VkBool32,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl<'a> VkSamplerYcbcrConversionCreateInfoKHR<'a> {
+impl<'l> VkSamplerYcbcrConversionCreateInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkSamplerYcbcrConversionCreateInfoKHR<'a> {
+  pub fn new() -> VkSamplerYcbcrConversionCreateInfoKHR<'l> {
     unsafe {
       VkSamplerYcbcrConversionCreateInfoKHR {
         sType: VkStructureType::SAMPLER_YCBCR_CONVERSION_CREATE_INFO_KHR,
@@ -20976,13 +20961,13 @@ impl<'a> VkSamplerYcbcrConversionCreateInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl<'a> Default for VkSamplerYcbcrConversionCreateInfoKHR<'a> {
-  fn default() -> VkSamplerYcbcrConversionCreateInfoKHR<'a> {
+impl<'l> Default for VkSamplerYcbcrConversionCreateInfoKHR<'l> {
+  fn default() -> VkSamplerYcbcrConversionCreateInfoKHR<'l> {
     VkSamplerYcbcrConversionCreateInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'a> RawStruct for VkSamplerYcbcrConversionCreateInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkSamplerYcbcrConversionCreateInfoKHR<'l> {
   type Raw = types_raw::VkSamplerYcbcrConversionCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
@@ -21000,21 +20985,21 @@ fn test_struct_size_vk_sampler_ycbcr_conversion_create_info_khr() {
 pub enum VkSamplerYcbcrConversionKHR__ {}
 
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-pub type VkSamplerYcbcrConversionKHR = VkNonDispatchableHandle<VkSamplerYcbcrConversionKHR__>;
+pub type VkSamplerYcbcrConversionKHR<'l> = VkNonDispatchableHandle<'l, VkSamplerYcbcrConversionKHR__>;
 
 /// Structure specifying Y\'CbCr conversion to a sampler or image view
 #[repr(C)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-pub struct VkSamplerYcbcrConversionInfoKHR<'a> {
+pub struct VkSamplerYcbcrConversionInfoKHR<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub conversion: VkSamplerYcbcrConversionKHR,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub conversion: VkSamplerYcbcrConversionKHR<'h>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl<'a> VkSamplerYcbcrConversionInfoKHR<'a> {
+impl<'l, 'h: 'l> VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
   #[inline]
-  pub fn new() -> VkSamplerYcbcrConversionInfoKHR<'a> {
+  pub fn new() -> VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
     unsafe {
       VkSamplerYcbcrConversionInfoKHR {
         sType: VkStructureType::SAMPLER_YCBCR_CONVERSION_INFO_KHR,
@@ -21023,27 +21008,27 @@ impl<'a> VkSamplerYcbcrConversionInfoKHR<'a> {
     }
   }
   #[inline]
-  pub fn set_conversion(mut self, value: VkSamplerYcbcrConversionKHR) -> Self {
+  pub fn set_conversion(mut self, value: VkSamplerYcbcrConversionKHR<'h>) -> Self {
     self.conversion = value;
     self
   }
   #[inline]
-  pub fn conversion(&self) -> VkSamplerYcbcrConversionKHR {
+  pub fn conversion(&self) -> VkSamplerYcbcrConversionKHR<'h> {
     self.conversion
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl<'a> Default for VkSamplerYcbcrConversionInfoKHR<'a> {
-  fn default() -> VkSamplerYcbcrConversionInfoKHR<'a> {
+impl<'l, 'h: 'l> Default for VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
+  fn default() -> VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
     VkSamplerYcbcrConversionInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'a> RawStruct for VkSamplerYcbcrConversionInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
   type Raw = types_raw::VkSamplerYcbcrConversionInfoKHR;
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkSamplerCreateInfo<'b>> for VkSamplerYcbcrConversionInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkSamplerCreateInfo<'l>> for VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21052,7 +21037,7 @@ unsafe impl<'b, 'a: 'b> StructExtends<VkSamplerCreateInfo<'b>> for VkSamplerYcbc
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkImageViewCreateInfo<'b>> for VkSamplerYcbcrConversionInfoKHR<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkImageViewCreateInfo<'l, 'h>> for VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21073,16 +21058,16 @@ fn test_struct_size_vk_sampler_ycbcr_conversion_info_khr() {
 /// Structure specifying how to bind an image plane to memory
 #[repr(C)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-pub struct VkBindImagePlaneMemoryInfoKHR<'a> {
+pub struct VkBindImagePlaneMemoryInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub planeAspect: VkImageAspectFlagBits,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl<'a> VkBindImagePlaneMemoryInfoKHR<'a> {
+impl<'l> VkBindImagePlaneMemoryInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkBindImagePlaneMemoryInfoKHR<'a> {
+  pub fn new() -> VkBindImagePlaneMemoryInfoKHR<'l> {
     unsafe {
       VkBindImagePlaneMemoryInfoKHR {
         sType: VkStructureType::BIND_IMAGE_PLANE_MEMORY_INFO_KHR,
@@ -21101,17 +21086,17 @@ impl<'a> VkBindImagePlaneMemoryInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl<'a> Default for VkBindImagePlaneMemoryInfoKHR<'a> {
-  fn default() -> VkBindImagePlaneMemoryInfoKHR<'a> {
+impl<'l> Default for VkBindImagePlaneMemoryInfoKHR<'l> {
+  fn default() -> VkBindImagePlaneMemoryInfoKHR<'l> {
     VkBindImagePlaneMemoryInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'a> RawStruct for VkBindImagePlaneMemoryInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkBindImagePlaneMemoryInfoKHR<'l> {
   type Raw = types_raw::VkBindImagePlaneMemoryInfoKHR;
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkBindImageMemoryInfoKHR<'b>> for VkBindImagePlaneMemoryInfoKHR<'a> {
+unsafe impl<'l> StructExtends<VkBindImageMemoryInfoKHR<'l, 'h>> for VkBindImagePlaneMemoryInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21129,16 +21114,16 @@ fn test_struct_size_vk_bind_image_plane_memory_info_khr() {
 /// Structure specifying image plane for memory requirements
 #[repr(C)]
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-pub struct VkImagePlaneMemoryRequirementsInfoKHR<'a> {
+pub struct VkImagePlaneMemoryRequirementsInfoKHR<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub planeAspect: VkImageAspectFlagBits,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl<'a> VkImagePlaneMemoryRequirementsInfoKHR<'a> {
+impl<'l> VkImagePlaneMemoryRequirementsInfoKHR<'l> {
   #[inline]
-  pub fn new() -> VkImagePlaneMemoryRequirementsInfoKHR<'a> {
+  pub fn new() -> VkImagePlaneMemoryRequirementsInfoKHR<'l> {
     unsafe {
       VkImagePlaneMemoryRequirementsInfoKHR {
         sType: VkStructureType::IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO_KHR,
@@ -21157,19 +21142,17 @@ impl<'a> VkImagePlaneMemoryRequirementsInfoKHR<'a> {
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-impl<'a> Default for VkImagePlaneMemoryRequirementsInfoKHR<'a> {
-  fn default() -> VkImagePlaneMemoryRequirementsInfoKHR<'a> {
+impl<'l> Default for VkImagePlaneMemoryRequirementsInfoKHR<'l> {
+  fn default() -> VkImagePlaneMemoryRequirementsInfoKHR<'l> {
     VkImagePlaneMemoryRequirementsInfoKHR::new()
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'a> RawStruct for VkImagePlaneMemoryRequirementsInfoKHR<'a> {
+unsafe impl<'l> RawStruct for VkImagePlaneMemoryRequirementsInfoKHR<'l> {
   type Raw = types_raw::VkImagePlaneMemoryRequirementsInfoKHR;
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkImageMemoryRequirementsInfo2KHR<'b>>
-  for VkImagePlaneMemoryRequirementsInfoKHR<'a>
-{
+unsafe impl<'l> StructExtends<VkImageMemoryRequirementsInfo2KHR<'l, 'h>> for VkImagePlaneMemoryRequirementsInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21248,7 +21231,7 @@ unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceSamp
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'b> StructExtends<VkDeviceCreateInfo<'b>> for VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
+unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21318,23 +21301,23 @@ pub enum VkValidationCacheEXT__ {}
 
 /// Opaque handle to a validation cache object
 #[cfg(feature = "VK_EXT_validation_cache")]
-pub type VkValidationCacheEXT = VkNonDispatchableHandle<VkValidationCacheEXT__>;
+pub type VkValidationCacheEXT<'l> = VkNonDispatchableHandle<'l, VkValidationCacheEXT__>;
 
 /// Structure specifying parameters of a newly created validation cache
 #[repr(C)]
 #[cfg(feature = "VK_EXT_validation_cache")]
-pub struct VkValidationCacheCreateInfoEXT<'a> {
+pub struct VkValidationCacheCreateInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub flags: VkValidationCacheCreateFlagsEXT,
   initialDataSize: usize,
   pInitialData: *const c_void,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-impl<'a> VkValidationCacheCreateInfoEXT<'a> {
+impl<'l> VkValidationCacheCreateInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkValidationCacheCreateInfoEXT<'a> {
+  pub fn new() -> VkValidationCacheCreateInfoEXT<'l> {
     unsafe {
       VkValidationCacheCreateInfoEXT {
         sType: VkStructureType::VALIDATION_CACHE_CREATE_INFO_EXT,
@@ -21348,7 +21331,7 @@ impl<'a> VkValidationCacheCreateInfoEXT<'a> {
     self
   }
   #[inline]
-  pub fn set_initial_data(mut self, value: &'a [u8]) -> Self {
+  pub fn set_initial_data(mut self, value: &'l [u8]) -> Self {
     self.initialDataSize = value.len() as usize;
     unsafe {
       self.pInitialData = value.as_raw() as *const c_void;
@@ -21373,13 +21356,13 @@ impl<'a> VkValidationCacheCreateInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-impl<'a> Default for VkValidationCacheCreateInfoEXT<'a> {
-  fn default() -> VkValidationCacheCreateInfoEXT<'a> {
+impl<'l> Default for VkValidationCacheCreateInfoEXT<'l> {
+  fn default() -> VkValidationCacheCreateInfoEXT<'l> {
     VkValidationCacheCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-unsafe impl<'a> RawStruct for VkValidationCacheCreateInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkValidationCacheCreateInfoEXT<'l> {
   type Raw = types_raw::VkValidationCacheCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
@@ -21395,16 +21378,16 @@ fn test_struct_size_vk_validation_cache_create_info_ext() {
 /// Specify validation cache to use during shader module creation
 #[repr(C)]
 #[cfg(feature = "VK_EXT_validation_cache")]
-pub struct VkShaderModuleValidationCacheCreateInfoEXT<'a> {
+pub struct VkShaderModuleValidationCacheCreateInfoEXT<'l, 'h: 'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
-  pub validationCache: VkValidationCacheEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  pub validationCache: VkValidationCacheEXT<'h>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-impl<'a> VkShaderModuleValidationCacheCreateInfoEXT<'a> {
+impl<'l, 'h: 'l> VkShaderModuleValidationCacheCreateInfoEXT<'l, 'h> {
   #[inline]
-  pub fn new() -> VkShaderModuleValidationCacheCreateInfoEXT<'a> {
+  pub fn new() -> VkShaderModuleValidationCacheCreateInfoEXT<'l, 'h> {
     unsafe {
       VkShaderModuleValidationCacheCreateInfoEXT {
         sType: VkStructureType::SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT,
@@ -21413,27 +21396,29 @@ impl<'a> VkShaderModuleValidationCacheCreateInfoEXT<'a> {
     }
   }
   #[inline]
-  pub fn set_validation_cache(mut self, value: VkValidationCacheEXT) -> Self {
+  pub fn set_validation_cache(mut self, value: VkValidationCacheEXT<'h>) -> Self {
     self.validationCache = value;
     self
   }
   #[inline]
-  pub fn validation_cache(&self) -> VkValidationCacheEXT {
+  pub fn validation_cache(&self) -> VkValidationCacheEXT<'h> {
     self.validationCache
   }
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-impl<'a> Default for VkShaderModuleValidationCacheCreateInfoEXT<'a> {
-  fn default() -> VkShaderModuleValidationCacheCreateInfoEXT<'a> {
+impl<'l, 'h: 'l> Default for VkShaderModuleValidationCacheCreateInfoEXT<'l, 'h> {
+  fn default() -> VkShaderModuleValidationCacheCreateInfoEXT<'l, 'h> {
     VkShaderModuleValidationCacheCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-unsafe impl<'a> RawStruct for VkShaderModuleValidationCacheCreateInfoEXT<'a> {
+unsafe impl<'l, 'h: 'l> RawStruct for VkShaderModuleValidationCacheCreateInfoEXT<'l, 'h> {
   type Raw = types_raw::VkShaderModuleValidationCacheCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkShaderModuleCreateInfo<'b>> for VkShaderModuleValidationCacheCreateInfoEXT<'a> {
+unsafe impl<'l, 'h: 'l> StructExtends<VkShaderModuleCreateInfo<'l>>
+  for VkShaderModuleValidationCacheCreateInfoEXT<'l, 'h>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21456,16 +21441,16 @@ fn test_struct_size_vk_shader_module_validation_cache_create_info_ext() {
 /// Specify a system wide priority
 #[repr(C)]
 #[cfg(feature = "VK_EXT_global_priority")]
-pub struct VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
+pub struct VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub globalPriority: VkQueueGlobalPriorityEXT,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_global_priority")]
-impl<'a> VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
+impl<'l> VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
+  pub fn new() -> VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
     unsafe {
       VkDeviceQueueGlobalPriorityCreateInfoEXT {
         sType: VkStructureType::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
@@ -21484,17 +21469,17 @@ impl<'a> VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_global_priority")]
-impl<'a> Default for VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
-  fn default() -> VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
+impl<'l> Default for VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
+  fn default() -> VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
     VkDeviceQueueGlobalPriorityCreateInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_global_priority")]
-unsafe impl<'a> RawStruct for VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
   type Raw = types_raw::VkDeviceQueueGlobalPriorityCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_global_priority")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkDeviceQueueCreateInfo<'b>> for VkDeviceQueueGlobalPriorityCreateInfoEXT<'a> {
+unsafe impl<'l> StructExtends<VkDeviceQueueCreateInfo<'l>> for VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21517,17 +21502,17 @@ fn test_struct_size_vk_device_queue_global_priority_create_info_ext() {
 /// import memory from a host pointer
 #[repr(C)]
 #[cfg(feature = "VK_EXT_external_memory_host")]
-pub struct VkImportMemoryHostPointerInfoEXT<'a> {
+pub struct VkImportMemoryHostPointerInfoEXT<'l> {
   sType: VkStructureType,
   pNext: Cell<*const c_void>,
   pub handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
   pHostPointer: *mut c_void,
-  _p: ::std::marker::PhantomData<&'a u8>,
+  _p: ::std::marker::PhantomData<(&'l u8)>,
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
-impl<'a> VkImportMemoryHostPointerInfoEXT<'a> {
+impl<'l> VkImportMemoryHostPointerInfoEXT<'l> {
   #[inline]
-  pub fn new() -> VkImportMemoryHostPointerInfoEXT<'a> {
+  pub fn new() -> VkImportMemoryHostPointerInfoEXT<'l> {
     unsafe {
       VkImportMemoryHostPointerInfoEXT {
         sType: VkStructureType::IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
@@ -21555,17 +21540,17 @@ impl<'a> VkImportMemoryHostPointerInfoEXT<'a> {
   }
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
-impl<'a> Default for VkImportMemoryHostPointerInfoEXT<'a> {
-  fn default() -> VkImportMemoryHostPointerInfoEXT<'a> {
+impl<'l> Default for VkImportMemoryHostPointerInfoEXT<'l> {
+  fn default() -> VkImportMemoryHostPointerInfoEXT<'l> {
     VkImportMemoryHostPointerInfoEXT::new()
   }
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
-unsafe impl<'a> RawStruct for VkImportMemoryHostPointerInfoEXT<'a> {
+unsafe impl<'l> RawStruct for VkImportMemoryHostPointerInfoEXT<'l> {
   type Raw = types_raw::VkImportMemoryHostPointerInfoEXT;
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
-unsafe impl<'b, 'a: 'b> StructExtends<VkMemoryAllocateInfo<'b>> for VkImportMemoryHostPointerInfoEXT<'a> {
+unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkImportMemoryHostPointerInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());

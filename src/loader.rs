@@ -6,8 +6,8 @@ use std::ffi::{CStr, OsStr};
 use std::sync;
 use types;
 use types_raw;
-use RawStruct;
 use utils::VkDispatchableHandle;
+use RawStruct;
 
 use std::collections::btree_map::Entry;
 type Map<T> = ::std::collections::BTreeMap<usize, T>;
@@ -160,11 +160,7 @@ impl InstanceData {
   where
     F: FnOnce(Entry<usize, Self>) -> R,
   {
-    let mut dat_guard = LoaderData::get_opt()
-      .unwrap()
-      .instance_data
-      .write()
-      .unwrap();
+    let mut dat_guard = LoaderData::get_opt().unwrap().instance_data.write().unwrap();
     body(dat_guard.entry(key))
   }
 }
@@ -275,10 +271,7 @@ impl VkInstanceDispatchTable {
     _: Option<&types::VkAllocationCallbacks>,
     instance: types::VkInstance,
   ) {
-    let gipa = LoaderData::get_opt()
-      .unwrap()
-      .vkGetInstanceProcAddr
-      .unwrap();
+    let gipa = LoaderData::get_opt().unwrap().vkGetInstanceProcAddr.unwrap();
     let (new_tab, gdpa) = Self::load_with(create_info, instance, gipa).unwrap();
     let new_data = InstanceData {
       instance_dispatch_table: new_tab,
@@ -360,10 +353,7 @@ impl VkDeviceDispatchTable {
       if let Entry::Vacant(e) = entry {
         e.insert(new_data);
       } else {
-        panic!(
-          "there is already an unexpected dispatch_table for device {:?}",
-          device
-        );
+        panic!("there is already an unexpected dispatch_table for device {:?}", device);
       }
     });
   }

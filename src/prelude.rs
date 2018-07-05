@@ -136,6 +136,7 @@ pub use dispatch_commands::vkUnmapMemory;
 pub use dispatch_commands::vkUpdateDescriptorSets;
 pub use dispatch_commands::vkWaitForFences;
 pub use enums::VK_API_VERSION_1_0;
+pub use enums::VkError;
 pub use enums::VK_ATTACHMENT_UNUSED;
 pub use enums::VK_HEADER_VERSION;
 pub use enums::VK_LOD_CLAMP_NONE;
@@ -150,7 +151,6 @@ pub use enums::VK_REMAINING_MIP_LEVELS;
 pub use enums::VK_SUBPASS_EXTERNAL;
 pub use enums::VK_UUID_SIZE;
 pub use enums::VK_WHOLE_SIZE;
-pub use enums::VkError;
 pub use types::PFN_vkAllocationFunction;
 pub use types::PFN_vkFreeFunction;
 pub use types::PFN_vkInternalAllocationNotification;
@@ -1010,9 +1010,9 @@ pub mod vk_ext_acquire_xlib_display {
 #[cfg(feature = "VK_EXT_display_surface_counter")]
 pub mod vk_ext_display_surface_counter {
   pub use dispatch_commands::vkGetPhysicalDeviceSurfaceCapabilities2EXT;
+  pub use enums::VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES2_EXT;
   pub use enums::VK_EXT_DISPLAY_SURFACE_COUNTER_EXTENSION_NAME;
   pub use enums::VK_EXT_DISPLAY_SURFACE_COUNTER_SPEC_VERSION;
-  pub use enums::VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES2_EXT;
   pub use types::VkSurfaceCapabilities2EXT;
   pub use types::VkSurfaceCounterFlagBitsEXT;
   pub use types::VkSurfaceCounterFlagsEXT;

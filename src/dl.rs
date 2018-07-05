@@ -1,10 +1,10 @@
 #[cfg(not(target_os = "windows"))]
 mod dl_impl {
-  use std::ptr;
-  use std::io::{Error, ErrorKind, Result};
-  use std::ffi::{CStr, CString, OsStr};
-  use std::os::unix::ffi::OsStrExt;
   use libc;
+  use std::ffi::{CStr, CString, OsStr};
+  use std::io::{Error, ErrorKind, Result};
+  use std::os::unix::ffi::OsStrExt;
+  use std::ptr;
   use types_raw::PFN_vkVoidFunction;
 
   pub struct Library(*mut libc::c_void);
@@ -15,10 +15,7 @@ mod dl_impl {
     let handle = libc::dlopen(name.as_ptr(), libc::RTLD_LOCAL | libc::RTLD_LAZY);
     if handle == ptr::null_mut() {
       let msg_cstr = CStr::from_ptr(libc::dlerror());
-      return Err(Error::new(
-        ErrorKind::Other,
-        msg_cstr.to_string_lossy().to_string(),
-      ));
+      return Err(Error::new(ErrorKind::Other, msg_cstr.to_string_lossy().to_string()));
     }
     Ok(Library(handle))
   }
@@ -32,10 +29,7 @@ mod dl_impl {
         let msg = libc::dlerror();
         if msg != ptr::null_mut() {
           let msg_cstr = CStr::from_ptr(msg);
-          return Err(Error::new(
-            ErrorKind::Other,
-            msg_cstr.to_string_lossy().to_string(),
-          ));
+          return Err(Error::new(ErrorKind::Other, msg_cstr.to_string_lossy().to_string()));
         }
       }
       Ok(::std::mem::transmute(sym))
@@ -46,14 +40,14 @@ mod dl_impl {
 
 #[cfg(target_os = "windows")]
 mod dl_impl {
-  use winapi;
   use kernel32;
-  use std::ptr;
+  use std::ffi::{CStr, OsStr};
   use std::io::{Error, Result};
   use std::os::raw;
-  use std::ffi::{CStr, OsStr};
   use std::os::windows::ffi::OsStrExt;
+  use std::ptr;
   use types_raw::PFN_vkVoidFunction;
+  use winapi;
 
   pub struct Library(winapi::HMODULE);
 

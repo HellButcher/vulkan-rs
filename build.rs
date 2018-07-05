@@ -27,8 +27,8 @@ extern crate rustc_version;
 extern crate shaderc;
 
 use std::env;
-use std::io::{Read, Write};
 use std::fs::File;
+use std::io::{Read, Write};
 use std::path::Path;
 
 use rustc_version::{version_meta, Channel};
@@ -116,13 +116,7 @@ fn compile_sharers() {
         .expect("reading source");
     }
     let binary = compiler
-      .compile_into_spirv(
-        &source,
-        shader_type,
-        src_path.to_str().unwrap(),
-        "main",
-        None,
-      )
+      .compile_into_spirv(&source, shader_type, src_path.to_str().unwrap(), "main", None)
       .expect("compile");
 
     {
