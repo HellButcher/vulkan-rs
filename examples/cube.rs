@@ -188,7 +188,11 @@ fn choose_surface_properties(gpu: VkPhysicalDevice, surface: VkSurfaceKHR) -> Vk
   })
 }
 
-fn create_device<'h>(gpu: VkPhysicalDevice<'h>, queue_family_idx: u32, exts: &[&str]) -> VkResult<(VkDevice<'h>, VkQueue<'h>)> {
+fn create_device<'h>(
+  gpu: VkPhysicalDevice<'h>,
+  queue_family_idx: u32,
+  exts: &[&str],
+) -> VkResult<(VkDevice<'h>, VkQueue<'h>)> {
   let exts_cstr: Vec<_> = exts.iter().map(cstr_from_bytes_until_nul).collect(); //TODO: better
   let exts_p: Vec<*const ::std::os::raw::c_char> = exts_cstr.iter().map(|s| s.as_ptr()).collect();
   let queue_create_info = &[VkDeviceQueueCreateInfo::new()
@@ -358,7 +362,12 @@ fn choose_memory_type_index(
   None
 }
 
-fn create_image<'h>(device: VkDevice<'h>, extent: VkExtent2D, format: VkFormat, tiling: VkImageTiling) -> VkResult<VkImage<'h>> {
+fn create_image<'h>(
+  device: VkDevice<'h>,
+  extent: VkExtent2D,
+  format: VkFormat,
+  tiling: VkImageTiling,
+) -> VkResult<VkImage<'h>> {
   let create_info = VkImageCreateInfo::new()
     .set_image_type(VkImageType::E_2D)
     .set_format(format)
@@ -552,19 +561,19 @@ fn main() -> VkResult {
 
   info!("destroying swapchain {:?}", swapchain);
   vkDestroySwapchainKHR(device, Some(swapchain), None);
-  
+
   info!("destroying device {:?}", device);
   vkDestroyDevice(device, None);
-  
+
   info!("destroying surface {:?}", surface);
   vkDestroySurfaceKHR(instance, Some(surface), None);
-  
+
   info!("destroying window {:?}", window.id());
   drop(window);
 
   info!("destroying instance {:?}", instance);
   vkDestroyInstance(instance, None);
-  
+
   drop(events_loop);
   info!("done");
 

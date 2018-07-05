@@ -4,11 +4,11 @@ use std::hash::{Hash, Hasher};
 use {AsRaw, RawStruct};
 
 #[derive(Copy, Clone)]
-pub struct VkDispatchableHandle<'l,T: 'l>(&'l T);
+pub struct VkDispatchableHandle<'h, T: 'h>(&'h T);
 
 #[cfg(target_pointer_width = "64")]
 #[derive(Copy, Clone)]
-pub struct VkNonDispatchableHandle<'l,T: 'l>(&'l T);
+pub struct VkNonDispatchableHandle<'h, T: 'h>(&'h T);
 
 #[cfg(nightly)]
 #[cfg(target_pointer_width = "32")]
@@ -26,77 +26,77 @@ enum NonZeroU64 {
 
 #[cfg(target_pointer_width = "32")]
 #[derive(Copy, Clone)]
-pub struct VkNonDispatchableHandle<'l, T>(NonZeroU64, ::std::marker::PhantomData<&'l T>);
+pub struct VkNonDispatchableHandle<'h, T: 'h>(NonZeroU64, ::std::marker::PhantomData<&'h T>);
 
-impl<'l, T> VkDispatchableHandle<'l, T> {
+impl<'h, T> VkDispatchableHandle<'h, T> {
   #[inline]
   pub fn value(&self) -> usize {
     unsafe { *(self as *const Self as *const usize) }
   }
 }
 
-impl<'l, T> VkNonDispatchableHandle<'l , T> {
+impl<'h, T> VkNonDispatchableHandle<'h, T> {
   #[inline]
   pub fn value(&self) -> u64 {
     unsafe { *(self as *const Self as *const u64) }
   }
 }
 
-unsafe impl<'l, T> RawStruct for VkDispatchableHandle<'l, T> {
+unsafe impl<'h, T> RawStruct for VkDispatchableHandle<'h, T> {
   type Raw = usize;
 }
 
-unsafe impl<'l, T> RawStruct for VkNonDispatchableHandle<'l, T> {
+unsafe impl<'h, T> RawStruct for VkNonDispatchableHandle<'h, T> {
   type Raw = u64;
 }
 
 // implement PartialEq, Eq, PartialOrd, Ord, Hash and Debug in the value field
 
-impl<'l, T: Copy> fmt::Debug for VkDispatchableHandle<'l, T> {
+impl<'h, T: Copy> fmt::Debug for VkDispatchableHandle<'h, T> {
   fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
     write!(f, "{:#x}", self.value())
   }
 }
 
-impl<'l, T: Copy> fmt::Debug for VkNonDispatchableHandle<'l, T> {
+impl<'h, T: Copy> fmt::Debug for VkNonDispatchableHandle<'h, T> {
   fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
     write!(f, "{:#x}", self.value())
   }
 }
 
-impl<'l, T: Copy> PartialEq for VkDispatchableHandle<'l, T> {
+impl<'h, T: Copy> PartialEq for VkDispatchableHandle<'h, T> {
   fn eq(&self, other: &Self) -> bool {
     self.value() == other.value()
   }
 }
-impl<'l, T: Copy> PartialEq for VkNonDispatchableHandle<'l, T> {
+impl<'h, T: Copy> PartialEq for VkNonDispatchableHandle<'h, T> {
   fn eq(&self, other: &Self) -> bool {
     self.value() == other.value()
   }
 }
-impl<'l, T: Copy> PartialOrd for VkDispatchableHandle<'l, T> {
+impl<'h, T: Copy> PartialOrd for VkDispatchableHandle<'h, T> {
   fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
     self.value().partial_cmp(&other.value())
   }
 }
-impl<'l, T: Copy> PartialOrd for VkNonDispatchableHandle<'l, T> {
+impl<'h, T: Copy> PartialOrd for VkNonDispatchableHandle<'h, T> {
   fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
     self.value().partial_cmp(&other.value())
   }
 }
-impl<'l, T: Copy> Eq for VkDispatchableHandle<'l, T> {}
-impl<'l, T: Copy> Eq for VkNonDispatchableHandle<'l, T> {}
-impl<'l, T: Copy> Ord for VkDispatchableHandle<'l, T> {
+impl<'h, T: Copy> Eq for VkDispatchableHandle<'h, T> {}
+impl<'h, T: Copy> Eq for VkNonDispatchableHandle<'h, T> {}
+impl<'h, T: Copy> Ord for VkDispatchableHandle<'h, T> {
   fn cmp(&self, other: &Self) -> cmp::Ordering {
     self.value().cmp(&other.value())
   }
 }
-impl<'l, T: Copy> Ord for VkNonDispatchableHandle<'l, T> {
+impl<'h, T: Copy> Ord for VkNonDispatchableHandle<'h, T> {
   fn cmp(&self, other: &Self) -> cmp::Ordering {
     self.value().cmp(&other.value())
   }
 }
-impl<'l, T: Copy> Hash for VkDispatchableHandle<'l, T> {
+impl<'h, T: Copy> Hash for VkDispatchableHandle<'h, T> {
   fn hash<H>(&self, state: &mut H)
   where
     H: Hasher,
@@ -104,7 +104,7 @@ impl<'l, T: Copy> Hash for VkDispatchableHandle<'l, T> {
     self.value().hash(state)
   }
 }
-impl<'l, T: Copy> Hash for VkNonDispatchableHandle<'l, T> {
+impl<'h, T: Copy> Hash for VkNonDispatchableHandle<'h, T> {
   fn hash<H>(&self, state: &mut H)
   where
     H: Hasher,
