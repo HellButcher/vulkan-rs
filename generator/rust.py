@@ -780,16 +780,17 @@ class RustGenerator:
         gen('}').nl()
         if ty.structextends:
             for ext in ty.structextends:
-                ext_typename = self.rust_safe_type(ext, lifetime='b')
-                ext_lifetimes = lifetime_params
-                if '\'b' in ext_typename:
-                    if is_with_lifetime:
-                        ext_lifetimes = '<\'b, \'a: \'b>'
-                    else:
-                        ext_lifetimes = '<\'b>'
+                ext_typename, _, _, _, ext_lifetimes = self.rust_safe_type_details(ext)
+                if 'l' in ext_lifetimes:
+                    # rename 'l to 'm
+                    ext_lifetimes.remove('l')
+                    ext_lifetimes.add('m')
+                    ext_typename = ext_typename.replace('\'l', '\'m')
+                ext_lifetimes.update(lifetimes)
+                ext_lifetime_params = _lifetime_diamond(ext_lifetimes, with_subtyping=True)
                 self.add_import('StructExtends')
                 self._generate_feature_protect(ty.requiering_feature, gen)
-                gen('unsafe impl', ext_lifetimes, ' StructExtends<', ext_typename,'> for ', ty.name, lifetime_args, ' {').nl()
+                gen('unsafe impl', ext_lifetime_params, ' StructExtends<', ext_typename,'> for ', ty.name, lifetime_args, ' {').nl()
                 with gen.open_indention():
                     gen('#[inline]').nl()
                     gen('unsafe fn extend(&self, next: *const c_void) -> *const c_void {').nl()

@@ -2660,7 +2660,7 @@ pub struct VkSubmitInfo<'l, 'h: 'l> {
   pCommandBuffers: *const types_raw::VkCommandBuffer,
   signalSemaphoreCount: u32,
   pSignalSemaphores: *const types_raw::VkSemaphore,
-  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
+  _p: ::std::marker::PhantomData<(&'l u8, &'h u8)>,
 }
 impl<'l, 'h: 'l> VkSubmitInfo<'l, 'h> {
   #[inline]
@@ -3404,7 +3404,7 @@ pub struct VkBindSparseInfo<'l, 'h: 'l> {
   pImageBinds: *const types_raw::VkSparseImageMemoryBindInfo,
   signalSemaphoreCount: u32,
   pSignalSemaphores: *const types_raw::VkSemaphore,
-  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
+  _p: ::std::marker::PhantomData<(&'l u8, &'h u8)>,
 }
 impl<'l, 'h: 'l> VkBindSparseInfo<'l, 'h> {
   #[inline]
@@ -6451,7 +6451,7 @@ pub struct VkPipelineLayoutCreateInfo<'l, 'h: 'l> {
   pSetLayouts: *const types_raw::VkDescriptorSetLayout,
   pushConstantRangeCount: u32,
   pPushConstantRanges: *const types_raw::VkPushConstantRange,
-  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
+  _p: ::std::marker::PhantomData<(&'l u8, &'h u8)>,
 }
 impl<'l, 'h: 'l> VkPipelineLayoutCreateInfo<'l, 'h> {
   #[inline]
@@ -6736,7 +6736,7 @@ pub struct VkDescriptorSetLayoutBinding<'l, 'h: 'l> {
   descriptorCount: u32,
   pub stageFlags: VkShaderStageFlags,
   pImmutableSamplers: *const types_raw::VkSampler,
-  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
+  _p: ::std::marker::PhantomData<(&'l u8, &'h u8)>,
 }
 impl<'l, 'h: 'l> VkDescriptorSetLayoutBinding<'l, 'h> {
   #[inline]
@@ -6805,7 +6805,7 @@ pub struct VkDescriptorSetLayoutCreateInfo<'l, 'h: 'l> {
   pub flags: VkDescriptorSetLayoutCreateFlags,
   bindingCount: u32,
   pBindings: *const types_raw::VkDescriptorSetLayoutBinding,
-  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
+  _p: ::std::marker::PhantomData<(&'l u8, &'h u8)>,
 }
 impl<'l, 'h: 'l> VkDescriptorSetLayoutCreateInfo<'l, 'h> {
   #[inline]
@@ -9234,7 +9234,7 @@ pub struct VkPresentInfoKHR<'l, 'h: 'l> {
   pSwapchains: *const types_raw::VkSwapchainKHR,
   pImageIndices: *const u32,
   pResults: *mut VkResult,
-  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
+  _p: ::std::marker::PhantomData<(&'l u8, &'h u8)>,
 }
 #[cfg(feature = "VK_KHR_swapchain")]
 impl<'l, 'h: 'l> VkPresentInfoKHR<'l, 'h> {
@@ -9789,7 +9789,7 @@ unsafe impl<'l> RawStruct for VkDisplayPresentInfoKHR<'l> {
   type Raw = types_raw::VkDisplayPresentInfoKHR;
 }
 #[cfg(feature = "VK_KHR_display_swapchain")]
-unsafe impl<'l> StructExtends<VkPresentInfoKHR<'l, 'h>> for VkDisplayPresentInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkPresentInfoKHR<'m, 'h>> for VkDisplayPresentInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -10353,7 +10353,7 @@ unsafe impl<'l> RawStruct for VkDebugReportCallbackCreateInfoEXT<'l> {
   type Raw = types_raw::VkDebugReportCallbackCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_debug_report")]
-unsafe impl<'l> StructExtends<VkInstanceCreateInfo<'l>> for VkDebugReportCallbackCreateInfoEXT<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkInstanceCreateInfo<'m>> for VkDebugReportCallbackCreateInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -10422,7 +10422,7 @@ unsafe impl<'l> RawStruct for VkPipelineRasterizationStateRasterizationOrderAMD<
   type Raw = types_raw::VkPipelineRasterizationStateRasterizationOrderAMD;
 }
 #[cfg(feature = "VK_AMD_rasterization_order")]
-unsafe impl<'l> StructExtends<VkPipelineRasterizationStateCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPipelineRasterizationStateCreateInfo<'m>>
   for VkPipelineRasterizationStateRasterizationOrderAMD<'l>
 {
   #[inline]
@@ -10724,7 +10724,7 @@ unsafe impl<'l> RawStruct for VkDedicatedAllocationImageCreateInfoNV<'l> {
   type Raw = types_raw::VkDedicatedAllocationImageCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl<'l> StructExtends<VkImageCreateInfo<'l>> for VkDedicatedAllocationImageCreateInfoNV<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkImageCreateInfo<'m>> for VkDedicatedAllocationImageCreateInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -10784,7 +10784,7 @@ unsafe impl<'l> RawStruct for VkDedicatedAllocationBufferCreateInfoNV<'l> {
   type Raw = types_raw::VkDedicatedAllocationBufferCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl<'l> StructExtends<VkBufferCreateInfo<'l>> for VkDedicatedAllocationBufferCreateInfoNV<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkBufferCreateInfo<'m>> for VkDedicatedAllocationBufferCreateInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -10853,7 +10853,9 @@ unsafe impl<'l, 'h: 'l> RawStruct for VkDedicatedAllocationMemoryAllocateInfoNV<
   type Raw = types_raw::VkDedicatedAllocationMemoryAllocateInfoNV;
 }
 #[cfg(feature = "VK_NV_dedicated_allocation")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkDedicatedAllocationMemoryAllocateInfoNV<'l, 'h> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkMemoryAllocateInfo<'m>>
+  for VkDedicatedAllocationMemoryAllocateInfoNV<'l, 'h>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -10924,7 +10926,7 @@ unsafe impl RawStruct for VkPhysicalDeviceFeatures2KHR {
   type Raw = types_raw::VkPhysicalDeviceFeatures2KHR;
 }
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDeviceFeatures2KHR {
+unsafe impl<'m> StructExtends<VkDeviceCreateInfo<'m>> for VkPhysicalDeviceFeatures2KHR {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11553,7 +11555,7 @@ unsafe impl<'l> RawStruct for VkRenderPassMultiviewCreateInfoKHX<'l> {
   type Raw = types_raw::VkRenderPassMultiviewCreateInfoKHX;
 }
 #[cfg(feature = "VK_KHX_multiview")]
-unsafe impl<'l> StructExtends<VkRenderPassCreateInfo<'l>> for VkRenderPassMultiviewCreateInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkRenderPassCreateInfo<'m>> for VkRenderPassMultiviewCreateInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11654,7 +11656,7 @@ unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceMult
   }
 }
 #[cfg(feature = "VK_KHX_multiview")]
-unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDeviceMultiviewFeaturesKHX {
+unsafe impl<'m> StructExtends<VkDeviceCreateInfo<'m>> for VkPhysicalDeviceMultiviewFeaturesKHX {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11808,7 +11810,7 @@ unsafe impl<'l> RawStruct for VkExternalMemoryImageCreateInfoNV<'l> {
   type Raw = types_raw::VkExternalMemoryImageCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_external_memory")]
-unsafe impl<'l> StructExtends<VkImageCreateInfo<'l>> for VkExternalMemoryImageCreateInfoNV<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkImageCreateInfo<'m>> for VkExternalMemoryImageCreateInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11867,7 +11869,7 @@ unsafe impl<'l> RawStruct for VkExportMemoryAllocateInfoNV<'l> {
   type Raw = types_raw::VkExportMemoryAllocateInfoNV;
 }
 #[cfg(feature = "VK_NV_external_memory")]
-unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkExportMemoryAllocateInfoNV<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkMemoryAllocateInfo<'m>> for VkExportMemoryAllocateInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -11940,7 +11942,7 @@ unsafe impl<'l> RawStruct for VkImportMemoryWin32HandleInfoNV<'l> {
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkImportMemoryWin32HandleInfoNV<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkMemoryAllocateInfo<'m>> for VkImportMemoryWin32HandleInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12015,7 +12017,7 @@ unsafe impl<'l> RawStruct for VkExportMemoryWin32HandleInfoNV<'l> {
 }
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkExportMemoryWin32HandleInfoNV<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkMemoryAllocateInfo<'m>> for VkExportMemoryWin32HandleInfoNV<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12050,7 +12052,7 @@ pub struct VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h: 'l> {
   releaseCount: u32,
   pReleaseSyncs: *const types_raw::VkDeviceMemory,
   pReleaseKeys: *const u64,
-  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
+  _p: ::std::marker::PhantomData<(&'l u8, &'h u8)>,
 }
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
@@ -12087,7 +12089,7 @@ unsafe impl<'l, 'h: 'l> RawStruct for VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 
 }
 #[cfg(feature = "VK_NV_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkSubmitInfo<'l, 'h>> for VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkSubmitInfo<'m, 'h>> for VkWin32KeyedMutexAcquireReleaseInfoNV<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12159,7 +12161,7 @@ pub struct VkDeviceGroupDeviceCreateInfoKHX<'l, 'h: 'l> {
   pNext: Cell<*const c_void>,
   physicalDeviceCount: u32,
   pPhysicalDevices: *const types_raw::VkPhysicalDevice,
-  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
+  _p: ::std::marker::PhantomData<(&'l u8, &'h u8)>,
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
 impl<'l, 'h: 'l> VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
@@ -12196,7 +12198,7 @@ unsafe impl<'l, 'h: 'l> RawStruct for VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
   type Raw = types_raw::VkDeviceGroupDeviceCreateInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group_creation")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkDeviceCreateInfo<'l>> for VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkDeviceCreateInfo<'m>> for VkDeviceGroupDeviceCreateInfoKHX<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12267,7 +12269,7 @@ unsafe impl<'l> RawStruct for VkMemoryAllocateFlagsInfoKHX<'l> {
   type Raw = types_raw::VkMemoryAllocateFlagsInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkMemoryAllocateFlagsInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkMemoryAllocateInfo<'m>> for VkMemoryAllocateFlagsInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12337,7 +12339,9 @@ unsafe impl<'l> RawStruct for VkDeviceGroupRenderPassBeginInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupRenderPassBeginInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l> StructExtends<VkRenderPassBeginInfo<'l, 'h>> for VkDeviceGroupRenderPassBeginInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkRenderPassBeginInfo<'m, 'h>>
+  for VkDeviceGroupRenderPassBeginInfoKHX<'l>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12396,7 +12400,9 @@ unsafe impl<'l> RawStruct for VkDeviceGroupCommandBufferBeginInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupCommandBufferBeginInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l> StructExtends<VkCommandBufferBeginInfo<'l, 'h>> for VkDeviceGroupCommandBufferBeginInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkCommandBufferBeginInfo<'m, 'h>>
+  for VkDeviceGroupCommandBufferBeginInfoKHX<'l>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12488,7 +12494,7 @@ unsafe impl<'l> RawStruct for VkDeviceGroupSubmitInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupSubmitInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l> StructExtends<VkSubmitInfo<'l, 'h>> for VkDeviceGroupSubmitInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkSubmitInfo<'m, 'h>> for VkDeviceGroupSubmitInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12554,7 +12560,7 @@ unsafe impl<'l> RawStruct for VkDeviceGroupBindSparseInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupBindSparseInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l> StructExtends<VkBindSparseInfo<'l, 'h>> for VkDeviceGroupBindSparseInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkBindSparseInfo<'m, 'h>> for VkDeviceGroupBindSparseInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12617,7 +12623,9 @@ unsafe impl<'l> RawStruct for VkBindBufferMemoryDeviceGroupInfoKHX<'l> {
   type Raw = types_raw::VkBindBufferMemoryDeviceGroupInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l> StructExtends<VkBindBufferMemoryInfoKHR<'l, 'h>> for VkBindBufferMemoryDeviceGroupInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkBindBufferMemoryInfoKHR<'m, 'h>>
+  for VkBindBufferMemoryDeviceGroupInfoKHX<'l>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12694,7 +12702,9 @@ unsafe impl<'l> RawStruct for VkBindImageMemoryDeviceGroupInfoKHX<'l> {
   type Raw = types_raw::VkBindImageMemoryDeviceGroupInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l> StructExtends<VkBindImageMemoryInfoKHR<'l, 'h>> for VkBindImageMemoryDeviceGroupInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkBindImageMemoryInfoKHR<'m, 'h>>
+  for VkBindImageMemoryDeviceGroupInfoKHX<'l>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12796,7 +12806,7 @@ unsafe impl<'l, 'h: 'l> RawStruct for VkImageSwapchainCreateInfoKHX<'l, 'h> {
   type Raw = types_raw::VkImageSwapchainCreateInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkImageCreateInfo<'l>> for VkImageSwapchainCreateInfoKHX<'l, 'h> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkImageCreateInfo<'m>> for VkImageSwapchainCreateInfoKHX<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -12862,7 +12872,9 @@ unsafe impl<'l, 'h: 'l> RawStruct for VkBindImageMemorySwapchainInfoKHX<'l, 'h> 
   type Raw = types_raw::VkBindImageMemorySwapchainInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkBindImageMemoryInfoKHR<'l, 'h>> for VkBindImageMemorySwapchainInfoKHX<'l, 'h> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkBindImageMemoryInfoKHR<'m, 'h>>
+  for VkBindImageMemorySwapchainInfoKHX<'l, 'h>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13030,7 +13042,7 @@ unsafe impl<'l> RawStruct for VkDeviceGroupPresentInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupPresentInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l> StructExtends<VkPresentInfoKHR<'l, 'h>> for VkDeviceGroupPresentInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkPresentInfoKHR<'m, 'h>> for VkDeviceGroupPresentInfoKHX<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13086,7 +13098,9 @@ unsafe impl<'l> RawStruct for VkDeviceGroupSwapchainCreateInfoKHX<'l> {
   type Raw = types_raw::VkDeviceGroupSwapchainCreateInfoKHX;
 }
 #[cfg(feature = "VK_KHX_device_group")]
-unsafe impl<'l> StructExtends<VkSwapchainCreateInfoKHR<'l, 'h>> for VkDeviceGroupSwapchainCreateInfoKHX<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkSwapchainCreateInfoKHR<'m, 'h>>
+  for VkDeviceGroupSwapchainCreateInfoKHX<'l>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13151,7 +13165,7 @@ unsafe impl<'l> RawStruct for VkValidationFlagsEXT<'l> {
   type Raw = types_raw::VkValidationFlagsEXT;
 }
 #[cfg(feature = "VK_EXT_validation_flags")]
-unsafe impl<'l> StructExtends<VkInstanceCreateInfo<'l>> for VkValidationFlagsEXT<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkInstanceCreateInfo<'m>> for VkValidationFlagsEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13316,7 +13330,7 @@ unsafe impl<'l> RawStruct for VkPhysicalDeviceExternalImageFormatInfoKHR<'l> {
   type Raw = types_raw::VkPhysicalDeviceExternalImageFormatInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
-unsafe impl<'l> StructExtends<VkPhysicalDeviceImageFormatInfo2KHR<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPhysicalDeviceImageFormatInfo2KHR<'m>>
   for VkPhysicalDeviceExternalImageFormatInfoKHR<'l>
 {
   #[inline]
@@ -13594,7 +13608,7 @@ unsafe impl<'l> RawStruct for VkExternalMemoryImageCreateInfoKHR<'l> {
   type Raw = types_raw::VkExternalMemoryImageCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl<'l> StructExtends<VkImageCreateInfo<'l>> for VkExternalMemoryImageCreateInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkImageCreateInfo<'m>> for VkExternalMemoryImageCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13653,7 +13667,7 @@ unsafe impl<'l> RawStruct for VkExternalMemoryBufferCreateInfoKHR<'l> {
   type Raw = types_raw::VkExternalMemoryBufferCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl<'l> StructExtends<VkBufferCreateInfo<'l>> for VkExternalMemoryBufferCreateInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkBufferCreateInfo<'m>> for VkExternalMemoryBufferCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13712,7 +13726,7 @@ unsafe impl<'l> RawStruct for VkExportMemoryAllocateInfoKHR<'l> {
   type Raw = types_raw::VkExportMemoryAllocateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory")]
-unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkExportMemoryAllocateInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkMemoryAllocateInfo<'m>> for VkExportMemoryAllocateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13795,7 +13809,7 @@ unsafe impl<'l> RawStruct for VkImportMemoryWin32HandleInfoKHR<'l> {
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkImportMemoryWin32HandleInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkMemoryAllocateInfo<'m>> for VkImportMemoryWin32HandleInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -13881,7 +13895,7 @@ unsafe impl<'l> RawStruct for VkExportMemoryWin32HandleInfoKHR<'l> {
 }
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkExportMemoryWin32HandleInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkMemoryAllocateInfo<'m>> for VkExportMemoryWin32HandleInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14061,7 +14075,7 @@ unsafe impl<'l> RawStruct for VkImportMemoryFdInfoKHR<'l> {
   type Raw = types_raw::VkImportMemoryFdInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkImportMemoryFdInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkMemoryAllocateInfo<'m>> for VkImportMemoryFdInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14188,7 +14202,7 @@ pub struct VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h: 'l> {
   releaseCount: u32,
   pReleaseSyncs: *const types_raw::VkDeviceMemory,
   pReleaseKeys: *const u64,
-  _p: ::std::marker::PhantomData<(&'h u8, &'l u8)>,
+  _p: ::std::marker::PhantomData<(&'l u8, &'h u8)>,
 }
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
@@ -14225,7 +14239,7 @@ unsafe impl<'l, 'h: 'l> RawStruct for VkWin32KeyedMutexAcquireReleaseInfoKHR<'l,
 }
 #[cfg(feature = "VK_KHR_win32_keyed_mutex")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkSubmitInfo<'l, 'h>> for VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkSubmitInfo<'m, 'h>> for VkWin32KeyedMutexAcquireReleaseInfoKHR<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14391,7 +14405,7 @@ unsafe impl<'l> RawStruct for VkExportSemaphoreCreateInfoKHR<'l> {
   type Raw = types_raw::VkExportSemaphoreCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_semaphore")]
-unsafe impl<'l> StructExtends<VkSemaphoreCreateInfo<'l>> for VkExportSemaphoreCreateInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkSemaphoreCreateInfo<'m>> for VkExportSemaphoreCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14581,7 +14595,7 @@ unsafe impl<'l> RawStruct for VkExportSemaphoreWin32HandleInfoKHR<'l> {
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'l> StructExtends<VkSemaphoreCreateInfo<'l>> for VkExportSemaphoreWin32HandleInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkSemaphoreCreateInfo<'m>> for VkExportSemaphoreWin32HandleInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -14664,7 +14678,7 @@ unsafe impl<'l> RawStruct for VkD3D12FenceSubmitInfoKHR<'l> {
 }
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'l> StructExtends<VkSubmitInfo<'l, 'h>> for VkD3D12FenceSubmitInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkSubmitInfo<'m, 'h>> for VkD3D12FenceSubmitInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -15069,7 +15083,7 @@ unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDevice16Bi
   }
 }
 #[cfg(feature = "VK_KHR_16bit_storage")]
-unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDevice16BitStorageFeaturesKHR {
+unsafe impl<'m> StructExtends<VkDeviceCreateInfo<'m>> for VkPhysicalDevice16BitStorageFeaturesKHR {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -15240,7 +15254,7 @@ unsafe impl<'l> RawStruct for VkPresentRegionsKHR<'l> {
   type Raw = types_raw::VkPresentRegionsKHR;
 }
 #[cfg(feature = "VK_KHR_incremental_present")]
-unsafe impl<'l> StructExtends<VkPresentInfoKHR<'l, 'h>> for VkPresentRegionsKHR<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkPresentInfoKHR<'m, 'h>> for VkPresentRegionsKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -16687,7 +16701,7 @@ unsafe impl<'l> RawStruct for VkPipelineViewportWScalingStateCreateInfoNV<'l> {
   type Raw = types_raw::VkPipelineViewportWScalingStateCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
-unsafe impl<'l> StructExtends<VkPipelineViewportStateCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPipelineViewportStateCreateInfo<'m>>
   for VkPipelineViewportWScalingStateCreateInfoNV<'l>
 {
   #[inline]
@@ -16998,7 +17012,9 @@ unsafe impl<'l> RawStruct for VkSwapchainCounterCreateInfoEXT<'l> {
   type Raw = types_raw::VkSwapchainCounterCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_display_control")]
-unsafe impl<'l> StructExtends<VkSwapchainCreateInfoKHR<'l, 'h>> for VkSwapchainCounterCreateInfoEXT<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkSwapchainCreateInfoKHR<'m, 'h>>
+  for VkSwapchainCounterCreateInfoEXT<'l>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -17236,7 +17252,7 @@ unsafe impl<'l> RawStruct for VkPresentTimesInfoGOOGLE<'l> {
   type Raw = types_raw::VkPresentTimesInfoGOOGLE;
 }
 #[cfg(feature = "VK_GOOGLE_display_timing")]
-unsafe impl<'l> StructExtends<VkPresentInfoKHR<'l, 'h>> for VkPresentTimesInfoGOOGLE<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkPresentInfoKHR<'m, 'h>> for VkPresentTimesInfoGOOGLE<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -17423,7 +17439,7 @@ unsafe impl<'l> RawStruct for VkPipelineViewportSwizzleStateCreateInfoNV<'l> {
   type Raw = types_raw::VkPipelineViewportSwizzleStateCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_viewport_swizzle")]
-unsafe impl<'l> StructExtends<VkPipelineViewportStateCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPipelineViewportStateCreateInfo<'m>>
   for VkPipelineViewportSwizzleStateCreateInfoNV<'l>
 {
   #[inline]
@@ -17579,7 +17595,7 @@ unsafe impl<'l> RawStruct for VkPipelineDiscardRectangleStateCreateInfoEXT<'l> {
   type Raw = types_raw::VkPipelineDiscardRectangleStateCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_discard_rectangles")]
-unsafe impl<'l> StructExtends<VkGraphicsPipelineCreateInfo<'l, 'h>>
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkGraphicsPipelineCreateInfo<'m, 'h>>
   for VkPipelineDiscardRectangleStateCreateInfoEXT<'l>
 {
   #[inline]
@@ -17817,7 +17833,7 @@ unsafe impl<'l> RawStruct for VkPipelineRasterizationConservativeStateCreateInfo
   type Raw = types_raw::VkPipelineRasterizationConservativeStateCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_conservative_rasterization")]
-unsafe impl<'l> StructExtends<VkPipelineRasterizationStateCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPipelineRasterizationStateCreateInfo<'m>>
   for VkPipelineRasterizationConservativeStateCreateInfoEXT<'l>
 {
   #[inline]
@@ -18325,7 +18341,7 @@ unsafe impl<'l> RawStruct for VkExportFenceCreateInfoKHR<'l> {
   type Raw = types_raw::VkExportFenceCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_external_fence")]
-unsafe impl<'l> StructExtends<VkFenceCreateInfo<'l>> for VkExportFenceCreateInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkFenceCreateInfo<'m>> for VkExportFenceCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -18512,7 +18528,7 @@ unsafe impl<'l> RawStruct for VkExportFenceWin32HandleInfoKHR<'l> {
 }
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
-unsafe impl<'l> StructExtends<VkFenceCreateInfo<'l>> for VkExportFenceWin32HandleInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkFenceCreateInfo<'m>> for VkExportFenceWin32HandleInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -18908,7 +18924,9 @@ unsafe impl<'l> RawStruct for VkRenderPassInputAttachmentAspectCreateInfoKHR<'l>
   type Raw = types_raw::VkRenderPassInputAttachmentAspectCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl<'l> StructExtends<VkRenderPassCreateInfo<'l>> for VkRenderPassInputAttachmentAspectCreateInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkRenderPassCreateInfo<'m>>
+  for VkRenderPassInputAttachmentAspectCreateInfoKHR<'l>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -18967,7 +18985,7 @@ unsafe impl<'l> RawStruct for VkImageViewUsageCreateInfoKHR<'l> {
   type Raw = types_raw::VkImageViewUsageCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl<'l> StructExtends<VkImageViewCreateInfo<'l, 'h>> for VkImageViewUsageCreateInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkImageViewCreateInfo<'m, 'h>> for VkImageViewUsageCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -19023,7 +19041,7 @@ unsafe impl<'l> RawStruct for VkPipelineTessellationDomainOriginStateCreateInfoK
   type Raw = types_raw::VkPipelineTessellationDomainOriginStateCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_maintenance2")]
-unsafe impl<'l> StructExtends<VkPipelineTessellationStateCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPipelineTessellationStateCreateInfo<'m>>
   for VkPipelineTessellationDomainOriginStateCreateInfoKHR<'l>
 {
   #[inline]
@@ -19117,7 +19135,7 @@ unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceVari
   }
 }
 #[cfg(feature = "VK_KHR_variable_pointers")]
-unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDeviceVariablePointerFeaturesKHR {
+unsafe impl<'m> StructExtends<VkDeviceCreateInfo<'m>> for VkPhysicalDeviceVariablePointerFeaturesKHR {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -19618,7 +19636,7 @@ unsafe impl<'l, 'h: 'l> RawStruct for VkMemoryDedicatedAllocateInfoKHR<'l, 'h> {
   type Raw = types_raw::VkMemoryDedicatedAllocateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_dedicated_allocation")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkMemoryDedicatedAllocateInfoKHR<'l, 'h> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkMemoryAllocateInfo<'m>> for VkMemoryDedicatedAllocateInfoKHR<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -19679,7 +19697,7 @@ unsafe impl<'l> RawStruct for VkSamplerReductionModeCreateInfoEXT<'l> {
   type Raw = types_raw::VkSamplerReductionModeCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sampler_filter_minmax")]
-unsafe impl<'l> StructExtends<VkSamplerCreateInfo<'l>> for VkSamplerReductionModeCreateInfoEXT<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkSamplerCreateInfo<'m>> for VkSamplerReductionModeCreateInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -19863,7 +19881,7 @@ unsafe impl<'l> RawStruct for VkSampleLocationsInfoEXT<'l> {
   type Raw = types_raw::VkSampleLocationsInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'l> StructExtends<VkImageMemoryBarrier<'l, 'h>> for VkSampleLocationsInfoEXT<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkImageMemoryBarrier<'m, 'h>> for VkSampleLocationsInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -20041,7 +20059,9 @@ unsafe impl<'l> RawStruct for VkRenderPassSampleLocationsBeginInfoEXT<'l> {
   type Raw = types_raw::VkRenderPassSampleLocationsBeginInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'l> StructExtends<VkRenderPassBeginInfo<'l, 'h>> for VkRenderPassSampleLocationsBeginInfoEXT<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkRenderPassBeginInfo<'m, 'h>>
+  for VkRenderPassSampleLocationsBeginInfoEXT<'l>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -20110,7 +20130,7 @@ unsafe impl<'l> RawStruct for VkPipelineSampleLocationsStateCreateInfoEXT<'l> {
   type Raw = types_raw::VkPipelineSampleLocationsStateCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_sample_locations")]
-unsafe impl<'l> StructExtends<VkPipelineMultisampleStateCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPipelineMultisampleStateCreateInfo<'m>>
   for VkPipelineSampleLocationsStateCreateInfoEXT<'l>
 {
   #[inline]
@@ -20273,7 +20293,7 @@ unsafe impl<'l> RawStruct for VkImageFormatListCreateInfoKHR<'l> {
   type Raw = types_raw::VkImageFormatListCreateInfoKHR;
 }
 #[cfg(feature = "VK_KHR_image_format_list")]
-unsafe impl<'l> StructExtends<VkImageCreateInfo<'l>> for VkImageFormatListCreateInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkImageCreateInfo<'m>> for VkImageFormatListCreateInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -20495,7 +20515,7 @@ unsafe impl<'l> RawStruct for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'l>
   type Raw = types_raw::VkPipelineColorBlendAdvancedStateCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_blend_operation_advanced")]
-unsafe impl<'l> StructExtends<VkPipelineColorBlendStateCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPipelineColorBlendStateCreateInfo<'m>>
   for VkPipelineColorBlendAdvancedStateCreateInfoEXT<'l>
 {
   #[inline]
@@ -20579,7 +20599,7 @@ unsafe impl<'l> RawStruct for VkPipelineCoverageToColorStateCreateInfoNV<'l> {
   type Raw = types_raw::VkPipelineCoverageToColorStateCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_fragment_coverage_to_color")]
-unsafe impl<'l> StructExtends<VkPipelineMultisampleStateCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPipelineMultisampleStateCreateInfo<'m>>
   for VkPipelineCoverageToColorStateCreateInfoNV<'l>
 {
   #[inline]
@@ -20677,7 +20697,7 @@ unsafe impl<'l> RawStruct for VkPipelineCoverageModulationStateCreateInfoNV<'l> 
   type Raw = types_raw::VkPipelineCoverageModulationStateCreateInfoNV;
 }
 #[cfg(feature = "VK_NV_framebuffer_mixed_samples")]
-unsafe impl<'l> StructExtends<VkPipelineMultisampleStateCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm> StructExtends<VkPipelineMultisampleStateCreateInfo<'m>>
   for VkPipelineCoverageModulationStateCreateInfoNV<'l>
 {
   #[inline]
@@ -21028,7 +21048,7 @@ unsafe impl<'l, 'h: 'l> RawStruct for VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
   type Raw = types_raw::VkSamplerYcbcrConversionInfoKHR;
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkSamplerCreateInfo<'l>> for VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkSamplerCreateInfo<'m>> for VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21037,7 +21057,9 @@ unsafe impl<'l, 'h: 'l> StructExtends<VkSamplerCreateInfo<'l>> for VkSamplerYcbc
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkImageViewCreateInfo<'l, 'h>> for VkSamplerYcbcrConversionInfoKHR<'l, 'h> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkImageViewCreateInfo<'m, 'h>>
+  for VkSamplerYcbcrConversionInfoKHR<'l, 'h>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21096,7 +21118,7 @@ unsafe impl<'l> RawStruct for VkBindImagePlaneMemoryInfoKHR<'l> {
   type Raw = types_raw::VkBindImagePlaneMemoryInfoKHR;
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'l> StructExtends<VkBindImageMemoryInfoKHR<'l, 'h>> for VkBindImagePlaneMemoryInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkBindImageMemoryInfoKHR<'m, 'h>> for VkBindImagePlaneMemoryInfoKHR<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21152,7 +21174,9 @@ unsafe impl<'l> RawStruct for VkImagePlaneMemoryRequirementsInfoKHR<'l> {
   type Raw = types_raw::VkImagePlaneMemoryRequirementsInfoKHR;
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl<'l> StructExtends<VkImageMemoryRequirementsInfo2KHR<'l, 'h>> for VkImagePlaneMemoryRequirementsInfoKHR<'l> {
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkImageMemoryRequirementsInfo2KHR<'m, 'h>>
+  for VkImagePlaneMemoryRequirementsInfoKHR<'l>
+{
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21231,7 +21255,7 @@ unsafe impl StructExtends<VkPhysicalDeviceFeatures2KHR> for VkPhysicalDeviceSamp
   }
 }
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
-unsafe impl StructExtends<VkDeviceCreateInfo<'l>> for VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
+unsafe impl<'m> StructExtends<VkDeviceCreateInfo<'m>> for VkPhysicalDeviceSamplerYcbcrConversionFeaturesKHR {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21416,7 +21440,7 @@ unsafe impl<'l, 'h: 'l> RawStruct for VkShaderModuleValidationCacheCreateInfoEXT
   type Raw = types_raw::VkShaderModuleValidationCacheCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_validation_cache")]
-unsafe impl<'l, 'h: 'l> StructExtends<VkShaderModuleCreateInfo<'l>>
+unsafe impl<'m, 'l: 'm, 'h: 'l> StructExtends<VkShaderModuleCreateInfo<'m>>
   for VkShaderModuleValidationCacheCreateInfoEXT<'l, 'h>
 {
   #[inline]
@@ -21479,7 +21503,7 @@ unsafe impl<'l> RawStruct for VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
   type Raw = types_raw::VkDeviceQueueGlobalPriorityCreateInfoEXT;
 }
 #[cfg(feature = "VK_EXT_global_priority")]
-unsafe impl<'l> StructExtends<VkDeviceQueueCreateInfo<'l>> for VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkDeviceQueueCreateInfo<'m>> for VkDeviceQueueGlobalPriorityCreateInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
@@ -21550,7 +21574,7 @@ unsafe impl<'l> RawStruct for VkImportMemoryHostPointerInfoEXT<'l> {
   type Raw = types_raw::VkImportMemoryHostPointerInfoEXT;
 }
 #[cfg(feature = "VK_EXT_external_memory_host")]
-unsafe impl<'l> StructExtends<VkMemoryAllocateInfo<'l>> for VkImportMemoryHostPointerInfoEXT<'l> {
+unsafe impl<'m, 'l: 'm> StructExtends<VkMemoryAllocateInfo<'m>> for VkImportMemoryHostPointerInfoEXT<'l> {
   #[inline]
   unsafe fn extend(&self, next: *const c_void) -> *const c_void {
     assert!(self.pNext.get().is_null());
