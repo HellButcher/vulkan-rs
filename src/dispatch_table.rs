@@ -1,7 +1,7 @@
 /* GENERATED FILE */
 
 use protos::*;
-use types_raw::PFN_vkVoidFunction;
+use types::PFN_vkVoidFunction;
 
 #[allow(non_snake_case)]
 pub struct VkLoaderDispatchTable {

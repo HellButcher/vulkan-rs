@@ -287,10 +287,16 @@ class TypeRef(metaclass=_TypeRefMeta):
         return None
     def is_const(self):
         arg = getattr(self, 'arg', None)
-        if arg is not None and arg.__class__ == TypeRef.CONST:
+        if arg is not None and arg.__class__ == ConstTypeRef:
             return True
         return False
     def is_ptr(self):
+        return False
+    def is_array(self):
+        return False
+    def is_function(self):
+        return False
+    def is_named(self):
         return False
     def base(self):
         arg = getattr(self, 'arg', None)
@@ -301,6 +307,7 @@ class NamedTypeRef(TypeRef):
     _ORD_=0
     def __init__(self, name):
         self.name = name
+        self.resolved_type = None
     def _resolve(self, registry):
         self.resolved_type = registry.types[self.name]
     def __eq__(self, other):
@@ -316,6 +323,10 @@ class NamedTypeRef(TypeRef):
             return '%s %s' % (self.name, decl)
     def base(self):
         return self.resolved_type
+    def is_named(self):
+        return True
+    def size(self):
+        return self.resolved_type.size()
 class ConstTypeRef(TypeRef):
     def __init__(self, arg):
         self.arg = arg
@@ -329,6 +340,8 @@ class ConstTypeRef(TypeRef):
             return self.arg.c_decl('const %s' % decl)
     def is_const(self):
         return True
+    def size(self):
+        return self.arg.size()
 class PointerTypeRef(TypeRef):
     _ORD_=10
     def __init__(self, arg):
@@ -340,6 +353,10 @@ class PointerTypeRef(TypeRef):
         return self.arg.c_decl(decl)
     def is_ptr(self):
         return True
+    def is_function(self):
+        return self.arg.__class__ is FunctionTypeRef
+    def size(self):
+        return (0, 0, 1, 8) # (bytes, ints, pointers, align)
 class ArrayTypeRef(TypeRef):
     _ORD_=20
     def __init__(self, arg, dim=None):
@@ -363,6 +380,20 @@ class ArrayTypeRef(TypeRef):
         return self.dim == other.dim
     def is_ptr(self):
         return self.dim is None
+    def is_array(self):
+        return True
+    def size(self):
+        if self.dim is None:
+            return (0, 0, 1, 8) # (bytes, ints, pointers, align)
+        arg_size = self.arg.size()
+        if arg_size is None:
+            return None
+        arg_bytes, arg_ints, arg_pointers, arg_align = arg_size
+        if self.enum:
+            count = int(self.enum.value)
+        else:
+            count = int(self.dim)
+        return (arg_bytes * count, arg_ints * count, arg_pointers * count, arg_align)
 class FunctionTypeRef(TypeRef):
     _ORD_=20
     def __init__(self, arg, params=None):
@@ -377,6 +408,10 @@ class FunctionTypeRef(TypeRef):
             return self.arg
         else:
             raise KeyError
+    def is_function(self):
+        return True
+    def size(self):
+        return (0, 0, 1, 8) # (bytes, ints, pointers, align)
 class _WrapperTypeRef(TypeRef):
     def __init__(self, arg):
         self.arg = arg
@@ -387,6 +422,46 @@ TypeRef.RESULT = NamedTypeRef("VkResult")
 TypeRef.BOOL = NamedTypeRef("VkBool32")
 TypeRef.VOID_PTR = PointerTypeRef(ConstTypeRef(TypeRef.VOID))
 TypeRef.STRING = PointerTypeRef(ConstTypeRef(TypeRef.CHAR))
+
+_PREDEFINED_TYPE_SIZES = {
+    # name : (bytes, ints, pointers, align),
+    # size in bytes = bytes + pointers * sizeof(const* void)
+    # align = 8 means either 4 or 8 byte alignment, depending on the platform
+    'uint8_t': (1, 0, 0, 1),
+    'uint16_t': (2, 0, 0, 2),
+    'uint32_t': (4, 0, 0, 4),
+    'uint64_t': (8, 0, 0, 8),
+    'int8_t': (1, 0, 0, 1),
+    'int16_t': (2, 0, 0, 2),
+    'int32_t': (4, 0, 0, 4),
+    'int64_t': (8, 0, 0, 8),
+    'float': (4, 0, 0, 4),
+    'double': (8, 0, 0, 8),
+    'char': (1, 0, 0, 1),
+    'size_t': (0, 0, 1, 8),
+    'usize_t': (0, 0, 1, 8),
+    'int': (0, 1, 0, 8),
+
+    # Xlib
+    'Window': (4, 0, 0, 4),
+    'VisualID': (4, 0, 0, 4),
+    'RROutput': (4, 0, 0, 4),
+
+    #xcb
+    'xcb_visualid_t': (4, 0, 0, 4),
+    'xcb_window_t': (4, 0, 0, 4),
+
+    #win32
+    'BOOL': (4, 0, 0, 4),
+    'DWORD': (4, 0, 0, 4),
+    'WCHAR': (2, 0, 0, 2),
+    'LPVOID': (0, 0, 1, 8),
+    'LPCWSTR': (0, 0, 1, 8),
+    'HANDLE': (0, 0, 1, 8),
+    'HINSTANCE': (0, 0, 1, 8),
+    'HWND': (0, 0, 1, 8),
+    'SECURITY_ATTRIBUTES': (0, 0, 3, 8),
+}
 
 class Typed:
     def __init__(self, ty):
@@ -450,6 +525,9 @@ class BaseTypeElem(BaseElem, Named, metaclass=_BaseTypeElemMeta):
         self.requiering_feature = None
         self.docs = None
 
+    def size(self):
+        return _PREDEFINED_TYPE_SIZES.get(self.name, None)
+
     @staticmethod
     def new_from_category(cat, *args, **kwargs):
         return _BaseTypeElemMeta._CATEGORY_TO_CLASS_[cat](*args, **kwargs)
@@ -487,7 +565,6 @@ class Define(BaseTypeElem):
                 value = value[:comment_pos]
             value = value.strip()
         self.value = value or None
-        
 
 class ProvidedType(BaseTypeElem):
     _CATEGORY_ = None
@@ -501,10 +578,16 @@ class TypedefType(BaseTypeElem,Typed):
         BaseTypeElem.__init__(self, registry, name, elem)
         Typed.__init__(self, ty)
 
+    def size(self):
+        return self.type.size()
+
 class FlagsType(BaseTypeElem):
     _CATEGORY_ = 'bitmask'
     def __init__(self, registry, elem):
         BaseTypeElem.__init__(self, registry, elem.find(_NAME_).text, elem)
+
+    def size(self):
+        return (4, 0, 0, 4) # (bytes, ints, pointers, align)
 
 class HandleType(BaseTypeElem):
     _CATEGORY_ = 'handle'
@@ -520,11 +603,20 @@ class HandleType(BaseTypeElem):
     def _resolve(self, registry):
         self.resolved_parent = [registry.types[name] for name in self.parent]
 
+    def size(self):
+        if self.non_dispatchable:
+            return (8, 0, 0, 8) # (bytes, ints, pointers, align)
+        else:
+            return (0, 0, 1, 8) # (bytes, ints, pointers, align)
+
 class EnumType(BaseTypeElem):
     _CATEGORY_ = 'enum'
     def __init__(self, registry, elem):
         BaseTypeElem.__init__(self, registry, elem.get(_NAME_), elem)
         self.group = None
+
+    def size(self):
+        return (4, 0, 0, 4) # (bytes, ints, pointers, align)
 
 class FunctionPointerType(BaseTypeElem,Typed):
     _CATEGORY_ = 'funcpointer'
@@ -537,18 +629,77 @@ class FunctionPointerType(BaseTypeElem,Typed):
         self.returns = ty.arg.returns
         self.params = ty.arg.params
 
+    def size(self):
+        return (0, 0, 1, 8) # (bytes, ints, pointers, align)
+
 class StructType(BaseTypeElem,Composed):
     _CATEGORY_ = 'struct'
     def __init__(self, registry, elem):
         BaseTypeElem.__init__(self, registry, elem.get(_NAME_), elem)
         Composed.__init__(self, elem.findall('member'))
         self.structextends = _split_attrib(elem.get('structextends'))
+    
+    def size(self):
+        if hasattr(self, '_size'):
+            return getattr(self, '_size')
+        bytes, ints, pointers, align = (0, 0, 0, 1)
+        for m in self.members:
+            m_size = m.type.size()
+            if m_size is None:
+                self._size = None
+                return None
+            m_bytes, m_ints, m_pointers, m_align = m_size
+            a = (bytes % m_align)
+            if a > 0:
+                if m_align >= 8:
+                    if a <= 4:
+                        bytes -= a
+                        pointers += 1
+                    else:
+                        bytes += m_align - a
+                else:
+                    bytes += m_align - a
+            bytes += m_bytes
+            ints += m_ints
+            pointers += m_pointers
+            align = max(align, m_align)
+        a = (bytes % align)
+        if a > 0:
+            if align >= 8:
+                if a <= 4:
+                    bytes -= a
+                    pointers += 1
+                else:
+                    bytes += align - a
+            else:
+                bytes += align - a
+        self._size = (bytes, ints, pointers, align)
+        return self._size
 
 class UnionType(BaseTypeElem,Composed):
     _CATEGORY_ = 'union'
     def __init__(self, registry, elem):
         BaseTypeElem.__init__(self, registry, elem.get(_NAME_), elem)
         Composed.__init__(self, elem.findall('member'))
+    
+    def size(self):
+        if hasattr(self, '_size'):
+            return getattr(self, '_size')
+        bytes = 0
+        align = 1
+        for m in self.members:
+            m_size = m.type.size()
+            if m_size is None:
+                self._size = None
+                return None
+            m_bytes, m_ints, m_pointers, m_align = m_size
+            if m_ints > 0 or m_pointers > 0: # maximum is not defined, when there are pointers
+                self._size = None
+                return None
+            bytes = max(bytes, m_bytes)
+            align = max(align, m_align)
+        self._size = (bytes, 0, 0, align) # (bytes, pointers, align)
+        return self._size
 
 class BaseParameter(Named,Typed):
     def __init__(self, ty, name):

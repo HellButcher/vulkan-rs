@@ -1,13 +1,10 @@
 use dispatch_table::*;
 use dl;
-use platform::c_char;
 use protos::{PFN_vkGetDeviceProcAddr, PFN_vkGetInstanceProcAddr};
 use std::ffi::{CStr, OsStr};
 use std::sync;
 use types;
-use types_raw;
 use utils::VkDispatchableHandle;
-use RawStruct;
 
 use std::collections::btree_map::Entry;
 type Map<T> = ::std::collections::BTreeMap<usize, T>;
@@ -22,7 +19,7 @@ const VULKAN_LIB_NAME: &str = "vulkan.dll";
 static LOADER_INIT: sync::Once = sync::ONCE_INIT;
 static mut LOADER_DATA: Option<LoaderData> = None;
 
-type VoidFunctionResult = ::std::result::Result<types_raw::PFN_vkVoidFunction, &'static str>;
+type VoidFunctionResult = ::std::result::Result<types::PFN_vkVoidFunction, &'static str>;
 
 unsafe fn dispatch_key<T>(handle: VkDispatchableHandle<T>) -> usize {
   let handle: *const usize = ::std::mem::transmute(handle);
@@ -65,37 +62,6 @@ unsafe fn call_gdpa(gdpa: PFN_vkGetDeviceProcAddr, arg: types::VkDevice, name: &
   }
 }
 
-unsafe fn ext_equals(ext: *const c_char, check_ext: &[u8]) -> bool {
-  if ext.is_null() {
-    return false;
-  }
-  let ext = ::std::slice::from_raw_parts(ext, check_ext.len() + 1);
-  for i in 0..check_ext.len() {
-    if ext[i] as u8 != check_ext[i] {
-      return false;
-    }
-    if check_ext[i] == 0 {
-      return true;
-    }
-  }
-  return ext[check_ext.len()] == 0;
-}
-
-unsafe fn has_ext(extension_count: u32, pp_extension_names: *const *const c_char, check_ext: &[u8]) -> bool {
-  if extension_count == 0 || pp_extension_names.is_null() {
-    return false;
-  }
-  let extension_names = ::std::slice::from_raw_parts(pp_extension_names, extension_count as usize);
-  for ext in extension_names {
-    if ext.is_null() {
-      return false;
-    }
-    if ext_equals(*ext, check_ext) {
-      return true;
-    }
-  }
-  false
-}
 
 #[allow(non_snake_case)]
 struct LoaderData {
@@ -250,18 +216,11 @@ impl VkInstanceDispatchTable {
     gipa: PFN_vkGetInstanceProcAddr,
   ) -> Result<(VkInstanceDispatchTable, PFN_vkGetDeviceProcAddr), &'static str> {
     use std::mem::transmute;
-    let create_info = create_info.as_raw();
     let gipa: PFN_vkGetInstanceProcAddr = transmute(call_gipa(gipa, instance, GET_INSTANCE_PROC_ADDR_NAME)?);
     let gdpa: PFN_vkGetDeviceProcAddr = transmute(call_gipa(gipa, instance, GET_DEVICE_PROC_ADDR_NAME)?);
     let tab = Self::load(
       |name| call_gipa(gipa, instance, name),
-      |ext| {
-        has_ext(
-          create_info.enabledExtensionCount,
-          create_info.ppEnabledExtensionNames,
-          ext.as_bytes(),
-        )
-      },
+      |ext| create_info.is_extension_enabled(ext),
     )?;
     Ok((tab, gdpa))
   }
@@ -318,17 +277,10 @@ impl VkDeviceDispatchTable {
     gdpa: PFN_vkGetDeviceProcAddr,
   ) -> Result<VkDeviceDispatchTable, &'static str> {
     use std::mem::transmute;
-    let create_info = create_info.as_raw();
     let gdpa: PFN_vkGetDeviceProcAddr = transmute(call_gdpa(gdpa, device, GET_DEVICE_PROC_ADDR_NAME)?);
     let tab = Self::load(
       |name| call_gdpa(gdpa, device, name),
-      |ext| {
-        has_ext(
-          create_info.enabledExtensionCount,
-          create_info.ppEnabledExtensionNames,
-          ext.as_bytes(),
-        )
-      },
+      |ext| create_info.is_extension_enabled(ext),
     );
     tab
   }

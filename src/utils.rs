@@ -1,7 +1,7 @@
 use std::cmp;
 use std::fmt;
 use std::hash::{Hash, Hasher};
-use {AsRaw, RawStruct};
+use AsRaw;
 
 #[derive(Copy, Clone)]
 pub struct VkDispatchableHandle<'h, T: 'h>(&'h T);
@@ -40,14 +40,6 @@ impl<'h, T> VkNonDispatchableHandle<'h, T> {
   pub fn value(&self) -> u64 {
     unsafe { *(self as *const Self as *const u64) }
   }
-}
-
-unsafe impl<'h, T> RawStruct for VkDispatchableHandle<'h, T> {
-  type Raw = usize;
-}
-
-unsafe impl<'h, T> RawStruct for VkNonDispatchableHandle<'h, T> {
-  type Raw = u64;
 }
 
 // implement PartialEq, Eq, PartialOrd, Ord, Hash and Debug in the value field
@@ -250,6 +242,106 @@ impl<'h, T> AsRaw for VkNonDispatchableHandle<'h, T> {
     self.value()
   }
 }
+
+
+impl<'l,'h, T> AsRaw for &'l mut VkDispatchableHandle<'h, T> {
+  type Output = *mut usize;
+  #[inline]
+  unsafe fn as_raw(self) -> *mut usize {
+    self as *mut VkDispatchableHandle<'h, T> as *mut usize
+  }
+}
+
+impl<'l,'h, T> AsRaw for &'l mut VkNonDispatchableHandle<'h, T> {
+  type Output = *mut u64;
+  #[inline]
+  unsafe fn as_raw(self) -> *mut u64 {
+    self as *mut VkNonDispatchableHandle<'h, T> as *mut u64
+  }
+}
+
+
+impl<'l,'h, T> AsRaw for &'l [VkDispatchableHandle<'h, T>] {
+  type Output = *const usize;
+  #[inline]
+  unsafe fn as_raw(self) -> *const usize {
+    if self.len() > 0 {
+      self.as_ptr() as *const usize
+    } else {
+      ::std::ptr::null()
+    }
+  }
+}
+
+impl<'l,'h, T> AsRaw for &'l [VkNonDispatchableHandle<'h, T>] {
+  type Output = *const u64;
+  #[inline]
+  unsafe fn as_raw(self) -> *const u64 {
+    if self.len() > 0 {
+      self.as_ptr() as *const u64
+    } else {
+      ::std::ptr::null()
+    }
+  }
+}
+
+impl<'l,'h, T> AsRaw for &'l mut[VkDispatchableHandle<'h, T>] {
+  type Output = *mut usize;
+  #[inline]
+  unsafe fn as_raw(self) -> *mut usize {
+    if self.len() > 0 {
+      self.as_mut_ptr() as *mut usize
+    } else {
+      ::std::ptr::null_mut()
+    }
+  }
+}
+
+impl<'l,'h, T> AsRaw for &'l mut[VkNonDispatchableHandle<'h, T>] {
+  type Output = *mut u64;
+  #[inline]
+  unsafe fn as_raw(self) -> *mut u64 {
+    if self.len() > 0 {
+      self.as_mut_ptr() as *mut u64
+    } else {
+      ::std::ptr::null_mut()
+    }
+  }
+}
+
+
+impl<'h, T> AsRaw for *const VkDispatchableHandle<'h, T> {
+  type Output = *const usize;
+  #[inline]
+  unsafe fn as_raw(self) -> *const usize {
+    self as *mut usize
+  }
+}
+
+impl<'l,'h, T> AsRaw for *const VkNonDispatchableHandle<'h, T> {
+  type Output = *const u64;
+  #[inline]
+  unsafe fn as_raw(self) -> *const u64 {
+    self as *mut u64
+  }
+}
+
+impl<'h, T> AsRaw for *mut VkDispatchableHandle<'h, T> {
+  type Output = *mut usize;
+  #[inline]
+  unsafe fn as_raw(self) -> *mut usize {
+    self as *mut usize
+  }
+}
+
+impl<'l,'h, T> AsRaw for *mut VkNonDispatchableHandle<'h, T> {
+  type Output = *mut u64;
+  #[inline]
+  unsafe fn as_raw(self) -> *mut u64 {
+    self as *mut u64
+  }
+}
+
 
 #[inline]
 pub fn cstr_from_bytes_until_nul<'a, T: AsRef<[u8]> + ?Sized>(s: &'a T) -> ::std::borrow::Cow<'a, ::std::ffi::CStr> {

@@ -5,7 +5,7 @@ mod dl_impl {
   use std::io::{Error, ErrorKind, Result};
   use std::os::unix::ffi::OsStrExt;
   use std::ptr;
-  use types_raw::PFN_vkVoidFunction;
+  use types::PFN_vkVoidFunction;
 
   pub struct Library(*mut libc::c_void);
 

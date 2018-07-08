@@ -3,7 +3,6 @@
 #![allow(non_snake_case)]
 
 use dispatch_table::*;
-use enums;
 use enums::{VkError, VkResult};
 use platform::*;
 use types::*;
@@ -19,7 +18,7 @@ pub fn vkCreateInstance<'h>(
   unsafe {
     let mut pInstance: VkInstance<'h> = ::std::mem::zeroed();
     VkLoaderDispatchTable::with(|_t| {
-      let _r = _t.vkCreateInstance.unwrap()(pCreateInfo.as_raw(), pAllocator.as_raw(), (&mut pInstance).as_raw());
+      let _r = _t.vkCreateInstance.unwrap()(pCreateInfo, pAllocator.as_raw(), (&mut pInstance).as_raw());
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -30,7 +29,7 @@ pub fn vkCreateInstance<'h>(
 }
 
 /// Destroy an instance of Vulkan
-pub fn vkDestroyInstance<'h>(instance: VkInstance<'h>, pAllocator: Option<&VkAllocationCallbacks>) {
+pub fn vkDestroyInstance<'h>(instance: VkInstance, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkInstanceDispatchTable::with(instance, |_t| {
       _t.vkDestroyInstance.unwrap()(instance.as_raw(), pAllocator.as_raw())
@@ -40,7 +39,7 @@ pub fn vkDestroyInstance<'h>(instance: VkInstance<'h>, pAllocator: Option<&VkAll
 }
 
 /// Enumerates the physical devices accessible to a Vulkan instance
-pub fn vkEnumeratePhysicalDevices<'h>(instance: VkInstance<'h>) -> VkResult<Vec<VkPhysicalDevice<'h>>> {
+pub fn vkEnumeratePhysicalDevices<'h>(instance: VkInstance) -> VkResult<Vec<VkPhysicalDevice<'h>>> {
   unsafe {
     let mut pPhysicalDeviceCount: u32 = 0;
     let mut pPhysicalDevices: Vec<VkPhysicalDevice<'h>> = Vec::new();
@@ -75,11 +74,11 @@ pub fn vkEnumeratePhysicalDevices<'h>(instance: VkInstance<'h>) -> VkResult<Vec<
 }
 
 /// Reports capabilities of a physical device
-pub fn vkGetPhysicalDeviceFeatures<'h>(physicalDevice: VkPhysicalDevice<'h>) -> VkPhysicalDeviceFeatures {
+pub fn vkGetPhysicalDeviceFeatures<'h>(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceFeatures {
   unsafe {
     let mut pFeatures: VkPhysicalDeviceFeatures = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
-      _t.vkGetPhysicalDeviceFeatures.unwrap()(physicalDevice.as_raw(), (&mut pFeatures).as_raw());
+      _t.vkGetPhysicalDeviceFeatures.unwrap()(physicalDevice.as_raw(), &mut pFeatures);
       return pFeatures;
     })
   }
@@ -87,17 +86,13 @@ pub fn vkGetPhysicalDeviceFeatures<'h>(physicalDevice: VkPhysicalDevice<'h>) -> 
 
 /// Lists physical device\'s format capabilities
 pub fn vkGetPhysicalDeviceFormatProperties<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   format: VkFormat,
 ) -> VkFormatProperties {
   unsafe {
     let mut pFormatProperties: VkFormatProperties = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
-      _t.vkGetPhysicalDeviceFormatProperties.unwrap()(
-        physicalDevice.as_raw(),
-        format,
-        (&mut pFormatProperties).as_raw(),
-      );
+      _t.vkGetPhysicalDeviceFormatProperties.unwrap()(physicalDevice.as_raw(), format, &mut pFormatProperties);
       return pFormatProperties;
     })
   }
@@ -105,7 +100,7 @@ pub fn vkGetPhysicalDeviceFormatProperties<'h>(
 
 /// Lists physical device\'s image format capabilities
 pub fn vkGetPhysicalDeviceImageFormatProperties<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   format: VkFormat,
   eType: VkImageType,
   tiling: VkImageTiling,
@@ -122,7 +117,7 @@ pub fn vkGetPhysicalDeviceImageFormatProperties<'h>(
         tiling,
         usage,
         flags,
-        (&mut pImageFormatProperties).as_raw(),
+        &mut pImageFormatProperties,
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -133,20 +128,18 @@ pub fn vkGetPhysicalDeviceImageFormatProperties<'h>(
 }
 
 /// Returns properties of a physical device
-pub fn vkGetPhysicalDeviceProperties<'h>(physicalDevice: VkPhysicalDevice<'h>) -> VkPhysicalDeviceProperties {
+pub fn vkGetPhysicalDeviceProperties<'h>(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceProperties {
   unsafe {
     let mut pProperties: VkPhysicalDeviceProperties = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
-      _t.vkGetPhysicalDeviceProperties.unwrap()(physicalDevice.as_raw(), (&mut pProperties).as_raw());
+      _t.vkGetPhysicalDeviceProperties.unwrap()(physicalDevice.as_raw(), &mut pProperties);
       return pProperties;
     })
   }
 }
 
 /// Reports properties of the queues of the specified physical device
-pub fn vkGetPhysicalDeviceQueueFamilyProperties<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-) -> Vec<VkQueueFamilyProperties> {
+pub fn vkGetPhysicalDeviceQueueFamilyProperties<'h>(physicalDevice: VkPhysicalDevice) -> Vec<VkQueueFamilyProperties> {
   unsafe {
     let mut pQueueFamilyPropertyCount: u32 = 0;
     let mut pQueueFamilyProperties: Vec<VkQueueFamilyProperties> = Vec::new();
@@ -172,13 +165,11 @@ pub fn vkGetPhysicalDeviceQueueFamilyProperties<'h>(
 }
 
 /// Reports memory information for the specified physical device
-pub fn vkGetPhysicalDeviceMemoryProperties<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-) -> VkPhysicalDeviceMemoryProperties {
+pub fn vkGetPhysicalDeviceMemoryProperties<'h>(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceMemoryProperties {
   unsafe {
     let mut pMemoryProperties: VkPhysicalDeviceMemoryProperties = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
-      _t.vkGetPhysicalDeviceMemoryProperties.unwrap()(physicalDevice.as_raw(), (&mut pMemoryProperties).as_raw());
+      _t.vkGetPhysicalDeviceMemoryProperties.unwrap()(physicalDevice.as_raw(), &mut pMemoryProperties);
       return pMemoryProperties;
     })
   }
@@ -186,7 +177,7 @@ pub fn vkGetPhysicalDeviceMemoryProperties<'h>(
 
 /// Create a new device instance
 pub fn vkCreateDevice<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   pCreateInfo: &VkDeviceCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkDevice<'h>> {
@@ -195,7 +186,7 @@ pub fn vkCreateDevice<'h>(
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       let _r = _t.vkCreateDevice.unwrap()(
         physicalDevice.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pDevice).as_raw(),
       );
@@ -209,7 +200,7 @@ pub fn vkCreateDevice<'h>(
 }
 
 /// Destroy a logical device
-pub fn vkDestroyDevice<'h>(device: VkDevice<'h>, pAllocator: Option<&VkAllocationCallbacks>) {
+pub fn vkDestroyDevice<'h>(device: VkDevice, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkDestroyDevice.unwrap()(device.as_raw(), pAllocator.as_raw())
@@ -260,7 +251,7 @@ pub fn vkEnumerateInstanceExtensionProperties(
 
 /// Returns properties of available physical device extensions
 pub fn vkEnumerateDeviceExtensionProperties<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   pLayerName: Option<&AsRef<CStr>>,
 ) -> VkResult<Vec<VkExtensionProperties>> {
   unsafe {
@@ -332,7 +323,7 @@ pub fn vkEnumerateInstanceLayerProperties() -> VkResult<Vec<VkLayerProperties>> 
 }
 
 /// Returns properties of available physical device layers
-pub fn vkEnumerateDeviceLayerProperties<'h>(physicalDevice: VkPhysicalDevice<'h>) -> VkResult<Vec<VkLayerProperties>> {
+pub fn vkEnumerateDeviceLayerProperties<'h>(physicalDevice: VkPhysicalDevice) -> VkResult<Vec<VkLayerProperties>> {
   unsafe {
     let mut pPropertyCount: u32 = 0;
     let mut pProperties: Vec<VkLayerProperties> = Vec::new();
@@ -370,7 +361,7 @@ pub fn vkEnumerateDeviceLayerProperties<'h>(physicalDevice: VkPhysicalDevice<'h>
 }
 
 /// Get a queue handle from a device
-pub fn vkGetDeviceQueue<'h>(device: VkDevice<'h>, queueFamilyIndex: u32, queueIndex: u32) -> VkQueue<'h> {
+pub fn vkGetDeviceQueue<'h>(device: VkDevice, queueFamilyIndex: u32, queueIndex: u32) -> VkQueue<'h> {
   unsafe {
     let mut pQueue: VkQueue<'h> = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
@@ -381,11 +372,7 @@ pub fn vkGetDeviceQueue<'h>(device: VkDevice<'h>, queueFamilyIndex: u32, queueIn
 }
 
 /// Submits a sequence of semaphores or command buffers to a queue
-pub fn vkQueueSubmit<'h>(
-  queue: VkQueue<'h>,
-  pSubmits: &[VkSubmitInfo<'_, 'h>],
-  fence: Option<VkFence<'h>>,
-) -> VkResult {
+pub fn vkQueueSubmit<'h>(queue: VkQueue, pSubmits: &[VkSubmitInfo], fence: Option<VkFence>) -> VkResult {
   unsafe {
     let submitCount = pSubmits.len() as u32;
     VkDeviceDispatchTable::with(queue, |_t| {
@@ -395,18 +382,18 @@ pub fn vkQueueSubmit<'h>(
 }
 
 /// Wait for a queue to become idle
-pub fn vkQueueWaitIdle<'h>(queue: VkQueue<'h>) -> VkResult {
+pub fn vkQueueWaitIdle<'h>(queue: VkQueue) -> VkResult {
   unsafe { VkDeviceDispatchTable::with(queue, |_t| _t.vkQueueWaitIdle.unwrap()(queue.as_raw())) }
 }
 
 /// Wait for a device to become idle
-pub fn vkDeviceWaitIdle<'h>(device: VkDevice<'h>) -> VkResult {
+pub fn vkDeviceWaitIdle<'h>(device: VkDevice) -> VkResult {
   unsafe { VkDeviceDispatchTable::with(device, |_t| _t.vkDeviceWaitIdle.unwrap()(device.as_raw())) }
 }
 
 /// Allocate GPU memory
 pub fn vkAllocateMemory<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pAllocateInfo: &VkMemoryAllocateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkDeviceMemory<'h>> {
@@ -415,7 +402,7 @@ pub fn vkAllocateMemory<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkAllocateMemory.unwrap()(
         device.as_raw(),
-        pAllocateInfo.as_raw(),
+        pAllocateInfo,
         pAllocator.as_raw(),
         (&mut pMemory).as_raw(),
       );
@@ -428,11 +415,7 @@ pub fn vkAllocateMemory<'h>(
 }
 
 /// Free GPU memory
-pub fn vkFreeMemory<'h>(
-  device: VkDevice<'h>,
-  memory: Option<VkDeviceMemory<'h>>,
-  pAllocator: Option<&VkAllocationCallbacks>,
-) {
+pub fn vkFreeMemory<'h>(device: VkDevice, memory: Option<VkDeviceMemory>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkFreeMemory.unwrap()(device.as_raw(), memory.as_raw(), pAllocator.as_raw())
@@ -442,8 +425,8 @@ pub fn vkFreeMemory<'h>(
 
 /// Map a memory object into application address space
 pub fn vkMapMemory<'h>(
-  device: VkDevice<'h>,
-  memory: VkDeviceMemory<'h>,
+  device: VkDevice,
+  memory: VkDeviceMemory,
   offset: VkDeviceSize,
   size: VkDeviceSize,
   flags: VkMemoryMapFlags,
@@ -461,12 +444,12 @@ pub fn vkMapMemory<'h>(
 }
 
 /// Unmap a previously mapped memory object
-pub fn vkUnmapMemory<'h>(device: VkDevice<'h>, memory: VkDeviceMemory<'h>) {
+pub fn vkUnmapMemory<'h>(device: VkDevice, memory: VkDeviceMemory) {
   unsafe { VkDeviceDispatchTable::with(device, |_t| _t.vkUnmapMemory.unwrap()(device.as_raw(), memory.as_raw())) }
 }
 
 /// Flush mapped memory ranges
-pub fn vkFlushMappedMemoryRanges<'h>(device: VkDevice<'h>, pMemoryRanges: &[VkMappedMemoryRange<'_, 'h>]) -> VkResult {
+pub fn vkFlushMappedMemoryRanges<'h>(device: VkDevice, pMemoryRanges: &[VkMappedMemoryRange]) -> VkResult {
   unsafe {
     let memoryRangeCount = pMemoryRanges.len() as u32;
     VkDeviceDispatchTable::with(device, |_t| {
@@ -476,10 +459,7 @@ pub fn vkFlushMappedMemoryRanges<'h>(device: VkDevice<'h>, pMemoryRanges: &[VkMa
 }
 
 /// Invalidate ranges of mapped memory objects
-pub fn vkInvalidateMappedMemoryRanges<'h>(
-  device: VkDevice<'h>,
-  pMemoryRanges: &[VkMappedMemoryRange<'_, 'h>],
-) -> VkResult {
+pub fn vkInvalidateMappedMemoryRanges<'h>(device: VkDevice, pMemoryRanges: &[VkMappedMemoryRange]) -> VkResult {
   unsafe {
     let memoryRangeCount = pMemoryRanges.len() as u32;
     VkDeviceDispatchTable::with(device, |_t| {
@@ -489,7 +469,7 @@ pub fn vkInvalidateMappedMemoryRanges<'h>(
 }
 
 /// Query the current commitment for a VkDeviceMemory
-pub fn vkGetDeviceMemoryCommitment<'h>(device: VkDevice<'h>, memory: VkDeviceMemory<'h>) -> VkDeviceSize {
+pub fn vkGetDeviceMemoryCommitment<'h>(device: VkDevice, memory: VkDeviceMemory) -> VkDeviceSize {
   unsafe {
     let mut pCommittedMemoryInBytes: VkDeviceSize = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
@@ -501,9 +481,9 @@ pub fn vkGetDeviceMemoryCommitment<'h>(device: VkDevice<'h>, memory: VkDeviceMem
 
 /// Bind device memory to a buffer object
 pub fn vkBindBufferMemory<'h>(
-  device: VkDevice<'h>,
-  buffer: VkBuffer<'h>,
-  memory: VkDeviceMemory<'h>,
+  device: VkDevice,
+  buffer: VkBuffer,
+  memory: VkDeviceMemory,
   memoryOffset: VkDeviceSize,
 ) -> VkResult {
   unsafe {
@@ -515,9 +495,9 @@ pub fn vkBindBufferMemory<'h>(
 
 /// Bind device memory to an image object
 pub fn vkBindImageMemory<'h>(
-  device: VkDevice<'h>,
-  image: VkImage<'h>,
-  memory: VkDeviceMemory<'h>,
+  device: VkDevice,
+  image: VkImage,
+  memory: VkDeviceMemory,
   memoryOffset: VkDeviceSize,
 ) -> VkResult {
   unsafe {
@@ -528,22 +508,22 @@ pub fn vkBindImageMemory<'h>(
 }
 
 /// Returns the memory requirements for specified Vulkan object
-pub fn vkGetBufferMemoryRequirements<'h>(device: VkDevice<'h>, buffer: VkBuffer<'h>) -> VkMemoryRequirements {
+pub fn vkGetBufferMemoryRequirements<'h>(device: VkDevice, buffer: VkBuffer) -> VkMemoryRequirements {
   unsafe {
     let mut pMemoryRequirements: VkMemoryRequirements = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkGetBufferMemoryRequirements.unwrap()(device.as_raw(), buffer.as_raw(), (&mut pMemoryRequirements).as_raw());
+      _t.vkGetBufferMemoryRequirements.unwrap()(device.as_raw(), buffer.as_raw(), &mut pMemoryRequirements);
       return pMemoryRequirements;
     })
   }
 }
 
 /// Returns the memory requirements for specified Vulkan object
-pub fn vkGetImageMemoryRequirements<'h>(device: VkDevice<'h>, image: VkImage<'h>) -> VkMemoryRequirements {
+pub fn vkGetImageMemoryRequirements<'h>(device: VkDevice, image: VkImage) -> VkMemoryRequirements {
   unsafe {
     let mut pMemoryRequirements: VkMemoryRequirements = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkGetImageMemoryRequirements.unwrap()(device.as_raw(), image.as_raw(), (&mut pMemoryRequirements).as_raw());
+      _t.vkGetImageMemoryRequirements.unwrap()(device.as_raw(), image.as_raw(), &mut pMemoryRequirements);
       return pMemoryRequirements;
     })
   }
@@ -551,8 +531,8 @@ pub fn vkGetImageMemoryRequirements<'h>(device: VkDevice<'h>, image: VkImage<'h>
 
 /// Query the memory requirements for a sparse image
 pub fn vkGetImageSparseMemoryRequirements<'h>(
-  device: VkDevice<'h>,
-  image: VkImage<'h>,
+  device: VkDevice,
+  image: VkImage,
 ) -> Vec<VkSparseImageMemoryRequirements> {
   unsafe {
     let mut pSparseMemoryRequirementCount: u32 = 0;
@@ -582,7 +562,7 @@ pub fn vkGetImageSparseMemoryRequirements<'h>(
 
 /// Retrieve properties of an image format applied to sparse images
 pub fn vkGetPhysicalDeviceSparseImageFormatProperties<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   format: VkFormat,
   eType: VkImageType,
   samples: VkSampleCountFlagBits,
@@ -624,11 +604,7 @@ pub fn vkGetPhysicalDeviceSparseImageFormatProperties<'h>(
 }
 
 /// Bind device memory to a sparse resource object
-pub fn vkQueueBindSparse<'h>(
-  queue: VkQueue<'h>,
-  pBindInfo: &[VkBindSparseInfo<'_, 'h>],
-  fence: Option<VkFence<'h>>,
-) -> VkResult {
+pub fn vkQueueBindSparse<'h>(queue: VkQueue, pBindInfo: &[VkBindSparseInfo], fence: Option<VkFence>) -> VkResult {
   unsafe {
     let bindInfoCount = pBindInfo.len() as u32;
     VkDeviceDispatchTable::with(queue, |_t| {
@@ -639,7 +615,7 @@ pub fn vkQueueBindSparse<'h>(
 
 /// Create a new fence object
 pub fn vkCreateFence<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkFenceCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkFence<'h>> {
@@ -648,7 +624,7 @@ pub fn vkCreateFence<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateFence.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pFence).as_raw(),
       );
@@ -661,11 +637,7 @@ pub fn vkCreateFence<'h>(
 }
 
 /// Destroy a fence object
-pub fn vkDestroyFence<'h>(
-  device: VkDevice<'h>,
-  fence: Option<VkFence<'h>>,
-  pAllocator: Option<&VkAllocationCallbacks>,
-) {
+pub fn vkDestroyFence<'h>(device: VkDevice, fence: Option<VkFence>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkDestroyFence.unwrap()(device.as_raw(), fence.as_raw(), pAllocator.as_raw())
@@ -674,7 +646,7 @@ pub fn vkDestroyFence<'h>(
 }
 
 /// Resets one or more fence objects
-pub fn vkResetFences<'h>(device: VkDevice<'h>, pFences: &[VkFence<'h>]) -> VkResult {
+pub fn vkResetFences<'h>(device: VkDevice, pFences: &[VkFence]) -> VkResult {
   unsafe {
     let fenceCount = pFences.len() as u32;
     VkDeviceDispatchTable::with(device, |_t| {
@@ -684,7 +656,7 @@ pub fn vkResetFences<'h>(device: VkDevice<'h>, pFences: &[VkFence<'h>]) -> VkRes
 }
 
 /// Return the status of a fence
-pub fn vkGetFenceStatus<'h>(device: VkDevice<'h>, fence: VkFence<'h>) -> VkResult {
+pub fn vkGetFenceStatus<'h>(device: VkDevice, fence: VkFence) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkGetFenceStatus.unwrap()(device.as_raw(), fence.as_raw())
@@ -693,18 +665,18 @@ pub fn vkGetFenceStatus<'h>(device: VkDevice<'h>, fence: VkFence<'h>) -> VkResul
 }
 
 /// Wait for one or more fences to become signaled
-pub fn vkWaitForFences<'h>(device: VkDevice<'h>, pFences: &[VkFence<'h>], waitAll: VkBool32, timeout: u64) -> VkResult {
+pub fn vkWaitForFences<'h>(device: VkDevice, pFences: &[VkFence], waitAll: bool, timeout: u64) -> VkResult {
   unsafe {
     let fenceCount = pFences.len() as u32;
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkWaitForFences.unwrap()(device.as_raw(), fenceCount, pFences.as_raw(), waitAll, timeout)
+      _t.vkWaitForFences.unwrap()(device.as_raw(), fenceCount, pFences.as_raw(), waitAll.as_raw(), timeout)
     })
   }
 }
 
 /// Create a new queue semaphore object
 pub fn vkCreateSemaphore<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkSemaphoreCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSemaphore<'h>> {
@@ -713,7 +685,7 @@ pub fn vkCreateSemaphore<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateSemaphore.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSemaphore).as_raw(),
       );
@@ -727,8 +699,8 @@ pub fn vkCreateSemaphore<'h>(
 
 /// Destroy a semaphore object
 pub fn vkDestroySemaphore<'h>(
-  device: VkDevice<'h>,
-  semaphore: Option<VkSemaphore<'h>>,
+  device: VkDevice,
+  semaphore: Option<VkSemaphore>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -740,7 +712,7 @@ pub fn vkDestroySemaphore<'h>(
 
 /// Create a new event object
 pub fn vkCreateEvent<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkEventCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkEvent<'h>> {
@@ -749,7 +721,7 @@ pub fn vkCreateEvent<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateEvent.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pEvent).as_raw(),
       );
@@ -762,11 +734,7 @@ pub fn vkCreateEvent<'h>(
 }
 
 /// Destroy an event object
-pub fn vkDestroyEvent<'h>(
-  device: VkDevice<'h>,
-  event: Option<VkEvent<'h>>,
-  pAllocator: Option<&VkAllocationCallbacks>,
-) {
+pub fn vkDestroyEvent<'h>(device: VkDevice, event: Option<VkEvent>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkDestroyEvent.unwrap()(device.as_raw(), event.as_raw(), pAllocator.as_raw())
@@ -775,7 +743,7 @@ pub fn vkDestroyEvent<'h>(
 }
 
 /// Retrieve the status of an event object
-pub fn vkGetEventStatus<'h>(device: VkDevice<'h>, event: VkEvent<'h>) -> VkResult {
+pub fn vkGetEventStatus<'h>(device: VkDevice, event: VkEvent) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkGetEventStatus.unwrap()(device.as_raw(), event.as_raw())
@@ -784,18 +752,18 @@ pub fn vkGetEventStatus<'h>(device: VkDevice<'h>, event: VkEvent<'h>) -> VkResul
 }
 
 /// Set an event to signaled state
-pub fn vkSetEvent<'h>(device: VkDevice<'h>, event: VkEvent<'h>) -> VkResult {
+pub fn vkSetEvent<'h>(device: VkDevice, event: VkEvent) -> VkResult {
   unsafe { VkDeviceDispatchTable::with(device, |_t| _t.vkSetEvent.unwrap()(device.as_raw(), event.as_raw())) }
 }
 
 /// Reset an event to non-signaled state
-pub fn vkResetEvent<'h>(device: VkDevice<'h>, event: VkEvent<'h>) -> VkResult {
+pub fn vkResetEvent<'h>(device: VkDevice, event: VkEvent) -> VkResult {
   unsafe { VkDeviceDispatchTable::with(device, |_t| _t.vkResetEvent.unwrap()(device.as_raw(), event.as_raw())) }
 }
 
 /// Create a new query pool object
 pub fn vkCreateQueryPool<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkQueryPoolCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkQueryPool<'h>> {
@@ -804,7 +772,7 @@ pub fn vkCreateQueryPool<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateQueryPool.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pQueryPool).as_raw(),
       );
@@ -818,8 +786,8 @@ pub fn vkCreateQueryPool<'h>(
 
 /// Destroy a query pool object
 pub fn vkDestroyQueryPool<'h>(
-  device: VkDevice<'h>,
-  queryPool: Option<VkQueryPool<'h>>,
+  device: VkDevice,
+  queryPool: Option<VkQueryPool>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -831,8 +799,8 @@ pub fn vkDestroyQueryPool<'h>(
 
 /// Copy results of queries in a query pool to a host memory region
 pub fn vkGetQueryPoolResults<'h>(
-  device: VkDevice<'h>,
-  queryPool: VkQueryPool<'h>,
+  device: VkDevice,
+  queryPool: VkQueryPool,
   firstQuery: u32,
   queryCount: u32,
   pData: &mut [u8],
@@ -858,7 +826,7 @@ pub fn vkGetQueryPoolResults<'h>(
 
 /// Create a new buffer object
 pub fn vkCreateBuffer<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkBufferCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkBuffer<'h>> {
@@ -867,7 +835,7 @@ pub fn vkCreateBuffer<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateBuffer.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pBuffer).as_raw(),
       );
@@ -880,11 +848,7 @@ pub fn vkCreateBuffer<'h>(
 }
 
 /// Destroy a buffer object
-pub fn vkDestroyBuffer<'h>(
-  device: VkDevice<'h>,
-  buffer: Option<VkBuffer<'h>>,
-  pAllocator: Option<&VkAllocationCallbacks>,
-) {
+pub fn vkDestroyBuffer<'h>(device: VkDevice, buffer: Option<VkBuffer>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkDestroyBuffer.unwrap()(device.as_raw(), buffer.as_raw(), pAllocator.as_raw())
@@ -894,19 +858,14 @@ pub fn vkDestroyBuffer<'h>(
 
 /// Create a new buffer view object
 pub fn vkCreateBufferView<'h>(
-  device: VkDevice<'h>,
-  pCreateInfo: &VkBufferViewCreateInfo<'_, 'h>,
+  device: VkDevice,
+  pCreateInfo: &VkBufferViewCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkBufferView<'h>> {
   unsafe {
     let mut pView: VkBufferView<'h> = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkCreateBufferView.unwrap()(
-        device.as_raw(),
-        pCreateInfo.as_raw(),
-        pAllocator.as_raw(),
-        (&mut pView).as_raw(),
-      );
+      let _r = _t.vkCreateBufferView.unwrap()(device.as_raw(), pCreateInfo, pAllocator.as_raw(), (&mut pView).as_raw());
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -917,8 +876,8 @@ pub fn vkCreateBufferView<'h>(
 
 /// Destroy a buffer view object
 pub fn vkDestroyBufferView<'h>(
-  device: VkDevice<'h>,
-  bufferView: Option<VkBufferView<'h>>,
+  device: VkDevice,
+  bufferView: Option<VkBufferView>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -930,7 +889,7 @@ pub fn vkDestroyBufferView<'h>(
 
 /// Create a new image object
 pub fn vkCreateImage<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkImageCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkImage<'h>> {
@@ -939,7 +898,7 @@ pub fn vkCreateImage<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateImage.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pImage).as_raw(),
       );
@@ -952,11 +911,7 @@ pub fn vkCreateImage<'h>(
 }
 
 /// Destroy an image object
-pub fn vkDestroyImage<'h>(
-  device: VkDevice<'h>,
-  image: Option<VkImage<'h>>,
-  pAllocator: Option<&VkAllocationCallbacks>,
-) {
+pub fn vkDestroyImage<'h>(device: VkDevice, image: Option<VkImage>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkDestroyImage.unwrap()(device.as_raw(), image.as_raw(), pAllocator.as_raw())
@@ -966,19 +921,14 @@ pub fn vkDestroyImage<'h>(
 
 /// Retrieve information about an image subresource
 pub fn vkGetImageSubresourceLayout<'h>(
-  device: VkDevice<'h>,
-  image: VkImage<'h>,
+  device: VkDevice,
+  image: VkImage,
   pSubresource: &VkImageSubresource,
 ) -> VkSubresourceLayout {
   unsafe {
     let mut pLayout: VkSubresourceLayout = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkGetImageSubresourceLayout.unwrap()(
-        device.as_raw(),
-        image.as_raw(),
-        pSubresource.as_raw(),
-        (&mut pLayout).as_raw(),
-      );
+      _t.vkGetImageSubresourceLayout.unwrap()(device.as_raw(), image.as_raw(), pSubresource, &mut pLayout);
       return pLayout;
     })
   }
@@ -986,19 +936,14 @@ pub fn vkGetImageSubresourceLayout<'h>(
 
 /// Create an image view from an existing image
 pub fn vkCreateImageView<'h>(
-  device: VkDevice<'h>,
-  pCreateInfo: &VkImageViewCreateInfo<'_, 'h>,
+  device: VkDevice,
+  pCreateInfo: &VkImageViewCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkImageView<'h>> {
   unsafe {
     let mut pView: VkImageView<'h> = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkCreateImageView.unwrap()(
-        device.as_raw(),
-        pCreateInfo.as_raw(),
-        pAllocator.as_raw(),
-        (&mut pView).as_raw(),
-      );
+      let _r = _t.vkCreateImageView.unwrap()(device.as_raw(), pCreateInfo, pAllocator.as_raw(), (&mut pView).as_raw());
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -1009,8 +954,8 @@ pub fn vkCreateImageView<'h>(
 
 /// Destroy an image view object
 pub fn vkDestroyImageView<'h>(
-  device: VkDevice<'h>,
-  imageView: Option<VkImageView<'h>>,
+  device: VkDevice,
+  imageView: Option<VkImageView>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1022,7 +967,7 @@ pub fn vkDestroyImageView<'h>(
 
 /// Creates a new shader module object
 pub fn vkCreateShaderModule<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkShaderModuleCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkShaderModule<'h>> {
@@ -1031,7 +976,7 @@ pub fn vkCreateShaderModule<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateShaderModule.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pShaderModule).as_raw(),
       );
@@ -1045,8 +990,8 @@ pub fn vkCreateShaderModule<'h>(
 
 /// Destroy a shader module module
 pub fn vkDestroyShaderModule<'h>(
-  device: VkDevice<'h>,
-  shaderModule: Option<VkShaderModule<'h>>,
+  device: VkDevice,
+  shaderModule: Option<VkShaderModule>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1058,7 +1003,7 @@ pub fn vkDestroyShaderModule<'h>(
 
 /// Creates a new pipeline cache
 pub fn vkCreatePipelineCache<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkPipelineCacheCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkPipelineCache<'h>> {
@@ -1067,7 +1012,7 @@ pub fn vkCreatePipelineCache<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreatePipelineCache.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pPipelineCache).as_raw(),
       );
@@ -1081,8 +1026,8 @@ pub fn vkCreatePipelineCache<'h>(
 
 /// Destroy a pipeline cache object
 pub fn vkDestroyPipelineCache<'h>(
-  device: VkDevice<'h>,
-  pipelineCache: Option<VkPipelineCache<'h>>,
+  device: VkDevice,
+  pipelineCache: Option<VkPipelineCache>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1093,7 +1038,7 @@ pub fn vkDestroyPipelineCache<'h>(
 }
 
 /// Get the data store from a pipeline cache
-pub fn vkGetPipelineCacheData<'h>(device: VkDevice<'h>, pipelineCache: VkPipelineCache<'h>) -> VkResult<Vec<u8>> {
+pub fn vkGetPipelineCacheData<'h>(device: VkDevice, pipelineCache: VkPipelineCache) -> VkResult<Vec<u8>> {
   unsafe {
     let mut pDataSize: usize = 0;
     let mut pData: Vec<u8> = Vec::new();
@@ -1134,9 +1079,9 @@ pub fn vkGetPipelineCacheData<'h>(device: VkDevice<'h>, pipelineCache: VkPipelin
 
 /// Combine the data stores of pipeline caches
 pub fn vkMergePipelineCaches<'h>(
-  device: VkDevice<'h>,
-  dstCache: VkPipelineCache<'h>,
-  pSrcCaches: &[VkPipelineCache<'h>],
+  device: VkDevice,
+  dstCache: VkPipelineCache,
+  pSrcCaches: &[VkPipelineCache],
 ) -> VkResult {
   unsafe {
     let srcCacheCount = pSrcCaches.len() as u32;
@@ -1148,11 +1093,11 @@ pub fn vkMergePipelineCaches<'h>(
 
 /// Create graphics pipelines
 pub fn vkCreateGraphicsPipelines<'h>(
-  device: VkDevice<'h>,
-  pipelineCache: Option<VkPipelineCache<'h>>,
-  pCreateInfos: &[VkGraphicsPipelineCreateInfo<'_, 'h>],
+  device: VkDevice,
+  pipelineCache: Option<VkPipelineCache>,
+  pCreateInfos: &[VkGraphicsPipelineCreateInfo],
   pAllocator: Option<&VkAllocationCallbacks>,
-  pPipelines: &mut [VkPipeline<'h>],
+  pPipelines: &mut [VkPipeline],
 ) -> VkResult {
   unsafe {
     let createInfoCount = pCreateInfos.len() as u32;
@@ -1172,11 +1117,11 @@ pub fn vkCreateGraphicsPipelines<'h>(
 
 /// Creates a new compute pipeline object
 pub fn vkCreateComputePipelines<'h>(
-  device: VkDevice<'h>,
-  pipelineCache: Option<VkPipelineCache<'h>>,
-  pCreateInfos: &[VkComputePipelineCreateInfo<'_, 'h>],
+  device: VkDevice,
+  pipelineCache: Option<VkPipelineCache>,
+  pCreateInfos: &[VkComputePipelineCreateInfo],
   pAllocator: Option<&VkAllocationCallbacks>,
-  pPipelines: &mut [VkPipeline<'h>],
+  pPipelines: &mut [VkPipeline],
 ) -> VkResult {
   unsafe {
     let createInfoCount = pCreateInfos.len() as u32;
@@ -1196,8 +1141,8 @@ pub fn vkCreateComputePipelines<'h>(
 
 /// Destroy a pipeline object
 pub fn vkDestroyPipeline<'h>(
-  device: VkDevice<'h>,
-  pipeline: Option<VkPipeline<'h>>,
+  device: VkDevice,
+  pipeline: Option<VkPipeline>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1209,8 +1154,8 @@ pub fn vkDestroyPipeline<'h>(
 
 /// Creates a new pipeline layout object
 pub fn vkCreatePipelineLayout<'h>(
-  device: VkDevice<'h>,
-  pCreateInfo: &VkPipelineLayoutCreateInfo<'_, 'h>,
+  device: VkDevice,
+  pCreateInfo: &VkPipelineLayoutCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkPipelineLayout<'h>> {
   unsafe {
@@ -1218,7 +1163,7 @@ pub fn vkCreatePipelineLayout<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreatePipelineLayout.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pPipelineLayout).as_raw(),
       );
@@ -1232,8 +1177,8 @@ pub fn vkCreatePipelineLayout<'h>(
 
 /// Destroy a pipeline layout object
 pub fn vkDestroyPipelineLayout<'h>(
-  device: VkDevice<'h>,
-  pipelineLayout: Option<VkPipelineLayout<'h>>,
+  device: VkDevice,
+  pipelineLayout: Option<VkPipelineLayout>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1245,7 +1190,7 @@ pub fn vkDestroyPipelineLayout<'h>(
 
 /// Create a new sampler object
 pub fn vkCreateSampler<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkSamplerCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSampler<'h>> {
@@ -1254,7 +1199,7 @@ pub fn vkCreateSampler<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateSampler.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSampler).as_raw(),
       );
@@ -1267,11 +1212,7 @@ pub fn vkCreateSampler<'h>(
 }
 
 /// Destroy a sampler object
-pub fn vkDestroySampler<'h>(
-  device: VkDevice<'h>,
-  sampler: Option<VkSampler<'h>>,
-  pAllocator: Option<&VkAllocationCallbacks>,
-) {
+pub fn vkDestroySampler<'h>(device: VkDevice, sampler: Option<VkSampler>, pAllocator: Option<&VkAllocationCallbacks>) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkDestroySampler.unwrap()(device.as_raw(), sampler.as_raw(), pAllocator.as_raw())
@@ -1281,8 +1222,8 @@ pub fn vkDestroySampler<'h>(
 
 /// Create a new descriptor set layout
 pub fn vkCreateDescriptorSetLayout<'h>(
-  device: VkDevice<'h>,
-  pCreateInfo: &VkDescriptorSetLayoutCreateInfo<'_, 'h>,
+  device: VkDevice,
+  pCreateInfo: &VkDescriptorSetLayoutCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkDescriptorSetLayout<'h>> {
   unsafe {
@@ -1290,7 +1231,7 @@ pub fn vkCreateDescriptorSetLayout<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateDescriptorSetLayout.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSetLayout).as_raw(),
       );
@@ -1304,8 +1245,8 @@ pub fn vkCreateDescriptorSetLayout<'h>(
 
 /// Destroy a descriptor set layout object
 pub fn vkDestroyDescriptorSetLayout<'h>(
-  device: VkDevice<'h>,
-  descriptorSetLayout: Option<VkDescriptorSetLayout<'h>>,
+  device: VkDevice,
+  descriptorSetLayout: Option<VkDescriptorSetLayout>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1317,7 +1258,7 @@ pub fn vkDestroyDescriptorSetLayout<'h>(
 
 /// Creates a descriptor pool object
 pub fn vkCreateDescriptorPool<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkDescriptorPoolCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkDescriptorPool<'h>> {
@@ -1326,7 +1267,7 @@ pub fn vkCreateDescriptorPool<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateDescriptorPool.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pDescriptorPool).as_raw(),
       );
@@ -1340,8 +1281,8 @@ pub fn vkCreateDescriptorPool<'h>(
 
 /// Destroy a descriptor pool object
 pub fn vkDestroyDescriptorPool<'h>(
-  device: VkDevice<'h>,
-  descriptorPool: Option<VkDescriptorPool<'h>>,
+  device: VkDevice,
+  descriptorPool: Option<VkDescriptorPool>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1353,8 +1294,8 @@ pub fn vkDestroyDescriptorPool<'h>(
 
 /// Resets a descriptor pool object
 pub fn vkResetDescriptorPool<'h>(
-  device: VkDevice<'h>,
-  descriptorPool: VkDescriptorPool<'h>,
+  device: VkDevice,
+  descriptorPool: VkDescriptorPool,
   flags: VkDescriptorPoolResetFlags,
 ) -> VkResult {
   unsafe {
@@ -1366,18 +1307,15 @@ pub fn vkResetDescriptorPool<'h>(
 
 /// Allocate one or more descriptor sets
 pub fn vkAllocateDescriptorSets<'h>(
-  device: VkDevice<'h>,
-  pAllocateInfo: &VkDescriptorSetAllocateInfo<'_, 'h>,
+  device: VkDevice,
+  pAllocateInfo: &VkDescriptorSetAllocateInfo,
 ) -> VkResult<Vec<VkDescriptorSet<'h>>> {
   unsafe {
     let mut pDescriptorSets: Vec<VkDescriptorSet<'h>> =
       Vec::with_capacity(pAllocateInfo.descriptor_set_count() as usize);
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkAllocateDescriptorSets.unwrap()(
-        device.as_raw(),
-        pAllocateInfo.as_raw(),
-        pDescriptorSets.as_mut_ptr().as_raw(),
-      );
+      let _r =
+        _t.vkAllocateDescriptorSets.unwrap()(device.as_raw(), pAllocateInfo, pDescriptorSets.as_mut_ptr().as_raw());
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -1389,9 +1327,9 @@ pub fn vkAllocateDescriptorSets<'h>(
 
 /// Free one or more descriptor sets
 pub fn vkFreeDescriptorSets<'h>(
-  device: VkDevice<'h>,
-  descriptorPool: VkDescriptorPool<'h>,
-  pDescriptorSets: &[VkDescriptorSet<'h>],
+  device: VkDevice,
+  descriptorPool: VkDescriptorPool,
+  pDescriptorSets: &[VkDescriptorSet],
 ) -> VkResult {
   unsafe {
     let descriptorSetCount = pDescriptorSets.len() as u32;
@@ -1408,9 +1346,9 @@ pub fn vkFreeDescriptorSets<'h>(
 
 /// Update the contents of a descriptor set object
 pub fn vkUpdateDescriptorSets<'h>(
-  device: VkDevice<'h>,
-  pDescriptorWrites: &[VkWriteDescriptorSet<'_, 'h>],
-  pDescriptorCopies: &[VkCopyDescriptorSet<'_, 'h>],
+  device: VkDevice,
+  pDescriptorWrites: &[VkWriteDescriptorSet],
+  pDescriptorCopies: &[VkCopyDescriptorSet],
 ) {
   unsafe {
     let descriptorWriteCount = pDescriptorWrites.len() as u32;
@@ -1429,8 +1367,8 @@ pub fn vkUpdateDescriptorSets<'h>(
 
 /// Create a new framebuffer object
 pub fn vkCreateFramebuffer<'h>(
-  device: VkDevice<'h>,
-  pCreateInfo: &VkFramebufferCreateInfo<'_, 'h>,
+  device: VkDevice,
+  pCreateInfo: &VkFramebufferCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkFramebuffer<'h>> {
   unsafe {
@@ -1438,7 +1376,7 @@ pub fn vkCreateFramebuffer<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateFramebuffer.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pFramebuffer).as_raw(),
       );
@@ -1452,8 +1390,8 @@ pub fn vkCreateFramebuffer<'h>(
 
 /// Destroy a framebuffer object
 pub fn vkDestroyFramebuffer<'h>(
-  device: VkDevice<'h>,
-  framebuffer: Option<VkFramebuffer<'h>>,
+  device: VkDevice,
+  framebuffer: Option<VkFramebuffer>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1465,7 +1403,7 @@ pub fn vkDestroyFramebuffer<'h>(
 
 /// Create a new render pass object
 pub fn vkCreateRenderPass<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkRenderPassCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkRenderPass<'h>> {
@@ -1474,7 +1412,7 @@ pub fn vkCreateRenderPass<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateRenderPass.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pRenderPass).as_raw(),
       );
@@ -1488,8 +1426,8 @@ pub fn vkCreateRenderPass<'h>(
 
 /// Destroy a render pass object
 pub fn vkDestroyRenderPass<'h>(
-  device: VkDevice<'h>,
-  renderPass: Option<VkRenderPass<'h>>,
+  device: VkDevice,
+  renderPass: Option<VkRenderPass>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1500,11 +1438,11 @@ pub fn vkDestroyRenderPass<'h>(
 }
 
 /// Returns the granularity for optimal render area
-pub fn vkGetRenderAreaGranularity<'h>(device: VkDevice<'h>, renderPass: VkRenderPass<'h>) -> VkExtent2D {
+pub fn vkGetRenderAreaGranularity<'h>(device: VkDevice, renderPass: VkRenderPass) -> VkExtent2D {
   unsafe {
     let mut pGranularity: VkExtent2D = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkGetRenderAreaGranularity.unwrap()(device.as_raw(), renderPass.as_raw(), (&mut pGranularity).as_raw());
+      _t.vkGetRenderAreaGranularity.unwrap()(device.as_raw(), renderPass.as_raw(), &mut pGranularity);
       return pGranularity;
     })
   }
@@ -1512,7 +1450,7 @@ pub fn vkGetRenderAreaGranularity<'h>(device: VkDevice<'h>, renderPass: VkRender
 
 /// Create a new command pool object
 pub fn vkCreateCommandPool<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkCommandPoolCreateInfo,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkCommandPool<'h>> {
@@ -1521,7 +1459,7 @@ pub fn vkCreateCommandPool<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateCommandPool.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pCommandPool).as_raw(),
       );
@@ -1535,8 +1473,8 @@ pub fn vkCreateCommandPool<'h>(
 
 /// Destroy a command pool object
 pub fn vkDestroyCommandPool<'h>(
-  device: VkDevice<'h>,
-  commandPool: Option<VkCommandPool<'h>>,
+  device: VkDevice,
+  commandPool: Option<VkCommandPool>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -1548,8 +1486,8 @@ pub fn vkDestroyCommandPool<'h>(
 
 /// Reset a command pool
 pub fn vkResetCommandPool<'h>(
-  device: VkDevice<'h>,
-  commandPool: VkCommandPool<'h>,
+  device: VkDevice,
+  commandPool: VkCommandPool,
   flags: VkCommandPoolResetFlags,
 ) -> VkResult {
   unsafe {
@@ -1561,18 +1499,15 @@ pub fn vkResetCommandPool<'h>(
 
 /// Allocate command buffers from an existing command pool
 pub fn vkAllocateCommandBuffers<'h>(
-  device: VkDevice<'h>,
-  pAllocateInfo: &VkCommandBufferAllocateInfo<'_, 'h>,
+  device: VkDevice,
+  pAllocateInfo: &VkCommandBufferAllocateInfo,
 ) -> VkResult<Vec<VkCommandBuffer<'h>>> {
   unsafe {
     let mut pCommandBuffers: Vec<VkCommandBuffer<'h>> =
       Vec::with_capacity(pAllocateInfo.command_buffer_count() as usize);
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkAllocateCommandBuffers.unwrap()(
-        device.as_raw(),
-        pAllocateInfo.as_raw(),
-        pCommandBuffers.as_mut_ptr().as_raw(),
-      );
+      let _r =
+        _t.vkAllocateCommandBuffers.unwrap()(device.as_raw(), pAllocateInfo, pCommandBuffers.as_mut_ptr().as_raw());
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -1583,11 +1518,7 @@ pub fn vkAllocateCommandBuffers<'h>(
 }
 
 /// Free command buffers
-pub fn vkFreeCommandBuffers<'h>(
-  device: VkDevice<'h>,
-  commandPool: VkCommandPool<'h>,
-  pCommandBuffers: &[VkCommandBuffer<'h>],
-) {
+pub fn vkFreeCommandBuffers<'h>(device: VkDevice, commandPool: VkCommandPool, pCommandBuffers: &[VkCommandBuffer]) {
   unsafe {
     let commandBufferCount = pCommandBuffers.len() as u32;
     VkDeviceDispatchTable::with(device, |_t| {
@@ -1602,19 +1533,16 @@ pub fn vkFreeCommandBuffers<'h>(
 }
 
 /// Start recording a command buffer
-pub fn vkBeginCommandBuffer<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  pBeginInfo: &VkCommandBufferBeginInfo<'_, 'h>,
-) -> VkResult {
+pub fn vkBeginCommandBuffer<'h>(commandBuffer: VkCommandBuffer, pBeginInfo: &VkCommandBufferBeginInfo) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
-      _t.vkBeginCommandBuffer.unwrap()(commandBuffer.as_raw(), pBeginInfo.as_raw())
+      _t.vkBeginCommandBuffer.unwrap()(commandBuffer.as_raw(), pBeginInfo)
     })
   }
 }
 
 /// Finish recording a command buffer
-pub fn vkEndCommandBuffer<'h>(commandBuffer: VkCommandBuffer<'h>) -> VkResult {
+pub fn vkEndCommandBuffer<'h>(commandBuffer: VkCommandBuffer) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkEndCommandBuffer.unwrap()(commandBuffer.as_raw())
@@ -1623,7 +1551,7 @@ pub fn vkEndCommandBuffer<'h>(commandBuffer: VkCommandBuffer<'h>) -> VkResult {
 }
 
 /// Reset a command buffer to the initial state
-pub fn vkResetCommandBuffer<'h>(commandBuffer: VkCommandBuffer<'h>, flags: VkCommandBufferResetFlags) -> VkResult {
+pub fn vkResetCommandBuffer<'h>(commandBuffer: VkCommandBuffer, flags: VkCommandBufferResetFlags) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkResetCommandBuffer.unwrap()(commandBuffer.as_raw(), flags)
@@ -1633,9 +1561,9 @@ pub fn vkResetCommandBuffer<'h>(commandBuffer: VkCommandBuffer<'h>, flags: VkCom
 
 /// Bind a pipeline object to a command buffer
 pub fn vkCmdBindPipeline<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   pipelineBindPoint: VkPipelineBindPoint,
-  pipeline: VkPipeline<'h>,
+  pipeline: VkPipeline,
 ) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1645,7 +1573,7 @@ pub fn vkCmdBindPipeline<'h>(
 }
 
 /// Set the viewport on a command buffer
-pub fn vkCmdSetViewport<'h>(commandBuffer: VkCommandBuffer<'h>, firstViewport: u32, pViewports: &[VkViewport]) {
+pub fn vkCmdSetViewport<'h>(commandBuffer: VkCommandBuffer, firstViewport: u32, pViewports: &[VkViewport]) {
   unsafe {
     let viewportCount = pViewports.len() as u32;
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1660,7 +1588,7 @@ pub fn vkCmdSetViewport<'h>(commandBuffer: VkCommandBuffer<'h>, firstViewport: u
 }
 
 /// Set the dynamic scissor rectangles on a command buffer
-pub fn vkCmdSetScissor<'h>(commandBuffer: VkCommandBuffer<'h>, firstScissor: u32, pScissors: &[VkRect2D]) {
+pub fn vkCmdSetScissor<'h>(commandBuffer: VkCommandBuffer, firstScissor: u32, pScissors: &[VkRect2D]) {
   unsafe {
     let scissorCount = pScissors.len() as u32;
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -1670,7 +1598,7 @@ pub fn vkCmdSetScissor<'h>(commandBuffer: VkCommandBuffer<'h>, firstScissor: u32
 }
 
 /// Set the dynamic line width state
-pub fn vkCmdSetLineWidth<'h>(commandBuffer: VkCommandBuffer<'h>, lineWidth: f32) {
+pub fn vkCmdSetLineWidth<'h>(commandBuffer: VkCommandBuffer, lineWidth: f32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdSetLineWidth.unwrap()(commandBuffer.as_raw(), lineWidth)
@@ -1680,7 +1608,7 @@ pub fn vkCmdSetLineWidth<'h>(commandBuffer: VkCommandBuffer<'h>, lineWidth: f32)
 
 /// Set the depth bias dynamic state
 pub fn vkCmdSetDepthBias<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   depthBiasConstantFactor: f32,
   depthBiasClamp: f32,
   depthBiasSlopeFactor: f32,
@@ -1698,7 +1626,7 @@ pub fn vkCmdSetDepthBias<'h>(
 }
 
 /// Set the values of blend constants
-pub fn vkCmdSetBlendConstants<'h>(commandBuffer: VkCommandBuffer<'h>, blendConstants: [f32; 4]) {
+pub fn vkCmdSetBlendConstants<'h>(commandBuffer: VkCommandBuffer, blendConstants: [f32; 4]) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdSetBlendConstants.unwrap()(commandBuffer.as_raw(), blendConstants)
@@ -1707,7 +1635,7 @@ pub fn vkCmdSetBlendConstants<'h>(commandBuffer: VkCommandBuffer<'h>, blendConst
 }
 
 /// Set the depth bounds test values for a command buffer
-pub fn vkCmdSetDepthBounds<'h>(commandBuffer: VkCommandBuffer<'h>, minDepthBounds: f32, maxDepthBounds: f32) {
+pub fn vkCmdSetDepthBounds<'h>(commandBuffer: VkCommandBuffer, minDepthBounds: f32, maxDepthBounds: f32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdSetDepthBounds.unwrap()(commandBuffer.as_raw(), minDepthBounds, maxDepthBounds)
@@ -1716,11 +1644,7 @@ pub fn vkCmdSetDepthBounds<'h>(commandBuffer: VkCommandBuffer<'h>, minDepthBound
 }
 
 /// Set the stencil compare mask dynamic state
-pub fn vkCmdSetStencilCompareMask<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  faceMask: VkStencilFaceFlags,
-  compareMask: u32,
-) {
+pub fn vkCmdSetStencilCompareMask<'h>(commandBuffer: VkCommandBuffer, faceMask: VkStencilFaceFlags, compareMask: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdSetStencilCompareMask.unwrap()(commandBuffer.as_raw(), faceMask, compareMask)
@@ -1729,7 +1653,7 @@ pub fn vkCmdSetStencilCompareMask<'h>(
 }
 
 /// Set the stencil write mask dynamic state
-pub fn vkCmdSetStencilWriteMask<'h>(commandBuffer: VkCommandBuffer<'h>, faceMask: VkStencilFaceFlags, writeMask: u32) {
+pub fn vkCmdSetStencilWriteMask<'h>(commandBuffer: VkCommandBuffer, faceMask: VkStencilFaceFlags, writeMask: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdSetStencilWriteMask.unwrap()(commandBuffer.as_raw(), faceMask, writeMask)
@@ -1738,7 +1662,7 @@ pub fn vkCmdSetStencilWriteMask<'h>(commandBuffer: VkCommandBuffer<'h>, faceMask
 }
 
 /// Set the stencil reference dynamic state
-pub fn vkCmdSetStencilReference<'h>(commandBuffer: VkCommandBuffer<'h>, faceMask: VkStencilFaceFlags, reference: u32) {
+pub fn vkCmdSetStencilReference<'h>(commandBuffer: VkCommandBuffer, faceMask: VkStencilFaceFlags, reference: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdSetStencilReference.unwrap()(commandBuffer.as_raw(), faceMask, reference)
@@ -1748,11 +1672,11 @@ pub fn vkCmdSetStencilReference<'h>(commandBuffer: VkCommandBuffer<'h>, faceMask
 
 /// Binds descriptor sets to a command buffer
 pub fn vkCmdBindDescriptorSets<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   pipelineBindPoint: VkPipelineBindPoint,
-  layout: VkPipelineLayout<'h>,
+  layout: VkPipelineLayout,
   firstSet: u32,
-  pDescriptorSets: &[VkDescriptorSet<'h>],
+  pDescriptorSets: &[VkDescriptorSet],
   pDynamicOffsets: &[u32],
 ) {
   unsafe {
@@ -1775,8 +1699,8 @@ pub fn vkCmdBindDescriptorSets<'h>(
 
 /// Bind an index buffer to a command buffer
 pub fn vkCmdBindIndexBuffer<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  buffer: VkBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
+  buffer: VkBuffer,
   offset: VkDeviceSize,
   indexType: VkIndexType,
 ) {
@@ -1789,9 +1713,9 @@ pub fn vkCmdBindIndexBuffer<'h>(
 
 /// Bind vertex buffers to a command buffer
 pub fn vkCmdBindVertexBuffers<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   firstBinding: u32,
-  pBuffers: &[VkBuffer<'h>],
+  pBuffers: &[VkBuffer],
   pOffsets: &[VkDeviceSize],
 ) {
   unsafe {
@@ -1811,7 +1735,7 @@ pub fn vkCmdBindVertexBuffers<'h>(
 
 /// Draw primitives
 pub fn vkCmdDraw<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   vertexCount: u32,
   instanceCount: u32,
   firstVertex: u32,
@@ -1832,7 +1756,7 @@ pub fn vkCmdDraw<'h>(
 
 /// Issue an indexed draw into a command buffer
 pub fn vkCmdDrawIndexed<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   indexCount: u32,
   instanceCount: u32,
   firstIndex: u32,
@@ -1855,8 +1779,8 @@ pub fn vkCmdDrawIndexed<'h>(
 
 /// Issue an indirect draw into a command buffer
 pub fn vkCmdDrawIndirect<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  buffer: VkBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
+  buffer: VkBuffer,
   offset: VkDeviceSize,
   drawCount: u32,
   stride: u32,
@@ -1870,8 +1794,8 @@ pub fn vkCmdDrawIndirect<'h>(
 
 /// Perform an indexed indirect draw
 pub fn vkCmdDrawIndexedIndirect<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  buffer: VkBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
+  buffer: VkBuffer,
   offset: VkDeviceSize,
   drawCount: u32,
   stride: u32,
@@ -1884,7 +1808,7 @@ pub fn vkCmdDrawIndexedIndirect<'h>(
 }
 
 /// Dispatch compute work items
-pub fn vkCmdDispatch<'h>(commandBuffer: VkCommandBuffer<'h>, groupCountX: u32, groupCountY: u32, groupCountZ: u32) {
+pub fn vkCmdDispatch<'h>(commandBuffer: VkCommandBuffer, groupCountX: u32, groupCountY: u32, groupCountZ: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdDispatch.unwrap()(commandBuffer.as_raw(), groupCountX, groupCountY, groupCountZ)
@@ -1893,7 +1817,7 @@ pub fn vkCmdDispatch<'h>(commandBuffer: VkCommandBuffer<'h>, groupCountX: u32, g
 }
 
 /// Dispatch compute work items using indirect parameters
-pub fn vkCmdDispatchIndirect<'h>(commandBuffer: VkCommandBuffer<'h>, buffer: VkBuffer<'h>, offset: VkDeviceSize) {
+pub fn vkCmdDispatchIndirect<'h>(commandBuffer: VkCommandBuffer, buffer: VkBuffer, offset: VkDeviceSize) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdDispatchIndirect.unwrap()(commandBuffer.as_raw(), buffer.as_raw(), offset)
@@ -1903,9 +1827,9 @@ pub fn vkCmdDispatchIndirect<'h>(commandBuffer: VkCommandBuffer<'h>, buffer: VkB
 
 /// Copy data between buffer regions
 pub fn vkCmdCopyBuffer<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  srcBuffer: VkBuffer<'h>,
-  dstBuffer: VkBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
+  srcBuffer: VkBuffer,
+  dstBuffer: VkBuffer,
   pRegions: &[VkBufferCopy],
 ) {
   unsafe {
@@ -1924,10 +1848,10 @@ pub fn vkCmdCopyBuffer<'h>(
 
 /// Copy data between images
 pub fn vkCmdCopyImage<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  srcImage: VkImage<'h>,
+  commandBuffer: VkCommandBuffer,
+  srcImage: VkImage,
   srcImageLayout: VkImageLayout,
-  dstImage: VkImage<'h>,
+  dstImage: VkImage,
   dstImageLayout: VkImageLayout,
   pRegions: &[VkImageCopy],
 ) {
@@ -1949,10 +1873,10 @@ pub fn vkCmdCopyImage<'h>(
 
 /// Copy regions of an image, potentially performing format conversion,
 pub fn vkCmdBlitImage<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  srcImage: VkImage<'h>,
+  commandBuffer: VkCommandBuffer,
+  srcImage: VkImage,
   srcImageLayout: VkImageLayout,
-  dstImage: VkImage<'h>,
+  dstImage: VkImage,
   dstImageLayout: VkImageLayout,
   pRegions: &[VkImageBlit],
   filter: VkFilter,
@@ -1976,9 +1900,9 @@ pub fn vkCmdBlitImage<'h>(
 
 /// Copy data from a buffer into an image
 pub fn vkCmdCopyBufferToImage<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  srcBuffer: VkBuffer<'h>,
-  dstImage: VkImage<'h>,
+  commandBuffer: VkCommandBuffer,
+  srcBuffer: VkBuffer,
+  dstImage: VkImage,
   dstImageLayout: VkImageLayout,
   pRegions: &[VkBufferImageCopy],
 ) {
@@ -1999,10 +1923,10 @@ pub fn vkCmdCopyBufferToImage<'h>(
 
 /// Copy image data into a buffer
 pub fn vkCmdCopyImageToBuffer<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  srcImage: VkImage<'h>,
+  commandBuffer: VkCommandBuffer,
+  srcImage: VkImage,
   srcImageLayout: VkImageLayout,
-  dstBuffer: VkBuffer<'h>,
+  dstBuffer: VkBuffer,
   pRegions: &[VkBufferImageCopy],
 ) {
   unsafe {
@@ -2022,8 +1946,8 @@ pub fn vkCmdCopyImageToBuffer<'h>(
 
 /// Update a buffer\'s contents from host memory
 pub fn vkCmdUpdateBuffer<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  dstBuffer: VkBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
+  dstBuffer: VkBuffer,
   dstOffset: VkDeviceSize,
   pData: &[u8],
 ) {
@@ -2043,8 +1967,8 @@ pub fn vkCmdUpdateBuffer<'h>(
 
 /// Fill a region of a buffer with a fixed value
 pub fn vkCmdFillBuffer<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  dstBuffer: VkBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
+  dstBuffer: VkBuffer,
   dstOffset: VkDeviceSize,
   size: VkDeviceSize,
   data: u32,
@@ -2058,8 +1982,8 @@ pub fn vkCmdFillBuffer<'h>(
 
 /// Clear regions of a color image
 pub fn vkCmdClearColorImage<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  image: VkImage<'h>,
+  commandBuffer: VkCommandBuffer,
+  image: VkImage,
   imageLayout: VkImageLayout,
   pColor: &VkClearColorValue,
   pRanges: &[VkImageSubresourceRange],
@@ -2071,7 +1995,7 @@ pub fn vkCmdClearColorImage<'h>(
         commandBuffer.as_raw(),
         image.as_raw(),
         imageLayout,
-        pColor.as_raw(),
+        pColor,
         rangeCount,
         pRanges.as_raw(),
       )
@@ -2081,8 +2005,8 @@ pub fn vkCmdClearColorImage<'h>(
 
 /// Fill regions of a combined depth/stencil image
 pub fn vkCmdClearDepthStencilImage<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  image: VkImage<'h>,
+  commandBuffer: VkCommandBuffer,
+  image: VkImage,
   imageLayout: VkImageLayout,
   pDepthStencil: &VkClearDepthStencilValue,
   pRanges: &[VkImageSubresourceRange],
@@ -2094,7 +2018,7 @@ pub fn vkCmdClearDepthStencilImage<'h>(
         commandBuffer.as_raw(),
         image.as_raw(),
         imageLayout,
-        pDepthStencil.as_raw(),
+        pDepthStencil,
         rangeCount,
         pRanges.as_raw(),
       )
@@ -2104,7 +2028,7 @@ pub fn vkCmdClearDepthStencilImage<'h>(
 
 /// Clear regions within currently bound framebuffer attachments
 pub fn vkCmdClearAttachments<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   pAttachments: &[VkClearAttachment],
   pRects: &[VkClearRect],
 ) {
@@ -2125,10 +2049,10 @@ pub fn vkCmdClearAttachments<'h>(
 
 /// Resolve regions of an image
 pub fn vkCmdResolveImage<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  srcImage: VkImage<'h>,
+  commandBuffer: VkCommandBuffer,
+  srcImage: VkImage,
   srcImageLayout: VkImageLayout,
-  dstImage: VkImage<'h>,
+  dstImage: VkImage,
   dstImageLayout: VkImageLayout,
   pRegions: &[VkImageResolve],
 ) {
@@ -2149,7 +2073,7 @@ pub fn vkCmdResolveImage<'h>(
 }
 
 /// Set an event object to signaled state
-pub fn vkCmdSetEvent<'h>(commandBuffer: VkCommandBuffer<'h>, event: VkEvent<'h>, stageMask: VkPipelineStageFlags) {
+pub fn vkCmdSetEvent<'h>(commandBuffer: VkCommandBuffer, event: VkEvent, stageMask: VkPipelineStageFlags) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdSetEvent.unwrap()(commandBuffer.as_raw(), event.as_raw(), stageMask)
@@ -2158,7 +2082,7 @@ pub fn vkCmdSetEvent<'h>(commandBuffer: VkCommandBuffer<'h>, event: VkEvent<'h>,
 }
 
 /// Reset an event object to non-signaled state
-pub fn vkCmdResetEvent<'h>(commandBuffer: VkCommandBuffer<'h>, event: VkEvent<'h>, stageMask: VkPipelineStageFlags) {
+pub fn vkCmdResetEvent<'h>(commandBuffer: VkCommandBuffer, event: VkEvent, stageMask: VkPipelineStageFlags) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdResetEvent.unwrap()(commandBuffer.as_raw(), event.as_raw(), stageMask)
@@ -2168,13 +2092,13 @@ pub fn vkCmdResetEvent<'h>(commandBuffer: VkCommandBuffer<'h>, event: VkEvent<'h
 
 /// Wait for one or more events and insert a set of memory
 pub fn vkCmdWaitEvents<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  pEvents: &[VkEvent<'h>],
+  commandBuffer: VkCommandBuffer,
+  pEvents: &[VkEvent],
   srcStageMask: VkPipelineStageFlags,
   dstStageMask: VkPipelineStageFlags,
   pMemoryBarriers: &[VkMemoryBarrier],
-  pBufferMemoryBarriers: &[VkBufferMemoryBarrier<'_, 'h>],
-  pImageMemoryBarriers: &[VkImageMemoryBarrier<'_, 'h>],
+  pBufferMemoryBarriers: &[VkBufferMemoryBarrier],
+  pImageMemoryBarriers: &[VkImageMemoryBarrier],
 ) {
   unsafe {
     let eventCount = pEvents.len() as u32;
@@ -2201,13 +2125,13 @@ pub fn vkCmdWaitEvents<'h>(
 
 /// Insert a memory dependency
 pub fn vkCmdPipelineBarrier<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   srcStageMask: VkPipelineStageFlags,
   dstStageMask: VkPipelineStageFlags,
   dependencyFlags: VkDependencyFlags,
   pMemoryBarriers: &[VkMemoryBarrier],
-  pBufferMemoryBarriers: &[VkBufferMemoryBarrier<'_, 'h>],
-  pImageMemoryBarriers: &[VkImageMemoryBarrier<'_, 'h>],
+  pBufferMemoryBarriers: &[VkBufferMemoryBarrier],
+  pImageMemoryBarriers: &[VkImageMemoryBarrier],
 ) {
   unsafe {
     let memoryBarrierCount = pMemoryBarriers.len() as u32;
@@ -2232,8 +2156,8 @@ pub fn vkCmdPipelineBarrier<'h>(
 
 /// Begin a query
 pub fn vkCmdBeginQuery<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  queryPool: VkQueryPool<'h>,
+  commandBuffer: VkCommandBuffer,
+  queryPool: VkQueryPool,
   query: u32,
   flags: VkQueryControlFlags,
 ) {
@@ -2245,7 +2169,7 @@ pub fn vkCmdBeginQuery<'h>(
 }
 
 /// Ends a query
-pub fn vkCmdEndQuery<'h>(commandBuffer: VkCommandBuffer<'h>, queryPool: VkQueryPool<'h>, query: u32) {
+pub fn vkCmdEndQuery<'h>(commandBuffer: VkCommandBuffer, queryPool: VkQueryPool, query: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdEndQuery.unwrap()(commandBuffer.as_raw(), queryPool.as_raw(), query)
@@ -2255,8 +2179,8 @@ pub fn vkCmdEndQuery<'h>(commandBuffer: VkCommandBuffer<'h>, queryPool: VkQueryP
 
 /// Reset queries in a query pool
 pub fn vkCmdResetQueryPool<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  queryPool: VkQueryPool<'h>,
+  commandBuffer: VkCommandBuffer,
+  queryPool: VkQueryPool,
   firstQuery: u32,
   queryCount: u32,
 ) {
@@ -2269,9 +2193,9 @@ pub fn vkCmdResetQueryPool<'h>(
 
 /// Write a device timestamp into a query object
 pub fn vkCmdWriteTimestamp<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   pipelineStage: VkPipelineStageFlagBits,
-  queryPool: VkQueryPool<'h>,
+  queryPool: VkQueryPool,
   query: u32,
 ) {
   unsafe {
@@ -2283,11 +2207,11 @@ pub fn vkCmdWriteTimestamp<'h>(
 
 /// Copy the results of queries in a query pool to a buffer object
 pub fn vkCmdCopyQueryPoolResults<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  queryPool: VkQueryPool<'h>,
+  commandBuffer: VkCommandBuffer,
+  queryPool: VkQueryPool,
   firstQuery: u32,
   queryCount: u32,
-  dstBuffer: VkBuffer<'h>,
+  dstBuffer: VkBuffer,
   dstOffset: VkDeviceSize,
   stride: VkDeviceSize,
   flags: VkQueryResultFlags,
@@ -2310,8 +2234,8 @@ pub fn vkCmdCopyQueryPoolResults<'h>(
 
 /// Update the values of push constants
 pub fn vkCmdPushConstants<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  layout: VkPipelineLayout<'h>,
+  commandBuffer: VkCommandBuffer,
+  layout: VkPipelineLayout,
   stageFlags: VkShaderStageFlags,
   offset: u32,
   pValues: &[u8],
@@ -2333,19 +2257,19 @@ pub fn vkCmdPushConstants<'h>(
 
 /// Begin a new render pass
 pub fn vkCmdBeginRenderPass<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  pRenderPassBegin: &VkRenderPassBeginInfo<'_, 'h>,
+  commandBuffer: VkCommandBuffer,
+  pRenderPassBegin: &VkRenderPassBeginInfo,
   contents: VkSubpassContents,
 ) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
-      _t.vkCmdBeginRenderPass.unwrap()(commandBuffer.as_raw(), pRenderPassBegin.as_raw(), contents)
+      _t.vkCmdBeginRenderPass.unwrap()(commandBuffer.as_raw(), pRenderPassBegin, contents)
     })
   }
 }
 
 /// Transition to the next subpass of a render pass
-pub fn vkCmdNextSubpass<'h>(commandBuffer: VkCommandBuffer<'h>, contents: VkSubpassContents) {
+pub fn vkCmdNextSubpass<'h>(commandBuffer: VkCommandBuffer, contents: VkSubpassContents) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdNextSubpass.unwrap()(commandBuffer.as_raw(), contents)
@@ -2354,7 +2278,7 @@ pub fn vkCmdNextSubpass<'h>(commandBuffer: VkCommandBuffer<'h>, contents: VkSubp
 }
 
 /// End the current render pass
-pub fn vkCmdEndRenderPass<'h>(commandBuffer: VkCommandBuffer<'h>) {
+pub fn vkCmdEndRenderPass<'h>(commandBuffer: VkCommandBuffer) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdEndRenderPass.unwrap()(commandBuffer.as_raw())
@@ -2363,7 +2287,7 @@ pub fn vkCmdEndRenderPass<'h>(commandBuffer: VkCommandBuffer<'h>) {
 }
 
 /// Execute a secondary command buffer from a primary command buffer
-pub fn vkCmdExecuteCommands<'h>(commandBuffer: VkCommandBuffer<'h>, pCommandBuffers: &[VkCommandBuffer<'h>]) {
+pub fn vkCmdExecuteCommands<'h>(commandBuffer: VkCommandBuffer, pCommandBuffers: &[VkCommandBuffer]) {
   unsafe {
     let commandBufferCount = pCommandBuffers.len() as u32;
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
@@ -2377,8 +2301,8 @@ pub fn vkCmdExecuteCommands<'h>(commandBuffer: VkCommandBuffer<'h>, pCommandBuff
 /// Destroy a VkSurfaceKHR object
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkDestroySurfaceKHR<'h>(
-  instance: VkInstance<'h>,
-  surface: Option<VkSurfaceKHR<'h>>,
+  instance: VkInstance,
+  surface: Option<VkSurfaceKHR>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -2391,9 +2315,9 @@ pub fn vkDestroySurfaceKHR<'h>(
 /// Query if presentation is supported
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkGetPhysicalDeviceSurfaceSupportKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   queueFamilyIndex: u32,
-  surface: VkSurfaceKHR<'h>,
+  surface: VkSurfaceKHR,
 ) -> VkResult<bool> {
   unsafe {
     let mut pSupported: VkBool32 = ::std::mem::zeroed();
@@ -2402,7 +2326,7 @@ pub fn vkGetPhysicalDeviceSurfaceSupportKHR<'h>(
         physicalDevice.as_raw(),
         queueFamilyIndex,
         surface.as_raw(),
-        &mut pSupported,
+        (&mut pSupported).as_raw(),
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -2415,8 +2339,8 @@ pub fn vkGetPhysicalDeviceSurfaceSupportKHR<'h>(
 /// Query surface capabilities
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkGetPhysicalDeviceSurfaceCapabilitiesKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  surface: VkSurfaceKHR<'h>,
+  physicalDevice: VkPhysicalDevice,
+  surface: VkSurfaceKHR,
 ) -> VkResult<VkSurfaceCapabilitiesKHR> {
   unsafe {
     let mut pSurfaceCapabilities: VkSurfaceCapabilitiesKHR = ::std::mem::zeroed();
@@ -2424,7 +2348,7 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilitiesKHR<'h>(
       let _r = _t.vkGetPhysicalDeviceSurfaceCapabilitiesKHR.unwrap()(
         physicalDevice.as_raw(),
         surface.as_raw(),
-        (&mut pSurfaceCapabilities).as_raw(),
+        &mut pSurfaceCapabilities,
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -2437,8 +2361,8 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilitiesKHR<'h>(
 /// Query color formats supported by surface
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkGetPhysicalDeviceSurfaceFormatsKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  surface: VkSurfaceKHR<'h>,
+  physicalDevice: VkPhysicalDevice,
+  surface: VkSurfaceKHR,
 ) -> VkResult<Vec<VkSurfaceFormatKHR>> {
   unsafe {
     let mut pSurfaceFormatCount: u32 = 0;
@@ -2481,8 +2405,8 @@ pub fn vkGetPhysicalDeviceSurfaceFormatsKHR<'h>(
 /// Query supported presentation modes
 #[cfg(feature = "VK_KHR_surface")]
 pub fn vkGetPhysicalDeviceSurfacePresentModesKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  surface: VkSurfaceKHR<'h>,
+  physicalDevice: VkPhysicalDevice,
+  surface: VkSurfaceKHR,
 ) -> VkResult<Vec<VkPresentModeKHR>> {
   unsafe {
     let mut pPresentModeCount: u32 = 0;
@@ -2527,8 +2451,8 @@ pub fn vkGetPhysicalDeviceSurfacePresentModesKHR<'h>(
 /// Create a swapchain
 #[cfg(feature = "VK_KHR_swapchain")]
 pub fn vkCreateSwapchainKHR<'h>(
-  device: VkDevice<'h>,
-  pCreateInfo: &VkSwapchainCreateInfoKHR<'_, 'h>,
+  device: VkDevice,
+  pCreateInfo: &VkSwapchainCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSwapchainKHR<'h>> {
   unsafe {
@@ -2536,7 +2460,7 @@ pub fn vkCreateSwapchainKHR<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateSwapchainKHR.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSwapchain).as_raw(),
       );
@@ -2551,8 +2475,8 @@ pub fn vkCreateSwapchainKHR<'h>(
 /// Destroy a swapchain object
 #[cfg(feature = "VK_KHR_swapchain")]
 pub fn vkDestroySwapchainKHR<'h>(
-  device: VkDevice<'h>,
-  swapchain: Option<VkSwapchainKHR<'h>>,
+  device: VkDevice,
+  swapchain: Option<VkSwapchainKHR>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -2564,7 +2488,7 @@ pub fn vkDestroySwapchainKHR<'h>(
 
 /// Obtain the array of presentable images associated with a swapchain
 #[cfg(feature = "VK_KHR_swapchain")]
-pub fn vkGetSwapchainImagesKHR<'h>(device: VkDevice<'h>, swapchain: VkSwapchainKHR<'h>) -> VkResult<Vec<VkImage<'h>>> {
+pub fn vkGetSwapchainImagesKHR<'h>(device: VkDevice, swapchain: VkSwapchainKHR) -> VkResult<Vec<VkImage<'h>>> {
   unsafe {
     let mut pSwapchainImageCount: u32 = 0;
     let mut pSwapchainImages: Vec<VkImage<'h>> = Vec::new();
@@ -2606,11 +2530,11 @@ pub fn vkGetSwapchainImagesKHR<'h>(device: VkDevice<'h>, swapchain: VkSwapchainK
 /// Retrieve the index of the next available presentable image
 #[cfg(feature = "VK_KHR_swapchain")]
 pub fn vkAcquireNextImageKHR<'h>(
-  device: VkDevice<'h>,
-  swapchain: VkSwapchainKHR<'h>,
+  device: VkDevice,
+  swapchain: VkSwapchainKHR,
   timeout: u64,
-  semaphore: Option<VkSemaphore<'h>>,
-  fence: Option<VkFence<'h>>,
+  semaphore: Option<VkSemaphore>,
+  fence: Option<VkFence>,
 ) -> VkResult<u32> {
   unsafe {
     let mut pImageIndex: u32 = ::std::mem::zeroed();
@@ -2633,12 +2557,8 @@ pub fn vkAcquireNextImageKHR<'h>(
 
 /// Queue an image for presentation
 #[cfg(feature = "VK_KHR_swapchain")]
-pub fn vkQueuePresentKHR<'h>(queue: VkQueue<'h>, pPresentInfo: &VkPresentInfoKHR<'_, 'h>) -> VkResult {
-  unsafe {
-    VkDeviceDispatchTable::with(queue, |_t| {
-      _t.vkQueuePresentKHR.unwrap()(queue.as_raw(), pPresentInfo.as_raw())
-    })
-  }
+pub fn vkQueuePresentKHR<'h>(queue: VkQueue, pPresentInfo: &VkPresentInfoKHR) -> VkResult {
+  unsafe { VkDeviceDispatchTable::with(queue, |_t| _t.vkQueuePresentKHR.unwrap()(queue.as_raw(), pPresentInfo)) }
 }
 
 // feature: VK_KHR_display
@@ -2646,7 +2566,7 @@ pub fn vkQueuePresentKHR<'h>(queue: VkQueue<'h>, pPresentInfo: &VkPresentInfoKHR
 /// Query information about the available displays
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetPhysicalDeviceDisplayPropertiesKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
 ) -> VkResult<Vec<VkDisplayPropertiesKHR<'_, 'h>>> {
   unsafe {
     let mut pPropertyCount: u32 = 0;
@@ -2687,7 +2607,7 @@ pub fn vkGetPhysicalDeviceDisplayPropertiesKHR<'h>(
 /// Query the plane properties
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetPhysicalDeviceDisplayPlanePropertiesKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
 ) -> VkResult<Vec<VkDisplayPlanePropertiesKHR<'h>>> {
   unsafe {
     let mut pPropertyCount: u32 = 0;
@@ -2728,7 +2648,7 @@ pub fn vkGetPhysicalDeviceDisplayPlanePropertiesKHR<'h>(
 /// Query the list of displays a plane supports
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetDisplayPlaneSupportedDisplaysKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   planeIndex: u32,
 ) -> VkResult<Vec<VkDisplayKHR<'h>>> {
   unsafe {
@@ -2772,8 +2692,8 @@ pub fn vkGetDisplayPlaneSupportedDisplaysKHR<'h>(
 /// Query the set of mode properties supported by the display
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetDisplayModePropertiesKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  display: VkDisplayKHR<'h>,
+  physicalDevice: VkPhysicalDevice,
+  display: VkDisplayKHR,
 ) -> VkResult<Vec<VkDisplayModePropertiesKHR<'h>>> {
   unsafe {
     let mut pPropertyCount: u32 = 0;
@@ -2816,8 +2736,8 @@ pub fn vkGetDisplayModePropertiesKHR<'h>(
 /// Create a display mode
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkCreateDisplayModeKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  display: VkDisplayKHR<'h>,
+  physicalDevice: VkPhysicalDevice,
+  display: VkDisplayKHR,
   pCreateInfo: &VkDisplayModeCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkDisplayModeKHR<'h>> {
@@ -2827,7 +2747,7 @@ pub fn vkCreateDisplayModeKHR<'h>(
       let _r = _t.vkCreateDisplayModeKHR.unwrap()(
         physicalDevice.as_raw(),
         display.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pMode).as_raw(),
       );
@@ -2842,8 +2762,8 @@ pub fn vkCreateDisplayModeKHR<'h>(
 /// Query capabilities of a mode and plane combination
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkGetDisplayPlaneCapabilitiesKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  mode: VkDisplayModeKHR<'h>,
+  physicalDevice: VkPhysicalDevice,
+  mode: VkDisplayModeKHR,
   planeIndex: u32,
 ) -> VkResult<VkDisplayPlaneCapabilitiesKHR> {
   unsafe {
@@ -2853,7 +2773,7 @@ pub fn vkGetDisplayPlaneCapabilitiesKHR<'h>(
         physicalDevice.as_raw(),
         mode.as_raw(),
         planeIndex,
-        (&mut pCapabilities).as_raw(),
+        &mut pCapabilities,
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -2866,8 +2786,8 @@ pub fn vkGetDisplayPlaneCapabilitiesKHR<'h>(
 /// Create a `VkSurfaceKHR` structure representing a display plane and mode
 #[cfg(feature = "VK_KHR_display")]
 pub fn vkCreateDisplayPlaneSurfaceKHR<'h>(
-  instance: VkInstance<'h>,
-  pCreateInfo: &VkDisplaySurfaceCreateInfoKHR<'_, 'h>,
+  instance: VkInstance,
+  pCreateInfo: &VkDisplaySurfaceCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
   unsafe {
@@ -2875,7 +2795,7 @@ pub fn vkCreateDisplayPlaneSurfaceKHR<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateDisplayPlaneSurfaceKHR.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -2892,10 +2812,10 @@ pub fn vkCreateDisplayPlaneSurfaceKHR<'h>(
 /// Create multiple swapchains that share presentable images
 #[cfg(feature = "VK_KHR_display_swapchain")]
 pub fn vkCreateSharedSwapchainsKHR<'h>(
-  device: VkDevice<'h>,
-  pCreateInfos: &[VkSwapchainCreateInfoKHR<'_, 'h>],
+  device: VkDevice,
+  pCreateInfos: &[VkSwapchainCreateInfoKHR],
   pAllocator: Option<&VkAllocationCallbacks>,
-  pSwapchains: &mut [VkSwapchainKHR<'h>],
+  pSwapchains: &mut [VkSwapchainKHR],
 ) -> VkResult {
   unsafe {
     let swapchainCount = pCreateInfos.len() as u32;
@@ -2919,7 +2839,7 @@ pub fn vkCreateSharedSwapchainsKHR<'h>(
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
 pub fn vkCreateXlibSurfaceKHR<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkXlibSurfaceCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
@@ -2928,7 +2848,7 @@ pub fn vkCreateXlibSurfaceKHR<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateXlibSurfaceKHR.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -2944,7 +2864,7 @@ pub fn vkCreateXlibSurfaceKHR<'h>(
 #[cfg(feature = "VK_KHR_xlib_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_KHR")]
 pub fn vkGetPhysicalDeviceXlibPresentationSupportKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   queueFamilyIndex: u32,
   dpy: *mut wsi::xlib::Display,
   visualID: wsi::xlib::VisualID,
@@ -2968,7 +2888,7 @@ pub fn vkGetPhysicalDeviceXlibPresentationSupportKHR<'h>(
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
 pub fn vkCreateXcbSurfaceKHR<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkXcbSurfaceCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
@@ -2977,7 +2897,7 @@ pub fn vkCreateXcbSurfaceKHR<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateXcbSurfaceKHR.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -2993,7 +2913,7 @@ pub fn vkCreateXcbSurfaceKHR<'h>(
 #[cfg(feature = "VK_KHR_xcb_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_XCB_KHR")]
 pub fn vkGetPhysicalDeviceXcbPresentationSupportKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   queueFamilyIndex: u32,
   connection: *mut wsi::xcb::xcb_connection_t,
   visual_id: wsi::xcb::xcb_visualid_t,
@@ -3016,7 +2936,7 @@ pub fn vkGetPhysicalDeviceXcbPresentationSupportKHR<'h>(
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
 pub fn vkCreateWaylandSurfaceKHR<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkWaylandSurfaceCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
@@ -3025,7 +2945,7 @@ pub fn vkCreateWaylandSurfaceKHR<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateWaylandSurfaceKHR.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -3041,7 +2961,7 @@ pub fn vkCreateWaylandSurfaceKHR<'h>(
 #[cfg(feature = "VK_KHR_wayland_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WAYLAND_KHR")]
 pub fn vkGetPhysicalDeviceWaylandPresentationSupportKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   queueFamilyIndex: u32,
   display: *mut wsi::wayland::wl_display,
 ) -> bool {
@@ -3058,7 +2978,7 @@ pub fn vkGetPhysicalDeviceWaylandPresentationSupportKHR<'h>(
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
 pub fn vkCreateMirSurfaceKHR<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkMirSurfaceCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
@@ -3067,7 +2987,7 @@ pub fn vkCreateMirSurfaceKHR<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateMirSurfaceKHR.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -3083,7 +3003,7 @@ pub fn vkCreateMirSurfaceKHR<'h>(
 #[cfg(feature = "VK_KHR_mir_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MIR_KHR")]
 pub fn vkGetPhysicalDeviceMirPresentationSupportKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   queueFamilyIndex: u32,
   connection: *mut wsi::mir::MirConnection,
 ) -> bool {
@@ -3100,7 +3020,7 @@ pub fn vkGetPhysicalDeviceMirPresentationSupportKHR<'h>(
 #[cfg(feature = "VK_KHR_android_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_ANDROID_KHR")]
 pub fn vkCreateAndroidSurfaceKHR<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkAndroidSurfaceCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
@@ -3109,7 +3029,7 @@ pub fn vkCreateAndroidSurfaceKHR<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateAndroidSurfaceKHR.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -3127,7 +3047,7 @@ pub fn vkCreateAndroidSurfaceKHR<'h>(
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkCreateWin32SurfaceKHR<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkWin32SurfaceCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
@@ -3136,7 +3056,7 @@ pub fn vkCreateWin32SurfaceKHR<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateWin32SurfaceKHR.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -3152,7 +3072,7 @@ pub fn vkCreateWin32SurfaceKHR<'h>(
 #[cfg(feature = "VK_KHR_win32_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetPhysicalDeviceWin32PresentationSupportKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   queueFamilyIndex: u32,
 ) -> bool {
   unsafe {
@@ -3167,7 +3087,7 @@ pub fn vkGetPhysicalDeviceWin32PresentationSupportKHR<'h>(
 /// Create a debug report callback object
 #[cfg(feature = "VK_EXT_debug_report")]
 pub fn vkCreateDebugReportCallbackEXT<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkDebugReportCallbackCreateInfoEXT,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkDebugReportCallbackEXT<'h>> {
@@ -3176,7 +3096,7 @@ pub fn vkCreateDebugReportCallbackEXT<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateDebugReportCallbackEXT.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pCallback).as_raw(),
       );
@@ -3191,8 +3111,8 @@ pub fn vkCreateDebugReportCallbackEXT<'h>(
 /// Destroy a debug report callback object
 #[cfg(feature = "VK_EXT_debug_report")]
 pub fn vkDestroyDebugReportCallbackEXT<'h>(
-  instance: VkInstance<'h>,
-  callback: VkDebugReportCallbackEXT<'h>,
+  instance: VkInstance,
+  callback: VkDebugReportCallbackEXT,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -3205,7 +3125,7 @@ pub fn vkDestroyDebugReportCallbackEXT<'h>(
 /// Inject a message into a debug stream
 #[cfg(feature = "VK_EXT_debug_report")]
 pub fn vkDebugReportMessageEXT<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   flags: VkDebugReportFlagsEXT,
   objectType: VkDebugReportObjectTypeEXT,
   object: u64,
@@ -3234,37 +3154,37 @@ pub fn vkDebugReportMessageEXT<'h>(
 
 /// Attach arbitrary data to an object
 #[cfg(feature = "VK_EXT_debug_marker")]
-pub fn vkDebugMarkerSetObjectTagEXT<'h>(device: VkDevice<'h>, pTagInfo: &VkDebugMarkerObjectTagInfoEXT) -> VkResult {
+pub fn vkDebugMarkerSetObjectTagEXT<'h>(device: VkDevice, pTagInfo: &VkDebugMarkerObjectTagInfoEXT) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkDebugMarkerSetObjectTagEXT.unwrap()(device.as_raw(), pTagInfo.as_raw())
+      _t.vkDebugMarkerSetObjectTagEXT.unwrap()(device.as_raw(), pTagInfo)
     })
   }
 }
 
 /// Give a user-friendly name to an object
 #[cfg(feature = "VK_EXT_debug_marker")]
-pub fn vkDebugMarkerSetObjectNameEXT<'h>(device: VkDevice<'h>, pNameInfo: &VkDebugMarkerObjectNameInfoEXT) -> VkResult {
+pub fn vkDebugMarkerSetObjectNameEXT<'h>(device: VkDevice, pNameInfo: &VkDebugMarkerObjectNameInfoEXT) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkDebugMarkerSetObjectNameEXT.unwrap()(device.as_raw(), pNameInfo.as_raw())
+      _t.vkDebugMarkerSetObjectNameEXT.unwrap()(device.as_raw(), pNameInfo)
     })
   }
 }
 
 /// Open a command buffer marker region
 #[cfg(feature = "VK_EXT_debug_marker")]
-pub fn vkCmdDebugMarkerBeginEXT<'h>(commandBuffer: VkCommandBuffer<'h>, pMarkerInfo: &VkDebugMarkerMarkerInfoEXT) {
+pub fn vkCmdDebugMarkerBeginEXT<'h>(commandBuffer: VkCommandBuffer, pMarkerInfo: &VkDebugMarkerMarkerInfoEXT) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
-      _t.vkCmdDebugMarkerBeginEXT.unwrap()(commandBuffer.as_raw(), pMarkerInfo.as_raw())
+      _t.vkCmdDebugMarkerBeginEXT.unwrap()(commandBuffer.as_raw(), pMarkerInfo)
     })
   }
 }
 
 /// Close a command buffer marker region
 #[cfg(feature = "VK_EXT_debug_marker")]
-pub fn vkCmdDebugMarkerEndEXT<'h>(commandBuffer: VkCommandBuffer<'h>) {
+pub fn vkCmdDebugMarkerEndEXT<'h>(commandBuffer: VkCommandBuffer) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdDebugMarkerEndEXT.unwrap()(commandBuffer.as_raw())
@@ -3274,10 +3194,10 @@ pub fn vkCmdDebugMarkerEndEXT<'h>(commandBuffer: VkCommandBuffer<'h>) {
 
 /// Insert a marker label into a command buffer
 #[cfg(feature = "VK_EXT_debug_marker")]
-pub fn vkCmdDebugMarkerInsertEXT<'h>(commandBuffer: VkCommandBuffer<'h>, pMarkerInfo: &VkDebugMarkerMarkerInfoEXT) {
+pub fn vkCmdDebugMarkerInsertEXT<'h>(commandBuffer: VkCommandBuffer, pMarkerInfo: &VkDebugMarkerMarkerInfoEXT) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
-      _t.vkCmdDebugMarkerInsertEXT.unwrap()(commandBuffer.as_raw(), pMarkerInfo.as_raw())
+      _t.vkCmdDebugMarkerInsertEXT.unwrap()(commandBuffer.as_raw(), pMarkerInfo)
     })
   }
 }
@@ -3287,10 +3207,10 @@ pub fn vkCmdDebugMarkerInsertEXT<'h>(commandBuffer: VkCommandBuffer<'h>, pMarker
 /// Perform an indirect draw with the draw count sourced from a buffer
 #[cfg(feature = "VK_AMD_draw_indirect_count")]
 pub fn vkCmdDrawIndirectCountAMD<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  buffer: VkBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
+  buffer: VkBuffer,
   offset: VkDeviceSize,
-  countBuffer: VkBuffer<'h>,
+  countBuffer: VkBuffer,
   countBufferOffset: VkDeviceSize,
   maxDrawCount: u32,
   stride: u32,
@@ -3313,10 +3233,10 @@ pub fn vkCmdDrawIndirectCountAMD<'h>(
 /// Perform an indexed indirect draw with the draw count sourced from a buffer
 #[cfg(feature = "VK_AMD_draw_indirect_count")]
 pub fn vkCmdDrawIndexedIndirectCountAMD<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  buffer: VkBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
+  buffer: VkBuffer,
   offset: VkDeviceSize,
-  countBuffer: VkBuffer<'h>,
+  countBuffer: VkBuffer,
   countBufferOffset: VkDeviceSize,
   maxDrawCount: u32,
   stride: u32,
@@ -3340,11 +3260,11 @@ pub fn vkCmdDrawIndexedIndirectCountAMD<'h>(
 
 /// Reports capabilities of a physical device
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-pub fn vkGetPhysicalDeviceFeatures2KHR<'h>(physicalDevice: VkPhysicalDevice<'h>) -> VkPhysicalDeviceFeatures2KHR {
+pub fn vkGetPhysicalDeviceFeatures2KHR<'h>(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceFeatures2KHR {
   unsafe {
     let mut pFeatures: VkPhysicalDeviceFeatures2KHR = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
-      _t.vkGetPhysicalDeviceFeatures2KHR.unwrap()(physicalDevice.as_raw(), (&mut pFeatures).as_raw());
+      _t.vkGetPhysicalDeviceFeatures2KHR.unwrap()(physicalDevice.as_raw(), &mut pFeatures);
       return pFeatures;
     })
   }
@@ -3352,11 +3272,11 @@ pub fn vkGetPhysicalDeviceFeatures2KHR<'h>(physicalDevice: VkPhysicalDevice<'h>)
 
 /// Returns properties of a physical device
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
-pub fn vkGetPhysicalDeviceProperties2KHR<'h>(physicalDevice: VkPhysicalDevice<'h>) -> VkPhysicalDeviceProperties2KHR {
+pub fn vkGetPhysicalDeviceProperties2KHR<'h>(physicalDevice: VkPhysicalDevice) -> VkPhysicalDeviceProperties2KHR {
   unsafe {
     let mut pProperties: VkPhysicalDeviceProperties2KHR = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
-      _t.vkGetPhysicalDeviceProperties2KHR.unwrap()(physicalDevice.as_raw(), (&mut pProperties).as_raw());
+      _t.vkGetPhysicalDeviceProperties2KHR.unwrap()(physicalDevice.as_raw(), &mut pProperties);
       return pProperties;
     })
   }
@@ -3365,17 +3285,13 @@ pub fn vkGetPhysicalDeviceProperties2KHR<'h>(physicalDevice: VkPhysicalDevice<'h
 /// Lists physical device\'s format capabilities
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceFormatProperties2KHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   format: VkFormat,
 ) -> VkFormatProperties2KHR {
   unsafe {
     let mut pFormatProperties: VkFormatProperties2KHR = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
-      _t.vkGetPhysicalDeviceFormatProperties2KHR.unwrap()(
-        physicalDevice.as_raw(),
-        format,
-        (&mut pFormatProperties).as_raw(),
-      );
+      _t.vkGetPhysicalDeviceFormatProperties2KHR.unwrap()(physicalDevice.as_raw(), format, &mut pFormatProperties);
       return pFormatProperties;
     })
   }
@@ -3384,7 +3300,7 @@ pub fn vkGetPhysicalDeviceFormatProperties2KHR<'h>(
 /// Lists physical device\'s image format capabilities
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceImageFormatProperties2KHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   pImageFormatInfo: &VkPhysicalDeviceImageFormatInfo2KHR,
 ) -> VkResult<VkImageFormatProperties2KHR> {
   unsafe {
@@ -3392,8 +3308,8 @@ pub fn vkGetPhysicalDeviceImageFormatProperties2KHR<'h>(
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       let _r = _t.vkGetPhysicalDeviceImageFormatProperties2KHR.unwrap()(
         physicalDevice.as_raw(),
-        pImageFormatInfo.as_raw(),
-        (&mut pImageFormatProperties).as_raw(),
+        pImageFormatInfo,
+        &mut pImageFormatProperties,
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -3406,7 +3322,7 @@ pub fn vkGetPhysicalDeviceImageFormatProperties2KHR<'h>(
 /// Reports properties of the queues of the specified physical device
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceQueueFamilyProperties2KHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
 ) -> Vec<VkQueueFamilyProperties2KHR> {
   unsafe {
     let mut pQueueFamilyPropertyCount: u32 = 0;
@@ -3435,12 +3351,12 @@ pub fn vkGetPhysicalDeviceQueueFamilyProperties2KHR<'h>(
 /// Reports memory information for the specified physical device
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceMemoryProperties2KHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
 ) -> VkPhysicalDeviceMemoryProperties2KHR {
   unsafe {
     let mut pMemoryProperties: VkPhysicalDeviceMemoryProperties2KHR = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
-      _t.vkGetPhysicalDeviceMemoryProperties2KHR.unwrap()(physicalDevice.as_raw(), (&mut pMemoryProperties).as_raw());
+      _t.vkGetPhysicalDeviceMemoryProperties2KHR.unwrap()(physicalDevice.as_raw(), &mut pMemoryProperties);
       return pMemoryProperties;
     })
   }
@@ -3449,7 +3365,7 @@ pub fn vkGetPhysicalDeviceMemoryProperties2KHR<'h>(
 /// Retrieve properties of an image format applied to sparse images
 #[cfg(feature = "VK_KHR_get_physical_device_properties2")]
 pub fn vkGetPhysicalDeviceSparseImageFormatProperties2KHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   pFormatInfo: &VkPhysicalDeviceSparseImageFormatInfo2KHR,
 ) -> Vec<VkSparseImageFormatProperties2KHR> {
   unsafe {
@@ -3458,7 +3374,7 @@ pub fn vkGetPhysicalDeviceSparseImageFormatProperties2KHR<'h>(
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkGetPhysicalDeviceSparseImageFormatProperties2KHR.unwrap()(
         physicalDevice.as_raw(),
-        pFormatInfo.as_raw(),
+        pFormatInfo,
         &mut pPropertyCount,
         ::std::ptr::null_mut(),
       );
@@ -3468,7 +3384,7 @@ pub fn vkGetPhysicalDeviceSparseImageFormatProperties2KHR<'h>(
       pProperties = Vec::with_capacity(pPropertyCount as usize);
       _t.vkGetPhysicalDeviceSparseImageFormatProperties2KHR.unwrap()(
         physicalDevice.as_raw(),
-        pFormatInfo.as_raw(),
+        pFormatInfo,
         &mut pPropertyCount,
         pProperties.as_mut_ptr().as_raw(),
       );
@@ -3483,8 +3399,8 @@ pub fn vkGetPhysicalDeviceSparseImageFormatProperties2KHR<'h>(
 /// Get information about a shader in a pipeline
 #[cfg(feature = "VK_AMD_shader_info")]
 pub fn vkGetShaderInfoAMD<'h>(
-  device: VkDevice<'h>,
-  pipeline: VkPipeline<'h>,
+  device: VkDevice,
+  pipeline: VkPipeline,
   shaderStage: VkShaderStageFlagBits,
   infoType: VkShaderInfoTypeAMD,
 ) -> VkResult<Vec<u8>> {
@@ -3535,7 +3451,7 @@ pub fn vkGetShaderInfoAMD<'h>(
 /// determine image capabilities compatible with external memory handle types
 #[cfg(feature = "VK_NV_external_memory_capabilities")]
 pub fn vkGetPhysicalDeviceExternalImageFormatPropertiesNV<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   format: VkFormat,
   eType: VkImageType,
   tiling: VkImageTiling,
@@ -3554,7 +3470,7 @@ pub fn vkGetPhysicalDeviceExternalImageFormatPropertiesNV<'h>(
         usage,
         flags,
         externalHandleType,
-        (&mut pExternalImageFormatProperties).as_raw(),
+        &mut pExternalImageFormatProperties,
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -3570,8 +3486,8 @@ pub fn vkGetPhysicalDeviceExternalImageFormatPropertiesNV<'h>(
 #[cfg(feature = "VK_NV_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetMemoryWin32HandleNV<'h>(
-  device: VkDevice<'h>,
-  memory: VkDeviceMemory<'h>,
+  device: VkDevice,
+  memory: VkDeviceMemory,
   handleType: VkExternalMemoryHandleTypeFlagsNV,
 ) -> VkResult<wsi::win32::HANDLE> {
   unsafe {
@@ -3592,7 +3508,7 @@ pub fn vkGetMemoryWin32HandleNV<'h>(
 /// logical device
 #[cfg(feature = "VK_KHX_device_group_creation")]
 pub fn vkEnumeratePhysicalDeviceGroupsKHX<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
 ) -> VkResult<Vec<VkPhysicalDeviceGroupPropertiesKHX<'h>>> {
   unsafe {
     let mut pPhysicalDeviceGroupCount: u32 = 0;
@@ -3635,7 +3551,7 @@ pub fn vkEnumeratePhysicalDeviceGroupsKHX<'h>(
 /// Query supported peer memory features of a device
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkGetDeviceGroupPeerMemoryFeaturesKHX<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   heapIndex: u32,
   localDeviceIndex: u32,
   remoteDeviceIndex: u32,
@@ -3657,7 +3573,7 @@ pub fn vkGetDeviceGroupPeerMemoryFeaturesKHX<'h>(
 
 /// Modify device mask of a command buffer
 #[cfg(feature = "VK_KHX_device_group")]
-pub fn vkCmdSetDeviceMaskKHX<'h>(commandBuffer: VkCommandBuffer<'h>, deviceMask: u32) {
+pub fn vkCmdSetDeviceMaskKHX<'h>(commandBuffer: VkCommandBuffer, deviceMask: u32) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
       _t.vkCmdSetDeviceMaskKHX.unwrap()(commandBuffer.as_raw(), deviceMask)
@@ -3668,7 +3584,7 @@ pub fn vkCmdSetDeviceMaskKHX<'h>(commandBuffer: VkCommandBuffer<'h>, deviceMask:
 /// Dispatch compute work items
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkCmdDispatchBaseKHX<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   baseGroupX: u32,
   baseGroupY: u32,
   baseGroupZ: u32,
@@ -3693,16 +3609,12 @@ pub fn vkCmdDispatchBaseKHX<'h>(
 
 /// Query present capabilities from other physical devices
 #[cfg(feature = "VK_KHX_device_group")]
-pub fn vkGetDeviceGroupPresentCapabilitiesKHX<'h>(
-  device: VkDevice<'h>,
-) -> VkResult<VkDeviceGroupPresentCapabilitiesKHX> {
+pub fn vkGetDeviceGroupPresentCapabilitiesKHX<'h>(device: VkDevice) -> VkResult<VkDeviceGroupPresentCapabilitiesKHX> {
   unsafe {
     let mut pDeviceGroupPresentCapabilities: VkDeviceGroupPresentCapabilitiesKHX = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkGetDeviceGroupPresentCapabilitiesKHX.unwrap()(
-        device.as_raw(),
-        (&mut pDeviceGroupPresentCapabilities).as_raw(),
-      );
+      let _r =
+        _t.vkGetDeviceGroupPresentCapabilitiesKHX.unwrap()(device.as_raw(), &mut pDeviceGroupPresentCapabilities);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -3714,8 +3626,8 @@ pub fn vkGetDeviceGroupPresentCapabilitiesKHX<'h>(
 /// Query present capabilities for a surface
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkGetDeviceGroupSurfacePresentModesKHX<'h>(
-  device: VkDevice<'h>,
-  surface: VkSurfaceKHR<'h>,
+  device: VkDevice,
+  surface: VkSurfaceKHR,
 ) -> VkResult<VkDeviceGroupPresentModeFlagsKHX> {
   unsafe {
     let mut pModes: VkDeviceGroupPresentModeFlagsKHX = ::std::mem::zeroed();
@@ -3732,8 +3644,8 @@ pub fn vkGetDeviceGroupSurfacePresentModesKHX<'h>(
 /// Query present rectangles for a surface on a physical device
 #[cfg(feature = "VK_KHX_device_group")]
 pub fn vkGetPhysicalDevicePresentRectanglesKHX<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  surface: VkSurfaceKHR<'h>,
+  physicalDevice: VkPhysicalDevice,
+  surface: VkSurfaceKHR,
 ) -> VkResult<Vec<VkRect2D>> {
   unsafe {
     let mut pRectCount: u32 = 0;
@@ -3775,14 +3687,11 @@ pub fn vkGetPhysicalDevicePresentRectanglesKHX<'h>(
 
 /// Retrieve the index of the next available presentable image
 #[cfg(feature = "VK_KHX_device_group")]
-pub fn vkAcquireNextImage2KHX<'h>(
-  device: VkDevice<'h>,
-  pAcquireInfo: &VkAcquireNextImageInfoKHX<'_, 'h>,
-) -> VkResult<u32> {
+pub fn vkAcquireNextImage2KHX<'h>(device: VkDevice, pAcquireInfo: &VkAcquireNextImageInfoKHX) -> VkResult<u32> {
   unsafe {
     let mut pImageIndex: u32 = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkAcquireNextImage2KHX.unwrap()(device.as_raw(), pAcquireInfo.as_raw(), &mut pImageIndex);
+      let _r = _t.vkAcquireNextImage2KHX.unwrap()(device.as_raw(), pAcquireInfo, &mut pImageIndex);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -3797,7 +3706,7 @@ pub fn vkAcquireNextImage2KHX<'h>(
 #[cfg(feature = "VK_NN_vi_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_VI_NN")]
 pub fn vkCreateViSurfaceNN<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkViSurfaceCreateInfoNN,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
@@ -3806,7 +3715,7 @@ pub fn vkCreateViSurfaceNN<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateViSurfaceNN.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -3822,11 +3731,7 @@ pub fn vkCreateViSurfaceNN<'h>(
 
 /// Trim a command pool
 #[cfg(feature = "VK_KHR_maintenance1")]
-pub fn vkTrimCommandPoolKHR<'h>(
-  device: VkDevice<'h>,
-  commandPool: VkCommandPool<'h>,
-  flags: VkCommandPoolTrimFlagsKHR,
-) {
+pub fn vkTrimCommandPoolKHR<'h>(device: VkDevice, commandPool: VkCommandPool, flags: VkCommandPoolTrimFlagsKHR) {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkTrimCommandPoolKHR.unwrap()(device.as_raw(), commandPool.as_raw(), flags)
@@ -3839,7 +3744,7 @@ pub fn vkTrimCommandPoolKHR<'h>(
 /// Query external handle types supported by buffers
 #[cfg(feature = "VK_KHR_external_memory_capabilities")]
 pub fn vkGetPhysicalDeviceExternalBufferPropertiesKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   pExternalBufferInfo: &VkPhysicalDeviceExternalBufferInfoKHR,
 ) -> VkExternalBufferPropertiesKHR {
   unsafe {
@@ -3847,8 +3752,8 @@ pub fn vkGetPhysicalDeviceExternalBufferPropertiesKHR<'h>(
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkGetPhysicalDeviceExternalBufferPropertiesKHR.unwrap()(
         physicalDevice.as_raw(),
-        pExternalBufferInfo.as_raw(),
-        (&mut pExternalBufferProperties).as_raw(),
+        pExternalBufferInfo,
+        &mut pExternalBufferProperties,
       );
       return pExternalBufferProperties;
     })
@@ -3861,13 +3766,13 @@ pub fn vkGetPhysicalDeviceExternalBufferPropertiesKHR<'h>(
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetMemoryWin32HandleKHR<'h>(
-  device: VkDevice<'h>,
-  pGetWin32HandleInfo: &VkMemoryGetWin32HandleInfoKHR<'_, 'h>,
+  device: VkDevice,
+  pGetWin32HandleInfo: &VkMemoryGetWin32HandleInfoKHR,
 ) -> VkResult<wsi::win32::HANDLE> {
   unsafe {
     let mut pHandle: wsi::win32::HANDLE = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkGetMemoryWin32HandleKHR.unwrap()(device.as_raw(), pGetWin32HandleInfo.as_raw(), &mut pHandle);
+      let _r = _t.vkGetMemoryWin32HandleKHR.unwrap()(device.as_raw(), pGetWin32HandleInfo, &mut pHandle);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -3880,7 +3785,7 @@ pub fn vkGetMemoryWin32HandleKHR<'h>(
 #[cfg(feature = "VK_KHR_external_memory_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetMemoryWin32HandlePropertiesKHR<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
   handle: wsi::win32::HANDLE,
 ) -> VkResult<VkMemoryWin32HandlePropertiesKHR> {
@@ -3891,7 +3796,7 @@ pub fn vkGetMemoryWin32HandlePropertiesKHR<'h>(
         device.as_raw(),
         handleType,
         handle,
-        (&mut pMemoryWin32HandleProperties).as_raw(),
+        &mut pMemoryWin32HandleProperties,
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -3905,11 +3810,11 @@ pub fn vkGetMemoryWin32HandlePropertiesKHR<'h>(
 
 /// Get a POSIX file descriptor for a memory object
 #[cfg(feature = "VK_KHR_external_memory_fd")]
-pub fn vkGetMemoryFdKHR<'h>(device: VkDevice<'h>, pGetFdInfo: &VkMemoryGetFdInfoKHR<'_, 'h>) -> VkResult<c_int> {
+pub fn vkGetMemoryFdKHR<'h>(device: VkDevice, pGetFdInfo: &VkMemoryGetFdInfoKHR) -> VkResult<c_int> {
   unsafe {
     let mut pFd: c_int = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkGetMemoryFdKHR.unwrap()(device.as_raw(), pGetFdInfo.as_raw(), &mut pFd);
+      let _r = _t.vkGetMemoryFdKHR.unwrap()(device.as_raw(), pGetFdInfo, &mut pFd);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -3921,15 +3826,14 @@ pub fn vkGetMemoryFdKHR<'h>(device: VkDevice<'h>, pGetFdInfo: &VkMemoryGetFdInfo
 /// Get Properties of External Memory File Descriptors
 #[cfg(feature = "VK_KHR_external_memory_fd")]
 pub fn vkGetMemoryFdPropertiesKHR<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
   fd: c_int,
 ) -> VkResult<VkMemoryFdPropertiesKHR> {
   unsafe {
     let mut pMemoryFdProperties: VkMemoryFdPropertiesKHR = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r =
-        _t.vkGetMemoryFdPropertiesKHR.unwrap()(device.as_raw(), handleType, fd, (&mut pMemoryFdProperties).as_raw());
+      let _r = _t.vkGetMemoryFdPropertiesKHR.unwrap()(device.as_raw(), handleType, fd, &mut pMemoryFdProperties);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -3943,7 +3847,7 @@ pub fn vkGetMemoryFdPropertiesKHR<'h>(
 /// Function for querying external semaphore handle capabilities.
 #[cfg(feature = "VK_KHR_external_semaphore_capabilities")]
 pub fn vkGetPhysicalDeviceExternalSemaphorePropertiesKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   pExternalSemaphoreInfo: &VkPhysicalDeviceExternalSemaphoreInfoKHR,
 ) -> VkExternalSemaphorePropertiesKHR {
   unsafe {
@@ -3951,8 +3855,8 @@ pub fn vkGetPhysicalDeviceExternalSemaphorePropertiesKHR<'h>(
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkGetPhysicalDeviceExternalSemaphorePropertiesKHR.unwrap()(
         physicalDevice.as_raw(),
-        pExternalSemaphoreInfo.as_raw(),
-        (&mut pExternalSemaphoreProperties).as_raw(),
+        pExternalSemaphoreInfo,
+        &mut pExternalSemaphoreProperties,
       );
       return pExternalSemaphoreProperties;
     })
@@ -3965,12 +3869,12 @@ pub fn vkGetPhysicalDeviceExternalSemaphorePropertiesKHR<'h>(
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkImportSemaphoreWin32HandleKHR<'h>(
-  device: VkDevice<'h>,
-  pImportSemaphoreWin32HandleInfo: &VkImportSemaphoreWin32HandleInfoKHR<'_, 'h>,
+  device: VkDevice,
+  pImportSemaphoreWin32HandleInfo: &VkImportSemaphoreWin32HandleInfoKHR,
 ) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkImportSemaphoreWin32HandleKHR.unwrap()(device.as_raw(), pImportSemaphoreWin32HandleInfo.as_raw())
+      _t.vkImportSemaphoreWin32HandleKHR.unwrap()(device.as_raw(), pImportSemaphoreWin32HandleInfo)
     })
   }
 }
@@ -3979,13 +3883,13 @@ pub fn vkImportSemaphoreWin32HandleKHR<'h>(
 #[cfg(feature = "VK_KHR_external_semaphore_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetSemaphoreWin32HandleKHR<'h>(
-  device: VkDevice<'h>,
-  pGetWin32HandleInfo: &VkSemaphoreGetWin32HandleInfoKHR<'_, 'h>,
+  device: VkDevice,
+  pGetWin32HandleInfo: &VkSemaphoreGetWin32HandleInfoKHR,
 ) -> VkResult<wsi::win32::HANDLE> {
   unsafe {
     let mut pHandle: wsi::win32::HANDLE = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkGetSemaphoreWin32HandleKHR.unwrap()(device.as_raw(), pGetWin32HandleInfo.as_raw(), &mut pHandle);
+      let _r = _t.vkGetSemaphoreWin32HandleKHR.unwrap()(device.as_raw(), pGetWin32HandleInfo, &mut pHandle);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -3998,24 +3902,21 @@ pub fn vkGetSemaphoreWin32HandleKHR<'h>(
 
 /// Import a semaphore from a POSIX file descriptor
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-pub fn vkImportSemaphoreFdKHR<'h>(
-  device: VkDevice<'h>,
-  pImportSemaphoreFdInfo: &VkImportSemaphoreFdInfoKHR<'_, 'h>,
-) -> VkResult {
+pub fn vkImportSemaphoreFdKHR<'h>(device: VkDevice, pImportSemaphoreFdInfo: &VkImportSemaphoreFdInfoKHR) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkImportSemaphoreFdKHR.unwrap()(device.as_raw(), pImportSemaphoreFdInfo.as_raw())
+      _t.vkImportSemaphoreFdKHR.unwrap()(device.as_raw(), pImportSemaphoreFdInfo)
     })
   }
 }
 
 /// Get a POSIX file descriptor handle for a semaphore
 #[cfg(feature = "VK_KHR_external_semaphore_fd")]
-pub fn vkGetSemaphoreFdKHR<'h>(device: VkDevice<'h>, pGetFdInfo: &VkSemaphoreGetFdInfoKHR<'_, 'h>) -> VkResult<c_int> {
+pub fn vkGetSemaphoreFdKHR<'h>(device: VkDevice, pGetFdInfo: &VkSemaphoreGetFdInfoKHR) -> VkResult<c_int> {
   unsafe {
     let mut pFd: c_int = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkGetSemaphoreFdKHR.unwrap()(device.as_raw(), pGetFdInfo.as_raw(), &mut pFd);
+      let _r = _t.vkGetSemaphoreFdKHR.unwrap()(device.as_raw(), pGetFdInfo, &mut pFd);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -4029,11 +3930,11 @@ pub fn vkGetSemaphoreFdKHR<'h>(device: VkDevice<'h>, pGetFdInfo: &VkSemaphoreGet
 /// Pushes descriptor updates into a command buffer
 #[cfg(feature = "VK_KHR_push_descriptor")]
 pub fn vkCmdPushDescriptorSetKHR<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   pipelineBindPoint: VkPipelineBindPoint,
-  layout: VkPipelineLayout<'h>,
+  layout: VkPipelineLayout,
   set: u32,
-  pDescriptorWrites: &[VkWriteDescriptorSet<'_, 'h>],
+  pDescriptorWrites: &[VkWriteDescriptorSet],
 ) {
   unsafe {
     let descriptorWriteCount = pDescriptorWrites.len() as u32;
@@ -4055,8 +3956,8 @@ pub fn vkCmdPushDescriptorSetKHR<'h>(
 /// Create a new descriptor update template
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub fn vkCreateDescriptorUpdateTemplateKHR<'h>(
-  device: VkDevice<'h>,
-  pCreateInfo: &VkDescriptorUpdateTemplateCreateInfoKHR<'_, 'h>,
+  device: VkDevice,
+  pCreateInfo: &VkDescriptorUpdateTemplateCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkDescriptorUpdateTemplateKHR<'h>> {
   unsafe {
@@ -4064,7 +3965,7 @@ pub fn vkCreateDescriptorUpdateTemplateKHR<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateDescriptorUpdateTemplateKHR.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pDescriptorUpdateTemplate).as_raw(),
       );
@@ -4079,8 +3980,8 @@ pub fn vkCreateDescriptorUpdateTemplateKHR<'h>(
 /// Destroy a descriptor update template object
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub fn vkDestroyDescriptorUpdateTemplateKHR<'h>(
-  device: VkDevice<'h>,
-  descriptorUpdateTemplate: Option<VkDescriptorUpdateTemplateKHR<'h>>,
+  device: VkDevice,
+  descriptorUpdateTemplate: Option<VkDescriptorUpdateTemplateKHR>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -4097,9 +3998,9 @@ pub fn vkDestroyDescriptorUpdateTemplateKHR<'h>(
 /// Update the contents of a descriptor set object using an update template
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub fn vkUpdateDescriptorSetWithTemplateKHR<'h>(
-  device: VkDevice<'h>,
-  descriptorSet: VkDescriptorSet<'h>,
-  descriptorUpdateTemplate: VkDescriptorUpdateTemplateKHR<'h>,
+  device: VkDevice,
+  descriptorSet: VkDescriptorSet,
+  descriptorUpdateTemplate: VkDescriptorUpdateTemplateKHR,
   pData: *const c_void,
 ) {
   unsafe {
@@ -4118,9 +4019,9 @@ pub fn vkUpdateDescriptorSetWithTemplateKHR<'h>(
 /// template
 #[cfg(feature = "VK_KHR_descriptor_update_template")]
 pub fn vkCmdPushDescriptorSetWithTemplateKHR<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  descriptorUpdateTemplate: VkDescriptorUpdateTemplateKHR<'h>,
-  layout: VkPipelineLayout<'h>,
+  commandBuffer: VkCommandBuffer,
+  descriptorUpdateTemplate: VkDescriptorUpdateTemplateKHR,
+  layout: VkPipelineLayout,
   set: u32,
   pData: *const c_void,
 ) {
@@ -4141,13 +4042,10 @@ pub fn vkCmdPushDescriptorSetWithTemplateKHR<'h>(
 
 /// Performs the generation of commands on the device
 #[cfg(feature = "VK_NVX_device_generated_commands")]
-pub fn vkCmdProcessCommandsNVX<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  pProcessCommandsInfo: &VkCmdProcessCommandsInfoNVX<'_, 'h>,
-) {
+pub fn vkCmdProcessCommandsNVX<'h>(commandBuffer: VkCommandBuffer, pProcessCommandsInfo: &VkCmdProcessCommandsInfoNVX) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
-      _t.vkCmdProcessCommandsNVX.unwrap()(commandBuffer.as_raw(), pProcessCommandsInfo.as_raw())
+      _t.vkCmdProcessCommandsNVX.unwrap()(commandBuffer.as_raw(), pProcessCommandsInfo)
     })
   }
 }
@@ -4155,12 +4053,12 @@ pub fn vkCmdProcessCommandsNVX<'h>(
 /// Perform a reservation of command buffer space
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkCmdReserveSpaceForCommandsNVX<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  pReserveSpaceInfo: &VkCmdReserveSpaceForCommandsInfoNVX<'_, 'h>,
+  commandBuffer: VkCommandBuffer,
+  pReserveSpaceInfo: &VkCmdReserveSpaceForCommandsInfoNVX,
 ) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
-      _t.vkCmdReserveSpaceForCommandsNVX.unwrap()(commandBuffer.as_raw(), pReserveSpaceInfo.as_raw())
+      _t.vkCmdReserveSpaceForCommandsNVX.unwrap()(commandBuffer.as_raw(), pReserveSpaceInfo)
     })
   }
 }
@@ -4168,7 +4066,7 @@ pub fn vkCmdReserveSpaceForCommandsNVX<'h>(
 /// Create an indirect command layout object
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkCreateIndirectCommandsLayoutNVX<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkIndirectCommandsLayoutCreateInfoNVX,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkIndirectCommandsLayoutNVX<'h>> {
@@ -4177,7 +4075,7 @@ pub fn vkCreateIndirectCommandsLayoutNVX<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateIndirectCommandsLayoutNVX.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pIndirectCommandsLayout).as_raw(),
       );
@@ -4192,8 +4090,8 @@ pub fn vkCreateIndirectCommandsLayoutNVX<'h>(
 /// Destroy a object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkDestroyIndirectCommandsLayoutNVX<'h>(
-  device: VkDevice<'h>,
-  indirectCommandsLayout: VkIndirectCommandsLayoutNVX<'h>,
+  device: VkDevice,
+  indirectCommandsLayout: VkIndirectCommandsLayoutNVX,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -4210,7 +4108,7 @@ pub fn vkDestroyIndirectCommandsLayoutNVX<'h>(
 /// Create an object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkCreateObjectTableNVX<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkObjectTableCreateInfoNVX,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkObjectTableNVX<'h>> {
@@ -4219,7 +4117,7 @@ pub fn vkCreateObjectTableNVX<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateObjectTableNVX.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pObjectTable).as_raw(),
       );
@@ -4234,8 +4132,8 @@ pub fn vkCreateObjectTableNVX<'h>(
 /// Destroy a object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkDestroyObjectTableNVX<'h>(
-  device: VkDevice<'h>,
-  objectTable: VkObjectTableNVX<'h>,
+  device: VkDevice,
+  objectTable: VkObjectTableNVX,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -4248,8 +4146,8 @@ pub fn vkDestroyObjectTableNVX<'h>(
 /// Register resource bindings in an object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkRegisterObjectsNVX<'h>(
-  device: VkDevice<'h>,
-  objectTable: VkObjectTableNVX<'h>,
+  device: VkDevice,
+  objectTable: VkObjectTableNVX,
   ppObjectTableEntries: &[&VkObjectTableEntryNVX],
   pObjectIndices: &[u32],
 ) -> VkResult {
@@ -4271,8 +4169,8 @@ pub fn vkRegisterObjectsNVX<'h>(
 /// Unregister resource bindings in an object table
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkUnregisterObjectsNVX<'h>(
-  device: VkDevice<'h>,
-  objectTable: VkObjectTableNVX<'h>,
+  device: VkDevice,
+  objectTable: VkObjectTableNVX,
   pObjectEntryTypes: &[VkObjectEntryTypeNVX],
   pObjectIndices: &[u32],
 ) -> VkResult {
@@ -4294,17 +4192,13 @@ pub fn vkUnregisterObjectsNVX<'h>(
 /// Returns device-generated commands related properties of a physical device
 #[cfg(feature = "VK_NVX_device_generated_commands")]
 pub fn vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   pFeatures: &mut VkDeviceGeneratedCommandsFeaturesNVX,
 ) -> VkDeviceGeneratedCommandsLimitsNVX {
   unsafe {
     let mut pLimits: VkDeviceGeneratedCommandsLimitsNVX = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
-      _t.vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX.unwrap()(
-        physicalDevice.as_raw(),
-        pFeatures.as_raw(),
-        (&mut pLimits).as_raw(),
-      );
+      _t.vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX.unwrap()(physicalDevice.as_raw(), pFeatures, &mut pLimits);
       return pLimits;
     })
   }
@@ -4315,7 +4209,7 @@ pub fn vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX<'h>(
 /// Set the viewport W scaling on a command buffer
 #[cfg(feature = "VK_NV_clip_space_w_scaling")]
 pub fn vkCmdSetViewportWScalingNV<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   firstViewport: u32,
   pViewportWScalings: &[VkViewportWScalingNV],
 ) {
@@ -4336,7 +4230,7 @@ pub fn vkCmdSetViewportWScalingNV<'h>(
 
 /// Release access to an acquired VkDisplayKHR
 #[cfg(feature = "VK_EXT_direct_mode_display")]
-pub fn vkReleaseDisplayEXT<'h>(physicalDevice: VkPhysicalDevice<'h>, display: VkDisplayKHR<'h>) -> VkResult {
+pub fn vkReleaseDisplayEXT<'h>(physicalDevice: VkPhysicalDevice, display: VkDisplayKHR) -> VkResult {
   unsafe {
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkReleaseDisplayEXT.unwrap()(physicalDevice.as_raw(), display.as_raw())
@@ -4350,9 +4244,9 @@ pub fn vkReleaseDisplayEXT<'h>(physicalDevice: VkPhysicalDevice<'h>, display: Vk
 #[cfg(feature = "VK_EXT_acquire_xlib_display")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_XRANDR_EXT")]
 pub fn vkAcquireXlibDisplayEXT<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   dpy: *mut wsi::xlib::Display,
-  display: VkDisplayKHR<'h>,
+  display: VkDisplayKHR,
 ) -> VkResult {
   unsafe {
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
@@ -4365,7 +4259,7 @@ pub fn vkAcquireXlibDisplayEXT<'h>(
 #[cfg(feature = "VK_EXT_acquire_xlib_display")]
 #[cfg(feature = "VK_USE_PLATFORM_XLIB_XRANDR_EXT")]
 pub fn vkGetRandROutputDisplayEXT<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   dpy: *mut wsi::xlib::Display,
   rrOutput: wsi::xlib::RROutput,
 ) -> VkResult<VkDisplayKHR<'h>> {
@@ -4386,8 +4280,8 @@ pub fn vkGetRandROutputDisplayEXT<'h>(
 /// Query surface capabilities
 #[cfg(feature = "VK_EXT_display_surface_counter")]
 pub fn vkGetPhysicalDeviceSurfaceCapabilities2EXT<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  surface: VkSurfaceKHR<'h>,
+  physicalDevice: VkPhysicalDevice,
+  surface: VkSurfaceKHR,
 ) -> VkResult<VkSurfaceCapabilities2EXT> {
   unsafe {
     let mut pSurfaceCapabilities: VkSurfaceCapabilities2EXT = ::std::mem::zeroed();
@@ -4395,7 +4289,7 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilities2EXT<'h>(
       let _r = _t.vkGetPhysicalDeviceSurfaceCapabilities2EXT.unwrap()(
         physicalDevice.as_raw(),
         surface.as_raw(),
-        (&mut pSurfaceCapabilities).as_raw(),
+        &mut pSurfaceCapabilities,
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -4410,13 +4304,13 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilities2EXT<'h>(
 /// Set the power state of a display
 #[cfg(feature = "VK_EXT_display_control")]
 pub fn vkDisplayPowerControlEXT<'h>(
-  device: VkDevice<'h>,
-  display: VkDisplayKHR<'h>,
+  device: VkDevice,
+  display: VkDisplayKHR,
   pDisplayPowerInfo: &VkDisplayPowerInfoEXT,
 ) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkDisplayPowerControlEXT.unwrap()(device.as_raw(), display.as_raw(), pDisplayPowerInfo.as_raw())
+      _t.vkDisplayPowerControlEXT.unwrap()(device.as_raw(), display.as_raw(), pDisplayPowerInfo)
     })
   }
 }
@@ -4424,7 +4318,7 @@ pub fn vkDisplayPowerControlEXT<'h>(
 /// Signal a fence when a device event occurs
 #[cfg(feature = "VK_EXT_display_control")]
 pub fn vkRegisterDeviceEventEXT<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pDeviceEventInfo: &VkDeviceEventInfoEXT,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkFence<'h>> {
@@ -4433,7 +4327,7 @@ pub fn vkRegisterDeviceEventEXT<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkRegisterDeviceEventEXT.unwrap()(
         device.as_raw(),
-        pDeviceEventInfo.as_raw(),
+        pDeviceEventInfo,
         pAllocator.as_raw(),
         (&mut pFence).as_raw(),
       );
@@ -4448,8 +4342,8 @@ pub fn vkRegisterDeviceEventEXT<'h>(
 /// Signal a fence when a display event occurs
 #[cfg(feature = "VK_EXT_display_control")]
 pub fn vkRegisterDisplayEventEXT<'h>(
-  device: VkDevice<'h>,
-  display: VkDisplayKHR<'h>,
+  device: VkDevice,
+  display: VkDisplayKHR,
   pDisplayEventInfo: &VkDisplayEventInfoEXT,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkFence<'h>> {
@@ -4459,7 +4353,7 @@ pub fn vkRegisterDisplayEventEXT<'h>(
       let _r = _t.vkRegisterDisplayEventEXT.unwrap()(
         device.as_raw(),
         display.as_raw(),
-        pDisplayEventInfo.as_raw(),
+        pDisplayEventInfo,
         pAllocator.as_raw(),
         (&mut pFence).as_raw(),
       );
@@ -4474,8 +4368,8 @@ pub fn vkRegisterDisplayEventEXT<'h>(
 /// Query the current value of a surface counter
 #[cfg(feature = "VK_EXT_display_control")]
 pub fn vkGetSwapchainCounterEXT<'h>(
-  device: VkDevice<'h>,
-  swapchain: VkSwapchainKHR<'h>,
+  device: VkDevice,
+  swapchain: VkSwapchainKHR,
   counter: VkSurfaceCounterFlagBitsEXT,
 ) -> VkResult<u64> {
   unsafe {
@@ -4495,17 +4389,14 @@ pub fn vkGetSwapchainCounterEXT<'h>(
 /// Obtain the RC duration of the PE\'s display
 #[cfg(feature = "VK_GOOGLE_display_timing")]
 pub fn vkGetRefreshCycleDurationGOOGLE<'h>(
-  device: VkDevice<'h>,
-  swapchain: VkSwapchainKHR<'h>,
+  device: VkDevice,
+  swapchain: VkSwapchainKHR,
 ) -> VkResult<VkRefreshCycleDurationGOOGLE> {
   unsafe {
     let mut pDisplayTimingProperties: VkRefreshCycleDurationGOOGLE = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkGetRefreshCycleDurationGOOGLE.unwrap()(
-        device.as_raw(),
-        swapchain.as_raw(),
-        (&mut pDisplayTimingProperties).as_raw(),
-      );
+      let _r =
+        _t.vkGetRefreshCycleDurationGOOGLE.unwrap()(device.as_raw(), swapchain.as_raw(), &mut pDisplayTimingProperties);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -4517,8 +4408,8 @@ pub fn vkGetRefreshCycleDurationGOOGLE<'h>(
 /// Obtain timing of a previously-presented image
 #[cfg(feature = "VK_GOOGLE_display_timing")]
 pub fn vkGetPastPresentationTimingGOOGLE<'h>(
-  device: VkDevice<'h>,
-  swapchain: VkSwapchainKHR<'h>,
+  device: VkDevice,
+  swapchain: VkSwapchainKHR,
 ) -> VkResult<Vec<VkPastPresentationTimingGOOGLE>> {
   unsafe {
     let mut pPresentationTimingCount: u32 = 0;
@@ -4563,7 +4454,7 @@ pub fn vkGetPastPresentationTimingGOOGLE<'h>(
 /// Set discard rectangles dynamically
 #[cfg(feature = "VK_EXT_discard_rectangles")]
 pub fn vkCmdSetDiscardRectangleEXT<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   firstDiscardRectangle: u32,
   pDiscardRectangles: &[VkRect2D],
 ) {
@@ -4584,11 +4475,7 @@ pub fn vkCmdSetDiscardRectangleEXT<'h>(
 
 /// function to set Hdr metadata
 #[cfg(feature = "VK_EXT_hdr_metadata")]
-pub fn vkSetHdrMetadataEXT<'h>(
-  device: VkDevice<'h>,
-  pSwapchains: &[VkSwapchainKHR<'h>],
-  pMetadata: &[VkHdrMetadataEXT],
-) {
+pub fn vkSetHdrMetadataEXT<'h>(device: VkDevice, pSwapchains: &[VkSwapchainKHR], pMetadata: &[VkHdrMetadataEXT]) {
   unsafe {
     let swapchainCount = pSwapchains.len() as u32;
     assert!(swapchainCount as usize == pMetadata.len());
@@ -4608,16 +4495,16 @@ pub fn vkSetHdrMetadataEXT<'h>(
 /// Reports capabilities of a surface on a physical device
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
 pub fn vkGetPhysicalDeviceSurfaceCapabilities2KHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  pSurfaceInfo: &VkPhysicalDeviceSurfaceInfo2KHR<'_, 'h>,
+  physicalDevice: VkPhysicalDevice,
+  pSurfaceInfo: &VkPhysicalDeviceSurfaceInfo2KHR,
 ) -> VkResult<VkSurfaceCapabilities2KHR> {
   unsafe {
     let mut pSurfaceCapabilities: VkSurfaceCapabilities2KHR = ::std::mem::zeroed();
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       let _r = _t.vkGetPhysicalDeviceSurfaceCapabilities2KHR.unwrap()(
         physicalDevice.as_raw(),
-        pSurfaceInfo.as_raw(),
-        (&mut pSurfaceCapabilities).as_raw(),
+        pSurfaceInfo,
+        &mut pSurfaceCapabilities,
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -4630,8 +4517,8 @@ pub fn vkGetPhysicalDeviceSurfaceCapabilities2KHR<'h>(
 /// Query color formats supported by surface
 #[cfg(feature = "VK_KHR_get_surface_capabilities2")]
 pub fn vkGetPhysicalDeviceSurfaceFormats2KHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
-  pSurfaceInfo: &VkPhysicalDeviceSurfaceInfo2KHR<'_, 'h>,
+  physicalDevice: VkPhysicalDevice,
+  pSurfaceInfo: &VkPhysicalDeviceSurfaceInfo2KHR,
 ) -> VkResult<Vec<VkSurfaceFormat2KHR>> {
   unsafe {
     let mut pSurfaceFormatCount: u32 = 0;
@@ -4639,7 +4526,7 @@ pub fn vkGetPhysicalDeviceSurfaceFormats2KHR<'h>(
     VkInstanceDispatchTable::with(physicalDevice, |_t| loop {
       let _r = _t.vkGetPhysicalDeviceSurfaceFormats2KHR.unwrap()(
         physicalDevice.as_raw(),
-        pSurfaceInfo.as_raw(),
+        pSurfaceInfo,
         &mut pSurfaceFormatCount,
         ::std::ptr::null_mut(),
       );
@@ -4655,7 +4542,7 @@ pub fn vkGetPhysicalDeviceSurfaceFormats2KHR<'h>(
       pSurfaceFormats = Vec::with_capacity(pSurfaceFormatCount as usize);
       let _r = _t.vkGetPhysicalDeviceSurfaceFormats2KHR.unwrap()(
         physicalDevice.as_raw(),
-        pSurfaceInfo.as_raw(),
+        pSurfaceInfo,
         &mut pSurfaceFormatCount,
         pSurfaceFormats.as_mut_ptr().as_raw(),
       );
@@ -4675,7 +4562,7 @@ pub fn vkGetPhysicalDeviceSurfaceFormats2KHR<'h>(
 
 /// Get a swapchain\'s status
 #[cfg(feature = "VK_KHR_shared_presentable_image")]
-pub fn vkGetSwapchainStatusKHR<'h>(device: VkDevice<'h>, swapchain: VkSwapchainKHR<'h>) -> VkResult {
+pub fn vkGetSwapchainStatusKHR<'h>(device: VkDevice, swapchain: VkSwapchainKHR) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkGetSwapchainStatusKHR.unwrap()(device.as_raw(), swapchain.as_raw())
@@ -4688,7 +4575,7 @@ pub fn vkGetSwapchainStatusKHR<'h>(device: VkDevice<'h>, swapchain: VkSwapchainK
 /// Function for querying external fence handle capabilities.
 #[cfg(feature = "VK_KHR_external_fence_capabilities")]
 pub fn vkGetPhysicalDeviceExternalFencePropertiesKHR<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   pExternalFenceInfo: &VkPhysicalDeviceExternalFenceInfoKHR,
 ) -> VkExternalFencePropertiesKHR {
   unsafe {
@@ -4696,8 +4583,8 @@ pub fn vkGetPhysicalDeviceExternalFencePropertiesKHR<'h>(
     VkInstanceDispatchTable::with(physicalDevice, |_t| {
       _t.vkGetPhysicalDeviceExternalFencePropertiesKHR.unwrap()(
         physicalDevice.as_raw(),
-        pExternalFenceInfo.as_raw(),
-        (&mut pExternalFenceProperties).as_raw(),
+        pExternalFenceInfo,
+        &mut pExternalFenceProperties,
       );
       return pExternalFenceProperties;
     })
@@ -4710,12 +4597,12 @@ pub fn vkGetPhysicalDeviceExternalFencePropertiesKHR<'h>(
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkImportFenceWin32HandleKHR<'h>(
-  device: VkDevice<'h>,
-  pImportFenceWin32HandleInfo: &VkImportFenceWin32HandleInfoKHR<'_, 'h>,
+  device: VkDevice,
+  pImportFenceWin32HandleInfo: &VkImportFenceWin32HandleInfoKHR,
 ) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkImportFenceWin32HandleKHR.unwrap()(device.as_raw(), pImportFenceWin32HandleInfo.as_raw())
+      _t.vkImportFenceWin32HandleKHR.unwrap()(device.as_raw(), pImportFenceWin32HandleInfo)
     })
   }
 }
@@ -4724,13 +4611,13 @@ pub fn vkImportFenceWin32HandleKHR<'h>(
 #[cfg(feature = "VK_KHR_external_fence_win32")]
 #[cfg(feature = "VK_USE_PLATFORM_WIN32_KHR")]
 pub fn vkGetFenceWin32HandleKHR<'h>(
-  device: VkDevice<'h>,
-  pGetWin32HandleInfo: &VkFenceGetWin32HandleInfoKHR<'_, 'h>,
+  device: VkDevice,
+  pGetWin32HandleInfo: &VkFenceGetWin32HandleInfoKHR,
 ) -> VkResult<wsi::win32::HANDLE> {
   unsafe {
     let mut pHandle: wsi::win32::HANDLE = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkGetFenceWin32HandleKHR.unwrap()(device.as_raw(), pGetWin32HandleInfo.as_raw(), &mut pHandle);
+      let _r = _t.vkGetFenceWin32HandleKHR.unwrap()(device.as_raw(), pGetWin32HandleInfo, &mut pHandle);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -4743,21 +4630,21 @@ pub fn vkGetFenceWin32HandleKHR<'h>(
 
 /// Import a fence from a POSIX file descriptor
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-pub fn vkImportFenceFdKHR<'h>(device: VkDevice<'h>, pImportFenceFdInfo: &VkImportFenceFdInfoKHR<'_, 'h>) -> VkResult {
+pub fn vkImportFenceFdKHR<'h>(device: VkDevice, pImportFenceFdInfo: &VkImportFenceFdInfoKHR) -> VkResult {
   unsafe {
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkImportFenceFdKHR.unwrap()(device.as_raw(), pImportFenceFdInfo.as_raw())
+      _t.vkImportFenceFdKHR.unwrap()(device.as_raw(), pImportFenceFdInfo)
     })
   }
 }
 
 /// Get a POSIX file descriptor handle for a fence
 #[cfg(feature = "VK_KHR_external_fence_fd")]
-pub fn vkGetFenceFdKHR<'h>(device: VkDevice<'h>, pGetFdInfo: &VkFenceGetFdInfoKHR<'_, 'h>) -> VkResult<c_int> {
+pub fn vkGetFenceFdKHR<'h>(device: VkDevice, pGetFdInfo: &VkFenceGetFdInfoKHR) -> VkResult<c_int> {
   unsafe {
     let mut pFd: c_int = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      let _r = _t.vkGetFenceFdKHR.unwrap()(device.as_raw(), pGetFdInfo.as_raw(), &mut pFd);
+      let _r = _t.vkGetFenceFdKHR.unwrap()(device.as_raw(), pGetFdInfo, &mut pFd);
       if let Err(_e) = _r {
         return Err(_e);
       }
@@ -4772,7 +4659,7 @@ pub fn vkGetFenceFdKHR<'h>(device: VkDevice<'h>, pGetFdInfo: &VkFenceGetFdInfoKH
 #[cfg(feature = "VK_MVK_ios_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_IOS_MVK")]
 pub fn vkCreateIOSSurfaceMVK<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkIOSSurfaceCreateInfoMVK,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
@@ -4781,7 +4668,7 @@ pub fn vkCreateIOSSurfaceMVK<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateIOSSurfaceMVK.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -4799,7 +4686,7 @@ pub fn vkCreateIOSSurfaceMVK<'h>(
 #[cfg(feature = "VK_MVK_macos_surface")]
 #[cfg(feature = "VK_USE_PLATFORM_MACOS_MVK")]
 pub fn vkCreateMacOSSurfaceMVK<'h>(
-  instance: VkInstance<'h>,
+  instance: VkInstance,
   pCreateInfo: &VkMacOSSurfaceCreateInfoMVK,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSurfaceKHR<'h>> {
@@ -4808,7 +4695,7 @@ pub fn vkCreateMacOSSurfaceMVK<'h>(
     VkInstanceDispatchTable::with(instance, |_t| {
       let _r = _t.vkCreateMacOSSurfaceMVK.unwrap()(
         instance.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pSurface).as_raw(),
       );
@@ -4825,17 +4712,13 @@ pub fn vkCreateMacOSSurfaceMVK<'h>(
 /// Returns the memory requirements for specified Vulkan object
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
 pub fn vkGetImageMemoryRequirements2KHR<'h>(
-  device: VkDevice<'h>,
-  pInfo: &VkImageMemoryRequirementsInfo2KHR<'_, 'h>,
+  device: VkDevice,
+  pInfo: &VkImageMemoryRequirementsInfo2KHR,
 ) -> VkMemoryRequirements2KHR {
   unsafe {
     let mut pMemoryRequirements: VkMemoryRequirements2KHR = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkGetImageMemoryRequirements2KHR.unwrap()(
-        device.as_raw(),
-        pInfo.as_raw(),
-        (&mut pMemoryRequirements).as_raw(),
-      );
+      _t.vkGetImageMemoryRequirements2KHR.unwrap()(device.as_raw(), pInfo, &mut pMemoryRequirements);
       return pMemoryRequirements;
     })
   }
@@ -4844,25 +4727,21 @@ pub fn vkGetImageMemoryRequirements2KHR<'h>(
 /// Returns the memory requirements for specified Vulkan object
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
 pub fn vkGetBufferMemoryRequirements2KHR<'h>(
-  device: VkDevice<'h>,
-  pInfo: &VkBufferMemoryRequirementsInfo2KHR<'_, 'h>,
+  device: VkDevice,
+  pInfo: &VkBufferMemoryRequirementsInfo2KHR,
 ) -> VkMemoryRequirements2KHR {
   unsafe {
     let mut pMemoryRequirements: VkMemoryRequirements2KHR = ::std::mem::zeroed();
     VkDeviceDispatchTable::with(device, |_t| {
-      _t.vkGetBufferMemoryRequirements2KHR.unwrap()(
-        device.as_raw(),
-        pInfo.as_raw(),
-        (&mut pMemoryRequirements).as_raw(),
-      );
+      _t.vkGetBufferMemoryRequirements2KHR.unwrap()(device.as_raw(), pInfo, &mut pMemoryRequirements);
       return pMemoryRequirements;
     })
   }
 }
 #[cfg(feature = "VK_KHR_get_memory_requirements2")]
 pub fn vkGetImageSparseMemoryRequirements2KHR<'h>(
-  device: VkDevice<'h>,
-  pInfo: &VkImageSparseMemoryRequirementsInfo2KHR<'_, 'h>,
+  device: VkDevice,
+  pInfo: &VkImageSparseMemoryRequirementsInfo2KHR,
 ) -> Vec<VkSparseImageMemoryRequirements2KHR> {
   unsafe {
     let mut pSparseMemoryRequirementCount: u32 = 0;
@@ -4870,7 +4749,7 @@ pub fn vkGetImageSparseMemoryRequirements2KHR<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       _t.vkGetImageSparseMemoryRequirements2KHR.unwrap()(
         device.as_raw(),
-        pInfo.as_raw(),
+        pInfo,
         &mut pSparseMemoryRequirementCount,
         ::std::ptr::null_mut(),
       );
@@ -4880,7 +4759,7 @@ pub fn vkGetImageSparseMemoryRequirements2KHR<'h>(
       pSparseMemoryRequirements = Vec::with_capacity(pSparseMemoryRequirementCount as usize);
       _t.vkGetImageSparseMemoryRequirements2KHR.unwrap()(
         device.as_raw(),
-        pInfo.as_raw(),
+        pInfo,
         &mut pSparseMemoryRequirementCount,
         pSparseMemoryRequirements.as_mut_ptr().as_raw(),
       );
@@ -4894,13 +4773,10 @@ pub fn vkGetImageSparseMemoryRequirements2KHR<'h>(
 
 /// Set the dynamic sample locations state
 #[cfg(feature = "VK_EXT_sample_locations")]
-pub fn vkCmdSetSampleLocationsEXT<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
-  pSampleLocationsInfo: &VkSampleLocationsInfoEXT,
-) {
+pub fn vkCmdSetSampleLocationsEXT<'h>(commandBuffer: VkCommandBuffer, pSampleLocationsInfo: &VkSampleLocationsInfoEXT) {
   unsafe {
     VkDeviceDispatchTable::with(commandBuffer, |_t| {
-      _t.vkCmdSetSampleLocationsEXT.unwrap()(commandBuffer.as_raw(), pSampleLocationsInfo.as_raw())
+      _t.vkCmdSetSampleLocationsEXT.unwrap()(commandBuffer.as_raw(), pSampleLocationsInfo)
     })
   }
 }
@@ -4908,7 +4784,7 @@ pub fn vkCmdSetSampleLocationsEXT<'h>(
 /// Report sample count specific multisampling capabilities of a physical device
 #[cfg(feature = "VK_EXT_sample_locations")]
 pub fn vkGetPhysicalDeviceMultisamplePropertiesEXT<'h>(
-  physicalDevice: VkPhysicalDevice<'h>,
+  physicalDevice: VkPhysicalDevice,
   samples: VkSampleCountFlagBits,
 ) -> VkMultisamplePropertiesEXT {
   unsafe {
@@ -4917,7 +4793,7 @@ pub fn vkGetPhysicalDeviceMultisamplePropertiesEXT<'h>(
       _t.vkGetPhysicalDeviceMultisamplePropertiesEXT.unwrap()(
         physicalDevice.as_raw(),
         samples,
-        (&mut pMultisampleProperties).as_raw(),
+        &mut pMultisampleProperties,
       );
       return pMultisampleProperties;
     })
@@ -4928,7 +4804,7 @@ pub fn vkGetPhysicalDeviceMultisamplePropertiesEXT<'h>(
 
 /// Bind device memory to buffer objects
 #[cfg(feature = "VK_KHR_bind_memory2")]
-pub fn vkBindBufferMemory2KHR<'h>(device: VkDevice<'h>, pBindInfos: &[VkBindBufferMemoryInfoKHR<'_, 'h>]) -> VkResult {
+pub fn vkBindBufferMemory2KHR<'h>(device: VkDevice, pBindInfos: &[VkBindBufferMemoryInfoKHR]) -> VkResult {
   unsafe {
     let bindInfoCount = pBindInfos.len() as u32;
     VkDeviceDispatchTable::with(device, |_t| {
@@ -4939,7 +4815,7 @@ pub fn vkBindBufferMemory2KHR<'h>(device: VkDevice<'h>, pBindInfos: &[VkBindBuff
 
 /// Bind device memory to image objects
 #[cfg(feature = "VK_KHR_bind_memory2")]
-pub fn vkBindImageMemory2KHR<'h>(device: VkDevice<'h>, pBindInfos: &[VkBindImageMemoryInfoKHR<'_, 'h>]) -> VkResult {
+pub fn vkBindImageMemory2KHR<'h>(device: VkDevice, pBindInfos: &[VkBindImageMemoryInfoKHR]) -> VkResult {
   unsafe {
     let bindInfoCount = pBindInfos.len() as u32;
     VkDeviceDispatchTable::with(device, |_t| {
@@ -4953,7 +4829,7 @@ pub fn vkBindImageMemory2KHR<'h>(device: VkDevice<'h>, pBindInfos: &[VkBindImage
 /// Create a new Ycbcr conversion
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 pub fn vkCreateSamplerYcbcrConversionKHR<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkSamplerYcbcrConversionCreateInfoKHR,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkSamplerYcbcrConversionKHR<'h>> {
@@ -4962,7 +4838,7 @@ pub fn vkCreateSamplerYcbcrConversionKHR<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateSamplerYcbcrConversionKHR.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pYcbcrConversion).as_raw(),
       );
@@ -4977,8 +4853,8 @@ pub fn vkCreateSamplerYcbcrConversionKHR<'h>(
 /// Destroy a created Y\'CbCr conversion
 #[cfg(feature = "VK_KHR_sampler_ycbcr_conversion")]
 pub fn vkDestroySamplerYcbcrConversionKHR<'h>(
-  device: VkDevice<'h>,
-  ycbcrConversion: Option<VkSamplerYcbcrConversionKHR<'h>>,
+  device: VkDevice,
+  ycbcrConversion: Option<VkSamplerYcbcrConversionKHR>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -4993,7 +4869,7 @@ pub fn vkDestroySamplerYcbcrConversionKHR<'h>(
 /// Creates a new validation cache
 #[cfg(feature = "VK_EXT_validation_cache")]
 pub fn vkCreateValidationCacheEXT<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   pCreateInfo: &VkValidationCacheCreateInfoEXT,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) -> VkResult<VkValidationCacheEXT<'h>> {
@@ -5002,7 +4878,7 @@ pub fn vkCreateValidationCacheEXT<'h>(
     VkDeviceDispatchTable::with(device, |_t| {
       let _r = _t.vkCreateValidationCacheEXT.unwrap()(
         device.as_raw(),
-        pCreateInfo.as_raw(),
+        pCreateInfo,
         pAllocator.as_raw(),
         (&mut pValidationCache).as_raw(),
       );
@@ -5017,8 +4893,8 @@ pub fn vkCreateValidationCacheEXT<'h>(
 /// Destroy a validation cache object
 #[cfg(feature = "VK_EXT_validation_cache")]
 pub fn vkDestroyValidationCacheEXT<'h>(
-  device: VkDevice<'h>,
-  validationCache: Option<VkValidationCacheEXT<'h>>,
+  device: VkDevice,
+  validationCache: Option<VkValidationCacheEXT>,
   pAllocator: Option<&VkAllocationCallbacks>,
 ) {
   unsafe {
@@ -5031,9 +4907,9 @@ pub fn vkDestroyValidationCacheEXT<'h>(
 /// Combine the data stores of validation caches
 #[cfg(feature = "VK_EXT_validation_cache")]
 pub fn vkMergeValidationCachesEXT<'h>(
-  device: VkDevice<'h>,
-  dstCache: VkValidationCacheEXT<'h>,
-  pSrcCaches: &[VkValidationCacheEXT<'h>],
+  device: VkDevice,
+  dstCache: VkValidationCacheEXT,
+  pSrcCaches: &[VkValidationCacheEXT],
 ) -> VkResult {
   unsafe {
     let srcCacheCount = pSrcCaches.len() as u32;
@@ -5045,10 +4921,7 @@ pub fn vkMergeValidationCachesEXT<'h>(
 
 /// Get the data store from a validation cache
 #[cfg(feature = "VK_EXT_validation_cache")]
-pub fn vkGetValidationCacheDataEXT<'h>(
-  device: VkDevice<'h>,
-  validationCache: VkValidationCacheEXT<'h>,
-) -> VkResult<Vec<u8>> {
+pub fn vkGetValidationCacheDataEXT<'h>(device: VkDevice, validationCache: VkValidationCacheEXT) -> VkResult<Vec<u8>> {
   unsafe {
     let mut pDataSize: usize = 0;
     let mut pData: Vec<u8> = Vec::new();
@@ -5092,7 +4965,7 @@ pub fn vkGetValidationCacheDataEXT<'h>(
 /// Get properties of external memory host pointer
 #[cfg(feature = "VK_EXT_external_memory_host")]
 pub fn vkGetMemoryHostPointerPropertiesEXT<'h>(
-  device: VkDevice<'h>,
+  device: VkDevice,
   handleType: VkExternalMemoryHandleTypeFlagBitsKHR,
   pHostPointer: *const c_void,
 ) -> VkResult<VkMemoryHostPointerPropertiesEXT> {
@@ -5103,7 +4976,7 @@ pub fn vkGetMemoryHostPointerPropertiesEXT<'h>(
         device.as_raw(),
         handleType,
         pHostPointer,
-        (&mut pMemoryHostPointerProperties).as_raw(),
+        &mut pMemoryHostPointerProperties,
       );
       if let Err(_e) = _r {
         return Err(_e);
@@ -5118,9 +4991,9 @@ pub fn vkGetMemoryHostPointerPropertiesEXT<'h>(
 /// Execute a pipelined write of a marker value into a buffer
 #[cfg(feature = "VK_AMD_buffer_marker")]
 pub fn vkCmdWriteBufferMarkerAMD<'h>(
-  commandBuffer: VkCommandBuffer<'h>,
+  commandBuffer: VkCommandBuffer,
   pipelineStage: VkPipelineStageFlagBits,
-  dstBuffer: VkBuffer<'h>,
+  dstBuffer: VkBuffer,
   dstOffset: VkDeviceSize,
   marker: u32,
 ) {

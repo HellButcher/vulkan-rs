@@ -53,7 +53,6 @@ INCLUDE_TO_MODULE = {
 
 
 STRUCT_TYPES = set([BaseTypeElem.STRUCT, BaseTypeElem.UNION])
-RAW_TYPES = set([BaseTypeElem.HANDLE, BaseTypeElem.FUNCTIONPOINTER]).union(STRUCT_TYPES)
 
 _rustfmt_config = None
 _rustfmt_exe = None
@@ -175,7 +174,9 @@ class RustGenerator:
             name = self.rust_enum_item_name(item)
             if item.enum_group.type is None:
                 _, ty = self.rust_enum_item_value(item, **kwargs)
-                return self.add_import('enums') + '::' + name, ty
+                if not kwargs.get('no_imports', False):
+                    self.add_import('enums')
+                return 'enums::' + name, ty
             else:
                 return item.enum_group.name + '::' + name, item.enum_group.name
         ty = 'u32'
@@ -257,148 +258,142 @@ class RustGenerator:
         return name
     rust_param_name = rust_member_name
 
-    def rust_type(self, ty, **kwargs):
-        if isinstance(ty, Member):
-            ty = ty.type
-        if isinstance(ty, str):
-            ty = self.registry.types[ty]
-        if isinstance(ty, BaseTypeElem):
-            type_name = ty.name
-            if type_name in PREDEFINED_TYPES:
-                return PREDEFINED_TYPES[type_name]
-            if ty.__class__ == BaseTypeElem.PROVIDED:
-                self.add_import('platform::*')
-                if len(ty.requires) == 1:
-                    mod = INCLUDE_TO_MODULE.get(ty.requires[0], None)
-                    if mod is not None:
-                        type_name = mod + '::' + type_name
-            if type_name in RESERVED_KEYWORDS:
-                type_name = 'T' + type_name
-            raw_prefix = kwargs.get('raw_prefix', None)
-            if raw_prefix and ty.__class__ in RAW_TYPES:
-                type_name = raw_prefix + type_name
-            if ty.__class__ == BaseTypeElem.FUNCTIONPOINTER and kwargs.pop('optional', None):
-                return 'Option<%s>' % type_name
-            return type_name
-        if not isinstance(ty, TypeRef):
-            raise ValueError('unable to hadle arg', ty)
-        if ty.__class__ == TypeRef.NAMED:
-            return self.rust_type(ty.name, **kwargs)
-        if ty.__class__ == TypeRef.POINTER and ty.arg.__class__ == TypeRef.FUNCTION:
-            params = ', '.join([self.rust_type(p.type) for p in ty.arg.params])
-            res = ''
-            if ty.arg.returns != TypeRef.VOID:
-                res = ' -> %s' % self.rust_type(ty.arg.returns, optional=True)
-            return 'extern "system" fn (%s)%s' % (params, res)
-        if ty.__class__ == TypeRef.POINTER or (ty.__class__ == TypeRef.ARRAY and ty.dim is None):
-            kwargs.pop('optional', None)
-            if ty.arg.__class__ == TypeRef.CONST:
-                return '*const %s' % self.rust_type(ty.arg.arg, **kwargs)
-            else:
-                return '*mut %s' % self.rust_type(ty.arg, **kwargs)
-        if ty.__class__ == TypeRef.ARRAY:
-            arg = ty.arg
-            if arg.__class__ == TypeRef.CONST:
-                arg = arg.arg
-            return '[%s; %s]' % (self.rust_type(arg, **kwargs), self.rust_dimension_value(ty.dim))
-        raise ValueError('unable to hadle arg', ty)
-
     def rust_composed_lifetimes(self, ty, **kwargs):
         lifetimes = set()
         for m in ty.members:
             if m.name == 'pNext' and m.type == TypeRef.VOID_PTR:
                 lifetimes.add('l')
             else:
-                (_, _, _, _, member_lifetimes) = self.rust_safe_type_details(m, **kwargs)
+                (_, _, _, member_lifetimes) = self.rust_type_details(m, no_imports=True, **kwargs)
                 lifetimes.update(member_lifetimes)
         return lifetimes
-    
-    def rust_safe_type_details(self, ty, **kwargs):
+
+    def rust_type_details(self, ty, **kwargs):
         if isinstance(ty, str):
             ty = self.registry.types[ty]
-        if isinstance(ty, Member):
+        elif isinstance(ty, Member):
             m = ty
             ty = m.type
             if 'optional' not in kwargs:
                 kwargs['optional'] = m.optional
             if 'len' not in kwargs:
                 kwargs['len'] = m.len
-        do_cast = False
-        no_ref = False
+        as_raw_conv = False
         lifetimes = set()
         if isinstance(ty, BaseTypeElem):
-            type_name = self.rust_type(ty, **kwargs)
-            if ty.__class__ == BaseTypeElem.PROVIDED or ty.name == 'void':
-                no_ref = True
-                as_raw_conv = False
-            elif ty.name == 'VkBool32':
-                no_ref = True
-                as_raw_conv = False
-            else:
-                as_raw_conv = ty.__class__ in RAW_TYPES
-                if ty.__class__ in STRUCT_TYPES:
+            type_name = ty.name
+            raw_type_name = None
+            if type_name in PREDEFINED_TYPES:
+                type_name = PREDEFINED_TYPES[type_name]
+                return (type_name, type_name, as_raw_conv, lifetimes)
+            elif type_name in RESERVED_KEYWORDS:
+                type_name = 'T' + type_name
+            if ty.name == 'VkBool32':
+                as_raw_conv = True
+                raw_type_name = 'VkBool32'
+                type_name = 'bool'
+            elif ty.__class__ is BaseTypeElem.PROVIDED:
+                self.add_import('platform::*')
+                if len(ty.requires) == 1:
+                    mod = INCLUDE_TO_MODULE.get(ty.requires[0], None)
+                    if mod is not None:
+                        type_name = mod + '::' + type_name
+            elif ty.__class__ is BaseTypeElem.FUNCTIONPOINTER and kwargs.pop('optional', None):
+                type_name = 'Option<%s>' % type_name
+            elif ty.__class__ in STRUCT_TYPES:
+                if not kwargs.get('as_param', None):
                     lifetimes.update(self.rust_composed_lifetimes(ty))
                     type_name += _lifetime_diamond(lifetimes)
-                elif ty.__class__ is BaseTypeElem.HANDLE:
+            elif ty.__class__ is BaseTypeElem.HANDLE:
+                raw_type_name = ty.non_dispatchable and 'u64' or 'usize'
+                as_raw_conv = True
+                if not kwargs.get('as_param', None):
                     lifetimes.add('h')
                     type_name += '<\'h>'
-                    if kwargs.pop('optional', None):
-                        type_name = 'Option<%s>' % type_name
-            return (type_name, as_raw_conv, do_cast, no_ref, lifetimes)
-        if not isinstance(ty, TypeRef):
+                if kwargs.pop('optional', None):
+                    type_name = 'Option<%s>' % type_name
+            if raw_type_name is None:
+                raw_type_name = type_name
+            return (type_name, raw_type_name, as_raw_conv, lifetimes)
+        elif not isinstance(ty, TypeRef):
             raise ValueError('unable to hadle arg', ty)
-        if ty.__class__ == TypeRef.NAMED:
-            return self.rust_safe_type_details(ty.name, **kwargs)
-        if ty.__class__ == TypeRef.POINTER and ty.arg.__class__ == TypeRef.FUNCTION:
-            type_name = self.rust_type(ty, **kwargs)
-            as_raw_conv = False
+        elif ty.is_named():
+            return self.rust_type_details(ty.name, **kwargs)
+        elif ty.is_function():
+            params = ', '.join([self.rust_raw_type(p.type, as_param=True) for p in ty.arg.params])
+            res = ''
+            if ty.arg.returns != TypeRef.VOID:
+                res = ' -> %s' % self.rust_raw_type(ty.arg.returns, as_param=True, optional=True)
+            type_name = 'extern "system" fn (%s)%s' % (params, res)
             if kwargs.pop('optional', None):
                 type_name = 'Option<%s>' % type_name
-                as_raw_conv = True
-            return (type_name, as_raw_conv, do_cast, no_ref, lifetimes)
-        if ty.__class__ == TypeRef.POINTER or (ty.__class__ == TypeRef.ARRAY and ty.dim is None):
+            return (type_name, type_name, as_raw_conv, lifetimes)
+        elif ty.is_ptr():
             length = kwargs.pop('len', None)
             opt = kwargs.pop('optional', None)
-            as_raw_conv = False
-            mut = ''
-            if ty.arg.__class__ == TypeRef.CONST:
-                ty = ty.arg
+            if ty.is_const():
+                arg = ty.arg.arg
+                mut = ''
             else:
+                arg = ty.arg
                 mut = 'mut '
-            if not mut and ty.arg == TypeRef.CHAR:
-                type_name = 'AsRef<CStr>'
-                as_raw_conv = True
-            elif ty.arg == TypeRef.VOID and length:
-                type_name = 'u8'
-                do_cast = True
-            else:
-                (type_name, as_raw_conv, do_cast, no_ref, arg_lifetimes) = self.rust_safe_type_details(ty.arg, **kwargs)
-                lifetimes.update(arg_lifetimes)
-            if length and length != 'null-terminated':
-                type_name = '&\'l %s[%s]' % (mut, type_name)
-                lifetimes.add('l')
-                as_raw_conv = True
-            elif no_ref:
-                return ('*%s%s' % (mut or 'const ', type_name), as_raw_conv, do_cast, False, lifetimes)
-            else:
-                lifetimes.add('l')
-                type_name = '&\'l %s%s' % (mut, type_name)
-            if opt and (not length or length == 'null-terminated'):
-                type_name = 'Option<%s>' % type_name
-                as_raw_conv = True
-            return (type_name, as_raw_conv, do_cast, False, lifetimes)
-        if ty.__class__ == TypeRef.ARRAY:
-            arg = ty.arg
-            if arg.__class__ == TypeRef.CONST:
-                arg = arg.arg
-            (type_name, as_raw_conv, do_cast, _no_ref, arg_lifetimes) = self.rust_safe_type_details(arg, **kwargs)
+            (type_name, raw_typename, as_raw_conv, arg_lifetimes) = self.rust_type_details(arg, **kwargs)
             lifetimes.update(arg_lifetimes)
-            type_name = '[%s; %s]' % (type_name, self.rust_dimension_value(ty.dim))
-            return (type_name, as_raw_conv, do_cast, False, lifetimes)
+            raw_typename = '*%s%s' % (mut or 'const ', raw_typename)
+            if not mut and arg == TypeRef.CHAR and length == 'null-terminated':
+                if not kwargs.get('as_param', None):
+                    lt = '\'l '
+                    lifetimes.add('l')
+                else:
+                    lt = ''
+                type_name = '&%sAsRef<CStr>' % lt
+                lifetimes.add('l')
+                as_raw_conv = True
+                if opt:
+                    type_name = 'Option<%s>' % type_name
+            elif length:
+                if arg == TypeRef.VOID:
+                    type_name = 'u8'
+                if not kwargs.get('as_param', None):
+                    lt = '\'l '
+                    lifetimes.add('l')
+                else:
+                    lt = ''
+                type_name = '&%s%s[%s]' % (lt, mut, type_name)
+                lifetimes.add('l')
+                as_raw_conv = True
+            elif arg == TypeRef.VOID or (arg.is_named() and arg.resolved_type.__class__ is BaseTypeElem.PROVIDED):
+                type_name = raw_typename
+            else:
+                if not kwargs.get('as_param', None):
+                    lt = '\'l '
+                    lifetimes.add('l')
+                else:
+                    lt = ''
+                type_name = '&%s%s%s' % (lt, mut, type_name)
+                if opt:
+                    type_name = 'Option<%s>' % type_name
+                    as_raw_conv = True
+            return (type_name, raw_typename, as_raw_conv, lifetimes)
+        elif ty.is_array():
+            if ty.is_const():
+                arg = ty.arg.arg
+            else:
+                arg = ty.arg
+            (type_name, raw_typename, as_raw_conv, arg_lifetimes) = self.rust_type_details(arg, **kwargs)
+            lifetimes.update(arg_lifetimes)
+            dim = self.rust_dimension_value(ty.dim, no_imports=kwargs.get('no_imports', False))
+            type_name = '[%s; %s]' % (type_name, dim)
+            raw_typename = '[%s; %s]' % (raw_typename, dim)
+            return (type_name, raw_typename, as_raw_conv, lifetimes)
         raise ValueError('unable to hadle arg', ty)
 
+    def rust_raw_type(self, ty, **kwargs):
+        (_typename, raw_typename, _as_raw_conv, _lifetimes) = self.rust_type_details(ty, **kwargs)
+        return raw_typename
+
     def rust_safe_type(self, ty, **kwargs):
-        (typename, _as_raw_conv, _do_cast, _no_ref, _lifetimes) = self.rust_safe_type_details(ty, **kwargs)
+        (typename, _raw_typename, _as_raw_conv, _lifetimes) = self.rust_type_details(ty, **kwargs)
         return typename
 
     def rust_param_as_raw(self, ty, declname=None, **kwargs):
@@ -410,13 +405,13 @@ class RustGenerator:
                     declname = '%s.as_mut_ptr()' % declname
                 else:
                     declname = '&mut %s' % declname
-        (_typename, as_raw_conv, do_cast, _no_ref, _lifetimes) = self.rust_safe_type_details(ty, **kwargs)
+        (typename, raw_typename, as_raw_conv, _lifetimes) = self.rust_type_details(ty, no_imports=True, **kwargs)
         if as_raw_conv:
             if '&' in declname:
                 declname = '(%s)' %declname
             declname = '%s.as_raw()' % declname
-        if do_cast:
-            declname = '%s as %s' % (declname, self.rust_type(ty, **kwargs))
+            if 'u8' in typename and 'c_void' in raw_typename:
+                declname = '%s as %s' % (declname,raw_typename)
         return declname
 
     def is_public(self, ty):
@@ -475,47 +470,13 @@ class RustGenerator:
 
     def generate_all(self):
         self.generate_enums()
-        self.generate_base_types()
-        self.generate_raw_types()
-        self.generate_safe_types()
+        self.generate_types()
         self.generate_protos()
         self.generate_dispatch_table()
         self.generate_dispatch_commands()
         self.generate_prelude()
 
-    def generate_base_types(self, file=None):
-        if file is None:
-            file = os.path.join(self.target,'types_base.rs')
-        reg = self.registry
-        with RustCodeGenerator(file) as gen:
-            gen("/* GENERATED FILE */").nl()
-            gen.nl()
-            with self.manage_imports(gen) as gen:
-                for feature in reg.features:
-                    with gen.open_nonempty() as nonempty_gen:
-                        self._generate_feature_comment(feature, nonempty_gen)
-                        for ty in feature.types:
-                            self._generate_base_type(ty, gen)
-                        
-    def generate_raw_types(self, file=None):
-        if file is None:
-            file = os.path.join(self.target,'types_raw.rs')
-        reg = self.registry
-        with RustCodeGenerator(file) as gen:
-            gen("/* GENERATED FILE */").nl()
-            gen.nl()
-            gen('#![allow(non_snake_case)]').nl()
-            gen('#![allow(non_camel_case_types)]').nl()
-            gen.nl()
-            with self.manage_imports(gen) as gen:
-                self.add_import('types_base::*')
-                for feature in reg.features:
-                    with gen.open_nonempty() as nonempty_gen:
-                        self._generate_feature_comment(feature, nonempty_gen)
-                        for ty in feature.types:
-                            self._generate_raw_type(ty, gen)
-
-    def generate_safe_types(self, file=None):
+    def generate_types(self, file=None):
         if file is None:
             file = os.path.join(self.target,'types.rs')
         reg = self.registry
@@ -524,27 +485,29 @@ class RustGenerator:
             gen.nl()
             gen('#![allow(non_snake_case)]').nl()
             gen.nl()
-            gen('pub use types_base::*;').nl()
+            gen('#[path = "types_impl.rs"]').nl()
+            gen('pub mod types_impl;').nl()
+            gen.nl()
             with self.manage_imports(gen) as gen:
-                #self.add_import('types_base::*')
-                self.add_import('types_raw')
                 self.add_import('AsRaw')
+                self.add_import('Struct')
                 for feature in reg.features:
                     with gen.open_nonempty() as nonempty_gen:
                         self._generate_feature_comment(feature, nonempty_gen)
                         for ty in feature.types:
-                            self._generate_safe_type(ty, gen)
+                            self._generate_type(ty, gen)
 
-    def _generate_base_type(self, ty, gen):
+    def _generate_type(self, ty, gen):
         if ty.name in IGNORED:
             return
-        delegate_type(self, '_generate_base_type_', ty, gen)
+        delegate_type(self, '_generate_type_', ty, gen)
 
-    def _generate_base_type_basetype(self, ty, gen):
+    def _generate_type_basetype(self, ty, gen):
         self._generate_docs(ty, gen)
         self._generate_feature_protect(ty.requiering_feature, gen)
-        gen('pub type ', ty.name, ' = ', self.rust_type(ty.type), ';').nl()
-    def _generate_base_type_bitmask(self, ty, gen):
+        gen('pub type ', ty.name, ' = ', self.rust_raw_type(ty.type), ';').nl()
+
+    def _generate_type_bitmask(self, ty, gen):
         if len(ty.requires) == 1:
             enumtype = ty.requires[0]
         else:
@@ -552,7 +515,8 @@ class RustGenerator:
         self._generate_docs(ty, gen)
         self._generate_feature_protect(ty.requiering_feature, gen)
         gen('pub type ', ty.name, ' = ', enumtype, ';').nl()
-    def _generate_base_type_enum(self, ty, gen):
+
+    def _generate_type_enum(self, ty, gen):
         self._generate_docs(ty, gen, short=True)
         self._generate_feature_protect(ty.requiering_feature, gen)
         if ty.name != ty.group.name:
@@ -560,22 +524,7 @@ class RustGenerator:
         else:
             gen('pub use enums::', ty.group.name, ';').nl()
 
-    def _generate_raw_type(self, ty, gen):
-        if ty.name in IGNORED:
-            return
-        delegate_type(self, '_generate_raw_type_', ty, gen)
-
-    def _generate_safe_type(self, ty, gen):
-        if ty.name in IGNORED:
-            return
-        delegate_type(self, '_generate_safe_type_', ty, gen)
-
-    def _generate_raw_type_handle(self, ty, gen):
-        base = ty.non_dispatchable and 'u64' or 'usize'
-        self._generate_docs(ty, gen)
-        self._generate_feature_protect(ty.requiering_feature, gen)
-        gen('pub type ', ty.name, ' = ', base, ';').nl()
-    def _generate_safe_type_handle(self, ty, gen):
+    def _generate_type_handle(self, ty, gen):
         base = ty.non_dispatchable and 'VkNonDispatchableHandle' or 'VkDispatchableHandle'
         self.add_import('utils::%s' % base)
         self._generate_feature_protect(ty.requiering_feature, gen)
@@ -586,37 +535,20 @@ class RustGenerator:
         self._generate_feature_protect(ty.requiering_feature, gen)
         gen('pub type ', ty.name, '<\'l> = ', base, '<\'l,', ty.name, '__>;').nl()
     
-    def _generate_raw_type_funcpointer(self, ty, gen):
+    def _generate_type_funcpointer(self, ty, gen):
         self._generate_docs(ty, gen)
         self._generate_feature_protect(ty.requiering_feature, gen)
-        gen('pub type ', ty.name, ' = ', self.rust_type(ty.type), ';').nl()
-    def _generate_safe_type_funcpointer(self, ty, gen):
-        self._generate_docs(ty, gen)
-        self._generate_feature_protect(ty.requiering_feature, gen)
-        gen('pub use types_raw::', ty.name, ';').nl()
+        gen('#[allow(non_camel_case_types)]').nl()
+        gen('pub type ', ty.name, ' = ', self.rust_raw_type(ty.type), ';').nl()
 
-    def _generate_raw_type_struct(self, ty, gen):
-        self._generate_docs(ty, gen)
-        gen('#[repr(C)]').nl()
-        gen('#[derive(Copy,Clone)]').nl()
-        self._generate_feature_protect(ty.requiering_feature, gen)
-        gen('pub struct ', ty.name, ' {').nl()
-        with gen.open_indention():
-            for member in ty.members:
-                gen('pub ', self.rust_member_name(member), ' : ', self.rust_type(member), ',').nl()
-        gen('}').nl()
-
-    def _generate_safe_type_struct(self, ty, gen):
-        self.add_import('RawStruct')
-
+    def _generate_type_struct(self, ty, gen):
         members = []
         lifetimes = set()
         has_p_next = False
         for i, member in enumerate(ty.members):
             name = self.rust_member_name(member)
-            (typename, as_raw_conv, do_cast, no_ref, member_lifetimes) = self.rust_safe_type_details(member)
+            (typename, raw_typename, as_raw_conv, member_lifetimes) = self.rust_type_details(member)
             lifetimes.update(member_lifetimes)
-            raw_typename = self.rust_type(member, raw_prefix='types_raw::')
             hidden = False
             if i == 0 and member.name == 'sType' and typename == 'VkStructureType' and member.values:
                 hidden = True
@@ -628,14 +560,13 @@ class RustGenerator:
                 lifetimes.add('l')
             elif member.len_for:
                 hidden = 'readonly'
+            typename = typename.replace(' mut ', ' ')
             members.append({
                 'obj': member,
                 'name': name,
                 'typename': typename,
                 'raw_typename': raw_typename,
                 'as_raw_conv': as_raw_conv, 
-                'do_cast': do_cast,
-                'no_ref': no_ref,
                 'lifetimes': member_lifetimes,
                 'hidden': hidden,
             })
@@ -650,7 +581,7 @@ class RustGenerator:
         used_lifetimes = set()
         with gen.open_indention():
             for member in members:
-                if not member['hidden'] and self.is_public(member['obj']):
+                if not member['hidden'] and not member['as_raw_conv'] and self.is_public(member['obj']):
                     used_lifetimes.update(member['lifetimes'])
                     gen('pub ', member['name'], ' : ', member['typename'], ',').nl()
                 else:
@@ -703,29 +634,19 @@ class RustGenerator:
                                 continue
                     gen('#[inline]').nl()
                     valuetype = mem['typename']
-                    if valuetype == 'VkBool32':
-                        valuetype = 'bool'
                     gen('pub fn set_', self.rust_member_function(m, ''), '(mut self, value: ', valuetype, ') -> Self {').nl()
                     with gen.open_indention():
-                        if valuetype == 'bool':
-                            gen('let value : VkBool32 = if value { 1 } else { 0 };')
                         if m.len and m.len != 'null-terminated':
                             len_param = ty.members[m.len]
-                            gen('self. ', self.rust_param_name(len_param), ' = value.len() as ', self.rust_type(len_param), ';').nl()
-                        if self.is_public(m):
+                            gen('self. ', self.rust_param_name(len_param), ' = value.len() as ', self.rust_raw_type(len_param), ';').nl()
+                        if not mem['as_raw_conv']:
                             gen('self.', mem['name'], ' = value;').nl()
                         else:
+                            gen('unsafe {').nl()
                             as_raw_call = self.rust_param_as_raw(m, declname='value')
-                            unsafe = False
-                            if 'as_raw' in  as_raw_call:
-                                unsafe = True
-                            if unsafe:
-                                gen('unsafe {').nl().i()
                             with gen.open_indention():
                                 gen('self.', mem['name'], ' = ', as_raw_call, ';').nl()
-                            if unsafe:
-                                gen.o()
-                                gen('}').nl()
+                            gen('}').nl()
                         gen('self').nl()
                     gen('}').nl()
             for mem in members:
@@ -736,23 +657,26 @@ class RustGenerator:
                     continue # TODO
                 #elif m.len and m.len not in ty.members:
                 #    continue # TODO
-                gen('#[inline]').nl()
                 if m.type == TypeRef.BOOL:
+                    gen('#[inline]').nl()
                     gen('pub fn is_', self.rust_member_function(m, ''), '(&self) -> bool {').nl()
                     with gen.open_indention():
                         gen('self.', mem['name'], ' != 0').nl()
                     gen('}').nl()
                 elif m.len == 'null-terminated':
+                    gen('#[inline]').nl()
                     gen('pub fn ', self.rust_member_function(m, 'get_'), '(&self) -> &CStr {').nl()
                     with gen.open_indention():
                         gen('unsafe { ::std::ffi::CStr::from_ptr(self.', mem['name'],') }').nl()
                     gen('}').nl()
                 elif m.type.__class__ == TypeRef.NAMED and m.type.resolved_type.__class__ in STRUCT_TYPES:
+                    gen('#[inline]').nl()
                     gen('pub fn ', self.rust_member_function(m, 'get_'), '(&self) -> &', mem['typename'],' {').nl()
                     with gen.open_indention():
                         gen('&self.', mem['name']).nl()
                     gen('}').nl()
-                else:
+                elif not mem['as_raw_conv']:
+                    gen('#[inline]').nl()
                     gen('pub fn ', self.rust_member_function(m, 'get_'), '(&self) -> ', mem['typename'],' {').nl()
                     with gen.open_indention():
                         gen('self.', mem['name']).nl()
@@ -774,13 +698,10 @@ class RustGenerator:
                 gen('fn default() -> ', ty.name, lifetime_args,' { ', ty.name, '::new() }').nl()
             gen('}').nl()
         self._generate_feature_protect(ty.requiering_feature, gen)
-        gen('unsafe impl', lifetime_params, ' RawStruct for ', ty.name, lifetime_args, ' {').nl()
-        with gen.open_indention():
-            gen('type Raw = types_raw::', ty.name ,';').nl()
-        gen('}').nl()
+        gen('unsafe impl', lifetime_params, ' Struct for ', ty.name, lifetime_args, ' {}').nl()
         if ty.structextends:
             for ext in ty.structextends:
-                ext_typename, _, _, _, ext_lifetimes = self.rust_safe_type_details(ext)
+                ext_typename, _, _, ext_lifetimes = self.rust_type_details(ext)
                 if 'l' in ext_lifetimes:
                     # rename 'l to 'm
                     ext_lifetimes.remove('l')
@@ -800,29 +721,31 @@ class RustGenerator:
                         gen('self as *const ', ty.name,' as *const c_void').nl()
                     gen('}').nl()
                 gen('}').nl()
+
+        size = ty.size()
+        if size is None:
+            raise ValueError('struct has unknown size', ty)
         self._generate_feature_protect(ty.requiering_feature, gen)
         gen('#[cfg(test)]').nl()
         gen('#[test]').nl()
         gen('fn test_struct_size_', camel_to_snake_case(ty.name), '() {').nl()
         with gen.open_indention():
-            gen('assert_size!(types_raw::', ty.name ,', ', ty.name,');').nl()
+            bytes, ints, pointers, _ = size
+            add = ''
+            if ints > 0:
+                gen('let int_size = ::std::mem::size_of::<::std::os::raw::c_int>();').nl()
+                add += ' + int_size * %d' % ints
+            if pointers > 0:
+                gen('let ptr_size = ::std::mem::size_of::<usize>();').nl()
+                add += ' + ptr_size * %d' % pointers
+            gen('assert_size!(', bytes, add ,', ', ty.name,');').nl()
         gen('}').nl()
 
-    def _generate_raw_type_union(self, ty, gen):
-        gen('#[repr(C)]').nl()
-        gen('#[derive(Copy,Clone)]').nl()
-        self._generate_feature_protect(ty.requiering_feature, gen)
-        gen('pub union ', ty.name, '{').nl()
-        with gen.open_indention():
-            for member in ty.members:
-                gen('pub ', self.rust_member_name(member), ' : ', self.rust_type(member), ',').nl()
-        gen('}').nl()
-    def _generate_safe_type_union(self, ty, gen):
+    def _generate_type_union(self, ty, gen):
         self._generate_docs(ty, gen)
         gen('#[repr(C)]').nl()
         gen('#[derive(Copy,Clone)]').nl()
         self._generate_feature_protect(ty.requiering_feature, gen)
-        #gen('pub struct ', ty.name, ' (types_raw::', ty.name ,');').nl()
         gen('pub union ', ty.name, ' {').nl()
         with gen.open_indention():
             for member in ty.members:
@@ -831,15 +754,12 @@ class RustGenerator:
                 gen(self.rust_member_name(member), ' : ', self.rust_safe_type(member), ',').nl()
         gen('}').nl()
         self._generate_feature_protect(ty.requiering_feature, gen)
-        gen('unsafe impl RawStruct for ', ty.name, ' {').nl()
-        with gen.open_indention():
-            gen('type Raw = types_raw::', ty.name ,';').nl()
-        gen('}').nl()
+        gen('unsafe impl Struct for ', ty.name, ' {}').nl()
         gen('#[cfg(test)]').nl()
         gen('#[test]').nl()
         gen('fn test_union_size_', camel_to_snake_case(ty.name), '() {').nl()
         with gen.open_indention():
-            gen('assert_size!(types_raw::', ty.name ,', ', ty.name,');').nl()
+            gen('assert_size!(', ty.size()[0] ,', ', ty.name,');').nl()
         gen('}').nl()
         
 
@@ -989,7 +909,7 @@ class RustGenerator:
 
     def _generate_command_signature(self, base_cmd, gen, paramnames=True, method=None, safe=False, with_return=True, **kwargs):
         if method is None:
-            method = safe is True and self.rust_safe_type or self.rust_type
+            method = safe is True and self.rust_safe_type or self.rust_raw_type
         gen('(')
         i = 0
         for param in base_cmd.params:
@@ -1000,7 +920,7 @@ class RustGenerator:
             i += 1
             if paramnames and param.name:
                 gen(self.rust_param_name(param.name), ': ')
-            gen(method(param, **kwargs))
+            gen(method(param, as_param=True, **kwargs))
         gen(')')
         if with_return and base_cmd.returns != TypeRef.VOID:
             gen(' -> ', method(base_cmd.returns, optional=True, **kwargs))
@@ -1016,8 +936,7 @@ class RustGenerator:
             gen.nl()
             with self.manage_imports(gen) as gen:
                 self.add_import('platform::*')
-                self.add_import('types_base::*')
-                self.add_import('types_raw::*')
+                self.add_import('types::*')
                 for feature in reg.features:
                     with gen.open_nonempty() as nonempty_gen:
                         self._generate_feature_comment(feature, nonempty_gen)
@@ -1038,7 +957,7 @@ class RustGenerator:
             gen("/* GENERATED FILE */").nl()
             gen.nl()
             gen('use protos::*;').nl()
-            gen('use types_raw::PFN_vkVoidFunction;').nl()
+            gen('use types::PFN_vkVoidFunction;').nl()
             gen.nl()
             for table in DispatchTable:
                 self._generate_dispatch_table(table, gen)
@@ -1167,7 +1086,10 @@ class RustGenerator:
         out_typename_return = None
         out_convert = ''
         if out_param:
-            out_typename = safe_dispatch_type(command.out_param.type.arg)
+            if command.out_param.type.arg == TypeRef.BOOL:
+                out_typename = 'VkBool32'
+            else:
+                out_typename = safe_dispatch_type(command.out_param.type.arg)
             if out_param.len:
                 if out_param.type.arg == TypeRef.VOID:
                     out_typename = 'u8'
