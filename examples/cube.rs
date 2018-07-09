@@ -213,7 +213,7 @@ fn create_command_pool<'h>(device: VkDevice<'h>, queue_family_idx: u32) -> VkRes
 
 fn get_window_extents(window: &winit::Window) -> VkExtent2D {
   match window.get_inner_size() {
-    Some(size) => size.into(),
+    Some(size) => size.to_physical(window.get_hidpi_factor()).into(),
     None => VkExtent2D::of(800, 600),
   }
 }

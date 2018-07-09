@@ -62,7 +62,6 @@ unsafe fn call_gdpa(gdpa: PFN_vkGetDeviceProcAddr, arg: types::VkDevice, name: &
   }
 }
 
-
 #[allow(non_snake_case)]
 struct LoaderData {
   loader_dispatch_table: VkLoaderDispatchTable,

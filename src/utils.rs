@@ -243,8 +243,7 @@ impl<'h, T> AsRaw for VkNonDispatchableHandle<'h, T> {
   }
 }
 
-
-impl<'l,'h, T> AsRaw for &'l mut VkDispatchableHandle<'h, T> {
+impl<'l, 'h, T> AsRaw for &'l mut VkDispatchableHandle<'h, T> {
   type Output = *mut usize;
   #[inline]
   unsafe fn as_raw(self) -> *mut usize {
@@ -252,7 +251,7 @@ impl<'l,'h, T> AsRaw for &'l mut VkDispatchableHandle<'h, T> {
   }
 }
 
-impl<'l,'h, T> AsRaw for &'l mut VkNonDispatchableHandle<'h, T> {
+impl<'l, 'h, T> AsRaw for &'l mut VkNonDispatchableHandle<'h, T> {
   type Output = *mut u64;
   #[inline]
   unsafe fn as_raw(self) -> *mut u64 {
@@ -260,8 +259,7 @@ impl<'l,'h, T> AsRaw for &'l mut VkNonDispatchableHandle<'h, T> {
   }
 }
 
-
-impl<'l,'h, T> AsRaw for &'l [VkDispatchableHandle<'h, T>] {
+impl<'l, 'h, T> AsRaw for &'l [VkDispatchableHandle<'h, T>] {
   type Output = *const usize;
   #[inline]
   unsafe fn as_raw(self) -> *const usize {
@@ -273,7 +271,7 @@ impl<'l,'h, T> AsRaw for &'l [VkDispatchableHandle<'h, T>] {
   }
 }
 
-impl<'l,'h, T> AsRaw for &'l [VkNonDispatchableHandle<'h, T>] {
+impl<'l, 'h, T> AsRaw for &'l [VkNonDispatchableHandle<'h, T>] {
   type Output = *const u64;
   #[inline]
   unsafe fn as_raw(self) -> *const u64 {
@@ -285,7 +283,7 @@ impl<'l,'h, T> AsRaw for &'l [VkNonDispatchableHandle<'h, T>] {
   }
 }
 
-impl<'l,'h, T> AsRaw for &'l mut[VkDispatchableHandle<'h, T>] {
+impl<'l, 'h, T> AsRaw for &'l mut [VkDispatchableHandle<'h, T>] {
   type Output = *mut usize;
   #[inline]
   unsafe fn as_raw(self) -> *mut usize {
@@ -297,7 +295,7 @@ impl<'l,'h, T> AsRaw for &'l mut[VkDispatchableHandle<'h, T>] {
   }
 }
 
-impl<'l,'h, T> AsRaw for &'l mut[VkNonDispatchableHandle<'h, T>] {
+impl<'l, 'h, T> AsRaw for &'l mut [VkNonDispatchableHandle<'h, T>] {
   type Output = *mut u64;
   #[inline]
   unsafe fn as_raw(self) -> *mut u64 {
@@ -309,7 +307,6 @@ impl<'l,'h, T> AsRaw for &'l mut[VkNonDispatchableHandle<'h, T>] {
   }
 }
 
-
 impl<'h, T> AsRaw for *const VkDispatchableHandle<'h, T> {
   type Output = *const usize;
   #[inline]
@@ -318,7 +315,7 @@ impl<'h, T> AsRaw for *const VkDispatchableHandle<'h, T> {
   }
 }
 
-impl<'l,'h, T> AsRaw for *const VkNonDispatchableHandle<'h, T> {
+impl<'l, 'h, T> AsRaw for *const VkNonDispatchableHandle<'h, T> {
   type Output = *const u64;
   #[inline]
   unsafe fn as_raw(self) -> *const u64 {
@@ -334,14 +331,13 @@ impl<'h, T> AsRaw for *mut VkDispatchableHandle<'h, T> {
   }
 }
 
-impl<'l,'h, T> AsRaw for *mut VkNonDispatchableHandle<'h, T> {
+impl<'l, 'h, T> AsRaw for *mut VkNonDispatchableHandle<'h, T> {
   type Output = *mut u64;
   #[inline]
   unsafe fn as_raw(self) -> *mut u64 {
     self as *mut u64
   }
 }
-
 
 #[inline]
 pub fn cstr_from_bytes_until_nul<'a, T: AsRef<[u8]> + ?Sized>(s: &'a T) -> ::std::borrow::Cow<'a, ::std::ffi::CStr> {

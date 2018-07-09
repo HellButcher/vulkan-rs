@@ -182,7 +182,11 @@ impl<T: Sized> Zero for *mut T {
   }
 }
 
-unsafe impl<P> Struct for P where P: Primitive {}
+unsafe impl<P> Struct for P
+where
+  P: Primitive,
+{
+}
 
 impl<T> AsRaw for Option<T>
 where
@@ -200,8 +204,7 @@ where
   }
 }
 
-impl<'l, T: 'l + Struct> AsRaw for &'l T
-{
+impl<'l, T: 'l + Struct> AsRaw for &'l T {
   type Output = *const T;
   #[inline]
   unsafe fn as_raw(self) -> *const T {
@@ -209,8 +212,7 @@ impl<'l, T: 'l + Struct> AsRaw for &'l T
   }
 }
 
-impl<'l, T: 'l + Struct> AsRaw for &'l mut T
-{
+impl<'l, T: 'l + Struct> AsRaw for &'l mut T {
   type Output = *mut T;
   #[inline]
   unsafe fn as_raw(self) -> *mut T {
@@ -218,8 +220,7 @@ impl<'l, T: 'l + Struct> AsRaw for &'l mut T
   }
 }
 
-impl<'l, T: 'l + Struct> AsRaw for &'l [T]
-{
+impl<'l, T: 'l + Struct> AsRaw for &'l [T] {
   type Output = *const T;
   #[inline]
   unsafe fn as_raw(self) -> *const T {
@@ -230,8 +231,7 @@ impl<'l, T: 'l + Struct> AsRaw for &'l [T]
     }
   }
 }
-impl<'l, T: 'l + Struct> AsRaw for &'l mut [T]
-{
+impl<'l, T: 'l + Struct> AsRaw for &'l mut [T] {
   type Output = *mut T;
   #[inline]
   unsafe fn as_raw(self) -> *mut T {
@@ -243,8 +243,7 @@ impl<'l, T: 'l + Struct> AsRaw for &'l mut [T]
   }
 }
 
-impl<T: Struct> AsRaw for *const T
-{
+impl<T: Struct> AsRaw for *const T {
   type Output = *const T;
   #[inline]
   unsafe fn as_raw(self) -> *const T {
@@ -252,8 +251,7 @@ impl<T: Struct> AsRaw for *const T
   }
 }
 
-impl<T: Struct> AsRaw for *mut T
-{
+impl<T: Struct> AsRaw for *mut T {
   type Output = *mut T;
   #[inline]
   unsafe fn as_raw(self) -> *mut T {
@@ -273,7 +271,10 @@ impl AsRaw for bool {
   type Output = types::VkBool32;
   #[inline]
   unsafe fn as_raw(self) -> types::VkBool32 {
-    if self { 1 } else { 0 }
+    if self {
+      1
+    } else {
+      0
+    }
   }
 }
-
