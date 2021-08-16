@@ -7,6 +7,10 @@ Vulkan bindings for the rust programming language.
 [![Build Status](https://travis-ci.org/HellButcher/vulkan-rs.svg?branch=master)](https://travis-ci.org/HellButcher/vulkan-rs)
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](LICENSE)
 
+## Discontinued ⚠
+
+This crate is no longer under development: I recommend using [`ash`](https://crates.io/crates/ash) instead.
+
 ## Basic usage
 
 ```toml
